@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Force Advantage
-// MSEP_ForceAdvantage.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ForceAdvantage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FAdv = MageStudios.FAdv || {};
-MageStudios.FAdv.version = 1.00
+MageStudios.FAdv.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin allows you to force pre-emptive,
  * surprise, or normal initiatives for battles.
  * @author Mage Studios Engine Plugins
@@ -86,72 +80,59 @@ MageStudios.FAdv.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ForceAdvantage');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ForceAdvantage");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.FAdvNeutral = Number(MageStudios.Parameters['Neutral Event']);
-MageStudios.Param.FAdvPreemptive = Number(MageStudios.Parameters['Pre-Emptive Event']);
-MageStudios.Param.FAdvSurprise = Number(MageStudios.Parameters['Surprise Event']);
-
-//=============================================================================
-// BattleManager
-//=============================================================================
+MageStudios.Param.FAdvNeutral = Number(MageStudios.Parameters["Neutral Event"]);
+MageStudios.Param.FAdvPreemptive = Number(
+  MageStudios.Parameters["Pre-Emptive Event"]
+);
+MageStudios.Param.FAdvSurprise = Number(
+  MageStudios.Parameters["Surprise Event"]
+);
 
 MageStudios.FAdv.BattleManager_startBattle = BattleManager.startBattle;
-BattleManager.startBattle = function() {
-    this.checkForceAdvantage(this._forceAdvantage);
-    this._forceAdvantage = undefined;
-    MageStudios.FAdv.BattleManager_startBattle.call(this);
-    this.reserveForceAdvantageCommonEvents();
+BattleManager.startBattle = function () {
+  this.checkForceAdvantage(this._forceAdvantage);
+  this._forceAdvantage = undefined;
+  MageStudios.FAdv.BattleManager_startBattle.call(this);
+  this.reserveForceAdvantageCommonEvents();
 };
 
-BattleManager.checkForceAdvantage = function(str) {
+BattleManager.checkForceAdvantage = function (str) {
   if (str === undefined) return;
   var str = str.toUpperCase();
-  if (['PRE-EMPTIVE', 'PREEMPTIVE', 'FIRST STRIKE', 'PLAYER'].contains(str)) {
+  if (["PRE-EMPTIVE", "PREEMPTIVE", "FIRST STRIKE", "PLAYER"].contains(str)) {
     this._preemptive = true;
     this._surprise = false;
-  } else if (['SURPRISE', 'BACK ATTACK', 'ENEMY'].contains(str)) {
+  } else if (["SURPRISE", "BACK ATTACK", "ENEMY"].contains(str)) {
     this._preemptive = false;
     this._surprise = true;
-  } else if (['NONE', 'NORMAL', 'NEUTRAL'].contains(str)) {
+  } else if (["NONE", "NORMAL", "NEUTRAL"].contains(str)) {
     this._preemptive = false;
     this._surprise = false;
   }
 };
 
-BattleManager.reserveForceAdvantageCommonEvents = function() {
-    if (this._preemptive) {
-      var eventId = MageStudios.Param.FAdvPreemptive;
-    } else if (this._surprise) {
-      var eventId = MageStudios.Param.FAdvSurprise;
-    } else {
-      var eventId = MageStudios.Param.FAdvNeutral;
-    }
-    if (eventId > 0) $gameTemp.reserveCommonEvent(eventId);
+BattleManager.reserveForceAdvantageCommonEvents = function () {
+  if (this._preemptive) {
+    var eventId = MageStudios.Param.FAdvPreemptive;
+  } else if (this._surprise) {
+    var eventId = MageStudios.Param.FAdvSurprise;
+  } else {
+    var eventId = MageStudios.Param.FAdvNeutral;
+  }
+  if (eventId > 0) $gameTemp.reserveCommonEvent(eventId);
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.FAdv.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.FAdv.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ForceAdvantage') {
+  if (command === "ForceAdvantage") {
     var str = String(args[0]).toUpperCase();
-    if (str === 'CLEAR') str = undefined;
+    if (str === "CLEAR") str = undefined;
     BattleManager._forceAdvantage = str;
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Swap Enemies
-// MSEP_SwapEnemies.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SwapEnemies = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SwE = MageStudios.SwE || {};
-MageStudios.SwE.version = 1.00
+MageStudios.SwE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This is utility plugin made to help randomize sets of
  * enemies for battle.
  * @author Mage Studios Engine Plugins
@@ -77,19 +71,16 @@ MageStudios.SwE.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_SwapEnemies');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SwapEnemies");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.SwEFilter = eval(MageStudios.Parameters['Filter Unnamed Enemies']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.SwEFilter = eval(
+  MageStudios.Parameters["Filter Unnamed Enemies"]
+);
 
 MageStudios.SwE.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.SwE.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_SwapEnemies) {
     this.processSwENotetagsE($dataEnemies);
@@ -99,7 +90,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processSwENotetagsE = function(group) {
+DataManager.processSwENotetagsE = function (group) {
   if (MageStudios.EnemyIdRef) return;
   MageStudios.EnemyIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -109,7 +100,7 @@ DataManager.processSwENotetagsE = function(group) {
   }
 };
 
-DataManager.processSwENotetags1 = function(group) {
+DataManager.processSwENotetags1 = function (group) {
   var note1 = /<(?:SWAP):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var note2 = /<(?:SWAP):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -117,53 +108,51 @@ DataManager.processSwENotetags1 = function(group) {
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.swapEnemies = [];
-    var mode = 'none';
+    var mode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(note1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         array = this.SwEfilter(array);
         obj.swapEnemies = obj.swapEnemies.concat(array);
       } else if (line.match(note2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         range = this.SwEfilter(range);
         obj.swapEnemies = obj.swapEnemies.concat(range);
       } else if (line.match(/<(?:SWAP)>/i)) {
-        var mode = 'swap';
+        var mode = "swap";
       } else if (line.match(/<\/(?:SWAP)>/i)) {
-        var mode = 'none';
-      } else if (mode === 'swap') {
+        var mode = "none";
+      } else if (mode === "swap") {
         var name = line.toUpperCase();
         var id = MageStudios.EnemyIdRef[name];
         if (id) obj.swapEnemies.push(id);
       }
     }
     if (obj.swapEnemies.length > 0) {
-      obj.battlerName = '';
+      obj.battlerName = "";
       obj.battlerHue = 0;
     }
   }
 };
 
-DataManager.SwEfilter = function(array) {
+DataManager.SwEfilter = function (array) {
   if (!MageStudios.Param.SwEFilter) return array;
   var result = [];
   var length = array.length;
   for (var i = 0; i < length; ++i) {
     var enemy = $dataEnemies[array[i]];
-    if (enemy && enemy.name !== '') result.push(array[i]);
+    if (enemy && enemy.name !== "") result.push(array[i]);
   }
   return result;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
 MageStudios.SwE.Game_Enemy_initialize = Game_Enemy.prototype.initialize;
-Game_Enemy.prototype.initialize = function(enemyId, x, y) {
+Game_Enemy.prototype.initialize = function (enemyId, x, y) {
   var loops = 100;
   var originalEnemyId = enemyId;
   while ($dataEnemies[enemyId].swapEnemies.length > 0) {
@@ -172,13 +161,9 @@ Game_Enemy.prototype.initialize = function(enemyId, x, y) {
     enemyId = pool[index];
     loops--;
     if (loops <= 0) {
-      console.log('Enemy ID ' + originalEnemyId + ' has a faulty swap pool.');
+      console.log("Enemy ID " + originalEnemyId + " has a faulty swap pool.");
       break;
     }
   }
   MageStudios.SwE.Game_Enemy_initialize.call(this, enemyId, x, y);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

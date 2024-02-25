@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Item Durability
-// MSEP_X_ItemDurability.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ItemDurability = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IDur = MageStudios.IDur || {};
-MageStudios.IDur.version = 1.00;
+MageStudios.IDur.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Independent equipment
  * now have durability, which when runs out, will break.
  * @author Mage Studios Engine Plugins
@@ -339,7 +333,7 @@ MageStudios.IDur.version = 1.00;
  * The following notetags can be used to adjust item durability for equipment.
  *
  * Weapon and Armor Notetags:
- * 
+ *
  *   <Durability: x>
  *   This sets the item's default durability value to x. This is the starting
  *   durability value for the item. If this notetag isn't used, the independent
@@ -586,7 +580,7 @@ MageStudios.IDur.version = 1.00;
  * ============================================================================
  * Changelog
  * ============================================================================
- * 
+ *
  * Version 1.04:
  * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
  * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
@@ -604,330 +598,382 @@ MageStudios.IDur.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_ItemCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ItemDurability");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.IDurDefaultDur = Number(
+    MageStudios.Parameters["Default Durability"]
+  );
+  MageStudios.Param.IDurDefaultVar = Number(
+    MageStudios.Parameters["Durability Variance"]
+  );
+  MageStudios.Param.IDurDefaultMax = Number(
+    MageStudios.Parameters["Durability Maximum"]
+  );
+  MageStudios.Param.IDurDefaultMax = Math.max(
+    1,
+    MageStudios.Param.IDurDefaultMax
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemDurability');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.IDurPhysicalAction = Number(
+    MageStudios.Parameters["Physical Action"]
+  );
+  MageStudios.Param.IDurMagicalAction = Number(
+    MageStudios.Parameters["Magical Action"]
+  );
+  MageStudios.Param.IDurCertainAction = Number(
+    MageStudios.Parameters["Certain Action"]
+  );
+  MageStudios.Param.IDurDamageAllArmor = String(
+    MageStudios.Parameters["Damage All Armor"]
+  );
+  MageStudios.Param.IDurDamageAllArmor = eval(
+    MageStudios.Param.IDurDamageAllArmor
+  );
+  MageStudios.Param.IDurPhysicalDmg = Number(
+    MageStudios.Parameters["Physical Damage"]
+  );
+  MageStudios.Param.IDurMagicalDmg = Number(
+    MageStudios.Parameters["Magical Damage"]
+  );
+  MageStudios.Param.IDurCertainDmg = Number(
+    MageStudios.Parameters["Certain Damage"]
+  );
 
-MageStudios.Param.IDurDefaultDur = Number(MageStudios.Parameters['Default Durability']);
-MageStudios.Param.IDurDefaultVar = Number(MageStudios.Parameters['Durability Variance']);
-MageStudios.Param.IDurDefaultMax = Number(MageStudios.Parameters['Durability Maximum']);
-MageStudios.Param.IDurDefaultMax = Math.max(1, MageStudios.Param.IDurDefaultMax);
+  MageStudios.Param.IDurBrokenText = String(
+    MageStudios.Parameters["Broken Text"]
+  );
+  MageStudios.Param.IDurBrokenWait = Number(
+    MageStudios.Parameters["Broken Wait"]
+  );
+  MageStudios.Param.IDurBreakName = String(
+    MageStudios.Parameters["Break Sound"]
+  );
+  MageStudios.Param.IDurBreakVol = Number(
+    MageStudios.Parameters["Break Volume"]
+  );
+  MageStudios.Param.IDurBreakPitch = Number(
+    MageStudios.Parameters["Break Pitch"]
+  );
+  MageStudios.Param.IDurBreakPan = Number(MageStudios.Parameters["Break Pan"]);
 
-MageStudios.Param.IDurPhysicalAction = Number(MageStudios.Parameters['Physical Action']);
-MageStudios.Param.IDurMagicalAction = Number(MageStudios.Parameters['Magical Action']);
-MageStudios.Param.IDurCertainAction = Number(MageStudios.Parameters['Certain Action']);
-MageStudios.Param.IDurDamageAllArmor = String(MageStudios.Parameters['Damage All Armor']);
-MageStudios.Param.IDurDamageAllArmor = eval(MageStudios.Param.IDurDamageAllArmor);
-MageStudios.Param.IDurPhysicalDmg = Number(MageStudios.Parameters['Physical Damage']);
-MageStudios.Param.IDurMagicalDmg = Number(MageStudios.Parameters['Magical Damage']);
-MageStudios.Param.IDurCertainDmg = Number(MageStudios.Parameters['Certain Damage']);
+  MageStudios.Param.IDurShowRepair = eval(
+    String(MageStudios.Parameters["Show Repair"])
+  );
+  MageStudios.Param.IDurEnRepair = eval(
+    String(MageStudios.Parameters["Enable Repair"])
+  );
+  MageStudios.Param.IDurCmdRepair = String(
+    MageStudios.Parameters["Repair Command"]
+  );
+  MageStudios.Param.IDurRepairName = String(
+    MageStudios.Parameters["Repair Sound"]
+  );
+  MageStudios.Param.IDurRepairVol = Number(
+    MageStudios.Parameters["Repair Volume"]
+  );
+  MageStudios.Param.IDurRepairPitch = Number(
+    MageStudios.Parameters["Repair Pitch"]
+  );
+  MageStudios.Param.IDurRepairPan = Number(
+    MageStudios.Parameters["Repair Pan"]
+  );
 
-MageStudios.Param.IDurBrokenText = String(MageStudios.Parameters['Broken Text']);
-MageStudios.Param.IDurBrokenWait = Number(MageStudios.Parameters['Broken Wait']);
-MageStudios.Param.IDurBreakName = String(MageStudios.Parameters['Break Sound']);
-MageStudios.Param.IDurBreakVol = Number(MageStudios.Parameters['Break Volume']);
-MageStudios.Param.IDurBreakPitch = Number(MageStudios.Parameters['Break Pitch']);
-MageStudios.Param.IDurBreakPan = Number(MageStudios.Parameters['Break Pan']);
+  MageStudios.Param.IDurShowDur = eval(
+    String(MageStudios.Parameters["Show Durability"])
+  );
+  MageStudios.Param.IDurText = String(
+    MageStudios.Parameters["Durability Text"]
+  );
+  MageStudios.Param.IDurFmt = String(
+    MageStudios.Parameters["Durability Format"]
+  );
+  MageStudios.Param.IDurShowUnbr = eval(
+    String(MageStudios.Parameters["Show Unbreakable"])
+  );
+  MageStudios.Param.IDurUnbreakable = String(
+    MageStudios.Parameters["Unbreakable Text"]
+  );
 
-MageStudios.Param.IDurShowRepair = eval(String(MageStudios.Parameters['Show Repair']));
-MageStudios.Param.IDurEnRepair = eval(String(MageStudios.Parameters['Enable Repair']));
-MageStudios.Param.IDurCmdRepair = String(MageStudios.Parameters['Repair Command']);
-MageStudios.Param.IDurRepairName = String(MageStudios.Parameters['Repair Sound']);
-MageStudios.Param.IDurRepairVol = Number(MageStudios.Parameters['Repair Volume']);
-MageStudios.Param.IDurRepairPitch = Number(MageStudios.Parameters['Repair Pitch']);
-MageStudios.Param.IDurRepairPan = Number(MageStudios.Parameters['Repair Pan']);
+  MageStudios.Param.IDurColor = {
+    unbreak: Number(MageStudios.Parameters["Unbreakable"]),
+    max: Number(MageStudios.Parameters["Max Durability"]),
+    rate190: Number(MageStudios.Parameters["190% Durability"]),
+    rate175: Number(MageStudios.Parameters["175% Durability"]),
+    rate150: Number(MageStudios.Parameters["150% Durability"]),
+    rate120: Number(MageStudios.Parameters["120% Durability"]),
+    rate110: Number(MageStudios.Parameters["110% Durability"]),
+    rate100: Number(MageStudios.Parameters["100% Durability"]),
+    rate80: Number(MageStudios.Parameters["80% Durability"]),
+    rate50: Number(MageStudios.Parameters["50% Durability"]),
+    rate25: Number(MageStudios.Parameters["25% Durability"]),
+    rate10: Number(MageStudios.Parameters["10% Durability"]),
+    rate1: Number(MageStudios.Parameters["1% Durability"]),
+  };
 
-MageStudios.Param.IDurShowDur = eval(String(MageStudios.Parameters['Show Durability']));
-MageStudios.Param.IDurText = String(MageStudios.Parameters['Durability Text']);
-MageStudios.Param.IDurFmt = String(MageStudios.Parameters['Durability Format']);
-MageStudios.Param.IDurShowUnbr = eval(String(MageStudios.Parameters['Show Unbreakable']));
-MageStudios.Param.IDurUnbreakable = String(MageStudios.Parameters['Unbreakable Text']);
-
-MageStudios.Param.IDurColor = {
-  unbreak: Number(MageStudios.Parameters['Unbreakable']),
-      max: Number(MageStudios.Parameters['Max Durability']),
-  rate190: Number(MageStudios.Parameters['190% Durability']),
-  rate175: Number(MageStudios.Parameters['175% Durability']),
-  rate150: Number(MageStudios.Parameters['150% Durability']),
-  rate120: Number(MageStudios.Parameters['120% Durability']),
-  rate110: Number(MageStudios.Parameters['110% Durability']),
-  rate100: Number(MageStudios.Parameters['100% Durability']),
-   rate80: Number(MageStudios.Parameters['80% Durability']),
-   rate50: Number(MageStudios.Parameters['50% Durability']),
-   rate25: Number(MageStudios.Parameters['25% Durability']),
-   rate10: Number(MageStudios.Parameters['10% Durability']),
-    rate1: Number(MageStudios.Parameters['1% Durability']),
-};
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.IDur.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.IDur.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_ItemDurability) {
-    this.processIDurNotetags1($dataWeapons);
-    this.processIDurNotetags1($dataArmors);
-    this.processIDurNotetags2($dataItems);
-    this.processIDurNotetags2($dataWeapons);
-    this.processIDurNotetags2($dataArmors);
-    this.processIDurNotetags3($dataSkills);
-    this.processIDurNotetags3($dataItems);
-    MageStudios._loaded_MSEP_X_ItemDurability = true;
-  }
-  return true;
-};
-
-DataManager.processIDurNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.durability = MageStudios.Param.IDurDefaultDur;
-    obj.durVariance = MageStudios.Param.IDurDefaultVar;
-    obj.durMax = MageStudios.Param.IDurDefaultMax;
-    obj.breakSound = {
-      name:   MageStudios.Param.IDurBreakName,
-      volume: MageStudios.Param.IDurBreakVol,
-      pitch:  MageStudios.Param.IDurBreakPitch,
-      pan:    MageStudios.Param.IDurBreakPan
-    };
-    var evalMode = 'none';
-    obj.breakEval = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<DURABILITY:[ ](\d+)>/i)) {
-        obj.durability = Math.max(1, parseInt(RegExp.$1));
-      } else if (line.match(/<DURABILITY VARIANCE:[ ](\d+)>/i)) {
-        obj.durVariance = parseInt(RegExp.$1);
-      } else if (line.match(/<DURABILITY MAXIMUM:[ ](\d+)>/i)) {
-        obj.durMax = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:UNBREAKABLE|BYPASS DURABILITY)>/i)) {
-        obj.durability = -1;
-      } else if (line.match(/<BREAK SOUND NAME:[ ](.*)>/i)) {
-        obj.breakSound['name'] = String(RegExp.$1);
-      } else if (line.match(/<BREAK SOUND VOLUME:[ ](\d+)>/i)) {
-        obj.breakSound['volume'] = parseInt(RegExp.$1);
-      } else if (line.match(/<BREAK SOUND PITCH:[ ](\d+)>/i)) {
-        obj.breakSound['pitch'] = parseInt(RegExp.$1);
-      } else if (line.match(/<BREAK SOUND PAN:[ ]([\+\-]\d+)>/i)) {
-        obj.breakSound['pan'] = parseInt(RegExp.$1);
-      } else if (line.match(/<CUSTOM BREAK EFFECT>/i)) {
-        evalMode = 'custom break effect';
-      } else if (line.match(/<\/CUSTOM BREAK EFFECT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom break effect') {
-        obj.breakEval = obj.breakEval + line + '\n';
-      }
+  MageStudios.IDur.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.IDur.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_ItemDurability) {
+      this.processIDurNotetags1($dataWeapons);
+      this.processIDurNotetags1($dataArmors);
+      this.processIDurNotetags2($dataItems);
+      this.processIDurNotetags2($dataWeapons);
+      this.processIDurNotetags2($dataArmors);
+      this.processIDurNotetags3($dataSkills);
+      this.processIDurNotetags3($dataItems);
+      MageStudios._loaded_MSEP_X_ItemDurability = true;
     }
-  }
-};
+    return true;
+  };
 
-DataManager.processIDurNotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processIDurNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.repairWeaponType = [0];
-    obj.repairArmorType = [0];
-    obj.repairSound = {
-      name:   MageStudios.Param.IDurRepairName,
-      volume: MageStudios.Param.IDurRepairVol,
-      pitch:  MageStudios.Param.IDurRepairPitch,
-      pan:    MageStudios.Param.IDurRepairPan
-    };
-    obj.repairWeaponUnbreakable = [false];
-    obj.repairArmorUnbreakable = [false];
-    var evalMode = 'none';
-    obj.repairDurabilityEval = ''
+      obj.durability = MageStudios.Param.IDurDefaultDur;
+      obj.durVariance = MageStudios.Param.IDurDefaultVar;
+      obj.durMax = MageStudios.Param.IDurDefaultMax;
+      obj.breakSound = {
+        name: MageStudios.Param.IDurBreakName,
+        volume: MageStudios.Param.IDurBreakVol,
+        pitch: MageStudios.Param.IDurBreakPitch,
+        pan: MageStudios.Param.IDurBreakPan,
+      };
+      var evalMode = "none";
+      obj.breakEval = "";
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<REPAIR WEAPON:[ ](\d+)>/i)) {
-        obj.repairWeaponType[0] = parseInt(RegExp.$1);
-      } else if (line.match(/<REPAIR ARMOR:[ ](\d+)>/i)) {
-        obj.repairArmorType[0] = parseInt(RegExp.$1);
-      } else if (line.match(/<REPAIR DURABILITY:[ ](\d+)>/i)) {
-        var value = parseInt(RegExp.$1);
-        obj.repairWeaponType[0] = value;
-        obj.repairArmorType[0] = value;
-      } else if (line.match(/<REPAIR WTYPE[ ](\d+):[ ](\d+)>/i)) {
-        obj.repairWeaponType[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<REPAIR ATYPE[ ](\d+):[ ](\d+)>/i)) {
-        obj.repairArmorType[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<UNBREAKABLE WEAPON>/i)) {
-        obj.repairWeaponUnbreakable[0] = true;
-      } else if (line.match(/<UNBREAKABLE ARMOR>/i)) {
-        obj.repairArmorUnbreakable[0] = true;
-      } else if (line.match(/<UNBREAKABLE DURABILITY>/i)) {
-        obj.repairWeaponUnbreakable[0] = true;
-        obj.repairArmorUnbreakable[0] = true;
-      } else if (line.match(/<UNBREAKABLE WTYPE[ ](\d+)>/i)) {
-        obj.repairWeaponUnbreakable[parseInt(RegExp.$1)] = true;
-      } else if (line.match(/<UNBREAKABLE ATYPE[ ](\d+)>/i)) {
-        obj.repairArmorUnbreakable[parseInt(RegExp.$1)] = true;
-      } else if (line.match(/<REPAIR SOUND NAME:[ ](.*)>/i)) {
-        obj.repairSound['name'] = String(RegExp.$1);
-      } else if (line.match(/<REPAIR SOUND VOLUME:[ ](\d+)>/i)) {
-        obj.repairSound['volume'] = parseInt(RegExp.$1);
-      } else if (line.match(/<REPAIR SOUND PITCH:[ ](\d+)>/i)) {
-        obj.repairSound['pitch'] = parseInt(RegExp.$1);
-      } else if (line.match(/<REPAIR SOUND PAN:[ ]([\+\-]\d+)>/i)) {
-        obj.repairSound['pan'] = parseInt(RegExp.$1);
-      } else if (line.match(/<CUSTOM REPAIR EFFECT>/i)) {
-        evalMode = 'custom repair eval';
-      } else if (line.match(/<\/CUSTOM REPAIR EFFECT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom repair eval') {
-        obj.repairDurabilityEval = obj.repairDurabilityEval + line + '\n';
-      }
-    }
-  }
-};
-
-DataManager.processIDurNotetags3 = function(group) {
-  var noteA1 = /<USER WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteA2 = /<USER ALL WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteA3 = /<USER RANDOM WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteB1 = /<USER ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteB2 = /<USER ALL ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteB3 = /<USER RANDOM ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteC1 = /<TARGET WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteC2 = /<TARGET ALL WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteC3 = /<TARGET RANDOM WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteD1 = /<TARGET ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteD2 = /<TARGET ALL ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  var noteD3 = /<TARGET RANDOM ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.userAllWeaponDurability = 0;
-    obj.userRandomWeaponDurability = 0;
-    obj.userAllArmorDurability = 0;
-    obj.userRandomArmorDurability = 0;
-    obj.targetAllWeaponDurability = 0;
-    obj.targetRandomWeaponDurability = 0;
-    obj.targetAllArmorDurability = 0;
-    obj.targetRandomArmorDurability = 0;
-    if ([1, 2, 3, 4, 5, 6].contains(obj.scope)) {
-      if (obj.hitType === Game_Action.HITTYPE_PHYSICAL) {
-        obj.userAllWeaponDurability = MageStudios.Param.IDurPhysicalAction;
-        if (MageStudios.Param.IDurDamageAllArmor) {
-          obj.targetAllArmorDurability = MageStudios.Param.IDurPhysicalDmg;
-        } else {
-          obj.targetRandomArmorDurability = MageStudios.Param.IDurPhysicalDmg;
-        }
-      } else if (obj.hitType === Game_Action.HITTYPE_MAGICAL) {
-        obj.userAllWeaponDurability = MageStudios.Param.IDurMagicalAction;
-        if (MageStudios.Param.IDurDamageAllArmor) {
-          obj.targetAllArmorDurability = MageStudios.Param.IDurMagicalDmg;
-        } else {
-          obj.targetRandomArmorDurability = MageStudios.Param.IDurMagicalDmg;
-        }
-      } else if (obj.hitType === Game_Action.HITTYPE_CERTAIN) {
-        obj.userAllWeaponDurability = MageStudios.Param.IDurCertainAction;
-        if (MageStudios.Param.IDurDamageAllArmor) {
-          obj.targetAllArmorDurability = MageStudios.Param.IDurCertainDmg;
-        } else {
-          obj.targetRandomArmorDurability = MageStudios.Param.IDurCertainDmg;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<DURABILITY:[ ](\d+)>/i)) {
+          obj.durability = Math.max(1, parseInt(RegExp.$1));
+        } else if (line.match(/<DURABILITY VARIANCE:[ ](\d+)>/i)) {
+          obj.durVariance = parseInt(RegExp.$1);
+        } else if (line.match(/<DURABILITY MAXIMUM:[ ](\d+)>/i)) {
+          obj.durMax = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:UNBREAKABLE|BYPASS DURABILITY)>/i)) {
+          obj.durability = -1;
+        } else if (line.match(/<BREAK SOUND NAME:[ ](.*)>/i)) {
+          obj.breakSound["name"] = String(RegExp.$1);
+        } else if (line.match(/<BREAK SOUND VOLUME:[ ](\d+)>/i)) {
+          obj.breakSound["volume"] = parseInt(RegExp.$1);
+        } else if (line.match(/<BREAK SOUND PITCH:[ ](\d+)>/i)) {
+          obj.breakSound["pitch"] = parseInt(RegExp.$1);
+        } else if (line.match(/<BREAK SOUND PAN:[ ]([\+\-]\d+)>/i)) {
+          obj.breakSound["pan"] = parseInt(RegExp.$1);
+        } else if (line.match(/<CUSTOM BREAK EFFECT>/i)) {
+          evalMode = "custom break effect";
+        } else if (line.match(/<\/CUSTOM BREAK EFFECT>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "custom break effect") {
+          obj.breakEval = obj.breakEval + line + "\n";
         }
       }
     }
-    var evalMode = 'none';
-    var evalKey = '';
-    obj.durabilityEval = {};
+  };
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(noteA1)) {
-        obj.userAllWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteA2)) {
-        obj.userAllWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteA3)) {
-        obj.userRandomWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteB1)) {
-        if (MageStudios.Param.IDurDamageAllArmor) {
+  DataManager.processIDurNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.repairWeaponType = [0];
+      obj.repairArmorType = [0];
+      obj.repairSound = {
+        name: MageStudios.Param.IDurRepairName,
+        volume: MageStudios.Param.IDurRepairVol,
+        pitch: MageStudios.Param.IDurRepairPitch,
+        pan: MageStudios.Param.IDurRepairPan,
+      };
+      obj.repairWeaponUnbreakable = [false];
+      obj.repairArmorUnbreakable = [false];
+      var evalMode = "none";
+      obj.repairDurabilityEval = "";
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<REPAIR WEAPON:[ ](\d+)>/i)) {
+          obj.repairWeaponType[0] = parseInt(RegExp.$1);
+        } else if (line.match(/<REPAIR ARMOR:[ ](\d+)>/i)) {
+          obj.repairArmorType[0] = parseInt(RegExp.$1);
+        } else if (line.match(/<REPAIR DURABILITY:[ ](\d+)>/i)) {
+          var value = parseInt(RegExp.$1);
+          obj.repairWeaponType[0] = value;
+          obj.repairArmorType[0] = value;
+        } else if (line.match(/<REPAIR WTYPE[ ](\d+):[ ](\d+)>/i)) {
+          obj.repairWeaponType[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<REPAIR ATYPE[ ](\d+):[ ](\d+)>/i)) {
+          obj.repairArmorType[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<UNBREAKABLE WEAPON>/i)) {
+          obj.repairWeaponUnbreakable[0] = true;
+        } else if (line.match(/<UNBREAKABLE ARMOR>/i)) {
+          obj.repairArmorUnbreakable[0] = true;
+        } else if (line.match(/<UNBREAKABLE DURABILITY>/i)) {
+          obj.repairWeaponUnbreakable[0] = true;
+          obj.repairArmorUnbreakable[0] = true;
+        } else if (line.match(/<UNBREAKABLE WTYPE[ ](\d+)>/i)) {
+          obj.repairWeaponUnbreakable[parseInt(RegExp.$1)] = true;
+        } else if (line.match(/<UNBREAKABLE ATYPE[ ](\d+)>/i)) {
+          obj.repairArmorUnbreakable[parseInt(RegExp.$1)] = true;
+        } else if (line.match(/<REPAIR SOUND NAME:[ ](.*)>/i)) {
+          obj.repairSound["name"] = String(RegExp.$1);
+        } else if (line.match(/<REPAIR SOUND VOLUME:[ ](\d+)>/i)) {
+          obj.repairSound["volume"] = parseInt(RegExp.$1);
+        } else if (line.match(/<REPAIR SOUND PITCH:[ ](\d+)>/i)) {
+          obj.repairSound["pitch"] = parseInt(RegExp.$1);
+        } else if (line.match(/<REPAIR SOUND PAN:[ ]([\+\-]\d+)>/i)) {
+          obj.repairSound["pan"] = parseInt(RegExp.$1);
+        } else if (line.match(/<CUSTOM REPAIR EFFECT>/i)) {
+          evalMode = "custom repair eval";
+        } else if (line.match(/<\/CUSTOM REPAIR EFFECT>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "custom repair eval") {
+          obj.repairDurabilityEval = obj.repairDurabilityEval + line + "\n";
+        }
+      }
+    }
+  };
+
+  DataManager.processIDurNotetags3 = function (group) {
+    var noteA1 = /<USER WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteA2 = /<USER ALL WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteA3 = /<USER RANDOM WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteB1 = /<USER ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteB2 = /<USER ALL ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteB3 = /<USER RANDOM ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteC1 = /<TARGET WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteC2 = /<TARGET ALL WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteC3 = /<TARGET RANDOM WEAPON DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteD1 = /<TARGET ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteD2 = /<TARGET ALL ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    var noteD3 = /<TARGET RANDOM ARMOR DURABILITY:[ ]([\+\-]\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.userAllWeaponDurability = 0;
+      obj.userRandomWeaponDurability = 0;
+      obj.userAllArmorDurability = 0;
+      obj.userRandomArmorDurability = 0;
+      obj.targetAllWeaponDurability = 0;
+      obj.targetRandomWeaponDurability = 0;
+      obj.targetAllArmorDurability = 0;
+      obj.targetRandomArmorDurability = 0;
+      if ([1, 2, 3, 4, 5, 6].contains(obj.scope)) {
+        if (obj.hitType === Game_Action.HITTYPE_PHYSICAL) {
+          obj.userAllWeaponDurability = MageStudios.Param.IDurPhysicalAction;
+          if (MageStudios.Param.IDurDamageAllArmor) {
+            obj.targetAllArmorDurability = MageStudios.Param.IDurPhysicalDmg;
+          } else {
+            obj.targetRandomArmorDurability = MageStudios.Param.IDurPhysicalDmg;
+          }
+        } else if (obj.hitType === Game_Action.HITTYPE_MAGICAL) {
+          obj.userAllWeaponDurability = MageStudios.Param.IDurMagicalAction;
+          if (MageStudios.Param.IDurDamageAllArmor) {
+            obj.targetAllArmorDurability = MageStudios.Param.IDurMagicalDmg;
+          } else {
+            obj.targetRandomArmorDurability = MageStudios.Param.IDurMagicalDmg;
+          }
+        } else if (obj.hitType === Game_Action.HITTYPE_CERTAIN) {
+          obj.userAllWeaponDurability = MageStudios.Param.IDurCertainAction;
+          if (MageStudios.Param.IDurDamageAllArmor) {
+            obj.targetAllArmorDurability = MageStudios.Param.IDurCertainDmg;
+          } else {
+            obj.targetRandomArmorDurability = MageStudios.Param.IDurCertainDmg;
+          }
+        }
+      }
+      var evalMode = "none";
+      var evalKey = "";
+      obj.durabilityEval = {};
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(noteA1)) {
+          obj.userAllWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteA2)) {
+          obj.userAllWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteA3)) {
+          obj.userRandomWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteB1)) {
+          if (MageStudios.Param.IDurDamageAllArmor) {
+            obj.userAllArmorDurability = parseInt(RegExp.$1);
+          } else {
+            obj.userRandomArmorDurability = parseInt(RegExp.$1);
+          }
+        } else if (line.match(noteB2)) {
           obj.userAllArmorDurability = parseInt(RegExp.$1);
-        } else {
+        } else if (line.match(noteB3)) {
           obj.userRandomArmorDurability = parseInt(RegExp.$1);
-        }
-      } else if (line.match(noteB2)) {
-        obj.userAllArmorDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteB3)) {
-        obj.userRandomArmorDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteC1)) {
-        obj.targetAllWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteC2)) {
-        obj.targetAllWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteC3)) {
-        obj.targetRandomWeaponDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteD1)) {
-        if (MageStudios.Param.IDurDamageAllArmor) {
+        } else if (line.match(noteC1)) {
+          obj.targetAllWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteC2)) {
+          obj.targetAllWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteC3)) {
+          obj.targetRandomWeaponDurability = parseInt(RegExp.$1);
+        } else if (line.match(noteD1)) {
+          if (MageStudios.Param.IDurDamageAllArmor) {
+            obj.targetAllArmorDurability = parseInt(RegExp.$1);
+          } else {
+            obj.targetRandomArmorDurability = parseInt(RegExp.$1);
+          }
+        } else if (line.match(noteD2)) {
           obj.targetAllArmorDurability = parseInt(RegExp.$1);
-        } else {
+        } else if (line.match(noteD3)) {
           obj.targetRandomArmorDurability = parseInt(RegExp.$1);
+        } else if (line.match(/<CUSTOM[ ](.*)[ ](.*)[ ](.*)[ ]DURABILITY>/i)) {
+          var target = String(RegExp.$1).toLowerCase();
+          var type = String(RegExp.$2).toLowerCase();
+          var equip = String(RegExp.$3).toLowerCase();
+          if (!["user", "target"].contains(target)) continue;
+          if (!["all", "random"].contains(type)) continue;
+          if (!["weapon", "armor"].contains(equip)) continue;
+          evalMode = "custom durability";
+          evalKey = target + type + equip;
+          obj.durabilityEval[evalKey] = "";
+        } else if (
+          line.match(/<\/CUSTOM[ ](.*)[ ](.*)[ ](.*)[ ]DURABILITY>/i)
+        ) {
+          evalMode = "none";
+          evalKey = "";
+        } else if (evalMode === "custom durability") {
+          obj.durabilityEval[evalKey] =
+            obj.durabilityEval[evalKey] + line + "\n";
         }
-      } else if (line.match(noteD2)) {
-        obj.targetAllArmorDurability = parseInt(RegExp.$1);
-      } else if (line.match(noteD3)) {
-        obj.targetRandomArmorDurability = parseInt(RegExp.$1);
-      } else if (line.match(/<CUSTOM[ ](.*)[ ](.*)[ ](.*)[ ]DURABILITY>/i)) {
-        var target = String(RegExp.$1).toLowerCase();
-        var type = String(RegExp.$2).toLowerCase();
-        var equip = String(RegExp.$3).toLowerCase();
-        if (!['user', 'target'].contains(target)) continue;
-        if (!['all', 'random'].contains(type)) continue;
-        if (!['weapon', 'armor'].contains(equip)) continue;
-        evalMode = 'custom durability';
-        evalKey = target + type + equip;
-        obj.durabilityEval[evalKey] = '';
-      } else if (line.match(/<\/CUSTOM[ ](.*)[ ](.*)[ ](.*)[ ]DURABILITY>/i)) {
-        evalMode = 'none';
-        evalKey = '';
-      } else if (evalMode === 'custom durability') {
-        obj.durabilityEval[evalKey] = obj.durabilityEval[evalKey] + line + '\n';
       }
     }
-  }
-};
+  };
 
-DataManager.getDurability = function(item) {
+  DataManager.getDurability = function (item) {
     if (this.isItem(item)) return -1;
     if (!this.isIndependent(item)) return -1;
     if (item.durability === undefined) ItemManager.makeDurability(item);
     return item.durability;
-};
+  };
 
-DataManager.getMaxDurability = function(item) {
+  DataManager.getMaxDurability = function (item) {
     if (this.isItem(item)) return -1;
     if (!this.isIndependent(item)) return -1;
     var baseItem = this.getBaseItem(item);
     return baseItem.durMax;
-};
+  };
 
-//=============================================================================
-// ItemManager
-//=============================================================================
-
-MageStudios.IDur.ItemManager_setNewIndependentItem =
+  MageStudios.IDur.ItemManager_setNewIndependentItem =
     ItemManager.setNewIndependentItem;
-ItemManager.setNewIndependentItem = function(baseItem, newItem) {
-  MageStudios.IDur.ItemManager_setNewIndependentItem.call(this, baseItem, newItem);
-  var variance = $gameTemp.varianceStock() ? 0 : baseItem.durVariance;
-  this.makeDurability(newItem, variance);
-};
+  ItemManager.setNewIndependentItem = function (baseItem, newItem) {
+    MageStudios.IDur.ItemManager_setNewIndependentItem.call(
+      this,
+      baseItem,
+      newItem
+    );
+    var variance = $gameTemp.varianceStock() ? 0 : baseItem.durVariance;
+    this.makeDurability(newItem, variance);
+  };
 
-ItemManager.makeDurability = function(item, variance) {
+  ItemManager.makeDurability = function (item, variance) {
     if (DataManager.isItem(item)) return;
     variance = variance || 0;
     var baseItem = DataManager.getBaseItem(item);
@@ -935,25 +981,25 @@ ItemManager.makeDurability = function(item, variance) {
     if (item.durability <= 0) return;
     if (variance >= 0) this.makeDurabilityVariance(item, variance);
     this.clampDurability(item);
-};
+  };
 
-ItemManager.makeDurabilityVariance = function(item, variance) {
+  ItemManager.makeDurabilityVariance = function (item, variance) {
     var randomValue = variance * 2 + 1;
     var offset = variance;
     item.durability += Math.floor(Math.random() * randomValue - offset);
-};
+  };
 
-ItemManager.clampDurability = function(item) {
+  ItemManager.clampDurability = function (item) {
     var baseItem = DataManager.getBaseItem(item);
     item.durability = item.durability.clamp(0, baseItem.durMax);
-};
+  };
 
-ItemManager.applyRepairDurabilityEffects = function(item, effectItem) {
+  ItemManager.applyRepairDurabilityEffects = function (item, effectItem) {
     this.setUnbreakableRepairDurability(item, effectItem);
     this.addRepairDurability(item, effectItem);
-};
+  };
 
-ItemManager.setUnbreakableRepairDurability = function(item, effectItem) {
+  ItemManager.setUnbreakableRepairDurability = function (item, effectItem) {
     if (DataManager.isWeapon(item)) {
       var type = item.wtypeId;
       var array1 = effectItem.repairWeaponUnbreakable;
@@ -964,9 +1010,9 @@ ItemManager.setUnbreakableRepairDurability = function(item, effectItem) {
     if (array1) {
       if (array1[0] || array1[type]) item.durability = -1;
     }
-};
+  };
 
-ItemManager.addRepairDurability = function(item, effectItem) {
+  ItemManager.addRepairDurability = function (item, effectItem) {
     if (item.durability < 0) return;
     if (DataManager.isWeapon(item)) {
       var type = item.wtypeId;
@@ -980,56 +1026,48 @@ ItemManager.addRepairDurability = function(item, effectItem) {
       if (array1[type] && array1[type] > 0) item.durability += array1[type];
     }
     this.clampDurability(item);
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.IDur.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.IDur.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.IDur.Game_System_initialize.call(this);
     this.initItemDurabilitySettings();
-};
+  };
 
-Game_System.prototype.initItemDurabilitySettings = function() {
+  Game_System.prototype.initItemDurabilitySettings = function () {
     this._showRepairDurability = MageStudios.Param.IDurShowRepair;
     this._enableRepairDurability = MageStudios.Param.IDurEnRepair;
-};
+  };
 
-Game_System.prototype.isShowRepairDurability = function() {
+  Game_System.prototype.isShowRepairDurability = function () {
     if (this._showRepairDurability === undefined) {
       this.initItemDurabilitySettings();
     }
     return this._showRepairDurability;
-};
+  };
 
-Game_System.prototype.setShowRepairDurability = function(value) {
+  Game_System.prototype.setShowRepairDurability = function (value) {
     if (this._showRepairDurability === undefined) {
       this.initItemDurabilitySettings();
     }
     this._showRepairDurability = value;
-};
+  };
 
-Game_System.prototype.isEnableRepairDurability = function() {
+  Game_System.prototype.isEnableRepairDurability = function () {
     if (this._enableRepairDurability === undefined) {
       this.initItemDurabilitySettings();
     }
     return this._enableRepairDurability;
-};
+  };
 
-Game_System.prototype.setEnableRepairDurability = function(value) {
+  Game_System.prototype.setEnableRepairDurability = function (value) {
     if (this._enableRepairDurability === undefined) {
       this.initItemDurabilitySettings();
     }
     this._enableRepairDurability = value;
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.durabilityBreakItem = function(obj) {
+  Game_Actor.prototype.durabilityBreakItem = function (obj) {
     if (!obj) return;
     this.discardEquip(obj);
     this.playDurabilityBreakSound(obj);
@@ -1038,22 +1076,22 @@ Game_Actor.prototype.durabilityBreakItem = function(obj) {
     var win = scene._logWindow;
     if (!win) return;
     var fmt = MageStudios.Param.IDurBrokenText;
-    var text = fmt.format(this.name(), obj.name, '\\i[' + obj.iconIndex + ']');
-    if (Imported.MSEP_BattleEngineCore) text = '<CENTER>' + text;
+    var text = fmt.format(this.name(), obj.name, "\\i[" + obj.iconIndex + "]");
+    if (Imported.MSEP_BattleEngineCore) text = "<CENTER>" + text;
     win._lines.push(text);
     win.refresh();
     if (!Imported.MSEP_BattleEngineCore) return;
     if (this._waitEnabled) return;
     this._waitEnabled = true;
     var frames = MageStudios.Param.IDurBrokenWait;
-    if (frames > 0) BattleManager._actionList.push(['WAIT', [frames]]);
-};
+    if (frames > 0) BattleManager._actionList.push(["WAIT", [frames]]);
+  };
 
-Game_Actor.prototype.customDurabilityBreakEval = function(item) {
+  Game_Actor.prototype.customDurabilityBreakEval = function (item) {
     var baseItem = DataManager.getBaseItem(item);
     var effect = item.breakEval || baseItem.breakEval;
     if (!effect) return;
-    if (effect === '') return;
+    if (effect === "") return;
     var a = this;
     var user = this;
     var subject = this;
@@ -1064,32 +1102,32 @@ Game_Actor.prototype.customDurabilityBreakEval = function(item) {
     try {
       eval(effect);
     } catch (e) {
-      MageStudios.Util.displayError(e, effect, 'DURABILITY BREAK SCRIPT ERROR');
+      MageStudios.Util.displayError(e, effect, "DURABILITY BREAK SCRIPT ERROR");
     }
-};
+  };
 
-Game_Actor.prototype.playDurabilityBreakSound = function(obj) {
+  Game_Actor.prototype.playDurabilityBreakSound = function (obj) {
     var sound = obj.breakSound;
     if (!sound) {
       sound = {
-        name:   MageStudios.Param.IDurBreakName,
+        name: MageStudios.Param.IDurBreakName,
         volume: MageStudios.Param.IDurBreakVol,
-        pitch:  MageStudios.Param.IDurBreakPitch,
-        pan:    MageStudios.Param.IDurBreakPan
-      }
+        pitch: MageStudios.Param.IDurBreakPitch,
+        pan: MageStudios.Param.IDurBreakPan,
+      };
     }
     AudioManager.playSe(sound);
-};
+  };
 
-Game_Actor.prototype.damageAllWeaponDurability = function(value) {
+  Game_Actor.prototype.damageAllWeaponDurability = function (value) {
     this.damageAllDurability(value, this.weapons());
-};
+  };
 
-Game_Actor.prototype.damageAllArmorDurability = function(value) {
+  Game_Actor.prototype.damageAllArmorDurability = function (value) {
     this.damageAllDurability(value, this.armors());
-};
+  };
 
-Game_Actor.prototype.damageAllDurability = function(value, group) {
+  Game_Actor.prototype.damageAllDurability = function (value, group) {
     if (value === 0) return;
     var length = group.length;
     var removed = [];
@@ -1106,17 +1144,17 @@ Game_Actor.prototype.damageAllDurability = function(value, group) {
       var obj = removed[i];
       this.durabilityBreakItem(obj);
     }
-};
+  };
 
-Game_Actor.prototype.damageRandomWeaponDurability = function(value) {
+  Game_Actor.prototype.damageRandomWeaponDurability = function (value) {
     this.damageRandomDurability(value, this.weapons());
-};
+  };
 
-Game_Actor.prototype.damageRandomArmorDurability = function(value) {
+  Game_Actor.prototype.damageRandomArmorDurability = function (value) {
     this.damageRandomDurability(value, this.armors());
-};
+  };
 
-Game_Actor.prototype.damageRandomDurability = function(value, group) {
+  Game_Actor.prototype.damageRandomDurability = function (value, group) {
     if (value === 0) return;
     var length = group.length;
     var valid = [];
@@ -1125,66 +1163,62 @@ Game_Actor.prototype.damageRandomDurability = function(value, group) {
       if (!obj) continue;
       if (!obj.baseItemId) continue;
       if (obj.durability < 0) continue;
-      valid.push(obj)
+      valid.push(obj);
     }
     var item = valid[Math.floor(Math.random() * valid.length)];
     if (!item) return;
     item.durability += value;
     if (item.durability <= 0) this.durabilityBreakItem(item);
-};
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.IDur.Game_Action_applyItemUserEffect =
+  MageStudios.IDur.Game_Action_applyItemUserEffect =
     Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
+  Game_Action.prototype.applyItemUserEffect = function (target) {
     MageStudios.IDur.Game_Action_applyItemUserEffect.call(this, target);
     if (this.isApplyDurabilityEffects()) this.applyDurabilityEffects(target);
-};
+  };
 
-Game_Action.prototype.isApplyDurabilityEffects = function() {
+  Game_Action.prototype.isApplyDurabilityEffects = function () {
     return true;
-};
+  };
 
-Game_Action.prototype.applyDurabilityEffects = function(target) {
+  Game_Action.prototype.applyDurabilityEffects = function (target) {
     if (this.subject().isActor()) {
       var value = this.item().userAllWeaponDurability;
-      value = this.durabilityEval('userallweapon', target, value);
+      value = this.durabilityEval("userallweapon", target, value);
       this.subject().damageAllWeaponDurability(value);
       var value = this.item().userRandomWeaponDurability;
-      value = this.durabilityEval('userrandomweapon', target, value);
+      value = this.durabilityEval("userrandomweapon", target, value);
       this.subject().damageRandomWeaponDurability(value);
       var value = this.item().userAllArmorDurability;
-      value = this.durabilityEval('userallarmor', target, value);
+      value = this.durabilityEval("userallarmor", target, value);
       this.subject().damageAllArmorDurability(value);
       var value = this.item().userRandomArmorDurability;
-      value = this.durabilityEval('userrandomarmor', target, value);
+      value = this.durabilityEval("userrandomarmor", target, value);
       this.subject().damageRandomArmorDurability(value);
       this.subject()._waitEnabled = false;
     }
     if (target && target.isActor()) {
       var value = this.item().targetAllWeaponDurability;
-      value = this.durabilityEval('targetallweapon', target, value);
+      value = this.durabilityEval("targetallweapon", target, value);
       target.damageAllWeaponDurability(value);
       var value = this.item().targetRandomWeaponDurability;
-      value = this.durabilityEval('targetrandomweapon', target, value);
+      value = this.durabilityEval("targetrandomweapon", target, value);
       target.damageRandomWeaponDurability(value);
       var value = this.item().targetAllArmorDurability;
-      value = this.durabilityEval('targetallarmor', target, value);
+      value = this.durabilityEval("targetallarmor", target, value);
       target.damageAllArmorDurability(value);
       var value = this.item().targetRandomArmorDurability;
-      value = this.durabilityEval('targetrandomarmor', target, value);
+      value = this.durabilityEval("targetrandomarmor", target, value);
       target.damageRandomArmorDurability(value);
       target._waitEnabled = false;
     }
-};
+  };
 
-Game_Action.prototype.durabilityEval = function(type, target, value) {
+  Game_Action.prototype.durabilityEval = function (type, target, value) {
     var formula = this.item().durabilityEval[type];
     if (!formula) return value;
-    if (formula === '') return value;
+    if (formula === "") return value;
     var a = this.subject();
     var user = this.subject();
     var subject = this.subject();
@@ -1196,51 +1230,43 @@ Game_Action.prototype.durabilityEval = function(type, target, value) {
     try {
       eval(formula);
     } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'DURABILITY FORMULA ERROR');
+      MageStudios.Util.displayError(e, formula, "DURABILITY FORMULA ERROR");
     }
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.IDur.Game_Interpreter_pluginCommand =
+  MageStudios.IDur.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.IDur.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowRepairDurability') {
-    $gameSystem.setShowRepairDurability(true);
-  } else if (command === 'HideRepairDurability') {
-    $gameSystem.setShowRepairDurability(false);
-  } else if (command === 'EnableRepairDurability') {
-    $gameSystem.setEnableRepairDurability(true);
-  } else if (command === 'DisableRepairDurability') {
-    $gameSystem.setEnableRepairDurability(false);
-  }
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.IDur.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "ShowRepairDurability") {
+      $gameSystem.setShowRepairDurability(true);
+    } else if (command === "HideRepairDurability") {
+      $gameSystem.setShowRepairDurability(false);
+    } else if (command === "EnableRepairDurability") {
+      $gameSystem.setEnableRepairDurability(true);
+    } else if (command === "DisableRepairDurability") {
+      $gameSystem.setEnableRepairDurability(false);
+    }
+  };
 
-//=============================================================================
-// Window_ItemInfo
-//=============================================================================
-
-MageStudios.IDur.Window_ItemInfo_drawItemInfoC =
+  MageStudios.IDur.Window_ItemInfo_drawItemInfoC =
     Window_ItemInfo.prototype.drawItemInfoC;
-Window_ItemInfo.prototype.drawItemInfoC = function(dy) {
+  Window_ItemInfo.prototype.drawItemInfoC = function (dy) {
     dy = MageStudios.IDur.Window_ItemInfo_drawItemInfoC.call(this, dy);
     if (this.isDrawDurability()) dy = this.drawItemDurability(dy);
     return dy;
-};
+  };
 
-Window_ItemInfo.prototype.isDrawDurability = function() {
+  Window_ItemInfo.prototype.isDrawDurability = function () {
     if (DataManager.isItem(this._item)) return false;
     if (!MageStudios.Param.IDurShowUnbr) {
       if (DataManager.getDurability(this._item) < 0) return false;
     }
     return MageStudios.Param.IDurShowDur;
-};
+  };
 
-Window_ItemInfo.prototype.drawItemDurability = function(dy) {
+  Window_ItemInfo.prototype.drawItemDurability = function (dy) {
     this.resetFontSettings();
     this.changeTextColor(this.systemColor());
     var text = MageStudios.Param.IDurText;
@@ -1252,111 +1278,105 @@ Window_ItemInfo.prototype.drawItemDurability = function(dy) {
     var max = DataManager.getMaxDurability(this._item);
     if (cur > 0) {
       this.changeTextColor(this.textColor(this.durabilityColor(cur, max)));
-      text = fmt.format(cur, max)
+      text = fmt.format(cur, max);
     } else {
-      this.changeTextColor(this.textColor(MageStudios.Param.IDurColor['unbreak']));
+      this.changeTextColor(
+        this.textColor(MageStudios.Param.IDurColor["unbreak"])
+      );
       text = MageStudios.Param.IDurUnbreakable;
     }
-    this.drawText(text, dx, dy, dw, 'right');
+    this.drawText(text, dx, dy, dw, "right");
     this.resetFontSettings();
     dy += this.lineHeight();
     return dy;
-};
+  };
 
-Window_ItemInfo.prototype.durabilityColor = function(cur, max) {
+  Window_ItemInfo.prototype.durabilityColor = function (cur, max) {
     var value = DataManager.getBaseItem(this._item).durability;
     if (cur === max) {
-      return MageStudios.Param.IDurColor['max'];
-    } else if (cur >= 1.90 * value) {
-      return MageStudios.Param.IDurColor['rate190'];
+      return MageStudios.Param.IDurColor["max"];
+    } else if (cur >= 1.9 * value) {
+      return MageStudios.Param.IDurColor["rate190"];
     } else if (cur >= 1.75 * value) {
-      return MageStudios.Param.IDurColor['rate175'];
-    } else if (cur >= 1.50 * value) {
-      return MageStudios.Param.IDurColor['rate150'];
-    } else if (cur >= 1.20 * value) {
-      return MageStudios.Param.IDurColor['rate120'];
-    } else if (cur >= 1.10 * value) {
-      return MageStudios.Param.IDurColor['rate110'];
-    } else if (cur >= 1.00 * value) {
-      return MageStudios.Param.IDurColor['rate100'];
-    } else if (cur >= 0.80 * value) {
-      return MageStudios.Param.IDurColor['rate80'];
-    } else if (cur >= 0.50 * value) {
-      return MageStudios.Param.IDurColor['rate50'];
+      return MageStudios.Param.IDurColor["rate175"];
+    } else if (cur >= 1.5 * value) {
+      return MageStudios.Param.IDurColor["rate150"];
+    } else if (cur >= 1.2 * value) {
+      return MageStudios.Param.IDurColor["rate120"];
+    } else if (cur >= 1.1 * value) {
+      return MageStudios.Param.IDurColor["rate110"];
+    } else if (cur >= 1.0 * value) {
+      return MageStudios.Param.IDurColor["rate100"];
+    } else if (cur >= 0.8 * value) {
+      return MageStudios.Param.IDurColor["rate80"];
+    } else if (cur >= 0.5 * value) {
+      return MageStudios.Param.IDurColor["rate50"];
     } else if (cur >= 0.25 * value) {
-      return MageStudios.Param.IDurColor['rate25'];
-    } else if (cur >= 0.10 * value) {
-      return MageStudios.Param.IDurColor['rate10'];
+      return MageStudios.Param.IDurColor["rate25"];
+    } else if (cur >= 0.1 * value) {
+      return MageStudios.Param.IDurColor["rate10"];
     } else {
-      return MageStudios.Param.IDurColor['rate1'];
+      return MageStudios.Param.IDurColor["rate1"];
     }
-};
+  };
 
-//=============================================================================
-// Window_ItemActionCommand
-//=============================================================================
-
-MageStudios.IDur.Window_ItemActionCommand_addCustomCommandsC =
+  MageStudios.IDur.Window_ItemActionCommand_addCustomCommandsC =
     Window_ItemActionCommand.prototype.addCustomCommandsC;
-Window_ItemActionCommand.prototype.addCustomCommandsC = function() {
+  Window_ItemActionCommand.prototype.addCustomCommandsC = function () {
     MageStudios.IDur.Window_ItemActionCommand_addCustomCommandsC.call(this);
     this.addRepairCommand();
-};
+  };
 
-Window_ItemActionCommand.prototype.addRepairCommand = function() {
-    if (MageStudios.Param.IDurCmdRepair === '') return;
+  Window_ItemActionCommand.prototype.addRepairCommand = function () {
+    if (MageStudios.Param.IDurCmdRepair === "") return;
     if (!$gameSystem.isShowRepairDurability()) return;
     var enabled = DataManager.isIndependent(this._item);
     if (!enabled) return;
     enabled = this.isRepairDurabilityEnabled();
     var fmt = MageStudios.Param.IDurCmdRepair;
-    text = '\\i[' + this._item.iconIndex + ']';
+    text = "\\i[" + this._item.iconIndex + "]";
     if (this._item.textColor !== undefined) {
-      text += '\\c[' + this._item.textColor + ']';
+      text += "\\c[" + this._item.textColor + "]";
     }
     text += this._item.name;
     text = fmt.format(text);
-    this.addCommand(text, 'repair', enabled);
-};
+    this.addCommand(text, "repair", enabled);
+  };
 
-Window_ItemActionCommand.prototype.isRepairDurabilityEnabled = function() {
+  Window_ItemActionCommand.prototype.isRepairDurabilityEnabled = function () {
     if (this._item.durability < 0) return false;
     return $gameSystem.isEnableRepairDurability();
-};
+  };
 
-//=============================================================================
-// Window_RepairItemList
-//=============================================================================
-
-function Window_RepairItemList() {
+  function Window_RepairItemList() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_RepairItemList.prototype = Object.create(Window_ItemList.prototype);
-Window_RepairItemList.prototype.constructor = Window_RepairItemList;
+  Window_RepairItemList.prototype = Object.create(Window_ItemList.prototype);
+  Window_RepairItemList.prototype.constructor = Window_RepairItemList;
 
-Window_RepairItemList.prototype.initialize = function(x, y, width, height) {
+  Window_RepairItemList.prototype.initialize = function (x, y, width, height) {
     Window_ItemList.prototype.initialize.call(this, x, y, width, height);
     this._item = null;
     this.hide();
     this.deactivate();
-};
+  };
 
-Window_RepairItemList.prototype.setItem = function(item) {
+  Window_RepairItemList.prototype.setItem = function (item) {
     if (this._item === item) return;
     this._item = item;
     this.refresh();
     this.select(0);
-};
+  };
 
-Window_RepairItemList.prototype.includes = function(item) {
+  Window_RepairItemList.prototype.includes = function (item) {
     if (!item) return false;
     if (!this.containsType(item)) return false;
     return true;
-};
+  };
 
-Window_RepairItemList.prototype.containsType = function(item) {
-    if (item.repairDurabilityEval !== '') return true;
+  Window_RepairItemList.prototype.containsType = function (item) {
+    if (item.repairDurabilityEval !== "") return true;
     if (DataManager.isWeapon(this._item)) {
       var type = this._item.wtypeId;
       var array1 = item.repairWeaponType;
@@ -1377,11 +1397,11 @@ Window_RepairItemList.prototype.containsType = function(item) {
       if (array2[type]) return true;
     }
     return false;
-};
+  };
 
-Window_RepairItemList.prototype.isEnabled = function(item) {
+  Window_RepairItemList.prototype.isEnabled = function (item) {
     if (!item) return false;
-    if (item.repairDurabilityEval !== '') return true;
+    if (item.repairDurabilityEval !== "") return true;
     if (DataManager.isWeapon(this._item)) {
       var arr = item.repairWeaponUnbreakable;
       var type = this._item.wtypeId;
@@ -1397,70 +1417,68 @@ Window_RepairItemList.prototype.isEnabled = function(item) {
     var max = DataManager.getMaxDurability(this._item);
     if (cur < 0) return false;
     return cur < max;
-};
+  };
 
-Window_RepairItemList.prototype.selectLast = function() {
-};
+  Window_RepairItemList.prototype.selectLast = function () {};
 
-Window_RepairItemList.prototype.playOkSound = function() {
+  Window_RepairItemList.prototype.playOkSound = function () {
     if (!this.item()) return;
     var sound = this.item().repairSound;
     if (!sound) {
       sound = {
-        name:   MageStudios.Param.IDurRepairName,
+        name: MageStudios.Param.IDurRepairName,
         volume: MageStudios.Param.IDurRepairVol,
-        pitch:  MageStudios.Param.IDurRepairPitch,
-        pan:    MageStudios.Param.IDurRepairPan
-      }
+        pitch: MageStudios.Param.IDurRepairPitch,
+        pan: MageStudios.Param.IDurRepairPan,
+      };
     }
     AudioManager.playSe(sound);
-};
+  };
 
-Window_RepairItemList.prototype.makeItemList = function() {
-    this._data = $gameParty.allItems().filter(function(item) {
-        return this.includes(item);
+  Window_RepairItemList.prototype.makeItemList = function () {
+    this._data = $gameParty.allItems().filter(function (item) {
+      return this.includes(item);
     }, this);
     if (this.includes(null)) this._data.push(null);
-};
+  };
 
-//=============================================================================
-// Scene_Item
-//=============================================================================
-
-MageStudios.IDur.Scene_Item_createItemWindow = Scene_Item.prototype.createItemWindow;
-Scene_Item.prototype.createItemWindow = function() {
+  MageStudios.IDur.Scene_Item_createItemWindow =
+    Scene_Item.prototype.createItemWindow;
+  Scene_Item.prototype.createItemWindow = function () {
     MageStudios.IDur.Scene_Item_createItemWindow.call(this);
     this.createRepairListWindow();
-};
+  };
 
-MageStudios.IDur.Scene_Item_createActionWindow =
+  MageStudios.IDur.Scene_Item_createActionWindow =
     Scene_Item.prototype.createActionWindow;
-Scene_Item.prototype.createActionWindow = function() {
+  Scene_Item.prototype.createActionWindow = function () {
     MageStudios.IDur.Scene_Item_createActionWindow.call(this);
-    this._itemActionWindow.setHandler('repair', this.onActionRepair.bind(this));
-};
+    this._itemActionWindow.setHandler("repair", this.onActionRepair.bind(this));
+  };
 
-Scene_Item.prototype.createRepairListWindow = function() {
+  Scene_Item.prototype.createRepairListWindow = function () {
     var wy = this._itemWindow.y;
     var ww = this._itemWindow.width;
     var wh = this._itemWindow.height;
     this._repairListWindow = new Window_RepairItemList(0, wy, ww, wh);
     this._repairListWindow.setHelpWindow(this._helpWindow);
-    this._repairListWindow.setHandler('ok', this.onRepairListOk.bind(this));
-    this._repairListWindow.setHandler('cancel',
-      this.onRepairListCancel.bind(this));
+    this._repairListWindow.setHandler("ok", this.onRepairListOk.bind(this));
+    this._repairListWindow.setHandler(
+      "cancel",
+      this.onRepairListCancel.bind(this)
+    );
     this.addWindow(this._repairListWindow);
-};
+  };
 
-Scene_Item.prototype.onActionRepair = function() {
+  Scene_Item.prototype.onActionRepair = function () {
     this._itemActionWindow.hide();
     this._itemActionWindow.deactivate();
     this._repairListWindow.show();
     this._repairListWindow.activate();
     this._repairListWindow.setItem(this.item());
-};
+  };
 
-Scene_Item.prototype.onRepairListOk = function() {
+  Scene_Item.prototype.onRepairListOk = function () {
     var effectItem = this._repairListWindow.item();
     ItemManager.applyRepairDurabilityEffects(this.item(), effectItem);
     this.onRepairEval(effectItem);
@@ -1476,47 +1494,39 @@ Scene_Item.prototype.onRepairListOk = function() {
       index = this._repairListWindow.maxItems() - 1;
       this._repairListWindow.select(index);
     }
-};
+  };
 
-Scene_Item.prototype.onRepairListCancel = function() {
+  Scene_Item.prototype.onRepairListCancel = function () {
     this._repairListWindow.hide();
     this._repairListWindow.deactivate();
     this._itemActionWindow.show();
     this._itemActionWindow.activate();
     this._helpWindow.setItem(this.item());
-};
+  };
 
-Scene_Item.prototype.onRepairEval = function(effectItem) {
+  Scene_Item.prototype.onRepairEval = function (effectItem) {
     var effect = effectItem.repairDurabilityEval;
     if (!effect) return;
-    if (effect === '') return;
+    if (effect === "") return;
     var item = this.item();
     var code = effectItem.repairDurabilityEval;
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'REPAIR CUSTOM EFFECT ERROR');
+      MageStudios.Util.displayError(e, code, "REPAIR CUSTOM EFFECT ERROR");
     }
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

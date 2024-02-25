@@ -1,21 +1,15 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Damage Extension - Armor Scaling
-// MSEP_X_ArmorScaling.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ArmorScaling = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ARS = MageStudios.ARS || {};
-MageStudios.ARS.version = 1.00;
+MageStudios.ARS.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_DamageCore.js) Scale defensive
  * stats relative to a universal scale.
  * @author Mage Studios Engine Plugins
- * 
+ *
  * @param ---Physical---
  * @default
  *
@@ -348,202 +342,208 @@ MageStudios.ARS.version = 1.00;
  * Usage Example: reset armor reduction
  *=============================================================================
  */
-//=============================================================================
 
 if (Imported.MSEP_DamageCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ArmorScaling");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.ARSPPhysRate = String(
+    MageStudios.Parameters["Positive Physical Rate"]
+  );
+  MageStudios.Param.ARSNPhysRate = String(
+    MageStudios.Parameters["Negative Physical Rate"]
+  );
+  MageStudios.Param.ARSBPhysArmor = String(
+    MageStudios.Parameters["Physical Base Armor"]
+  );
+  MageStudios.Param.ARSPMagRate = String(
+    MageStudios.Parameters["Positive Magical Rate"]
+  );
+  MageStudios.Param.ARSNMagRate = String(
+    MageStudios.Parameters["Negative Magical Rate"]
+  );
+  MageStudios.Param.ARSBMagArmor = String(
+    MageStudios.Parameters["Magical Base Armor"]
+  );
+  MageStudios.Param.ARSPCerRate = String(
+    MageStudios.Parameters["Positive Certain Rate"]
+  );
+  MageStudios.Param.ARSNCerRate = String(
+    MageStudios.Parameters["Negative Certain Rate"]
+  );
+  MageStudios.Param.ARSBCerArmor = String(
+    MageStudios.Parameters["Certain Base Armor"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ArmorScaling');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.ARSPPhysRate = String(MageStudios.Parameters['Positive Physical Rate']);
-MageStudios.Param.ARSNPhysRate = String(MageStudios.Parameters['Negative Physical Rate']);
-MageStudios.Param.ARSBPhysArmor = String(MageStudios.Parameters['Physical Base Armor']);
-MageStudios.Param.ARSPMagRate = String(MageStudios.Parameters['Positive Magical Rate']);
-MageStudios.Param.ARSNMagRate = String(MageStudios.Parameters['Negative Magical Rate']);
-MageStudios.Param.ARSBMagArmor = String(MageStudios.Parameters['Magical Base Armor']);
-MageStudios.Param.ARSPCerRate = String(MageStudios.Parameters['Positive Certain Rate']);
-MageStudios.Param.ARSNCerRate = String(MageStudios.Parameters['Negative Certain Rate']);
-MageStudios.Param.ARSBCerArmor = String(MageStudios.Parameters['Certain Base Armor']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.ARS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.ARS.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_ArmorScaling) {
-    this.processARSNotetags1($dataSkills);
-    this.processARSNotetags1($dataItems);
-    this.processARSNotetags2($dataActors);
-    this.processARSNotetags2($dataClasses);
-    this.processARSNotetags2($dataEnemies);
-    this.processARSNotetags2($dataWeapons);
-    this.processARSNotetags2($dataArmors);
-    this.processARSNotetags2($dataStates);
-    MageStudios._loaded_MSEP_X_ArmorScaling = true;
-  }
-  return true;
-};
-
-DataManager.processARSNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    var armorScaleMode = 0;
-    if (obj.hitType === 1) {
-      obj.positiveArmorScale = MageStudios.Param.ARSPPhysRate;
-      obj.negativeArmorScale = MageStudios.Param.ARSNPhysRate;
-      obj.baseArmorScale = MageStudios.Param.ARSBPhysArmor;
-    } else if (obj.hitType === 2) {
-      obj.positiveArmorScale = MageStudios.Param.ARSPMagRate;
-      obj.negativeArmorScale = MageStudios.Param.ARSNMagRate;
-      obj.baseArmorScale = MageStudios.Param.ARSBMagArmor;
-    } else {
-      obj.positiveArmorScale = MageStudios.Param.ARSPCerRate;
-      obj.negativeArmorScale = MageStudios.Param.ARSNCerRate;
-      obj.baseArmorScale = MageStudios.Param.ARSBCerArmor;
+  MageStudios.ARS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.ARS.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_ArmorScaling) {
+      this.processARSNotetags1($dataSkills);
+      this.processARSNotetags1($dataItems);
+      this.processARSNotetags2($dataActors);
+      this.processARSNotetags2($dataClasses);
+      this.processARSNotetags2($dataEnemies);
+      this.processARSNotetags2($dataWeapons);
+      this.processARSNotetags2($dataArmors);
+      this.processARSNotetags2($dataStates);
+      MageStudios._loaded_MSEP_X_ArmorScaling = true;
     }
-    obj.armorReductionFlat = 0;
-    obj.armorReductionRate = 0.0;
-    obj.armorPenetrationFlat = 0;
-    obj.armorPenetrationRate = 0.0;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:POSITIVE ARMOR RATE)>/i)) {
-        armorScaleMode = 1;
-        obj.positiveArmorScale = '';
-      } else if (line.match(/<\/(?:POSITIVE ARMOR RATE)>/i)) {
-        armorScaleMode = 0;
-      } else if (line.match(/<(?:NEGATIVE ARMOR RATE)>/i)) {
-        armorScaleMode = -1;
-        obj.negativeArmorScale = '';
-      } else if (line.match(/<\/(?:NEGATIVE ARMOR RATE)>/i)) {
-        armorScaleMode = 0;
-      } else if (line.match(/<(?:BASE ARMOR)>/i)) {
-        armorScaleMode = 2;
-        obj.baseArmorScale = '';
-      } else if (line.match(/<\/(?:BASE ARMOR)>/i)) {
-        armorScaleMode = 0;
-      } else if (line.match(/<(?:ARMOR REDUCTION):[ ](\d+)>/i)) {
-        obj.armorReductionFlat = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:ARMOR REDUCTION):[ ](\d+)([%％])>/i)) {
-        obj.armorReductionRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(/<(?:ARMOR PENETRATION):[ ](\d+)>/i)) {
-        obj.armorPenetrationFlat = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:ARMOR PENETRATION):[ ](\d+)([%％])>/i)) {
-        obj.armorPenetrationRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(/<(?:BYPASS ARMOR SCALING)>/i)) {
-        obj.positiveArmorScale = '';
-        obj.negativeArmorScale = '';
-      } else if (armorScaleMode === 1) {
-        obj.positiveArmorScale = obj.positiveArmorScale + line + '\n';
-      } else if (armorScaleMode === -1) {
-        obj.negativeArmorScale = obj.negativeArmorScale + line + '\n';
-      } else if (armorScaleMode === 2) {
-        obj.baseArmorScale = obj.baseArmorScale + line + '\n';
-      }
-    }
-  }
-};
-
-DataManager.processARSNotetags2 = function(group) {
-  var note01 = /<(?:PHYSICAL ARMOR REDUCTION):[ ](\d+)>/i;
-  var note02 = /<(?:PHYSICAL ARMOR REDUCTION):[ ](\d+)([%％])>/i;
-  var note03 = /<(?:PHYSICAL ARMOR PENETRATION):[ ](\d+)([%％])>/i;
-  var note04 = /<(?:PHYSICAL ARMOR PENETRATION):[ ](\d+)>/i;
-  var note05 = /<(?:MAGICAL ARMOR REDUCTION):[ ](\d+)>/i;
-  var note06 = /<(?:MAGICAL ARMOR REDUCTION):[ ](\d+)([%％])>/i;
-  var note07 = /<(?:MAGICAL ARMOR PENETRATION):[ ](\d+)([%％])>/i;
-  var note08 = /<(?:MAGICAL ARMOR PENETRATION):[ ](\d+)>/i;
-  var note09 = /<(?:CERTAIN ARMOR REDUCTION):[ ](\d+)>/i;
-  var note10 = /<(?:CERTAIN ARMOR REDUCTION):[ ](\d+)([%％])>/i;
-  var note11 = /<(?:CERTAIN ARMOR PENETRATION):[ ](\d+)([%％])>/i;
-  var note12 = /<(?:CERTAIN ARMOR PENETRATION):[ ](\d+)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.physArmorRedFlat = 0;
-    obj.physArmorRedRate = 0.0;
-    obj.physArmorPenRate = 0.0;
-    obj.physArmorPenFlat = 0;
-    obj.magArmorRedFlat = 0;
-    obj.magArmorRedRate = 0.0;
-    obj.magArmorPenRate = 0.0;
-    obj.magArmorPenFlat = 0;
-    obj.cerArmorRedFlat = 0;
-    obj.cerArmorRedRate = 0.0;
-    obj.cerArmorPenRate = 0.0;
-    obj.cerArmorPenFlat = 0;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note01)) {
-        obj.physArmorRedFlat = parseInt(RegExp.$1);
-      } else if (line.match(note02)) {
-        obj.physArmorRedRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note03)) {
-        obj.physArmorPenRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note04)) {
-        obj.physArmorPenFlat = parseInt(RegExp.$1);
-      } else if (line.match(note05)) {
-        obj.magArmorRedFlat = parseInt(RegExp.$1);
-      } else if (line.match(note06)) {
-        obj.magArmorRedRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note07)) {
-        obj.magArmorPenRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note08)) {
-        obj.magArmorPenFlat = parseInt(RegExp.$1);
-      } else if (line.match(note09)) {
-        obj.cerArmorRedFlat = parseInt(RegExp.$1);
-      } else if (line.match(note10)) {
-        obj.cerArmorRedRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note11)) {
-        obj.cerArmorPenRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(note12)) {
-        obj.cerArmorPenFlat = parseInt(RegExp.$1);
-      }
-    }
-  }
-};
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-if (Imported.MSEP_BattleEngineCore) {
-MageStudios.ARS.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-  BattleManager.processActionSequence = function(actionName, actionArgs) {
-    // ARMOR PENETRATION
-    if (actionName === 'ARMOR PENETRATION') {
-      return this.actionArmorPenetration(actionArgs);
-    }
-    // ARMOR REDUCTION
-    if (actionName === 'ARMOR REDUCTION') {
-      return this.actionArmorReduction(actionArgs);
-    }
-    // RESET ARMOR PENETRATION
-    if (actionName === 'RESET ARMOR PENETRATION') {
-      return this.actionResetArmorPenetration();
-    }
-    // RESET ARMOR REDUCTION
-    if (actionName === 'RESET ARMOR REDUCTION') {
-      return this.actionResetArmorReduction();
-    }
-    return MageStudios.ARS.BattleManager_processActionSequence.call(this,
-      actionName, actionArgs);
+    return true;
   };
-};
 
-BattleManager.actionArmorPenetration = function(actionArgs) {
+  DataManager.processARSNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      var armorScaleMode = 0;
+      if (obj.hitType === 1) {
+        obj.positiveArmorScale = MageStudios.Param.ARSPPhysRate;
+        obj.negativeArmorScale = MageStudios.Param.ARSNPhysRate;
+        obj.baseArmorScale = MageStudios.Param.ARSBPhysArmor;
+      } else if (obj.hitType === 2) {
+        obj.positiveArmorScale = MageStudios.Param.ARSPMagRate;
+        obj.negativeArmorScale = MageStudios.Param.ARSNMagRate;
+        obj.baseArmorScale = MageStudios.Param.ARSBMagArmor;
+      } else {
+        obj.positiveArmorScale = MageStudios.Param.ARSPCerRate;
+        obj.negativeArmorScale = MageStudios.Param.ARSNCerRate;
+        obj.baseArmorScale = MageStudios.Param.ARSBCerArmor;
+      }
+      obj.armorReductionFlat = 0;
+      obj.armorReductionRate = 0.0;
+      obj.armorPenetrationFlat = 0;
+      obj.armorPenetrationRate = 0.0;
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:POSITIVE ARMOR RATE)>/i)) {
+          armorScaleMode = 1;
+          obj.positiveArmorScale = "";
+        } else if (line.match(/<\/(?:POSITIVE ARMOR RATE)>/i)) {
+          armorScaleMode = 0;
+        } else if (line.match(/<(?:NEGATIVE ARMOR RATE)>/i)) {
+          armorScaleMode = -1;
+          obj.negativeArmorScale = "";
+        } else if (line.match(/<\/(?:NEGATIVE ARMOR RATE)>/i)) {
+          armorScaleMode = 0;
+        } else if (line.match(/<(?:BASE ARMOR)>/i)) {
+          armorScaleMode = 2;
+          obj.baseArmorScale = "";
+        } else if (line.match(/<\/(?:BASE ARMOR)>/i)) {
+          armorScaleMode = 0;
+        } else if (line.match(/<(?:ARMOR REDUCTION):[ ](\d+)>/i)) {
+          obj.armorReductionFlat = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:ARMOR REDUCTION):[ ](\d+)([%％])>/i)) {
+          obj.armorReductionRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(/<(?:ARMOR PENETRATION):[ ](\d+)>/i)) {
+          obj.armorPenetrationFlat = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:ARMOR PENETRATION):[ ](\d+)([%％])>/i)) {
+          obj.armorPenetrationRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(/<(?:BYPASS ARMOR SCALING)>/i)) {
+          obj.positiveArmorScale = "";
+          obj.negativeArmorScale = "";
+        } else if (armorScaleMode === 1) {
+          obj.positiveArmorScale = obj.positiveArmorScale + line + "\n";
+        } else if (armorScaleMode === -1) {
+          obj.negativeArmorScale = obj.negativeArmorScale + line + "\n";
+        } else if (armorScaleMode === 2) {
+          obj.baseArmorScale = obj.baseArmorScale + line + "\n";
+        }
+      }
+    }
+  };
+
+  DataManager.processARSNotetags2 = function (group) {
+    var note01 = /<(?:PHYSICAL ARMOR REDUCTION):[ ](\d+)>/i;
+    var note02 = /<(?:PHYSICAL ARMOR REDUCTION):[ ](\d+)([%％])>/i;
+    var note03 = /<(?:PHYSICAL ARMOR PENETRATION):[ ](\d+)([%％])>/i;
+    var note04 = /<(?:PHYSICAL ARMOR PENETRATION):[ ](\d+)>/i;
+    var note05 = /<(?:MAGICAL ARMOR REDUCTION):[ ](\d+)>/i;
+    var note06 = /<(?:MAGICAL ARMOR REDUCTION):[ ](\d+)([%％])>/i;
+    var note07 = /<(?:MAGICAL ARMOR PENETRATION):[ ](\d+)([%％])>/i;
+    var note08 = /<(?:MAGICAL ARMOR PENETRATION):[ ](\d+)>/i;
+    var note09 = /<(?:CERTAIN ARMOR REDUCTION):[ ](\d+)>/i;
+    var note10 = /<(?:CERTAIN ARMOR REDUCTION):[ ](\d+)([%％])>/i;
+    var note11 = /<(?:CERTAIN ARMOR PENETRATION):[ ](\d+)([%％])>/i;
+    var note12 = /<(?:CERTAIN ARMOR PENETRATION):[ ](\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.physArmorRedFlat = 0;
+      obj.physArmorRedRate = 0.0;
+      obj.physArmorPenRate = 0.0;
+      obj.physArmorPenFlat = 0;
+      obj.magArmorRedFlat = 0;
+      obj.magArmorRedRate = 0.0;
+      obj.magArmorPenRate = 0.0;
+      obj.magArmorPenFlat = 0;
+      obj.cerArmorRedFlat = 0;
+      obj.cerArmorRedRate = 0.0;
+      obj.cerArmorPenRate = 0.0;
+      obj.cerArmorPenFlat = 0;
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note01)) {
+          obj.physArmorRedFlat = parseInt(RegExp.$1);
+        } else if (line.match(note02)) {
+          obj.physArmorRedRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note03)) {
+          obj.physArmorPenRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note04)) {
+          obj.physArmorPenFlat = parseInt(RegExp.$1);
+        } else if (line.match(note05)) {
+          obj.magArmorRedFlat = parseInt(RegExp.$1);
+        } else if (line.match(note06)) {
+          obj.magArmorRedRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note07)) {
+          obj.magArmorPenRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note08)) {
+          obj.magArmorPenFlat = parseInt(RegExp.$1);
+        } else if (line.match(note09)) {
+          obj.cerArmorRedFlat = parseInt(RegExp.$1);
+        } else if (line.match(note10)) {
+          obj.cerArmorRedRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note11)) {
+          obj.cerArmorPenRate = parseFloat(RegExp.$1 * 0.01);
+        } else if (line.match(note12)) {
+          obj.cerArmorPenFlat = parseInt(RegExp.$1);
+        }
+      }
+    }
+  };
+
+  if (Imported.MSEP_BattleEngineCore) {
+    MageStudios.ARS.BattleManager_processActionSequence =
+      BattleManager.processActionSequence;
+    BattleManager.processActionSequence = function (actionName, actionArgs) {
+      if (actionName === "ARMOR PENETRATION") {
+        return this.actionArmorPenetration(actionArgs);
+      }
+
+      if (actionName === "ARMOR REDUCTION") {
+        return this.actionArmorReduction(actionArgs);
+      }
+
+      if (actionName === "RESET ARMOR PENETRATION") {
+        return this.actionResetArmorPenetration();
+      }
+
+      if (actionName === "RESET ARMOR REDUCTION") {
+        return this.actionResetArmorReduction();
+      }
+      return MageStudios.ARS.BattleManager_processActionSequence.call(
+        this,
+        actionName,
+        actionArgs
+      );
+    };
+  }
+
+  BattleManager.actionArmorPenetration = function (actionArgs) {
     if (actionArgs[0].match(/(\d+)([%％])/i)) {
       var value = parseFloat(RegExp.$1 * 0.01);
       $gameSystem._armorPenRate = value;
@@ -554,9 +554,9 @@ BattleManager.actionArmorPenetration = function(actionArgs) {
       return true;
     }
     return true;
-};
+  };
 
-BattleManager.actionArmorReduction = function(actionArgs) {
+  BattleManager.actionArmorReduction = function (actionArgs) {
     if (actionArgs[0].match(/(\d+)([%％])/i)) {
       var value = parseFloat(RegExp.$1 * 0.01);
       $gameSystem._armorRedRate = value;
@@ -567,58 +567,50 @@ BattleManager.actionArmorReduction = function(actionArgs) {
       return true;
     }
     return true;
-};
+  };
 
-BattleManager.actionResetArmorPenetration = function() {
+  BattleManager.actionResetArmorPenetration = function () {
     $gameSystem._armorPenRate = 0.0;
     $gameSystem._armorPenFlat = 0;
     return true;
-};
+  };
 
-BattleManager.actionResetArmorReduction = function() {
+  BattleManager.actionResetArmorReduction = function () {
     $gameSystem._armorRedRate = 0.0;
     $gameSystem._armorRedFlat = 0;
     return true;
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.ARS.Game_System_rDS = Game_System.prototype.resetDamageSettings;
-Game_System.prototype.resetDamageSettings = function() {
+  MageStudios.ARS.Game_System_rDS = Game_System.prototype.resetDamageSettings;
+  Game_System.prototype.resetDamageSettings = function () {
     MageStudios.ARS.Game_System_rDS.call(this);
     this._armorRedFlat = 0;
     this._armorRedRate = 0.0;
     this._armorPenRate = 0.0;
     this._armorPenFlat = 0;
-};
+  };
 
-Game_System.prototype.armorReductionFlat = function() {
+  Game_System.prototype.armorReductionFlat = function () {
     if (this._armorRedFlat === undefined) this.resetDamageSettings();
     return this._armorRedFlat;
-};
+  };
 
-Game_System.prototype.armorReductionRate = function() {
+  Game_System.prototype.armorReductionRate = function () {
     if (this._armorRedRate === undefined) this.resetDamageSettings();
     return this._armorRedRate;
-};
+  };
 
-Game_System.prototype.armorPenetrationRate = function() {
+  Game_System.prototype.armorPenetrationRate = function () {
     if (this._armorPenRate === undefined) this.resetDamageSettings();
     return this._armorPenRate;
-};
+  };
 
-Game_System.prototype.armorPenetrationFlat = function() {
+  Game_System.prototype.armorPenetrationFlat = function () {
     if (this._armorPenFlat === undefined) this.resetDamageSettings();
     return this._armorPenFlat;
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.certainArmorReductionFlat = function() {
+  Game_Battler.prototype.certainArmorReductionFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorReductionFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -626,9 +618,9 @@ Game_Battler.prototype.certainArmorReductionFlat = function() {
       if (state) value += state.cerArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.physicalArmorReductionFlat = function() {
+  Game_Battler.prototype.physicalArmorReductionFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorReductionFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -636,9 +628,9 @@ Game_Battler.prototype.physicalArmorReductionFlat = function() {
       if (state) value += state.physArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.magicalArmorReductionFlat = function() {
+  Game_Battler.prototype.magicalArmorReductionFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorReductionFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -646,9 +638,9 @@ Game_Battler.prototype.magicalArmorReductionFlat = function() {
       if (state) value += state.magArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.certainArmorReductionRate = function() {
+  Game_Battler.prototype.certainArmorReductionRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorReductionRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -656,9 +648,9 @@ Game_Battler.prototype.certainArmorReductionRate = function() {
       if (state) value *= 1.0 - state.cerArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.physicalArmorReductionRate = function() {
+  Game_Battler.prototype.physicalArmorReductionRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorReductionRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -666,9 +658,9 @@ Game_Battler.prototype.physicalArmorReductionRate = function() {
       if (state) value *= 1.0 - state.physArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.magicalArmorReductionRate = function() {
+  Game_Battler.prototype.magicalArmorReductionRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorReductionRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -676,9 +668,9 @@ Game_Battler.prototype.magicalArmorReductionRate = function() {
       if (state) value *= 1.0 - state.magArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.certainArmorPenetrationRate = function() {
+  Game_Battler.prototype.certainArmorPenetrationRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorPenetrationRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -686,9 +678,9 @@ Game_Battler.prototype.certainArmorPenetrationRate = function() {
       if (state) value *= 1.0 - state.cerArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.physicalArmorPenetrationRate = function() {
+  Game_Battler.prototype.physicalArmorPenetrationRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorPenetrationRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -696,9 +688,9 @@ Game_Battler.prototype.physicalArmorPenetrationRate = function() {
       if (state) value *= 1.0 - state.physArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.magicalArmorPenetrationRate = function() {
+  Game_Battler.prototype.magicalArmorPenetrationRate = function () {
     var value = 1.0;
     if ($gameParty.inBattle()) value *= 1 - $gameSystem.armorPenetrationRate();
     for (var i = 0; i < this.states().length; ++i) {
@@ -706,9 +698,9 @@ Game_Battler.prototype.magicalArmorPenetrationRate = function() {
       if (state) value *= 1.0 - state.magArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.certainArmorPenetrationFlat = function() {
+  Game_Battler.prototype.certainArmorPenetrationFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorPenetrationFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -716,9 +708,9 @@ Game_Battler.prototype.certainArmorPenetrationFlat = function() {
       if (state) value += state.cerArmorPenFlat;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.physicalArmorPenetrationFlat = function() {
+  Game_Battler.prototype.physicalArmorPenetrationFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorPenetrationFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -726,9 +718,9 @@ Game_Battler.prototype.physicalArmorPenetrationFlat = function() {
       if (state) value += state.physArmorPenFlat;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.magicalArmorPenetrationFlat = function() {
+  Game_Battler.prototype.magicalArmorPenetrationFlat = function () {
     var value = 0;
     if ($gameParty.inBattle()) value += $gameSystem.armorPenetrationFlat();
     for (var i = 0; i < this.states().length; ++i) {
@@ -736,13 +728,9 @@ Game_Battler.prototype.magicalArmorPenetrationFlat = function() {
       if (state) value += state.magArmorPenFlat;
     }
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.certainArmorReductionFlat = function() {
+  Game_Actor.prototype.certainArmorReductionFlat = function () {
     var value = Game_Battler.prototype.certainArmorReductionFlat.call(this);
     value += this.actor().cerArmorRedFlat;
     value += this.currentClass().cerArmorRedFlat;
@@ -751,9 +739,9 @@ Game_Actor.prototype.certainArmorReductionFlat = function() {
       if (equip) value += equip.cerArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.physicalArmorReductionFlat = function() {
+  Game_Actor.prototype.physicalArmorReductionFlat = function () {
     var value = Game_Battler.prototype.physicalArmorReductionFlat.call(this);
     value += this.actor().physArmorRedFlat;
     value += this.currentClass().physArmorRedFlat;
@@ -762,9 +750,9 @@ Game_Actor.prototype.physicalArmorReductionFlat = function() {
       if (equip) value += equip.physArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.magicalArmorReductionFlat = function() {
+  Game_Actor.prototype.magicalArmorReductionFlat = function () {
     var value = Game_Battler.prototype.magicalArmorReductionFlat.call(this);
     value += this.actor().magArmorRedFlat;
     value += this.currentClass().magArmorRedFlat;
@@ -773,9 +761,9 @@ Game_Actor.prototype.magicalArmorReductionFlat = function() {
       if (equip) value += equip.magArmorRedFlat;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.certainArmorReductionRate = function() {
+  Game_Actor.prototype.certainArmorReductionRate = function () {
     var value = Game_Battler.prototype.certainArmorReductionRate.call(this);
     value *= 1.0 - this.actor().cerArmorRedRate;
     value *= 1.0 - this.currentClass().cerArmorRedRate;
@@ -784,9 +772,9 @@ Game_Actor.prototype.certainArmorReductionRate = function() {
       if (equip) value *= 1.0 - equip.cerArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.physicalArmorReductionRate = function() {
+  Game_Actor.prototype.physicalArmorReductionRate = function () {
     var value = Game_Battler.prototype.physicalArmorReductionRate.call(this);
     value *= 1.0 - this.actor().physArmorRedRate;
     value *= 1.0 - this.currentClass().physArmorRedRate;
@@ -795,9 +783,9 @@ Game_Actor.prototype.physicalArmorReductionRate = function() {
       if (equip) value *= 1.0 - equip.physArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.magicalArmorReductionRate = function() {
+  Game_Actor.prototype.magicalArmorReductionRate = function () {
     var value = Game_Battler.prototype.magicalArmorReductionRate.call(this);
     value *= 1.0 - this.actor().magArmorRedRate;
     value *= 1.0 - this.currentClass().magArmorRedRate;
@@ -806,9 +794,9 @@ Game_Actor.prototype.magicalArmorReductionRate = function() {
       if (equip) value *= 1.0 - equip.magArmorRedRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.certainArmorPenetrationRate = function() {
+  Game_Actor.prototype.certainArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.certainArmorPenetrationRate.call(this);
     value *= 1.0 - this.actor().cerArmorPenRate;
     value *= 1.0 - this.currentClass().cerArmorPenRate;
@@ -817,9 +805,9 @@ Game_Actor.prototype.certainArmorPenetrationRate = function() {
       if (equip) value *= 1.0 - equip.cerArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.physicalArmorPenetrationRate = function() {
+  Game_Actor.prototype.physicalArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.physicalArmorPenetrationRate.call(this);
     value *= 1.0 - this.actor().physArmorPenRate;
     value *= 1.0 - this.currentClass().physArmorPenRate;
@@ -828,9 +816,9 @@ Game_Actor.prototype.physicalArmorPenetrationRate = function() {
       if (equip) value *= 1.0 - equip.physArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.magicalArmorPenetrationRate = function() {
+  Game_Actor.prototype.magicalArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.magicalArmorPenetrationRate.call(this);
     value *= 1.0 - this.actor().magArmorPenRate;
     value *= 1.0 - this.currentClass().magArmorPenRate;
@@ -839,9 +827,9 @@ Game_Actor.prototype.magicalArmorPenetrationRate = function() {
       if (equip) value *= 1.0 - equip.magArmorPenRate;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.certainArmorPenetrationFlat = function() {
+  Game_Actor.prototype.certainArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.certainArmorPenetrationFlat.call(this);
     value += this.actor().cerArmorPenFlat;
     value += this.currentClass().cerArmorPenFlat;
@@ -850,9 +838,9 @@ Game_Actor.prototype.certainArmorPenetrationFlat = function() {
       if (equip) value += equip.cerArmorPenFlat;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.physicalArmorPenetrationFlat = function() {
+  Game_Actor.prototype.physicalArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.physicalArmorPenetrationFlat.call(this);
     value += this.actor().physArmorPenFlat;
     value += this.currentClass().physArmorPenFlat;
@@ -861,9 +849,9 @@ Game_Actor.prototype.physicalArmorPenetrationFlat = function() {
       if (equip) value += equip.physArmorPenFlat;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.magicalArmorPenetrationFlat = function() {
+  Game_Actor.prototype.magicalArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.magicalArmorPenetrationFlat.call(this);
     value += this.actor().magArmorPenFlat;
     value += this.currentClass().magArmorPenFlat;
@@ -872,113 +860,129 @@ Game_Actor.prototype.magicalArmorPenetrationFlat = function() {
       if (equip) value += equip.magArmorPenFlat;
     }
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.certainArmorReductionFlat = function() {
+  Game_Enemy.prototype.certainArmorReductionFlat = function () {
     var value = Game_Battler.prototype.certainArmorReductionFlat.call(this);
     value += this.enemy().cerArmorRedFlat;
     return value;
-};
+  };
 
-Game_Enemy.prototype.physicalArmorReductionFlat = function() {
+  Game_Enemy.prototype.physicalArmorReductionFlat = function () {
     var value = Game_Battler.prototype.physicalArmorReductionFlat.call(this);
     value += this.enemy().physArmorRedFlat;
     return value;
-};
+  };
 
-Game_Enemy.prototype.magicalArmorReductionFlat = function() {
+  Game_Enemy.prototype.magicalArmorReductionFlat = function () {
     var value = Game_Battler.prototype.magicalArmorReductionFlat.call(this);
     value += this.enemy().magArmorRedFlat;
     return value;
-};
+  };
 
-Game_Enemy.prototype.certainArmorReductionRate = function() {
+  Game_Enemy.prototype.certainArmorReductionRate = function () {
     var value = Game_Battler.prototype.certainArmorReductionRate.call(this);
     value *= 1.0 - this.enemy().cerArmorRedRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.physicalArmorReductionRate = function() {
+  Game_Enemy.prototype.physicalArmorReductionRate = function () {
     var value = Game_Battler.prototype.physicalArmorReductionRate.call(this);
     value *= 1.0 - this.enemy().physArmorRedRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.magicalArmorReductionRate = function() {
+  Game_Enemy.prototype.magicalArmorReductionRate = function () {
     var value = Game_Battler.prototype.magicalArmorReductionRate.call(this);
     value *= 1.0 - this.enemy().magArmorRedRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.certainArmorPenetrationRate = function() {
+  Game_Enemy.prototype.certainArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.certainArmorPenetrationRate.call(this);
     value *= 1.0 - this.enemy().cerArmorPenRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.physicalArmorPenetrationRate = function() {
+  Game_Enemy.prototype.physicalArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.physicalArmorPenetrationRate.call(this);
     value *= 1.0 - this.enemy().physArmorPenRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.magicalArmorPenetrationRate = function() {
+  Game_Enemy.prototype.magicalArmorPenetrationRate = function () {
     var value = Game_Battler.prototype.magicalArmorPenetrationRate.call(this);
     value *= 1.0 - this.enemy().magArmorPenRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.certainArmorPenetrationFlat = function() {
+  Game_Enemy.prototype.certainArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.certainArmorPenetrationFlat.call(this);
     value += this.enemy().cerArmorPenFlat;
     return value;
-};
+  };
 
-Game_Enemy.prototype.physicalArmorPenetrationFlat = function() {
+  Game_Enemy.prototype.physicalArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.physicalArmorPenetrationFlat.call(this);
     value += this.enemy().physArmorPenFlat;
     return value;
-};
+  };
 
-Game_Enemy.prototype.magicalArmorPenetrationFlat = function() {
+  Game_Enemy.prototype.magicalArmorPenetrationFlat = function () {
     var value = Game_Battler.prototype.magicalArmorPenetrationFlat.call(this);
     value += this.enemy().magArmorPenFlat;
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.ARS.Game_Action_applyDamageRate =
+  MageStudios.ARS.Game_Action_applyDamageRate =
     Game_Action.prototype.applyDamageRate;
-Game_Action.prototype.applyDamageRate = function(value, baseDamage, target) {
+  Game_Action.prototype.applyDamageRate = function (value, baseDamage, target) {
     value = this.scaleCertainArmor(value, baseDamage, target);
-    return MageStudios.ARS.Game_Action_applyDamageRate.call(this, value,
-      baseDamage, target);
-};
+    return MageStudios.ARS.Game_Action_applyDamageRate.call(
+      this,
+      value,
+      baseDamage,
+      target
+    );
+  };
 
-MageStudios.ARS.Game_Action_applyPhysicalRate =
+  MageStudios.ARS.Game_Action_applyPhysicalRate =
     Game_Action.prototype.applyPhysicalRate;
-Game_Action.prototype.applyPhysicalRate = function(value, baseDamage, target) {
+  Game_Action.prototype.applyPhysicalRate = function (
+    value,
+    baseDamage,
+    target
+  ) {
     value = this.scalePhysicalArmor(value, baseDamage, target);
-    return MageStudios.ARS.Game_Action_applyPhysicalRate.call(this, value,
-      baseDamage, target);
-};
+    return MageStudios.ARS.Game_Action_applyPhysicalRate.call(
+      this,
+      value,
+      baseDamage,
+      target
+    );
+  };
 
-MageStudios.ARS.Game_Action_applyMagicalRate =
+  MageStudios.ARS.Game_Action_applyMagicalRate =
     Game_Action.prototype.applyMagicalRate;
-Game_Action.prototype.applyMagicalRate = function(value, baseDamage, target) {
-  value = this.scaleMagicalArmor(value, baseDamage, target);
-  return MageStudios.ARS.Game_Action_applyMagicalRate.call(this, value,
-    baseDamage, target);
-};
+  Game_Action.prototype.applyMagicalRate = function (
+    value,
+    baseDamage,
+    target
+  ) {
+    value = this.scaleMagicalArmor(value, baseDamage, target);
+    return MageStudios.ARS.Game_Action_applyMagicalRate.call(
+      this,
+      value,
+      baseDamage,
+      target
+    );
+  };
 
-Game_Action.prototype.scaleCertainArmor = function(value, baseDamage, target) {
+  Game_Action.prototype.scaleCertainArmor = function (
+    value,
+    baseDamage,
+    target
+  ) {
     if (baseDamage <= 0) return value;
     if (!this.isCertainHit()) return value;
     var armor = this.getBaseArmor(value, baseDamage, target);
@@ -998,13 +1002,16 @@ Game_Action.prototype.scaleCertainArmor = function(value, baseDamage, target) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code,
-        'ARMOR SCALING FORMULA ERROR');
+      MageStudios.Util.displayError(e, code, "ARMOR SCALING FORMULA ERROR");
     }
     return value;
-};
+  };
 
-Game_Action.prototype.scalePhysicalArmor = function(value, baseDamage, target) {
+  Game_Action.prototype.scalePhysicalArmor = function (
+    value,
+    baseDamage,
+    target
+  ) {
     if (baseDamage <= 0) return value;
     var armor = this.getBaseArmor(value, baseDamage, target);
     armor = this.applyPhysicalArmorScale(armor, target);
@@ -1023,13 +1030,16 @@ Game_Action.prototype.scalePhysicalArmor = function(value, baseDamage, target) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code,
-        'ARMOR SCALING FORMULA ERROR');
+      MageStudios.Util.displayError(e, code, "ARMOR SCALING FORMULA ERROR");
     }
     return value;
-};
+  };
 
-Game_Action.prototype.scaleMagicalArmor = function(value, baseDamage, target) {
+  Game_Action.prototype.scaleMagicalArmor = function (
+    value,
+    baseDamage,
+    target
+  ) {
     if (baseDamage <= 0) return value;
     var armor = this.getBaseArmor(value, baseDamage, target);
     armor = this.applyMagicalArmorScale(armor, target);
@@ -1048,13 +1058,12 @@ Game_Action.prototype.scaleMagicalArmor = function(value, baseDamage, target) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code,
-        'ARMOR SCALING FORMULA ERROR');
+      MageStudios.Util.displayError(e, code, "ARMOR SCALING FORMULA ERROR");
     }
     return value;
-};
+  };
 
-Game_Action.prototype.getBaseArmor = function(value, baseDamage, target) {
+  Game_Action.prototype.getBaseArmor = function (value, baseDamage, target) {
     var armor = 0;
     var item = this.item();
     var a = this.subject();
@@ -1067,12 +1076,12 @@ Game_Action.prototype.getBaseArmor = function(value, baseDamage, target) {
     try {
       armor = eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'BASE ARMOR FORMULA ERROR');
+      MageStudios.Util.displayError(e, code, "BASE ARMOR FORMULA ERROR");
     }
     return armor;
-};
+  };
 
-Game_Action.prototype.applyCertainArmorScale = function(armor, target) {
+  Game_Action.prototype.applyCertainArmorScale = function (armor, target) {
     armor -= this.item().armorReductionFlat;
     armor -= target.certainArmorReductionFlat();
     if (armor > 0) {
@@ -1084,9 +1093,9 @@ Game_Action.prototype.applyCertainArmorScale = function(armor, target) {
       armor -= Math.min(armor, this.subject().certainArmorPenetrationFlat());
     }
     return armor;
-};
+  };
 
-Game_Action.prototype.applyPhysicalArmorScale = function(armor, target) {
+  Game_Action.prototype.applyPhysicalArmorScale = function (armor, target) {
     armor -= this.item().armorReductionFlat;
     armor -= target.physicalArmorReductionFlat();
     if (armor > 0) {
@@ -1098,9 +1107,9 @@ Game_Action.prototype.applyPhysicalArmorScale = function(armor, target) {
       armor -= Math.min(armor, this.subject().physicalArmorPenetrationFlat());
     }
     return armor;
-};
+  };
 
-Game_Action.prototype.applyMagicalArmorScale = function(armor, target) {
+  Game_Action.prototype.applyMagicalArmorScale = function (armor, target) {
     armor -= this.item().armorReductionFlat;
     armor -= target.magicalArmorReductionFlat();
     if (armor > 0) {
@@ -1112,27 +1121,19 @@ Game_Action.prototype.applyMagicalArmorScale = function(armor, target) {
       armor -= Math.min(armor, this.subject().magicalArmorPenetrationFlat());
     }
     return armor;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

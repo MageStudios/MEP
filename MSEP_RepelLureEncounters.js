@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Repel & Lure Encounters
-// MSEP_RepelLureEncounters.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_RepelEncounters = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RepelLure = MageStudios.RepelLure || {};
-MageStudios.RepelLure.version = 1.00;
+MageStudios.RepelLure.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Tie in the variables that modify the encounter rate
  * by either making them repel or lure battles.
  * @author Mage Studios Engine Plugins
@@ -156,41 +150,46 @@ MageStudios.RepelLure.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_RepelLureEncounters');
+MageStudios.Parameters = PluginManager.parameters("MSEP_RepelLureEncounters");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.RepelExpireEvent = Number(MageStudios.Parameters['Repel Expire Event']);
-MageStudios.Param.LureExpireEvent = Number(MageStudios.Parameters['Lure Expire Event']);
+MageStudios.Param.RepelExpireEvent = Number(
+  MageStudios.Parameters["Repel Expire Event"]
+);
+MageStudios.Param.LureExpireEvent = Number(
+  MageStudios.Parameters["Lure Expire Event"]
+);
 
-MageStudios.SetupParameters = function() {
+MageStudios.SetupParameters = function () {
   MageStudios.Param.RepelLureVariables = {};
 
-  var arr = String(MageStudios.Parameters['Repel Variables']).split(' ');
-  for (var i = 0; i < arr.length; ++i) { arr[i] = parseInt(arr[i]) };
-  MageStudios.Param.RepelLureVariables['repel'] = arr;
+  var arr = String(MageStudios.Parameters["Repel Variables"]).split(" ");
+  for (var i = 0; i < arr.length; ++i) {
+    arr[i] = parseInt(arr[i]);
+  }
+  MageStudios.Param.RepelLureVariables["repel"] = arr;
 
-  var data = JSON.parse(MageStudios.Parameters['Repel Variables List'] || '[]');
+  var data = JSON.parse(MageStudios.Parameters["Repel Variables List"] || "[]");
   for (var i = 0; i < data.length; ++i) {
     var varId = parseInt(data[i]);
     if (MageStudios.Param.RepelLureVariables.contains(varId)) continue;
     MageStudios.Param.RepelLureVariables.push(varId);
   }
 
-  var arr = String(MageStudios.Parameters['Lure Variables']).split(' ');
-  for (var i = 0; i < arr.length; ++i) { arr[i] = parseInt(arr[i]) };
-  MageStudios.Param.RepelLureVariables['lure'] = arr;
-  MageStudios.Param.RepelLureVariables['lureRate'] =
-    Number(MageStudios.Parameters['Lure Rate']);
-  MageStudios.Param.RepelLureVariables['lureFlat'] =
-    Number(MageStudios.Parameters['Lure Flat']);
+  var arr = String(MageStudios.Parameters["Lure Variables"]).split(" ");
+  for (var i = 0; i < arr.length; ++i) {
+    arr[i] = parseInt(arr[i]);
+  }
+  MageStudios.Param.RepelLureVariables["lure"] = arr;
+  MageStudios.Param.RepelLureVariables["lureRate"] = Number(
+    MageStudios.Parameters["Lure Rate"]
+  );
+  MageStudios.Param.RepelLureVariables["lureFlat"] = Number(
+    MageStudios.Parameters["Lure Flat"]
+  );
 
-  var data = JSON.parse(MageStudios.Parameters['Lure Variables List'] || '[]');
+  var data = JSON.parse(MageStudios.Parameters["Lure Variables List"] || "[]");
   for (var i = 0; i < data.length; ++i) {
     var varId = parseInt(data[i]);
     if (MageStudios.Param.RepelLureVariables.contains(varId)) continue;
@@ -199,83 +198,76 @@ MageStudios.SetupParameters = function() {
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.RepelLure.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.RepelLure.Game_System_initialize.call(this);
   this.initRepelSettings();
 };
 
-Game_System.prototype.initRepelSettings = function() {
+Game_System.prototype.initRepelSettings = function () {
   this._lureEncounterRate = MageStudios.Param.RepelLureVariables.lureRate;
   this._lureEncounterFlat = MageStudios.Param.RepelLureVariables.lureFlat;
 };
 
-Game_System.prototype.lureEncounterRate = function() {
+Game_System.prototype.lureEncounterRate = function () {
   if (this._lureEncounterRate === undefined) this.initRepelSettings();
   return this._lureEncounterRate;
 };
 
-Game_System.prototype.setLureEncounterRate = function(value) {
+Game_System.prototype.setLureEncounterRate = function (value) {
   if (this._lureEncounterRate === undefined) this.initRepelSettings();
   try {
     this._lureEncounterRate = eval(value);
   } catch (e) {
     this._lureEncounterRate = 1;
-    MageStudios.Util.displayError(e, value, 'SET LURE ENCOUNTER RATE ERROR');
+    MageStudios.Util.displayError(e, value, "SET LURE ENCOUNTER RATE ERROR");
   }
 };
 
-Game_System.prototype.lureEncounterFlat = function() {
+Game_System.prototype.lureEncounterFlat = function () {
   if (this._lureEncounterFlat === undefined) this.initRepelSettings();
   return this._lureEncounterFlat;
 };
 
-Game_System.prototype.setLureEncounterFlat = function(value) {
+Game_System.prototype.setLureEncounterFlat = function (value) {
   if (this._lureEncounterFlat === undefined) this.initRepelSettings();
   try {
     this._lureEncounterFlat = eval(value);
   } catch (e) {
     this._lureEncounterFlat = 1;
-    MageStudios.Util.displayError(e, value, 'SET LURE ENCOUNTER FLAT ERROR');
+    MageStudios.Util.displayError(e, value, "SET LURE ENCOUNTER FLAT ERROR");
   }
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.RepelLure.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.RepelLure.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'SetLureRate') {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.RepelLure.Game_Interpreter_pluginCommand.call(
+    this,
+    command,
+    args
+  );
+  if (command === "SetLureRate") {
     $gameSystem.setLureEncounterRate(this.argsToString(args));
-  } else if (command === 'SetLureFlat') {
+  } else if (command === "SetLureFlat") {
     $gameSystem.setLureEncounterFlat(this.argsToString(args));
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
 MageStudios.RepelLure.Game_Player_encounterProgressValue =
   Game_Player.prototype.encounterProgressValue;
-Game_Player.prototype.encounterProgressValue = function() {
-  var value = MageStudios.RepelLure.Game_Player_encounterProgressValue.call(this);
+Game_Player.prototype.encounterProgressValue = function () {
+  var value =
+    MageStudios.RepelLure.Game_Player_encounterProgressValue.call(this);
   if (this.isLureEncounters()) {
     value *= $gameSystem.lureEncounterRate();
     value += $gameSystem.lureEncounterFlat();
@@ -284,7 +276,7 @@ Game_Player.prototype.encounterProgressValue = function() {
   return value;
 };
 
-Game_Player.prototype.isLureEncounters = function() {
+Game_Player.prototype.isLureEncounters = function () {
   var value = false;
   var arr = MageStudios.Param.RepelLureVariables.lure;
   var total = 0;
@@ -306,7 +298,7 @@ Game_Player.prototype.isLureEncounters = function() {
   return value;
 };
 
-Game_Player.prototype.isRepelEncounters = function() {
+Game_Player.prototype.isRepelEncounters = function () {
   var value = false;
   var arr = MageStudios.Param.RepelLureVariables.repel;
   var total = 0;
@@ -328,25 +320,17 @@ Game_Player.prototype.isRepelEncounters = function() {
   return value;
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

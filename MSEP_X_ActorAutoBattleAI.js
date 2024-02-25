@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle AI Core Extension - Actor Auto Battle AI
-// MSEP_X_ActorAutoBattleAI.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ActorAutoBattleAI = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AABAI = MageStudios.AABAI || {};
-MageStudios.AABAI.version = 1.00;
+MageStudios.AABAI.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Req MSEP_BattleAICore) Give auto battle actors the same
  * type of A.I. that you can assign using the Battle AI Core's notetags.
  * @author Mage Studios Engine Plugins
@@ -146,156 +140,139 @@ MageStudios.AABAI.version = 1.00;
  * ones from the MSEP_BattleAICore plugin. Please refer to the MSEP_BattleAICore
  * help file for which conditions can be used with the A.I. setups.
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleAICore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ActorAutoBattleAI");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.AABAIDefaultLevel = Number(
+    MageStudios.Parameters["Default AI Level"]
+  );
+  MageStudios.Param.AABAIBypassRequirementSkills = JSON.parse(
+    MageStudios.Parameters["Bypass Requirement"]
+  );
+  MageStudios.Param.AABAICurate = eval(
+    String(MageStudios.Parameters["Curate Skill List"])
+  );
+  MageStudios.Param.AABAIUndecided = eval(
+    String(MageStudios.Parameters["Undecided AI"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActorAutoBattleAI');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.SetupParameters = function () {
+    var length = MageStudios.Param.AABAIBypassRequirementSkills.length;
+    for (var i = 0; i < length; ++i) {
+      MageStudios.Param.AABAIBypassRequirementSkills[i] = Number(
+        MageStudios.Param.AABAIBypassRequirementSkills[i]
+      );
+    }
+  };
+  MageStudios.SetupParameters();
 
-MageStudios.Param.AABAIDefaultLevel = Number(MageStudios.Parameters['Default AI Level']);
-MageStudios.Param.AABAIBypassRequirementSkills = 
-  JSON.parse(MageStudios.Parameters['Bypass Requirement']);
-MageStudios.Param.AABAICurate = eval(String(MageStudios.Parameters['Curate Skill List']));
-MageStudios.Param.AABAIUndecided = eval(String(MageStudios.Parameters['Undecided AI']));
+  MageStudios.AABAI.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.AABAI.DataManager_isDatabaseLoaded.call(this))
+      return false;
+    if (!MageStudios._loaded_MSEP_X_ActorAutoBattleAI) {
+      this.processAABAINotetags1($dataClasses);
+      MageStudios._loaded_MSEP_X_ActorAutoBattleAI = true;
+    }
+    return true;
+  };
 
-MageStudios.SetupParameters = function() {
-  var length = MageStudios.Param.AABAIBypassRequirementSkills.length;
-  for (var i = 0; i < length; ++i) {
-    MageStudios.Param.AABAIBypassRequirementSkills[i] = 
-      Number(MageStudios.Param.AABAIBypassRequirementSkills[i]);
-  }
-};
-MageStudios.SetupParameters();
+  DataManager.processAABAINotetags1 = function (group) {
+    var note1 = /<(?:AI PRIORITY)>/i;
+    var note2 = /<\/(?:AI PRIORITY)>/i;
+    var note3 = /<(?:AI CONSIDER TAUNT|ai considers taunts)>/i;
+    var note4 = /<(?:AI LEVEL):[ ](\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-//=============================================================================
-// DataManager
-//=============================================================================
+      obj.aiPattern = [];
+      var aiPatternFlag = false;
+      obj.aiConsiderTaunt = false;
+      obj.aiLevel = MageStudios.Param.AABAIDefaultLevel * 0.01;
 
-MageStudios.AABAI.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.AABAI.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_ActorAutoBattleAI) {
-    this.processAABAINotetags1($dataClasses);
-    MageStudios._loaded_MSEP_X_ActorAutoBattleAI = true;
-  }
-  return true;
-};
-
-DataManager.processAABAINotetags1 = function(group) {
-  var note1 = /<(?:AI PRIORITY)>/i;
-  var note2 = /<\/(?:AI PRIORITY)>/i;
-  var note3 = /<(?:AI CONSIDER TAUNT|ai considers taunts)>/i;
-  var note4 = /<(?:AI LEVEL):[ ](\d+)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.aiPattern = [];
-    var aiPatternFlag = false;
-    obj.aiConsiderTaunt = false;
-    obj.aiLevel = MageStudios.Param.AABAIDefaultLevel * 0.01;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        aiPatternFlag = true;
-      } else if (line.match(note2)) {
-        aiPatternFlag = false;
-      } else if (aiPatternFlag) {
-        obj.aiPattern.push(line);
-      } else if (line.match(note3)) {
-        obj.aiConsiderTaunt = true;
-      } else if (line.match(note4)) {
-        obj.aiLevel = parseFloat(RegExp.$1 * 0.01);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          aiPatternFlag = true;
+        } else if (line.match(note2)) {
+          aiPatternFlag = false;
+        } else if (aiPatternFlag) {
+          obj.aiPattern.push(line);
+        } else if (line.match(note3)) {
+          obj.aiConsiderTaunt = true;
+        } else if (line.match(note4)) {
+          obj.aiLevel = parseFloat(RegExp.$1 * 0.01);
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// AIManager
-//=============================================================================
-
-MageStudios.AABAI.AIManager_hasSkill = AIManager.hasSkill;
-AIManager.hasSkill = function(skillId) {
-  if (this.battler() && this.battler().isActor()) {
-    return this.checkActorHasSkillRequirement(skillId);
-  } else {
-    return MageStudios.AABAI.AIManager_hasSkill.call(this, skillId);
-  }
-};
-
-AIManager.checkActorHasSkillRequirement = function(skillId) {
-  var skill = $dataSkills[skillId];
-  if (!skill) return false;
-  if (MageStudios.Param.AABAIBypassRequirementSkills.contains(skillId)) return true;
-  if (MageStudios.Param.AABAICurate) {
-    var skillTypes = this.battler().addedSkillTypes();
-    if (skillTypes && !skillTypes.contains(skill.stypeId)) return false;
-  }
-  return MageStudios.AABAI.AIManager_hasSkill.call(this, skillId);
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.AABAI.Game_Actor_makeAutoBattleActions =
-  Game_Actor.prototype.makeAutoBattleActions;
-Game_Actor.prototype.makeAutoBattleActions = function() {
-  if (this.isConfused()) {
-    this.makeConfusionActions();
-  } else if (this.currentClass().aiPattern.length > 0) {
-    this.setAIPattern();
-    this.setActionState('waiting');
-  } else {
-    MageStudios.AABAI.Game_Actor_makeAutoBattleActions.call(this);
-  }
-};
-
-Game_Actor.prototype.setAIPattern = function() {
-  Game_Battler.prototype.setAIPattern.call(this);
-  if (this.numActions() <= 0) return;
-  AIManager.setBattler(this);
-  for (var i = 0; i < this.currentClass().aiPattern.length; ++i) {
-    if (Math.random() > this.aiLevel()) continue;
-    var line = this.currentClass().aiPattern[i];
-    if (AIManager.isDecidedActionAI(line)) return;
-  }
-  if (MageStudios.Param.AABAIUndecided) {
-    MageStudios.AABAI.Game_Actor_makeAutoBattleActions.call(this);
-  } else {
-    for (var i = 0; i < this.numActions(); i++) {
-      this._actions[i].setAttack();
+  MageStudios.AABAI.AIManager_hasSkill = AIManager.hasSkill;
+  AIManager.hasSkill = function (skillId) {
+    if (this.battler() && this.battler().isActor()) {
+      return this.checkActorHasSkillRequirement(skillId);
+    } else {
+      return MageStudios.AABAI.AIManager_hasSkill.call(this, skillId);
     }
-  }
-  this.setActionState('waiting');
-};
+  };
 
-Game_Actor.prototype.aiLevel = function() {
+  AIManager.checkActorHasSkillRequirement = function (skillId) {
+    var skill = $dataSkills[skillId];
+    if (!skill) return false;
+    if (MageStudios.Param.AABAIBypassRequirementSkills.contains(skillId))
+      return true;
+    if (MageStudios.Param.AABAICurate) {
+      var skillTypes = this.battler().addedSkillTypes();
+      if (skillTypes && !skillTypes.contains(skill.stypeId)) return false;
+    }
+    return MageStudios.AABAI.AIManager_hasSkill.call(this, skillId);
+  };
+
+  MageStudios.AABAI.Game_Actor_makeAutoBattleActions =
+    Game_Actor.prototype.makeAutoBattleActions;
+  Game_Actor.prototype.makeAutoBattleActions = function () {
+    if (this.isConfused()) {
+      this.makeConfusionActions();
+    } else if (this.currentClass().aiPattern.length > 0) {
+      this.setAIPattern();
+      this.setActionState("waiting");
+    } else {
+      MageStudios.AABAI.Game_Actor_makeAutoBattleActions.call(this);
+    }
+  };
+
+  Game_Actor.prototype.setAIPattern = function () {
+    Game_Battler.prototype.setAIPattern.call(this);
+    if (this.numActions() <= 0) return;
+    AIManager.setBattler(this);
+    for (var i = 0; i < this.currentClass().aiPattern.length; ++i) {
+      if (Math.random() > this.aiLevel()) continue;
+      var line = this.currentClass().aiPattern[i];
+      if (AIManager.isDecidedActionAI(line)) return;
+    }
+    if (MageStudios.Param.AABAIUndecided) {
+      MageStudios.AABAI.Game_Actor_makeAutoBattleActions.call(this);
+    } else {
+      for (var i = 0; i < this.numActions(); i++) {
+        this._actions[i].setAttack();
+      }
+    }
+    this.setActionState("waiting");
+  };
+
+  Game_Actor.prototype.aiLevel = function () {
     return this.currentClass().aiLevel;
-};
-
-//=============================================================================
-// Error Message
-//=============================================================================
+  };
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_ActorAutoBattleAI without MSEP_BattleAICore. Please visit ';
-text += 'MageStudios.moe and install MSEP_BattleAICore in your game project before ';
-text += 'you can use this plugin.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // Imported.MSEP_BattleAICore
-
-//=============================================================================
-// Error Message
-//=============================================================================
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_X_ActorAutoBattleAI without MSEP_BattleAICore. Please visit ";
+  text +=
+    "MageStudios.moe and install MSEP_BattleAICore in your game project before ";
+  text += "you can use this plugin.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Region Trigger
-// MSEP_EventRegionTrigger.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventRegionTrigger = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EvReTr = MageStudios.EvReTr || {};
-MageStudios.EvReTr.version = 1.00;
+MageStudios.EvReTr.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows events to trigger by being in specific regions
  * instead of needing to exactly next to or on top of them.
  * @author Mage Studios Engine Plugins
@@ -53,7 +47,7 @@ MageStudios.EvReTr.version = 1.00;
  *
  * ---
  *
-  * Event region triggers behave differently depending on the event page's
+ * Event region triggers behave differently depending on the event page's
  * trigger type. Here is how the event page will activate based on the trigger:
  *
  *   Action Button
@@ -80,35 +74,32 @@ MageStudios.EvReTr.version = 1.00;
  *   automatically activate. The player is granted a few frames of movement
  *   each time the parallel process loops.
  */
-//=============================================================================
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
 
 MageStudios.EvReTr.Game_CharacterBase_increaseSteps =
   Game_CharacterBase.prototype.increaseSteps;
-Game_CharacterBase.prototype.increaseSteps = function() {
+Game_CharacterBase.prototype.increaseSteps = function () {
   MageStudios.EvReTr.Game_CharacterBase_increaseSteps.call(this);
   this.eventProximityIncreaseSteps();
 };
 
-Game_CharacterBase.prototype.eventProximityIncreaseSteps = function() {
-};
+Game_CharacterBase.prototype.eventProximityIncreaseSteps = function () {};
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-MageStudios.EvReTr.Game_Player_startMapEvent = Game_Player.prototype.startMapEvent;
-Game_Player.prototype.startMapEvent = function(x, y, triggers, normal) {
-  MageStudios.EvReTr.Game_Player_startMapEvent.call(this, x, y, triggers, normal);
+MageStudios.EvReTr.Game_Player_startMapEvent =
+  Game_Player.prototype.startMapEvent;
+Game_Player.prototype.startMapEvent = function (x, y, triggers, normal) {
+  MageStudios.EvReTr.Game_Player_startMapEvent.call(
+    this,
+    x,
+    y,
+    triggers,
+    normal
+  );
   if (!$gameMap.isEventRunning() && !$gameMap.isAnyEventStarting()) {
     this.startEventRegionTrigger(triggers, normal);
   }
 };
 
-Game_Player.prototype.startEventRegionTrigger = function(triggers, normal) {
+Game_Player.prototype.startEventRegionTrigger = function (triggers, normal) {
   var events = $gameMap.events();
   var length = events.length;
   for (var i = 0; i < length; ++i) {
@@ -121,33 +112,29 @@ Game_Player.prototype.startEventRegionTrigger = function(triggers, normal) {
   }
 };
 
-Game_Player.prototype.meetPlayerRegionTriggerConditions = function(ev) {
+Game_Player.prototype.meetPlayerRegionTriggerConditions = function (ev) {
   var regionId = this.regionId();
   return ev._regionTriggerList && ev._regionTriggerList.contains(regionId);
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EvReTr.Game_Event_setupPage = Game_Event.prototype.setupPage;
-Game_Event.prototype.setupPage = function() {
+Game_Event.prototype.setupPage = function () {
   this._initialAutoRegionTriggerBypass = true;
   MageStudios.EvReTr.Game_Event_setupPage.call(this);
   this._initialAutoRegionTriggerBypass = false;
   this.setupEventRegionTriggerSettings();
 };
 
-Game_Event.prototype.setupEventRegionTriggerSettings = function() {
+Game_Event.prototype.setupEventRegionTriggerSettings = function () {
   this.initEventRegionTriggerSettings();
   this.setupEventRegionTriggerCommentTags();
 };
 
-Game_Event.prototype.initEventRegionTriggerSettings = function() {
+Game_Event.prototype.initEventRegionTriggerSettings = function () {
   this._regionTriggerList = [];
 };
 
-Game_Event.prototype.setupEventRegionTriggerCommentTags = function() {
+Game_Event.prototype.setupEventRegionTriggerCommentTags = function () {
   if (!this.page()) return;
   var note1 = /<REGION (?:TRIGGER|TRIGGERS):[ ](\d+)>/i;
   var note2 = /<REGION (?:TRIGGER|TRIGGERS):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
@@ -159,14 +146,14 @@ Game_Event.prototype.setupEventRegionTriggerCommentTags = function() {
       if (ev.parameters[0].match(note1)) {
         this._regionTriggerList.push(parseInt(RegExp.$1));
       } else if (ev.parameters[0].match(note2)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         this._regionTriggerList = this._regionTriggerList.concat(array);
       }
     }
   }
 };
 
-Game_Event.prototype.eventProximityIncreaseSteps = function() {
+Game_Event.prototype.eventProximityIncreaseSteps = function () {
   if (!$gameMap.isEventRunning() && !$gameMap.isAnyEventStarting()) {
     $gamePlayer.startEventRegionTrigger([2], this.isNormalPriority());
   }
@@ -174,28 +161,25 @@ Game_Event.prototype.eventProximityIncreaseSteps = function() {
 
 MageStudios.EvReTr.Game_Event_checkEventTriggerAuto =
   Game_Event.prototype.checkEventTriggerAuto;
-Game_Event.prototype.checkEventTriggerAuto = function() {
+Game_Event.prototype.checkEventTriggerAuto = function () {
   if (this._trigger !== 3) return;
   if (this._initialAutoRegionTriggerBypass) return;
   if (!this.meetEventRegionTriggerConditions(false)) return;
   MageStudios.EvReTr.Game_Event_checkEventTriggerAuto.call(this);
 };
 
-MageStudios.EvReTr.Game_Event_updateParallel = Game_Event.prototype.updateParallel;
-Game_Event.prototype.updateParallel = function() {
+MageStudios.EvReTr.Game_Event_updateParallel =
+  Game_Event.prototype.updateParallel;
+Game_Event.prototype.updateParallel = function () {
   if (!this._interpreter) return;
   if (!this.meetEventRegionTriggerConditions(true)) return;
   MageStudios.EvReTr.Game_Event_updateParallel.call(this);
 };
 
-Game_Event.prototype.meetEventRegionTriggerConditions = function(parallel) {
+Game_Event.prototype.meetEventRegionTriggerConditions = function (parallel) {
   if (!parallel && $gameMap.isEventRunning()) return false;
   if (!parallel && $gameMap.isAnyEventStarting()) return false;
   if (!this._regionTriggerList) return true;
   if (this._regionTriggerList.length <= 0) return true;
   return $gamePlayer.meetPlayerRegionTriggerConditions(this);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

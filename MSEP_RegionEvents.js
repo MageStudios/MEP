@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Region Events
-// MSEP_RegionEvents.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_RegionEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RCE = MageStudios.RCE || {};
-MageStudios.RCE.version = 1.00;
+MageStudios.RCE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Make it so that whenever players step on certain
  * Region ID's, the game will play certain common events.
  * @author Mage Studios Engine Plugins
@@ -1886,26 +1880,18 @@ MageStudios.RCE.version = 1.00;
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_RegionEvents');
+MageStudios.Parameters = PluginManager.parameters("MSEP_RegionEvents");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.RCE.RegionEvents = {};
 for (MageStudios.i = 1; MageStudios.i <= 255; ++MageStudios.i) {
-  MageStudios.line = "Number(MageStudios.Parameters['Region " + MageStudios.i + "'] || 0)";
+  MageStudios.line =
+    "Number(MageStudios.Parameters['Region " + MageStudios.i + "'] || 0)";
   MageStudios.RCE.RegionEvents[MageStudios.i] = eval(MageStudios.line);
-};
+}
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.processRECNotetags = function() {
+DataManager.processRECNotetags = function () {
   if (!$dataMap) return;
   if (!$dataMap.note) return;
   var notedata = $dataMap.note.split(/[\r\n]+/);
@@ -1918,98 +1904,87 @@ DataManager.processRECNotetags = function() {
   }
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.RCE.Game_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
-    if ($dataMap) DataManager.processRECNotetags();
-    MageStudios.RCE.Game_Map_setup.call(this, mapId);
+Game_Map.prototype.setup = function (mapId) {
+  if ($dataMap) DataManager.processRECNotetags();
+  MageStudios.RCE.Game_Map_setup.call(this, mapId);
 };
 
-Game_Map.prototype.isRegionEvent = function(mx, my) {
-    return (this.isValid(mx, my) && this.regionEventTag(mx, my));
+Game_Map.prototype.isRegionEvent = function (mx, my) {
+  return this.isValid(mx, my) && this.regionEventTag(mx, my);
 };
 
-Game_Map.prototype.getUniqueRegionCommonEvent = function(regionId) {
-    if ($dataMap.regionCommonEvents === undefined) {
-      DataManager.processRECNotetags();
-    }
-    if ($dataMap.regionCommonEvents && $dataMap.regionCommonEvents[regionId]) {
-      return $dataMap.regionCommonEvents[regionId];
-    }
-    return 0;
+Game_Map.prototype.getUniqueRegionCommonEvent = function (regionId) {
+  if ($dataMap.regionCommonEvents === undefined) {
+    DataManager.processRECNotetags();
+  }
+  if ($dataMap.regionCommonEvents && $dataMap.regionCommonEvents[regionId]) {
+    return $dataMap.regionCommonEvents[regionId];
+  }
+  return 0;
 };
 
-Game_Map.prototype.regionEventTag = function(mx, my) {
-    if (this.regionId(mx, my) <= 0) return false;
-    var regionId = this.regionId(mx, my);
-    if (this.getUniqueRegionCommonEvent(regionId) > 0) return true;
-    return MageStudios.RCE.RegionEvents[regionId] > 0;
+Game_Map.prototype.regionEventTag = function (mx, my) {
+  if (this.regionId(mx, my) <= 0) return false;
+  var regionId = this.regionId(mx, my);
+  if (this.getUniqueRegionCommonEvent(regionId) > 0) return true;
+  return MageStudios.RCE.RegionEvents[regionId] > 0;
 };
 
-Game_Map.prototype.moveAfterCommonEvent = function() {
-    var interpreter = $gameMap._interpreter;
-    if (!interpreter._list) return false;
-    if (interpreter.eventId() > 0) return false;
-    var list = interpreter._list;
-    if ($gameTemp.destinationX() === $gamePlayer.x &&
-      $gameTemp.destinationY() === $gamePlayer.y) {
-        $gameTemp.clearDestination();
-    }
-    for (var i = 0; i < list.length; ++i) {
-      var code = list[i].code;
-      if ([201, 205, 230, 232, 261, 301].contains(code)) return false;
-    }
-    return true;
+Game_Map.prototype.moveAfterCommonEvent = function () {
+  var interpreter = $gameMap._interpreter;
+  if (!interpreter._list) return false;
+  if (interpreter.eventId() > 0) return false;
+  var list = interpreter._list;
+  if (
+    $gameTemp.destinationX() === $gamePlayer.x &&
+    $gameTemp.destinationY() === $gamePlayer.y
+  ) {
+    $gameTemp.clearDestination();
+  }
+  for (var i = 0; i < list.length; ++i) {
+    var code = list[i].code;
+    if ([201, 205, 230, 232, 261, 301].contains(code)) return false;
+  }
+  return true;
 };
-
-//=============================================================================
-// Game_Player
-//=============================================================================
 
 MageStudios.RCE.Game_Player_checkEventTriggerHere =
-    Game_Player.prototype.checkEventTriggerHere;
-Game_Player.prototype.checkEventTriggerHere = function(triggers) {
-    if (!this.canStartLocalEvents()) return;
-    if (!triggers.contains(0)) this.processRegionEvent();
-    MageStudios.RCE.Game_Player_checkEventTriggerHere.call(this, triggers);
+  Game_Player.prototype.checkEventTriggerHere;
+Game_Player.prototype.checkEventTriggerHere = function (triggers) {
+  if (!this.canStartLocalEvents()) return;
+  if (!triggers.contains(0)) this.processRegionEvent();
+  MageStudios.RCE.Game_Player_checkEventTriggerHere.call(this, triggers);
 };
 
-Game_Player.prototype.processRegionEvent = function() {
-    if (!$gameMap.isRegionEvent(this.x, this.y)) return;
-    if (Input.isTriggered('ok')) return;
-    var regionId = $gameMap.regionId(this.x, this.y)
-    if ($gameMap.getUniqueRegionCommonEvent(regionId) > 0) {
-      var commonEventId = $gameMap.getUniqueRegionCommonEvent(regionId);
-    } else {
-      var commonEventId = MageStudios.RCE.RegionEvents[regionId];
-    }
-    $gameTemp.reserveCommonEvent(commonEventId);
+Game_Player.prototype.processRegionEvent = function () {
+  if (!$gameMap.isRegionEvent(this.x, this.y)) return;
+  if (Input.isTriggered("ok")) return;
+  var regionId = $gameMap.regionId(this.x, this.y);
+  if ($gameMap.getUniqueRegionCommonEvent(regionId) > 0) {
+    var commonEventId = $gameMap.getUniqueRegionCommonEvent(regionId);
+  } else {
+    var commonEventId = MageStudios.RCE.RegionEvents[regionId];
+  }
+  $gameTemp.reserveCommonEvent(commonEventId);
 };
 
 MageStudios.RCE.Game_Player_canMove = Game_Player.prototype.canMove;
-Game_Player.prototype.canMove = function() {
-    if ($gameMessage.isBusy()) {
-      return false;
-    }
-    if (this.isMoveRouteForcing() || this.areFollowersGathering()) {
-        return false;
-    }
-    if (this._vehicleGettingOn || this._vehicleGettingOff) {
-        return false;
-    }
-    if (this.isInVehicle() && !this.vehicle().canMove()) {
-        return false;
-    }
-    if ($gameMap.isEventRunning() && $gameMap.moveAfterCommonEvent()) {
-      return true;
-    }
-    return MageStudios.RCE.Game_Player_canMove.call(this);
+Game_Player.prototype.canMove = function () {
+  if ($gameMessage.isBusy()) {
+    return false;
+  }
+  if (this.isMoveRouteForcing() || this.areFollowersGathering()) {
+    return false;
+  }
+  if (this._vehicleGettingOn || this._vehicleGettingOff) {
+    return false;
+  }
+  if (this.isInVehicle() && !this.vehicle().canMove()) {
+    return false;
+  }
+  if ($gameMap.isEventRunning() && $gameMap.moveAfterCommonEvent()) {
+    return true;
+  }
+  return MageStudios.RCE.Game_Player_canMove.call(this);
 };
-
-
-//=============================================================================
-// End of File
-//=============================================================================

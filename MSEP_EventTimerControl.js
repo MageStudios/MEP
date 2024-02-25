@@ -1,21 +1,15 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Timer Control
-// MSEP_EventTimerControl.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventTimerControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Timer = MageStudios.Timer || {};
-MageStudios.Timer.version = 1.00;
+MageStudios.Timer.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Gain more control over the event timer function
  * for your game.
  * @author Mage Studios Engine Plugins
- * 
+ *
  * @param ---Mechanical---
  *
  * @param SpritesetSplit
@@ -44,9 +38,9 @@ MageStudios.Timer.version = 1.00;
  * @param Effect Code
  * @parent ---Lunatic Mode---
  * @type note
- * @desc LUNATIC MODE: This is the code used for each of the 
+ * @desc LUNATIC MODE: This is the code used for each of the
  * plugin commands.
- * @default "// ------------\n// Pause/Resume\n// ------------\nif (data.match(/PAUSE/i)) {\n  $gameTimer.pause();\n\n} else if (data.match(/RESUME/i)) {\n  $gameTimer.resume();\n\n// -------------\n// Count Down/Up\n// -------------\n} else if (data.match(/(?:COUNTDOWN|COUNT DOWN)/i)) {\n  $gameTimer.changeDirection(-1);\n\n} else if (data.match(/(?:COUNTUP|COUNT UP)/i)) {\n  $gameTimer.changeDirection(1);\n\n} else if (data.match(/(?:COUNTOGGLE|COUNT TOGGLE)/i)) {\n  $gameTimer.changeDirection(-1 * $gameTimer._direction);\n\n// -----------------\n// Increase/Decrease\n// -----------------\n} else if (data.match(/(?:INCREASE|DECREASE)/i)) {\n  if (data.match(/DECREASE/i)) {\n    var direction = -1;\n  } else {\n    var direction = 1;\n  }\n  var frames = 0;\n  if (data.match(/(\\d+)[ ]FRAME/i)) {\n    frames += parseInt(RegExp.$1);\n  }\n  if (data.match(/(\\d+)[ ]SEC/i)) {\n    frames += parseInt(RegExp.$1) * 60;\n  }\n  if (data.match(/(\\d+)[ ]MIN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ](?:HR|HOUR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ]DAY/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24;\n  }\n  if (data.match(/(\\d+)[ ]WEEK/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 7;\n  }\n  if (data.match(/(\\d+)[ ]MONTH/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 30;\n  }\n  if (data.match(/(\\d+)[ ](?:YR|YEAR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365;\n  }\n  if (data.match(/(\\d+)[ ]DECADE/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 10;\n  }\n  if (data.match(/(\\d+)[ ]CENTUR/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 100;\n  }\n  if (data.match(/(\\d+)[ ]MILLEN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 1000;\n  }\n  frames *= direction;\n  $gameTimer.gainFrames(frames);\n\n// --------------------------------\n// Add new commands above this data\n// --------------------------------\n} else {\n  // Do nothing\n}"
+ * @default "
  *
  * @param Expire Code
  * @parent ---Lunatic Mode---
@@ -145,22 +139,22 @@ MageStudios.Timer.version = 1.00;
  *
  * ---
  *
- * // ------------
- * // Pause/Resume
- * // ------------
+ *
+ *
+ *
  * if (data.match(/PAUSE/i)) {
  *   $gameTimer.pause();
- * 
+ *
  * } else if (data.match(/RESUME/i)) {
  *   $gameTimer.resume();
  *
  * ...
  *
- * // --------------------------------
- * // Add new commands above this data
- * // --------------------------------
+ *
+ *
+ *
  * } else {
- *   // Do nothing
+ *
  * }
  *
  * ---
@@ -179,60 +173,49 @@ MageStudios.Timer.version = 1.00;
  * plugin from your plugin manager list and then add it again. The code will be
  * back to default.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EventTimerControl');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EventTimerControl");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.TimerSeparate = String(MageStudios.Parameters['SpritesetSplit']);
+MageStudios.Param.TimerSeparate = String(
+  MageStudios.Parameters["SpritesetSplit"]
+);
 MageStudios.Param.TimerSeparate = eval(MageStudios.Param.TimerSeparate);
-MageStudios.Param.TimerAlign = String(MageStudios.Parameters['TextAlign']);
+MageStudios.Param.TimerAlign = String(MageStudios.Parameters["TextAlign"]);
 
-MageStudios.Param.TimerCode = JSON.parse(MageStudios.Parameters['Effect Code']);
-MageStudios.Param.TimerExpire = JSON.parse(MageStudios.Parameters['Expire Code']);
-
-//=============================================================================
-// Separate from Spriteset
-//=============================================================================
+MageStudios.Param.TimerCode = JSON.parse(MageStudios.Parameters["Effect Code"]);
+MageStudios.Param.TimerExpire = JSON.parse(
+  MageStudios.Parameters["Expire Code"]
+);
 
 if (MageStudios.Param.TimerSeparate) {
+  Spriteset_Base.prototype.createTimer = function () {
+    this._timerSprite = new Sprite_Timer();
+  };
 
-Spriteset_Base.prototype.createTimer = function() {
-  this._timerSprite = new Sprite_Timer();
-};
+  MageStudios.Timer.Scene_Map_createDisplayObjects =
+    Scene_Map.prototype.createDisplayObjects;
+  Scene_Map.prototype.createDisplayObjects = function () {
+    MageStudios.Timer.Scene_Map_createDisplayObjects.call(this);
+    this.addChild(this._spriteset._timerSprite);
+  };
 
-MageStudios.Timer.Scene_Map_createDisplayObjects =
-  Scene_Map.prototype.createDisplayObjects;
-Scene_Map.prototype.createDisplayObjects = function() {
-  MageStudios.Timer.Scene_Map_createDisplayObjects.call(this);
-  this.addChild(this._spriteset._timerSprite);
-};
-
-MageStudios.Timer.Scene_Battle_createDisplayObjects =
-  Scene_Battle.prototype.createDisplayObjects;
-Scene_Battle.prototype.createDisplayObjects = function() {
-  MageStudios.Timer.Scene_Battle_createDisplayObjects.call(this);
-  this.addChild(this._spriteset._timerSprite);
-};
-
-}; // MageStudios.Param.TimerSeparate
-
-//=============================================================================
-// Game_Timer
-//=============================================================================
+  MageStudios.Timer.Scene_Battle_createDisplayObjects =
+    Scene_Battle.prototype.createDisplayObjects;
+  Scene_Battle.prototype.createDisplayObjects = function () {
+    MageStudios.Timer.Scene_Battle_createDisplayObjects.call(this);
+    this.addChild(this._spriteset._timerSprite);
+  };
+}
 
 MageStudios.Timer.Game_Timer_initialize = Game_Timer.prototype.initialize;
-Game_Timer.prototype.initialize = function() {
+Game_Timer.prototype.initialize = function () {
   MageStudios.Timer.Game_Timer_initialize.call(this);
   this._paused = false;
   this._direction = -1;
 };
 
-Game_Timer.prototype.update = function(sceneActive) {
+Game_Timer.prototype.update = function (sceneActive) {
   if (!sceneActive) return;
   if (!this._working) return;
   if (this._paused) return;
@@ -242,36 +225,36 @@ Game_Timer.prototype.update = function(sceneActive) {
 };
 
 MageStudios.Timer.Game_Timer_start = Game_Timer.prototype.start;
-Game_Timer.prototype.start = function(count) {
+Game_Timer.prototype.start = function (count) {
   MageStudios.Timer.Game_Timer_start.call(this, count);
   this._paused = false;
 };
 
 MageStudios.Timer.Game_Timer_stop = Game_Timer.prototype.stop;
-Game_Timer.prototype.stop = function() {
+Game_Timer.prototype.stop = function () {
   MageStudios.Timer.Game_Timer_stop.call(this);
   this._paused = false;
 };
 
-Game_Timer.prototype.pause = function() {
+Game_Timer.prototype.pause = function () {
   if (this._frames <= 0) return;
   this._paused = true;
   this._working = true;
 };
 
-Game_Timer.prototype.resume = function() {
+Game_Timer.prototype.resume = function () {
   if (this._frames <= 0) return;
   this._paused = false;
   this._working = true;
 };
 
-Game_Timer.prototype.gainFrames = function(value) {
+Game_Timer.prototype.gainFrames = function (value) {
   this._frames = this._frames || 0;
   this._frames += value;
   this._working = true;
 };
 
-Game_Timer.prototype.changeDirection = function(value) {
+Game_Timer.prototype.changeDirection = function (value) {
   this._direction = value;
   this._working = true;
   if (value > 0) {
@@ -279,34 +262,34 @@ Game_Timer.prototype.changeDirection = function(value) {
   }
 };
 
-Game_Timer.prototype.onExpire = function() {
+Game_Timer.prototype.onExpire = function () {
   var code = MageStudios.Param.TimerExpire;
   try {
-    eval(code)
+    eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'EVENT TIMER CONTROL EXPIRE CODE ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "EVENT TIMER CONTROL EXPIRE CODE ERROR"
+    );
   }
 };
 
-//=============================================================================
-// Sprite_Timer
-//=============================================================================
-
-Sprite_Timer.prototype.createBitmap = function() {
+Sprite_Timer.prototype.createBitmap = function () {
   this.bitmap = new Bitmap(144, 48);
   this.bitmap.fontSize = 32;
 };
 
-Sprite_Timer.prototype.timerText = function() {
+Sprite_Timer.prototype.timerText = function () {
   var hour = Math.floor(this._seconds / 60 / 60);
   var min = Math.floor(this._seconds / 60) % 60;
   var sec = this._seconds % 60;
-  var text = min.padZero(2) + ':' + sec.padZero(2);
-  if (hour > 0) text = MageStudios.Util.toGroup(hour) + ':' + text;
+  var text = min.padZero(2) + ":" + sec.padZero(2);
+  if (hour > 0) text = MageStudios.Util.toGroup(hour) + ":" + text;
   return text;
 };
 
-Sprite_Timer.prototype.redraw = function() {
+Sprite_Timer.prototype.redraw = function () {
   var text = this.timerText();
   var width = this.bitmap.width;
   var height = this.bitmap.height;
@@ -314,151 +297,114 @@ Sprite_Timer.prototype.redraw = function() {
   this.bitmap.drawText(text, 0, 0, width, height, MageStudios.Param.TimerAlign);
 };
 
-if (MageStudios.Param.TimerAlign === 'right') {
-
-Sprite_Timer.prototype.updatePosition = function() {
-  this.x = Graphics.width - this.bitmap.width - 12;
-  this.y = 0;
-};
-
-}; // MageStudios.Param.TimerAlign === 'right'
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
+if (MageStudios.Param.TimerAlign === "right") {
+  Sprite_Timer.prototype.updatePosition = function () {
+    this.x = Graphics.width - this.bitmap.width - 12;
+    this.y = 0;
+  };
+}
 
 MageStudios.Timer.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.Timer.Game_Interpreter_pluginCommand.call(this, command, args);
   if (command.match(/EVENTTIMER/i)) {
     var data = this.argsToString(args);
     var code = MageStudios.Param.TimerCode;
     try {
-      eval(code)
+      eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'EVENT TIMER CONTROL EFFECT CODE ERROR');
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "EVENT TIMER CONTROL EFFECT CODE ERROR"
+      );
     }
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
 }
 
-}; // MageStudios.Util.toGroup
-
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
 
-//=============================================================================
-// Default Effect Code
-//=============================================================================
-
 if (false) {
-
-// ------------
-// Pause/Resume
-// ------------
-if (data.match(/PAUSE/i)) {
-  $gameTimer.pause();
-
-} else if (data.match(/RESUME/i)) {
-  $gameTimer.resume();
-
-// -------------
-// Count Down/Up
-// -------------
-} else if (data.match(/(?:COUNTDOWN|COUNT DOWN)/i)) {
-  $gameTimer.changeDirection(-1);
-
-} else if (data.match(/(?:COUNTUP|COUNT UP)/i)) {
-  $gameTimer.changeDirection(1);
-
-} else if (data.match(/(?:COUNTOGGLE|COUNT TOGGLE)/i)) {
-  $gameTimer.changeDirection(-1 * $gameTimer._direction);
-
-// -----------------
-// Increase/Decrease
-// -----------------
-} else if (data.match(/(?:INCREASE|DECREASE)/i)) {
-  if (data.match(/DECREASE/i)) {
-    var direction = -1;
+  if (data.match(/PAUSE/i)) {
+    $gameTimer.pause();
+  } else if (data.match(/RESUME/i)) {
+    $gameTimer.resume();
+  } else if (data.match(/(?:COUNTDOWN|COUNT DOWN)/i)) {
+    $gameTimer.changeDirection(-1);
+  } else if (data.match(/(?:COUNTUP|COUNT UP)/i)) {
+    $gameTimer.changeDirection(1);
+  } else if (data.match(/(?:COUNTOGGLE|COUNT TOGGLE)/i)) {
+    $gameTimer.changeDirection(-1 * $gameTimer._direction);
+  } else if (data.match(/(?:INCREASE|DECREASE)/i)) {
+    if (data.match(/DECREASE/i)) {
+      var direction = -1;
+    } else {
+      var direction = 1;
+    }
+    var frames = 0;
+    if (data.match(/(\d+)[ ]FRAME/i)) {
+      frames += parseInt(RegExp.$1);
+    }
+    if (data.match(/(\d+)[ ]SEC/i)) {
+      frames += parseInt(RegExp.$1) * 60;
+    }
+    if (data.match(/(\d+)[ ]MIN/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60;
+    }
+    if (data.match(/(\d+)[ ](?:HR|HOUR)/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60;
+    }
+    if (data.match(/(\d+)[ ]DAY/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24;
+    }
+    if (data.match(/(\d+)[ ]WEEK/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 7;
+    }
+    if (data.match(/(\d+)[ ]MONTH/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 30;
+    }
+    if (data.match(/(\d+)[ ](?:YR|YEAR)/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365;
+    }
+    if (data.match(/(\d+)[ ]DECADE/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 10;
+    }
+    if (data.match(/(\d+)[ ]CENTUR/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 100;
+    }
+    if (data.match(/(\d+)[ ]MILLEN/i)) {
+      frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 1000;
+    }
+    frames *= direction;
+    $gameTimer.gainFrames(frames);
   } else {
-    var direction = 1;
   }
-  var frames = 0;
-  if (data.match(/(\d+)[ ]FRAME/i)) {
-    frames += parseInt(RegExp.$1);
-  }
-  if (data.match(/(\d+)[ ]SEC/i)) {
-    frames += parseInt(RegExp.$1) * 60;
-  }
-  if (data.match(/(\d+)[ ]MIN/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60;
-  }
-  if (data.match(/(\d+)[ ](?:HR|HOUR)/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60;
-  }
-  if (data.match(/(\d+)[ ]DAY/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24;
-  }
-  if (data.match(/(\d+)[ ]WEEK/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 7;
-  }
-  if (data.match(/(\d+)[ ]MONTH/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 30;
-  }
-  if (data.match(/(\d+)[ ](?:YR|YEAR)/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365;
-  }
-  if (data.match(/(\d+)[ ]DECADE/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 10;
-  }
-  if (data.match(/(\d+)[ ]CENTUR/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 100;
-  }
-  if (data.match(/(\d+)[ ]MILLEN/i)) {
-    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 1000;
-  }
-  frames *= direction;
-  $gameTimer.gainFrames(frames);
-
-// --------------------------------
-// Add new commands above this data
-// --------------------------------
-} else {
-  // Do nothing
 }
-
-}; // Default Effect Code
-
-//=============================================================================
-// End of File
-//=============================================================================

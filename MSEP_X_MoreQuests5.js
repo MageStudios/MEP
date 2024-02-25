@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Quest Journal System Extension - More Quests 5
-// MSEP_X_MoreQuests5.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MoreQuests5 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MoreQuests5 = MageStudios.MoreQuests5 || {};
-MageStudios.MoreQuests5.version = 1.00;
+MageStudios.MoreQuests5.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_QuestJournal.js)
  * Add quests 4001 to 5000 to your game!
  * @author Mage Studios Engine Plugins
@@ -226,7 +220,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4020
  * @parent ---Quests 4001 to 4100---
  * @type struct<Quest>
@@ -962,7 +956,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4120
  * @parent ---Quests 4101 to 4200---
  * @type struct<Quest>
@@ -1698,7 +1692,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4220
  * @parent ---Quests 4201 to 4300---
  * @type struct<Quest>
@@ -2434,7 +2428,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4320
  * @parent ---Quests 4301 to 4400---
  * @type struct<Quest>
@@ -3170,7 +3164,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4420
  * @parent ---Quests 4401 to 4500---
  * @type struct<Quest>
@@ -3906,7 +3900,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4520
  * @parent ---Quests 4501 to 4600---
  * @type struct<Quest>
@@ -4642,7 +4636,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4620
  * @parent ---Quests 4601 to 4700---
  * @type struct<Quest>
@@ -5378,7 +5372,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4720
  * @parent ---Quests 4701 to 4800---
  * @type struct<Quest>
@@ -6114,7 +6108,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4820
  * @parent ---Quests 4801 to 4900---
  * @type struct<Quest>
@@ -6850,7 +6844,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 4920
  * @parent ---Quests 4901 to 5000---
  * @type struct<Quest>
@@ -7485,7 +7479,7 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc The reward list for this quest.
  * Text codes allowed.
  * @default ["\"\\\\i[176]Potion x5\"","\"\\\\i[178]Ether x3\"","\"To make other rewards appear,\\nenable them through the \\\\c[4]'Visible\\nRewards'\\\\c[0] plugin parameter or by\\nusing a plugin command to make\\nthem appear\""]
- * 
+ *
  * @param Visible Rewards
  * @parent Rewards List
  * @type number[]
@@ -7498,60 +7492,53 @@ MageStudios.MoreQuests5.version = 1.00;
  * @desc Subtext to be displayed with the quest.
  * @default ["\"\"","\"This is a subtext. It is used as\\nextra text that you may want to\\nplace on your quest journal that\\ndiffers from the description.\""]
  */
-//=============================================================================
 
 if (Imported.MSEP_QuestJournal) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MoreQuests5");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  DataManager.questDatabaseCreate = function () {
+    $dataQuests = $dataQuests || [null];
+    var index1 = [4001, 4101, 4201, 4301, 4401, 4501, 4601, 4701, 4801, 4901];
+    var index2 = [4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000];
+    var length = index1.length;
+    for (var n = 0; n < length; ++n) {
+      var a = index1[n];
+      var b = index2[n];
+      var str = a + " to " + b;
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreQuests5');
-MageStudios.Param = MageStudios.Param || {};
-
-DataManager.questDatabaseCreate = function() {
-  $dataQuests = $dataQuests || [null];
-  var index1 = [4001, 4101, 4201, 4301, 4401, 4501, 4601, 4701, 4801, 4901];
-  var index2 = [4100, 4200, 4300, 4400, 4500, 4600, 4700, 4800, 4900, 5000];
-  var length = index1.length;
-  for (var n = 0; n < length; ++n) {
-    var a = index1[n];
-    var b = index2[n];
-    var str = a + ' to ' + b;
-
-    for (var i = a; i <= b; ++i) {
-      var questData = JSON.parse(MageStudios.Parameters['Quest ' + i] || 'null');
-      if (!questData) continue;
-      if (questData['Type'] === '|-=AUTO=-|') {
-        questData['Type'] = MageStudios.Parameters['Category: ' + str];
+      for (var i = a; i <= b; ++i) {
+        var questData = JSON.parse(
+          MageStudios.Parameters["Quest " + i] || "null"
+        );
+        if (!questData) continue;
+        if (questData["Type"] === "|-=AUTO=-|") {
+          questData["Type"] = MageStudios.Parameters["Category: " + str];
+        }
+        if (questData["Difficulty"] === "|-=AUTO=-|") {
+          questData["Difficulty"] =
+            MageStudios.Parameters["Difficulty: " + str];
+        }
+        if (questData["From"] === "|-=AUTO=-|") {
+          questData["From"] = MageStudios.Parameters["From: " + str];
+        }
+        if (questData["Location"] === "|-=AUTO=-|") {
+          questData["Location"] = MageStudios.Parameters["Location: " + str];
+        }
+        this.questDatabaseAdd(i, questData);
       }
-      if (questData['Difficulty'] === '|-=AUTO=-|') {
-        questData['Difficulty'] = MageStudios.Parameters['Difficulty: ' + str];
-      }
-      if (questData['From'] === '|-=AUTO=-|') {
-        questData['From'] = MageStudios.Parameters['From: ' + str];
-      }
-      if (questData['Location'] === '|-=AUTO=-|') {
-        questData['Location'] = MageStudios.Parameters['Location: ' + str];
-      }
-      this.questDatabaseAdd(i, questData);
     }
-  }
-};
+  };
 
-DataManager.questDatabaseCreate();
-
-//=============================================================================
-// End of File
-//=============================================================================
+  DataManager.questDatabaseCreate();
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_MoreQuests5 without MSEP_QuestJournal. Please visit MageStudios.moe ';
-text += 'and install MSEP_QuestJournal in your game project before you can use ';
-text += 'this plugin.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // Imported.MSEP_QuestJournal
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text +=
+    "MSEP_X_MoreQuests5 without MSEP_QuestJournal. Please visit MageStudios.moe ";
+  text +=
+    "and install MSEP_QuestJournal in your game project before you can use ";
+  text += "this plugin.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

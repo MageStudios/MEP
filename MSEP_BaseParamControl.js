@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Base Parameter Control
-// MSEP_BaseParamControl.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_BaseParamControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BPC = MageStudios.BPC || {};
-MageStudios.BPC.version = 1.00;
+MageStudios.BPC.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Gain control over the method of calculation for base
  * parameters: MaxHP, MaxMP, ATK, DEF, MAT, MDF, AGI, LUK.
  * @author Mage Studios Engine Plugins
@@ -271,7 +265,7 @@ MageStudios.BPC.version = 1.00;
  * higher values mean less damage received from magical attacks.
  *
  * ---
- * 
+ *
  * AGI - Agility
  * - This is the agility value of the battler. By default, this stat is used to
  * determine battler's position in the battle turn's order. Given a normal turn
@@ -504,53 +498,94 @@ MageStudios.BPC.version = 1.00;
  *   battler may have. If there are multiple min values, the larges value is
  *   used as the parameter minimum.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_BaseParamControl');
+MageStudios.Parameters = PluginManager.parameters("MSEP_BaseParamControl");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.BPCFormula = []
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['MHP Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['MMP Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['ATK Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['DEF Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['MAT Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['MDF Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['AGI Formula']));
-MageStudios.Param.BPCFormula.push(String(MageStudios.Parameters['LUK Formula']));
+MageStudios.Param.BPCFormula = [];
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["MHP Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["MMP Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["ATK Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["DEF Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["MAT Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["MDF Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["AGI Formula"])
+);
+MageStudios.Param.BPCFormula.push(
+  String(MageStudios.Parameters["LUK Formula"])
+);
 
-MageStudios.Param.BPCMaximum = []
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['MHP Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['MMP Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['ATK Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['DEF Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['MAT Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['MDF Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['AGI Maximum']));
-MageStudios.Param.BPCMaximum.push(String(MageStudios.Parameters['LUK Maximum']));
+MageStudios.Param.BPCMaximum = [];
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["MHP Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["MMP Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["ATK Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["DEF Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["MAT Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["MDF Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["AGI Maximum"])
+);
+MageStudios.Param.BPCMaximum.push(
+  String(MageStudios.Parameters["LUK Maximum"])
+);
 
-MageStudios.Param.BPCMinimum = []
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['MHP Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['MMP Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['ATK Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['DEF Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['MAT Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['MDF Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['AGI Minimum']));
-MageStudios.Param.BPCMinimum.push(String(MageStudios.Parameters['LUK Minimum']));
+MageStudios.Param.BPCMinimum = [];
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["MHP Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["MMP Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["ATK Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["DEF Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["MAT Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["MDF Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["AGI Minimum"])
+);
+MageStudios.Param.BPCMinimum.push(
+  String(MageStudios.Parameters["LUK Minimum"])
+);
 
-MageStudios.Param.BPCLukEffectRate = String(MageStudios.Parameters['LUK Effect']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.BPCLukEffectRate = String(
+  MageStudios.Parameters["LUK Effect"]
+);
 
 MageStudios.BPC.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.BPC.DataManager_isDatabaseLoaded.call(this)) return false;
 
   if (!MageStudios._loaded_MSEP_BaseParamControl) {
@@ -562,11 +597,11 @@ DataManager.isDatabaseLoaded = function() {
     this.processBPCNotetags1($dataStates);
     MageStudios._loaded_MSEP_BaseParamControl = true;
   }
-  
+
   return true;
 };
 
-DataManager.processBPCNotetags1 = function(group) {
+DataManager.processBPCNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -591,7 +626,7 @@ DataManager.processBPCNotetags1 = function(group) {
         if (id !== null) obj.rateParams[id] = rate;
       } else if (line.match(/<(.*) RATE:[ ](\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getParamId(text);
         if (id !== null) obj.rateParams[id] = rate;
       } else if (line.match(/<(.*) FLAT:[ ]([\+\-]\d+)>/i)) {
@@ -614,33 +649,29 @@ DataManager.processBPCNotetags1 = function(group) {
   }
 };
 
-DataManager.getParamId = function(string) {
-    if (['MHP',, 'MAXHP', 'MAX HP', 'HP'].contains(string)) {
-      return 0;
-    } else if (['MMP',, 'MAXMP', 'MAX MP', 'MP'].contains(string)) {
-      return 1;
-    } else if (['ATK', 'ATTACK'].contains(string)) {
-      return 2;
-    } else if (['DEF', 'DEFENSE'].contains(string)) {
-      return 3;
-    } else if (['MAT', 'MAGIC ATTACK', 'M.ATTACK', 'INT'].contains(string)) {
-      return 4;
-    } else if (['MDF', 'MAGIC DEFENSE', 'M.DEFENSE', 'RES'].contains(string)) {
-      return 5;
-    } else if (['AGI', 'AGILITY', 'SPD'].contains(string)) {
-      return 6;
-    } else if (['LUK', 'LUK'].contains(string)) {
-      return 7;
-    } else {
-      return null;
-    }
+DataManager.getParamId = function (string) {
+  if (["MHP", , "MAXHP", "MAX HP", "HP"].contains(string)) {
+    return 0;
+  } else if (["MMP", , "MAXMP", "MAX MP", "MP"].contains(string)) {
+    return 1;
+  } else if (["ATK", "ATTACK"].contains(string)) {
+    return 2;
+  } else if (["DEF", "DEFENSE"].contains(string)) {
+    return 3;
+  } else if (["MAT", "MAGIC ATTACK", "M.ATTACK", "INT"].contains(string)) {
+    return 4;
+  } else if (["MDF", "MAGIC DEFENSE", "M.DEFENSE", "RES"].contains(string)) {
+    return 5;
+  } else if (["AGI", "AGILITY", "SPD"].contains(string)) {
+    return 6;
+  } else if (["LUK", "LUK"].contains(string)) {
+    return 7;
+  } else {
+    return null;
+  }
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-Game_BattlerBase.prototype.param = function(paramId) {
+Game_BattlerBase.prototype.param = function (paramId) {
   this._baseParamCache = this._baseParamCache || [];
   if (this._baseParamCache[paramId]) return this._baseParamCache[paramId];
   var base = this.paramBase(paramId);
@@ -662,14 +693,14 @@ Game_BattlerBase.prototype.param = function(paramId) {
     var value = eval(code);
   } catch (e) {
     var value = 0;
-    MageStudios.Util.displayError(e, code, 'CUSTOM PARAM FORMULA ERROR');
+    MageStudios.Util.displayError(e, code, "CUSTOM PARAM FORMULA ERROR");
   }
   value = Math.round(value.clamp(minValue, maxValue));
   this._baseParamCache[paramId] = value;
   return this._baseParamCache[paramId];
 };
 
-Game_BattlerBase.prototype.paramMax = function(paramId) {
+Game_BattlerBase.prototype.paramMax = function (paramId) {
   var customMax = this.customParamMax(paramId);
   var a = this;
   var user = this;
@@ -683,13 +714,13 @@ Game_BattlerBase.prototype.paramMax = function(paramId) {
     var value = eval(code);
   } catch (e) {
     var value = 0;
-    MageStudios.Util.displayError(e, code, 'CUSTOM PARAM MAX FORMULA ERROR');
+    MageStudios.Util.displayError(e, code, "CUSTOM PARAM MAX FORMULA ERROR");
   }
   value = Math.ceil(value);
   return value;
 };
 
-Game_BattlerBase.prototype.paramMin = function(paramId) {
+Game_BattlerBase.prototype.paramMin = function (paramId) {
   var customMin = this.customParamMin(paramId);
   var a = this;
   var user = this;
@@ -703,476 +734,452 @@ Game_BattlerBase.prototype.paramMin = function(paramId) {
     var value = eval(code);
   } catch (e) {
     var value = 0;
-    MageStudios.Util.displayError(e, code, 'CUSTOM PARAM MIN FORMULA ERROR');
+    MageStudios.Util.displayError(e, code, "CUSTOM PARAM MIN FORMULA ERROR");
   }
   value = Math.ceil(value);
   return value;
 };
 
-MageStudios.BPC.Game_BattlerBase_initMembers = 
-    Game_BattlerBase.prototype.initMembers;
-Game_BattlerBase.prototype.initMembers = function() {
-    MageStudios.BPC.Game_BattlerBase_initMembers.call(this);
-    this.clearCustomParamLimits();
+MageStudios.BPC.Game_BattlerBase_initMembers =
+  Game_BattlerBase.prototype.initMembers;
+Game_BattlerBase.prototype.initMembers = function () {
+  MageStudios.BPC.Game_BattlerBase_initMembers.call(this);
+  this.clearCustomParamLimits();
 };
 
-Game_BattlerBase.prototype.clearCustomParamLimits = function() {
-    this._paramLimitMin = [0,0,0,0,0,0,0,0];
-    this._paramLimitMax = [0,0,0,0,0,0,0,0];
+Game_BattlerBase.prototype.clearCustomParamLimits = function () {
+  this._paramLimitMin = [0, 0, 0, 0, 0, 0, 0, 0];
+  this._paramLimitMax = [0, 0, 0, 0, 0, 0, 0, 0];
 };
 
-Game_BattlerBase.prototype.customParamMax = function(paramId) {
-    if (!this._paramLimitMax) this.clearCustomParamLimits();
-    var value = this._paramLimitMax[paramId];
-    return value;
+Game_BattlerBase.prototype.customParamMax = function (paramId) {
+  if (!this._paramLimitMax) this.clearCustomParamLimits();
+  var value = this._paramLimitMax[paramId];
+  return value;
 };
 
-Game_BattlerBase.prototype.customParamMin = function(paramId) {
-    if (!this._paramLimitMin) this.clearCustomParamLimits();
-    var value = this._paramLimitMin[paramId];
-    return value;
+Game_BattlerBase.prototype.customParamMin = function (paramId) {
+  if (!this._paramLimitMin) this.clearCustomParamLimits();
+  var value = this._paramLimitMin[paramId];
+  return value;
 };
 
-Game_BattlerBase.prototype.setParam = function(id, value) {
-    this._paramPlus[id] = 0;
-    this._baseParamCache = [];
-    this._paramPlus[id] = value - this.param(id);
-    this.refresh();
+Game_BattlerBase.prototype.setParam = function (id, value) {
+  this._paramPlus[id] = 0;
+  this._baseParamCache = [];
+  this._paramPlus[id] = value - this.param(id);
+  this.refresh();
 };
 
-Game_BattlerBase.prototype.setMaxHp = function(value) {
-    this.setParam(0, value);
+Game_BattlerBase.prototype.setMaxHp = function (value) {
+  this.setParam(0, value);
 };
 
-Game_BattlerBase.prototype.setMaxMp = function(value) {
-    this.setParam(1, value);
+Game_BattlerBase.prototype.setMaxMp = function (value) {
+  this.setParam(1, value);
 };
 
-Game_BattlerBase.prototype.setAtk = function(value) {
-    this.setParam(2, value);
+Game_BattlerBase.prototype.setAtk = function (value) {
+  this.setParam(2, value);
 };
 
-Game_BattlerBase.prototype.setDef = function(value) {
-    this.setParam(3, value);
+Game_BattlerBase.prototype.setDef = function (value) {
+  this.setParam(3, value);
 };
 
-Game_BattlerBase.prototype.setMat = function(value) {
-    this.setParam(4, value);
+Game_BattlerBase.prototype.setMat = function (value) {
+  this.setParam(4, value);
 };
 
-Game_BattlerBase.prototype.setMdf = function(value) {
-    this.setParam(5, value);
+Game_BattlerBase.prototype.setMdf = function (value) {
+  this.setParam(5, value);
 };
 
-Game_BattlerBase.prototype.setAgi = function(value) {
-    this.setParam(6, value);
+Game_BattlerBase.prototype.setAgi = function (value) {
+  this.setParam(6, value);
 };
 
-Game_BattlerBase.prototype.setLuk = function(value) {
-    this.setParam(7, value);
+Game_BattlerBase.prototype.setLuk = function (value) {
+  this.setParam(7, value);
 };
 
-Game_BattlerBase.prototype.setParamPlus = function(id, value) {
-    this._paramPlus[id] = value;
-    this.refresh();
+Game_BattlerBase.prototype.setParamPlus = function (id, value) {
+  this._paramPlus[id] = value;
+  this.refresh();
 };
 
-Game_BattlerBase.prototype.setMaxHpPlus = function(value) {
-    this.setParamPlus(0, value);
+Game_BattlerBase.prototype.setMaxHpPlus = function (value) {
+  this.setParamPlus(0, value);
 };
 
-Game_BattlerBase.prototype.setMaxMpPlus = function(value) {
-    this.setParamPlus(1, value);
+Game_BattlerBase.prototype.setMaxMpPlus = function (value) {
+  this.setParamPlus(1, value);
 };
 
-Game_BattlerBase.prototype.setAtkPlus = function(value) {
-    this.setParamPlus(2, value);
+Game_BattlerBase.prototype.setAtkPlus = function (value) {
+  this.setParamPlus(2, value);
 };
 
-Game_BattlerBase.prototype.setDefPlus = function(value) {
-    this.setParamPlus(3, value);
+Game_BattlerBase.prototype.setDefPlus = function (value) {
+  this.setParamPlus(3, value);
 };
 
-Game_BattlerBase.prototype.setMatPlus = function(value) {
-    this.setParamPlus(4, value);
+Game_BattlerBase.prototype.setMatPlus = function (value) {
+  this.setParamPlus(4, value);
 };
 
-Game_BattlerBase.prototype.setMdfPlus = function(value) {
-    this.setParamPlus(5, value);
+Game_BattlerBase.prototype.setMdfPlus = function (value) {
+  this.setParamPlus(5, value);
 };
 
-Game_BattlerBase.prototype.setAgiPlus = function(value) {
-    this.setParamPlus(6, value);
+Game_BattlerBase.prototype.setAgiPlus = function (value) {
+  this.setParamPlus(6, value);
 };
 
-Game_BattlerBase.prototype.setLukPlus = function(value) {
-    this.setParamPlus(7, value);
+Game_BattlerBase.prototype.setLukPlus = function (value) {
+  this.setParamPlus(7, value);
 };
 
-Game_BattlerBase.prototype.addMaxHp = function(value) {
-    this.addParam(0, value);
+Game_BattlerBase.prototype.addMaxHp = function (value) {
+  this.addParam(0, value);
 };
 
-Game_BattlerBase.prototype.addMaxMp = function(value) {
-    this.addParam(1, value);
+Game_BattlerBase.prototype.addMaxMp = function (value) {
+  this.addParam(1, value);
 };
 
-Game_BattlerBase.prototype.addAtk = function(value) {
-    this.addParam(2, value);
+Game_BattlerBase.prototype.addAtk = function (value) {
+  this.addParam(2, value);
 };
 
-Game_BattlerBase.prototype.addDef = function(value) {
-    this.addParam(3, value);
+Game_BattlerBase.prototype.addDef = function (value) {
+  this.addParam(3, value);
 };
 
-Game_BattlerBase.prototype.addMat = function(value) {
-    this.addParam(4, value);
+Game_BattlerBase.prototype.addMat = function (value) {
+  this.addParam(4, value);
 };
 
-Game_BattlerBase.prototype.addMdf = function(value) {
-    this.addParam(5, value);
+Game_BattlerBase.prototype.addMdf = function (value) {
+  this.addParam(5, value);
 };
 
-Game_BattlerBase.prototype.addAgi = function(value) {
-    this.addParam(6, value);
+Game_BattlerBase.prototype.addAgi = function (value) {
+  this.addParam(6, value);
 };
 
-Game_BattlerBase.prototype.addLuk = function(value) {
-    this.addParam(7, value);
+Game_BattlerBase.prototype.addLuk = function (value) {
+  this.addParam(7, value);
 };
 
-Game_BattlerBase.prototype.minusMaxHp = function(value) {
-    this.addParam(0, -value);
+Game_BattlerBase.prototype.minusMaxHp = function (value) {
+  this.addParam(0, -value);
 };
 
-Game_BattlerBase.prototype.minusMaxMp = function(value) {
-    this.addParam(1, -value);
+Game_BattlerBase.prototype.minusMaxMp = function (value) {
+  this.addParam(1, -value);
 };
 
-Game_BattlerBase.prototype.minusAtk = function(value) {
-    this.addParam(2, -value);
+Game_BattlerBase.prototype.minusAtk = function (value) {
+  this.addParam(2, -value);
 };
 
-Game_BattlerBase.prototype.minusDef = function(value) {
-    this.addParam(3, -value);
+Game_BattlerBase.prototype.minusDef = function (value) {
+  this.addParam(3, -value);
 };
 
-Game_BattlerBase.prototype.minusMat = function(value) {
-    this.addParam(4, -value);
+Game_BattlerBase.prototype.minusMat = function (value) {
+  this.addParam(4, -value);
 };
 
-Game_BattlerBase.prototype.minusMdf = function(value) {
-    this.addParam(5, -value);
+Game_BattlerBase.prototype.minusMdf = function (value) {
+  this.addParam(5, -value);
 };
 
-Game_BattlerBase.prototype.minusAgi = function(value) {
-    this.addParam(6, -value);
+Game_BattlerBase.prototype.minusAgi = function (value) {
+  this.addParam(6, -value);
 };
 
-Game_BattlerBase.prototype.minusLuk = function(value) {
-    this.addParam(7, -value);
+Game_BattlerBase.prototype.minusLuk = function (value) {
+  this.addParam(7, -value);
 };
 
-Game_BattlerBase.prototype.setCustomParamLimitMax = function(id, value) {
-    if (!this._paramLimitMax) this.clearCustomParamLimits();
-    this._paramLimitMax[id] = value;
-    this.refresh();
+Game_BattlerBase.prototype.setCustomParamLimitMax = function (id, value) {
+  if (!this._paramLimitMax) this.clearCustomParamLimits();
+  this._paramLimitMax[id] = value;
+  this.refresh();
 };
 
-Game_BattlerBase.prototype.setCustomMaxHpMax = function(value) {
-    this.setCustomParamLimitMax(0, value)
+Game_BattlerBase.prototype.setCustomMaxHpMax = function (value) {
+  this.setCustomParamLimitMax(0, value);
 };
 
-Game_BattlerBase.prototype.setCustomMaxMpMax = function(value) {
-    this.setCustomParamLimitMax(1, value)
+Game_BattlerBase.prototype.setCustomMaxMpMax = function (value) {
+  this.setCustomParamLimitMax(1, value);
 };
 
-Game_BattlerBase.prototype.setCustomAtkMax = function(value) {
-    this.setCustomParamLimitMax(2, value)
+Game_BattlerBase.prototype.setCustomAtkMax = function (value) {
+  this.setCustomParamLimitMax(2, value);
 };
 
-Game_BattlerBase.prototype.setCustomDefMax = function(value) {
-    this.setCustomParamLimitMax(3, value)
+Game_BattlerBase.prototype.setCustomDefMax = function (value) {
+  this.setCustomParamLimitMax(3, value);
 };
 
-Game_BattlerBase.prototype.setCustomMatMax = function(value) {
-    this.setCustomParamLimitMax(4, value)
+Game_BattlerBase.prototype.setCustomMatMax = function (value) {
+  this.setCustomParamLimitMax(4, value);
 };
 
-Game_BattlerBase.prototype.setCustomMdfMax = function(value) {
-    this.setCustomParamLimitMax(5, value)
+Game_BattlerBase.prototype.setCustomMdfMax = function (value) {
+  this.setCustomParamLimitMax(5, value);
 };
 
-Game_BattlerBase.prototype.setCustomAgiMax = function(value) {
-    this.setCustomParamLimitMax(6, value)
+Game_BattlerBase.prototype.setCustomAgiMax = function (value) {
+  this.setCustomParamLimitMax(6, value);
 };
 
-Game_BattlerBase.prototype.setCustomLukMax = function(value) {
-    this.setCustomParamLimitMax(7, value)
+Game_BattlerBase.prototype.setCustomLukMax = function (value) {
+  this.setCustomParamLimitMax(7, value);
 };
 
-Game_BattlerBase.prototype.setCustomParamLimitMin = function(id, value) {
-    if (!this._paramLimitMin) this.clearCustomParamLimits();
-    this._paramLimitMin[id] = value;
-    this.refresh();
+Game_BattlerBase.prototype.setCustomParamLimitMin = function (id, value) {
+  if (!this._paramLimitMin) this.clearCustomParamLimits();
+  this._paramLimitMin[id] = value;
+  this.refresh();
 };
 
-Game_BattlerBase.prototype.setCustomMaxHpMin = function(value) {
-    this.setCustomParamLimitMin(0, value)
+Game_BattlerBase.prototype.setCustomMaxHpMin = function (value) {
+  this.setCustomParamLimitMin(0, value);
 };
 
-Game_BattlerBase.prototype.setCustomMaxMpMin = function(value) {
-    this.setCustomParamLimitMin(1, value)
+Game_BattlerBase.prototype.setCustomMaxMpMin = function (value) {
+  this.setCustomParamLimitMin(1, value);
 };
 
-Game_BattlerBase.prototype.setCustomAtkMin = function(value) {
-    this.setCustomParamLimitMin(2, value)
+Game_BattlerBase.prototype.setCustomAtkMin = function (value) {
+  this.setCustomParamLimitMin(2, value);
 };
 
-Game_BattlerBase.prototype.setCustomDefMin = function(value) {
-    this.setCustomParamLimitMin(3, value)
+Game_BattlerBase.prototype.setCustomDefMin = function (value) {
+  this.setCustomParamLimitMin(3, value);
 };
 
-Game_BattlerBase.prototype.setCustomMatMin = function(value) {
-    this.setCustomParamLimitMin(4, value)
+Game_BattlerBase.prototype.setCustomMatMin = function (value) {
+  this.setCustomParamLimitMin(4, value);
 };
 
-Game_BattlerBase.prototype.setCustomMdfMin = function(value) {
-    this.setCustomParamLimitMin(5, value)
+Game_BattlerBase.prototype.setCustomMdfMin = function (value) {
+  this.setCustomParamLimitMin(5, value);
 };
 
-Game_BattlerBase.prototype.setCustomAgiMin = function(value) {
-    this.setCustomParamLimitMin(6, value)
+Game_BattlerBase.prototype.setCustomAgiMin = function (value) {
+  this.setCustomParamLimitMin(6, value);
 };
 
-Game_BattlerBase.prototype.setCustomLukMin = function(value) {
-    this.setCustomParamLimitMin(7, value)
+Game_BattlerBase.prototype.setCustomLukMin = function (value) {
+  this.setCustomParamLimitMin(7, value);
 };
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
 
 MageStudios.BPC.Game_Battler_refresh = Game_Battler.prototype.refresh;
-Game_Battler.prototype.refresh = function() {
-    this._baseParamCache = undefined;
-    MageStudios.BPC.Game_Battler_refresh.call(this);
+Game_Battler.prototype.refresh = function () {
+  this._baseParamCache = undefined;
+  MageStudios.BPC.Game_Battler_refresh.call(this);
 };
 
-Game_Battler.prototype.paramPlus = function(paramId) {
-    var value = Game_BattlerBase.prototype.paramPlus.call(this, paramId);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.plusParams) value += obj.plusParams[paramId];
+Game_Battler.prototype.paramPlus = function (paramId) {
+  var value = Game_BattlerBase.prototype.paramPlus.call(this, paramId);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.plusParams) value += obj.plusParams[paramId];
+  }
+  return value;
+};
+
+Game_Battler.prototype.paramRate = function (paramId) {
+  var rate = Game_BattlerBase.prototype.paramRate.call(this, paramId);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.rateParams) rate *= obj.rateParams[paramId];
+  }
+  return rate;
+};
+
+Game_Battler.prototype.paramFlat = function (paramId) {
+  var value = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.flatParams) value += obj.flatParams[paramId];
+  }
+  return value;
+};
+
+Game_Battler.prototype.customParamMax = function (paramId) {
+  var value = Game_BattlerBase.prototype.customParamMax.call(this, paramId);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.maxParams && obj.maxParams[paramId]) {
+      value = Math.max(value, obj.maxParams[paramId]);
     }
-    return value;
+  }
+  return value;
 };
 
-Game_Battler.prototype.paramRate = function(paramId) {
-    var rate = Game_BattlerBase.prototype.paramRate.call(this, paramId);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.rateParams) rate *= obj.rateParams[paramId];
+Game_Battler.prototype.customParamMin = function (paramId) {
+  var value = Game_BattlerBase.prototype.customParamMin.call(this, paramId);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.minParams && obj.minParams[paramId]) {
+      value = Math.max(value, obj.minParams[paramId]);
     }
-    return rate;
+  }
+  return value;
 };
-
-Game_Battler.prototype.paramFlat = function(paramId) {
-    var value = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.flatParams) value += obj.flatParams[paramId];
-    }
-    return value;
-};
-
-Game_Battler.prototype.customParamMax = function(paramId) {
-    var value = Game_BattlerBase.prototype.customParamMax.call(this, paramId);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.maxParams && obj.maxParams[paramId]) {
-        value = Math.max(value, obj.maxParams[paramId]);
-      }
-    }
-    return value;
-};
-
-Game_Battler.prototype.customParamMin = function(paramId) {
-    var value = Game_BattlerBase.prototype.customParamMin.call(this, paramId);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.minParams && obj.minParams[paramId]) {
-        value = Math.max(value, obj.minParams[paramId]);
-      }
-    }
-    return value;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
 
 MageStudios.BPC.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.BPC.Game_Actor_setup.call(this, actorId);
-    this.clearCustomParamLimits();
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.BPC.Game_Actor_setup.call(this, actorId);
+  this.clearCustomParamLimits();
 };
 
-Game_Actor.prototype.paramPlus = function(paramId) {
-    var value = Game_Battler.prototype.paramPlus.call(this, paramId);
-    value += this.actor().plusParams[paramId];
-    value += this.currentClass().plusParams[paramId];
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (!obj) continue;
-      value += obj.params[paramId];
-      if (obj.plusParams) value += obj.plusParams[paramId];
+Game_Actor.prototype.paramPlus = function (paramId) {
+  var value = Game_Battler.prototype.paramPlus.call(this, paramId);
+  value += this.actor().plusParams[paramId];
+  value += this.currentClass().plusParams[paramId];
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (!obj) continue;
+    value += obj.params[paramId];
+    if (obj.plusParams) value += obj.plusParams[paramId];
+  }
+  return value;
+};
+
+Game_Actor.prototype.paramRate = function (paramId) {
+  var rate = Game_Battler.prototype.paramRate.call(this, paramId);
+  rate *= this.actor().rateParams[paramId];
+  rate *= this.currentClass().rateParams[paramId];
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.rateParams) rate *= obj.rateParams[paramId];
+  }
+  return rate;
+};
+
+Game_Actor.prototype.paramFlat = function (paramId) {
+  var value = Game_Battler.prototype.paramFlat.call(this, paramId);
+  value += this.actor().flatParams[paramId];
+  value += this.currentClass().flatParams[paramId];
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.flatParams) value += obj.flatParams[paramId];
+  }
+  return value;
+};
+
+Game_Actor.prototype.paramMax = function (paramId) {
+  return Game_Battler.prototype.paramMax.call(this, paramId);
+};
+
+Game_Actor.prototype.customParamMax = function (paramId) {
+  var value = Game_Battler.prototype.customParamMax.call(this, paramId);
+  if (this.actor().maxParams[paramId]) {
+    value = Math.max(value, this.actor().maxParams[paramId]);
+  }
+  if (this.currentClass().maxParams[paramId]) {
+    value = Math.max(value, this.currentClass().maxParams[paramId]);
+  }
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.maxParams && obj.maxParams[paramId]) {
+      value = Math.max(value, obj.maxParams[paramId]);
     }
-    return value;
+  }
+  return value;
 };
 
-Game_Actor.prototype.paramRate = function(paramId) {
-    var rate = Game_Battler.prototype.paramRate.call(this, paramId);
-    rate *= this.actor().rateParams[paramId];
-    rate *= this.currentClass().rateParams[paramId];
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.rateParams) rate *= obj.rateParams[paramId];
+Game_Actor.prototype.customParamMin = function (paramId) {
+  var value = Game_Battler.prototype.customParamMin.call(this, paramId);
+  if (this.actor().minParams[paramId]) {
+    value = Math.max(value, this.actor().minParams[paramId]);
+  }
+  if (this.currentClass().minParams[paramId]) {
+    value = Math.max(value, this.currentClass().minParams[paramId]);
+  }
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.minParams && obj.minParams[paramId]) {
+      value = Math.max(value, obj.minParams[paramId]);
     }
-    return rate;
+  }
+  return value;
 };
 
-Game_Actor.prototype.paramFlat = function(paramId) {
-    var value = Game_Battler.prototype.paramFlat.call(this, paramId);
-    value += this.actor().flatParams[paramId];
-    value += this.currentClass().flatParams[paramId];
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.flatParams) value += obj.flatParams[paramId];
-    }
-    return value;
+Game_Enemy.prototype.paramPlus = function (paramId) {
+  var value = Game_Battler.prototype.paramPlus.call(this, paramId);
+  value += this.enemy().plusParams[paramId];
+  return value;
 };
 
-Game_Actor.prototype.paramMax = function(paramId) {
-    return Game_Battler.prototype.paramMax.call(this, paramId);
+Game_Enemy.prototype.paramRate = function (paramId) {
+  var rate = Game_Battler.prototype.paramRate.call(this, paramId);
+  rate *= this.enemy().rateParams[paramId];
+  return rate;
 };
 
-Game_Actor.prototype.customParamMax = function(paramId) {
-    var value = Game_Battler.prototype.customParamMax.call(this, paramId);
-    if (this.actor().maxParams[paramId]) {
-      value = Math.max(value, this.actor().maxParams[paramId]);
-    }
-    if (this.currentClass().maxParams[paramId]) {
-      value = Math.max(value, this.currentClass().maxParams[paramId]);
-    }
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.maxParams && obj.maxParams[paramId]) {
-        value = Math.max(value, obj.maxParams[paramId]);
-      }
-    }
-    return value;
+Game_Enemy.prototype.paramFlat = function (paramId) {
+  var value = Game_Battler.prototype.paramFlat.call(this, paramId);
+  value += this.enemy().flatParams[paramId];
+  return value;
 };
 
-Game_Actor.prototype.customParamMin = function(paramId) {
-    var value = Game_Battler.prototype.customParamMin.call(this, paramId);
-    if (this.actor().minParams[paramId]) {
-      value = Math.max(value, this.actor().minParams[paramId]);
-    }
-    if (this.currentClass().minParams[paramId]) {
-      value = Math.max(value, this.currentClass().minParams[paramId]);
-    }
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.minParams && obj.minParams[paramId]) {
-        value = Math.max(value, obj.minParams[paramId]);
-      }
-    }
-    return value;
+Game_Enemy.prototype.customParamMax = function (paramId) {
+  var value = Game_Battler.prototype.customParamMax.call(this, paramId);
+  if (this.enemy().maxParams[paramId]) {
+    value = Math.max(value, this.enemy().maxParams[paramId]);
+  }
+  return value;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.paramPlus = function(paramId) {
-    var value = Game_Battler.prototype.paramPlus.call(this, paramId);
-    value += this.enemy().plusParams[paramId];
-    return value;
+Game_Enemy.prototype.customParamMin = function (paramId) {
+  var value = Game_Battler.prototype.customParamMin.call(this, paramId);
+  if (this.enemy().minParams[paramId]) {
+    value = Math.max(value, this.enemy().minParams[paramId]);
+  }
+  return value;
 };
 
-Game_Enemy.prototype.paramRate = function(paramId) {
-    var rate = Game_Battler.prototype.paramRate.call(this, paramId);
-    rate *= this.enemy().rateParams[paramId];
-    return rate;
+Game_Action.prototype.lukEffectRate = function (target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  return eval(MageStudios.Param.BPCLukEffectRate);
 };
-
-Game_Enemy.prototype.paramFlat = function(paramId) {
-    var value = Game_Battler.prototype.paramFlat.call(this, paramId);
-    value += this.enemy().flatParams[paramId];
-    return value;
-};
-
-Game_Enemy.prototype.customParamMax = function(paramId) {
-    var value = Game_Battler.prototype.customParamMax.call(this, paramId);
-    if (this.enemy().maxParams[paramId]) {
-      value = Math.max(value, this.enemy().maxParams[paramId]);
-    }
-    return value;
-};
-
-Game_Enemy.prototype.customParamMin = function(paramId) {
-    var value = Game_Battler.prototype.customParamMin.call(this, paramId);
-    if (this.enemy().minParams[paramId]) {
-      value = Math.max(value, this.enemy().minParams[paramId]);
-    }
-    return value;
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.lukEffectRate = function(target) {
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    return eval(MageStudios.Param.BPCLukEffectRate);
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

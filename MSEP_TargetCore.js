@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Target Core
-// MSEP_TargetCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_TargetCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Target = MageStudios.Target || {};
-MageStudios.Target.version = 1.00;
+MageStudios.Target.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Expand the target scope from RPG Maker's default
  * limitations for better target control.
  * @author Mage Studios Engine Plugins
@@ -273,37 +267,54 @@ MageStudios.Target.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_TargetCore');
+MageStudios.Parameters = PluginManager.parameters("MSEP_TargetCore");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.BECHlpEverybodyTx = String(MageStudios.Parameters['Everybody Text']);
-MageStudios.Param.BECHlpAllBTx = String(MageStudios.Parameters['All But User Text']);
-MageStudios.Param.BECHlpRandomAnyTx = String(MageStudios.Parameters['Random Any Text']);
+MageStudios.Param.BECHlpEverybodyTx = String(
+  MageStudios.Parameters["Everybody Text"]
+);
+MageStudios.Param.BECHlpAllBTx = String(
+  MageStudios.Parameters["All But User Text"]
+);
+MageStudios.Param.BECHlpRandomAnyTx = String(
+  MageStudios.Parameters["Random Any Text"]
+);
 
-MageStudios.Param.TargetMultipleTx = String(MageStudios.Parameters['Multiple Text']);
-MageStudios.Param.TargetMultiEvery = String(MageStudios.Parameters['Multiple Everybody']);
-MageStudios.Param.TargetMultiAllies = String(MageStudios.Parameters['Multiple Allies']);
-MageStudios.Param.TargetMultiFoes = String(MageStudios.Parameters['Multiple Foes']);
+MageStudios.Param.TargetMultipleTx = String(
+  MageStudios.Parameters["Multiple Text"]
+);
+MageStudios.Param.TargetMultiEvery = String(
+  MageStudios.Parameters["Multiple Everybody"]
+);
+MageStudios.Param.TargetMultiAllies = String(
+  MageStudios.Parameters["Multiple Allies"]
+);
+MageStudios.Param.TargetMultiFoes = String(
+  MageStudios.Parameters["Multiple Foes"]
+);
 
-MageStudios.Param.TargetHlpRowTx = String(MageStudios.Parameters['Target Row Text']);
-MageStudios.Param.TargetFrontRow = String(MageStudios.Parameters['Front Row Text']);
-MageStudios.Param.TargetBackRow = String(MageStudios.Parameters['Back Row Text']);
-MageStudios.Param.TargetSpcRow = String(MageStudios.Parameters['Specific Row Text']);
-MageStudios.Param.TargetRowEnemies = String(MageStudios.Parameters['Row Enemies']);
-MageStudios.Param.TargetRowAllies = String(MageStudios.Parameters['Row Allies']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.TargetHlpRowTx = String(
+  MageStudios.Parameters["Target Row Text"]
+);
+MageStudios.Param.TargetFrontRow = String(
+  MageStudios.Parameters["Front Row Text"]
+);
+MageStudios.Param.TargetBackRow = String(
+  MageStudios.Parameters["Back Row Text"]
+);
+MageStudios.Param.TargetSpcRow = String(
+  MageStudios.Parameters["Specific Row Text"]
+);
+MageStudios.Param.TargetRowEnemies = String(
+  MageStudios.Parameters["Row Enemies"]
+);
+MageStudios.Param.TargetRowAllies = String(
+  MageStudios.Parameters["Row Allies"]
+);
 
 MageStudios.Target.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.Target.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!Imported.MSEP_BattleEngineCore) {
     this.processTargetNotetags1($dataSkills);
@@ -313,45 +324,44 @@ DataManager.isDatabaseLoaded = function() {
 };
 
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.Target.DataManager_processMELODYNotetags =
+  MageStudios.Target.DataManager_processMELODYNotetags =
     DataManager.processMELODYNotetags;
-DataManager.processMELODYNotetags = function(group) {
+  DataManager.processMELODYNotetags = function (group) {
     this.processTargetNotetags1(group);
     MageStudios.Target.DataManager_processMELODYNotetags.call(this, group);
-};
+  };
 
-MageStudios.Target.DataManager_addActionEffects = DataManager.addActionEffects;
-DataManager.addActionEffects = function(obj, array) {
-  this.processTargetRepeatNotetags(obj);
-  MageStudios.Target.DataManager_addActionEffects.call(this, obj, array);
-};
+  MageStudios.Target.DataManager_addActionEffects =
+    DataManager.addActionEffects;
+  DataManager.addActionEffects = function (obj, array) {
+    this.processTargetRepeatNotetags(obj);
+    MageStudios.Target.DataManager_addActionEffects.call(this, obj, array);
+  };
 
-MageStudios.Target.DataManager_isWholeAction = DataManager.isWholeAction;
-DataManager.isWholeAction = function(obj) {
-  if (obj.scope === 'MULTIPLE') return true;
-  if (obj.scope === 'EVERYBODY') return true;
-  if (obj.scope === 'RANDOM ANY') return false;
-  if (obj.scope === 'TARGET ALL FOES') return false;
-  if (obj.scope === 'TARGET RANDOM FOES') return false;
-  if (obj.scope === 'ALL BUT USER') return true;
-  if (obj.scope === 'TARGET ALL ALLIES') return false;
-  if (obj.scope === 'TARGET RANDOM ALLIES') return false;
-  if (obj.scope === 'RANDOM ALLIES') return false;
-  if (obj.scope === 'ENEMY ROW') return true;
-  if (obj.scope === 'ALLY ROW') return true;
-  if (obj.scope === 'FRONT ENEMY ROW') return true;
-  if (obj.scope === 'FRONT ALLY ROW') return true;
-  if (obj.scope === 'BACK ENEMY ROW') return true;
-  if (obj.scope === 'BACK ALLY ROW') return true;
-  if (obj.scope === 'SPECIFIC ENEMY ROW') return true;
-  if (obj.scope === 'SPECIFIC ALLY ROW') return true;
-  return MageStudios.Target.DataManager_isWholeAction.call(this, obj);
-};
+  MageStudios.Target.DataManager_isWholeAction = DataManager.isWholeAction;
+  DataManager.isWholeAction = function (obj) {
+    if (obj.scope === "MULTIPLE") return true;
+    if (obj.scope === "EVERYBODY") return true;
+    if (obj.scope === "RANDOM ANY") return false;
+    if (obj.scope === "TARGET ALL FOES") return false;
+    if (obj.scope === "TARGET RANDOM FOES") return false;
+    if (obj.scope === "ALL BUT USER") return true;
+    if (obj.scope === "TARGET ALL ALLIES") return false;
+    if (obj.scope === "TARGET RANDOM ALLIES") return false;
+    if (obj.scope === "RANDOM ALLIES") return false;
+    if (obj.scope === "ENEMY ROW") return true;
+    if (obj.scope === "ALLY ROW") return true;
+    if (obj.scope === "FRONT ENEMY ROW") return true;
+    if (obj.scope === "FRONT ALLY ROW") return true;
+    if (obj.scope === "BACK ENEMY ROW") return true;
+    if (obj.scope === "BACK ALLY ROW") return true;
+    if (obj.scope === "SPECIFIC ENEMY ROW") return true;
+    if (obj.scope === "SPECIFIC ALLY ROW") return true;
+    return MageStudios.Target.DataManager_isWholeAction.call(this, obj);
+  };
+}
 
-}; // Imported.MSEP_BattleEngineCore
-
-DataManager.processTargetRepeatNotetags = function(obj) {
+DataManager.processTargetRepeatNotetags = function (obj) {
   var notedata = obj.note.split(/[\r\n]+/);
   for (var i = 0; i < notedata.length; i++) {
     var line = notedata[i];
@@ -361,15 +371,15 @@ DataManager.processTargetRepeatNotetags = function(obj) {
   }
 };
 
-DataManager.processTargetNotetags1 = function(group) {
+DataManager.processTargetNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     this.makeRandomTargets(obj);
-    var evalMode = 'none';
-    obj.customTargetText = '';
-    obj.customTargetEval = '';
+    var evalMode = "none";
+    obj.customTargetText = "";
+    obj.customTargetEval = "";
 
     if (!Imported.MSEP_BattleEngineCore) this.processTargetRepeatNotetags(obj);
     for (var i = 0; i < notedata.length; i++) {
@@ -378,306 +388,292 @@ DataManager.processTargetNotetags1 = function(group) {
         var type = String(RegExp.$1).toUpperCase();
         this.makeTargetTypes(obj, type);
       } else if (line.match(/<CUSTOM TARGET TEXT>/i)) {
-        evalMode = 'custom target text';
+        evalMode = "custom target text";
       } else if (line.match(/<\/CUSTOM TARGET TEXT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom target text') {
-        obj.customTargetText = obj.customTargetText + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom target text") {
+        obj.customTargetText = obj.customTargetText + line + "\n";
       } else if (line.match(/<CUSTOM TARGET EVAL>/i)) {
-        evalMode = 'custom target eval';
+        evalMode = "custom target eval";
       } else if (line.match(/<\/CUSTOM TARGET EVAL>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom target eval') {
-        obj.customTargetEval = obj.customTargetEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom target eval") {
+        obj.customTargetEval = obj.customTargetEval + line + "\n";
       }
     }
   }
 };
 
-DataManager.makeRandomTargets = function(obj) {
+DataManager.makeRandomTargets = function (obj) {
   obj.randomTargets = 0;
   if ([3, 4, 5, 6].contains(obj.scope)) {
     obj.randomTargets = obj.scope - 2;
   }
 };
 
-DataManager.makeTargetTypes = function(obj, type) {
-    if (type.match(/(.*?)[ ](.*?)[ ]MULTIPLE OF[ ](\d+)/i)) {
-      var targets = String(RegExp.$1).toUpperCase();
-      var stat = String(RegExp.$2).toUpperCase();
-      var number = Math.max(0, parseInt(RegExp.$3));
-      this.makeTargetMultipleOfType(obj, targets, stat, number);
-    } else if (type.match(/EVERYBODY/i)) {
-      obj.scope = 'EVERYBODY';
-    } else if (type.match(/(\d+)[ ]RANDOM ANY/i)) {
-      obj.randomTargets = parseInt(RegExp.$1);
-      obj.scope = 'RANDOM ANY';
-    } else if (type.match(/TARGET ALL FOE/i)) {
-      obj.scope = 'TARGET ALL FOES';
-    } else if (type.match(/TARGET[ ](\d+)[ ]RANDOM FOE/i)) {
-      obj.randomTargets = parseInt(RegExp.$1);
-      obj.scope = 'TARGET RANDOM FOES';
-    } else if (type.match(/(\d+)[ ]RANDOM FOE/i)) {
-      obj.randomTargets = parseInt(RegExp.$1);
-      obj.scope = 3;
-    } else if (type.match(/ALL BUT USER/i)) {
-      obj.scope = 'ALL BUT USER';
-    } else if (type.match(/ALL ALLIES BUT USER/i)) {
-      obj.scope = 'ALL BUT USER';
-    } else if (type.match(/TARGET ALL ALL/i)) {
-      obj.scope = 'TARGET ALL ALLIES';
-    } else if (type.match(/TARGET[ ](\d+)[ ]RANDOM ALL/i)) {
-      obj.randomTargets = parseInt(RegExp.$1);
-      obj.scope = 'TARGET RANDOM ALLIES';
-    } else if (type.match(/(\d+)[ ]RANDOM ALL/i)) {
-      obj.randomTargets = parseInt(RegExp.$1);
-      obj.scope = 'RANDOM ALLIES';
-    } else if (type.match(/FRONT ENEMY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'FRONT ENEMY ROW';
-    } else if (type.match(/FRONT ALLY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'FRONT ALLY ROW';
-    } else if (type.match(/BACK ENEMY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'BACK ENEMY ROW';
-    } else if (type.match(/BACK ALLY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'BACK ALLY ROW';
-    }  else if (type.match(/ENEMY ROW[ ](\d+)/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'SPECIFIC ENEMY ROW';
-      obj.rowTarget = parseInt(RegExp.$1).clamp(1, 10);
-    } else if (type.match(/ALLY ROW[ ](\d+)/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'SPECIFIC ALLY ROW';
-      obj.rowTarget = parseInt(RegExp.$1).clamp(1, 10);
-    } else if (type.match(/ENEMY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'ENEMY ROW';
-    } else if (type.match(/ALLY ROW/i)) {
-      if (!Imported.MSEP_RowFormation) return;
-      obj.scope = 'ALLY ROW';
-    }
+DataManager.makeTargetTypes = function (obj, type) {
+  if (type.match(/(.*?)[ ](.*?)[ ]MULTIPLE OF[ ](\d+)/i)) {
+    var targets = String(RegExp.$1).toUpperCase();
+    var stat = String(RegExp.$2).toUpperCase();
+    var number = Math.max(0, parseInt(RegExp.$3));
+    this.makeTargetMultipleOfType(obj, targets, stat, number);
+  } else if (type.match(/EVERYBODY/i)) {
+    obj.scope = "EVERYBODY";
+  } else if (type.match(/(\d+)[ ]RANDOM ANY/i)) {
+    obj.randomTargets = parseInt(RegExp.$1);
+    obj.scope = "RANDOM ANY";
+  } else if (type.match(/TARGET ALL FOE/i)) {
+    obj.scope = "TARGET ALL FOES";
+  } else if (type.match(/TARGET[ ](\d+)[ ]RANDOM FOE/i)) {
+    obj.randomTargets = parseInt(RegExp.$1);
+    obj.scope = "TARGET RANDOM FOES";
+  } else if (type.match(/(\d+)[ ]RANDOM FOE/i)) {
+    obj.randomTargets = parseInt(RegExp.$1);
+    obj.scope = 3;
+  } else if (type.match(/ALL BUT USER/i)) {
+    obj.scope = "ALL BUT USER";
+  } else if (type.match(/ALL ALLIES BUT USER/i)) {
+    obj.scope = "ALL BUT USER";
+  } else if (type.match(/TARGET ALL ALL/i)) {
+    obj.scope = "TARGET ALL ALLIES";
+  } else if (type.match(/TARGET[ ](\d+)[ ]RANDOM ALL/i)) {
+    obj.randomTargets = parseInt(RegExp.$1);
+    obj.scope = "TARGET RANDOM ALLIES";
+  } else if (type.match(/(\d+)[ ]RANDOM ALL/i)) {
+    obj.randomTargets = parseInt(RegExp.$1);
+    obj.scope = "RANDOM ALLIES";
+  } else if (type.match(/FRONT ENEMY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "FRONT ENEMY ROW";
+  } else if (type.match(/FRONT ALLY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "FRONT ALLY ROW";
+  } else if (type.match(/BACK ENEMY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "BACK ENEMY ROW";
+  } else if (type.match(/BACK ALLY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "BACK ALLY ROW";
+  } else if (type.match(/ENEMY ROW[ ](\d+)/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "SPECIFIC ENEMY ROW";
+    obj.rowTarget = parseInt(RegExp.$1).clamp(1, 10);
+  } else if (type.match(/ALLY ROW[ ](\d+)/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "SPECIFIC ALLY ROW";
+    obj.rowTarget = parseInt(RegExp.$1).clamp(1, 10);
+  } else if (type.match(/ENEMY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "ENEMY ROW";
+  } else if (type.match(/ALLY ROW/i)) {
+    if (!Imported.MSEP_RowFormation) return;
+    obj.scope = "ALLY ROW";
+  }
 };
 
-DataManager.makeTargetMultipleOfType = function(obj, targets, stat, number) {
+DataManager.makeTargetMultipleOfType = function (obj, targets, stat, number) {
   obj.multipleOf = [];
-  if (['ALL', 'ANY', 'ANYBODY', 'EVERYBODY'].contains(targets)) {
-    obj.multipleOf.push('EVERYBODY');
-  } else if (['ALLY', 'ALLIES', 'FRIENDS'].contains(targets)) {
-    obj.multipleOf.push('FRIENDS');
-  } else if (['FOE', 'FOES', 'ENEMIES', 'OPPONENTS'].contains(targets)) {
-    obj.multipleOf.push('OPPONENTS');
+  if (["ALL", "ANY", "ANYBODY", "EVERYBODY"].contains(targets)) {
+    obj.multipleOf.push("EVERYBODY");
+  } else if (["ALLY", "ALLIES", "FRIENDS"].contains(targets)) {
+    obj.multipleOf.push("FRIENDS");
+  } else if (["FOE", "FOES", "ENEMIES", "OPPONENTS"].contains(targets)) {
+    obj.multipleOf.push("OPPONENTS");
   } else {
     return;
   }
-  if (['MAXHP', 'MAX HP'].contains(stat)) {
+  if (["MAXHP", "MAX HP"].contains(stat)) {
     obj.multipleOf.push(0);
-  } else if (['MAXMP', 'MAX MP', 'MAXSP', 'MAX SP'].contains(stat)) {
+  } else if (["MAXMP", "MAX MP", "MAXSP", "MAX SP"].contains(stat)) {
     obj.multipleOf.push(1);
-  } else if (['ATK', 'STR'].contains(stat)) {
+  } else if (["ATK", "STR"].contains(stat)) {
     obj.multipleOf.push(2);
-  } else if (['DEF'].contains(stat)) {
+  } else if (["DEF"].contains(stat)) {
     obj.multipleOf.push(3);
-  } else if (['MAT', 'INT'].contains(stat)) {
+  } else if (["MAT", "INT"].contains(stat)) {
     obj.multipleOf.push(4);
-  } else if (['MDF', 'RES'].contains(stat)) {
+  } else if (["MDF", "RES"].contains(stat)) {
     obj.multipleOf.push(5);
-  } else if (['AGI', 'SPD'].contains(stat)) {
+  } else if (["AGI", "SPD"].contains(stat)) {
     obj.multipleOf.push(6);
-  } else if (['LUK'].contains(stat)) {
+  } else if (["LUK"].contains(stat)) {
     obj.multipleOf.push(7);
-  } else if (['LEVEL', 'LV', 'LVL'].contains(stat)) {
-    obj.multipleOf.push('LEVEL');
-  } else if (['HP'].contains(stat)) {
-    obj.multipleOf.push('HP');
-  } else if (['MP'].contains(stat)) {
-    obj.multipleOf.push('MP');
-  } else if (['TP'].contains(stat)) {
-    obj.multipleOf.push('TP');
+  } else if (["LEVEL", "LV", "LVL"].contains(stat)) {
+    obj.multipleOf.push("LEVEL");
+  } else if (["HP"].contains(stat)) {
+    obj.multipleOf.push("HP");
+  } else if (["MP"].contains(stat)) {
+    obj.multipleOf.push("MP");
+  } else if (["TP"].contains(stat)) {
+    obj.multipleOf.push("TP");
   } else {
     return;
   }
   obj.multipleOf.push(number);
-  obj.scope = 'MULTIPLE';
+  obj.scope = "MULTIPLE";
 };
-
-//=============================================================================
-// BattleManager
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  MageStudios.Target.BattleManager_startAllSelection =
+    BattleManager.startAllSelection;
+  BattleManager.startAllSelection = function () {
+    if (this.inputtingAction().isForMultiple()) {
+      var targets = this.inputtingAction().makeMultipleOfTargets();
+      this._customTargetSelectGroup = targets;
+    } else if (this.inputtingAction().isForRow()) {
+      var targets = this.inputtingAction().makeRowTypeTargets();
+      this._customTargetSelectGroup = targets;
+    } else {
+      MageStudios.Target.BattleManager_startAllSelection.call(this);
+    }
+  };
+}
 
-MageStudios.Target.BattleManager_startAllSelection = BattleManager.startAllSelection;
-BattleManager.startAllSelection = function() {
-  if (this.inputtingAction().isForMultiple()) {
-    var targets = this.inputtingAction().makeMultipleOfTargets();
-    this._customTargetSelectGroup = targets;
-  } else if (this.inputtingAction().isForRow()) {
-    var targets = this.inputtingAction().makeRowTypeTargets();
-    this._customTargetSelectGroup = targets;
-  } else {
-    MageStudios.Target.BattleManager_startAllSelection.call(this);
-  }
-};
-
-}; // Imported.MSEP_BattleEngineCore
-
-BattleManager.customTargetSelectGroup = function() {
+BattleManager.customTargetSelectGroup = function () {
   this._customTargetSelectGroup = this._customTargetSelectGroup || [];
   return this._customTargetSelectGroup;
 };
 
-BattleManager.clearCustomTargetSelectGroup = function() {
+BattleManager.clearCustomTargetSelectGroup = function () {
   this._customTargetSelectGroup = [];
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.Target.Game_System_onBattleStart = Game_System.prototype.onBattleStart;
-Game_System.prototype.onBattleStart = function() {
-    BattleManager.clearCustomTargetSelectGroup();
-    MageStudios.Target.Game_System_onBattleStart.call(this);
+MageStudios.Target.Game_System_onBattleStart =
+  Game_System.prototype.onBattleStart;
+Game_System.prototype.onBattleStart = function () {
+  BattleManager.clearCustomTargetSelectGroup();
+  MageStudios.Target.Game_System_onBattleStart.call(this);
 };
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
 
 MageStudios.Target.Game_Battler_isSelected = Game_Battler.prototype.isSelected;
-Game_Battler.prototype.isSelected = function() {
-    if (BattleManager.customTargetSelectGroup().length > 0) {
-      return BattleManager.customTargetSelectGroup().contains(this);
-    }
-    return MageStudios.Target.Game_Battler_isSelected.call(this);
+Game_Battler.prototype.isSelected = function () {
+  if (BattleManager.customTargetSelectGroup().length > 0) {
+    return BattleManager.customTargetSelectGroup().contains(this);
+  }
+  return MageStudios.Target.Game_Battler_isSelected.call(this);
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.Target.Game_Action_isForOpponent = Game_Action.prototype.isForOpponent;
-Game_Action.prototype.isForOpponent = function() {
-    if (this.item().scope === 'EVERYBODY') return true;
-    if (this.item().scope === 'RANDOM ANY') return true;
-    if (this.item().scope === 'TARGET ALL FOES') return true;
-    if (this.item().scope === 'TARGET RANDOM FOES') return true;
-    if (this.item().scope === 'MULTIPLE') {
-      if (this.item().multipleOf.contains('EVERYBODY')) return true;
-      if (this.item().multipleOf.contains('OPPONENTS')) return true;
-    }
-    if (this.item().scope === 'ENEMY ROW') return true;
-    if (this.item().scope === 'FRONT ENEMY ROW') return true;
-    if (this.item().scope === 'BACK ENEMY ROW') return true;
-    if (this.item().scope === 'SPECIFIC ENEMY ROW') return true;
-    return MageStudios.Target.Game_Action_isForOpponent.call(this);
+MageStudios.Target.Game_Action_isForOpponent =
+  Game_Action.prototype.isForOpponent;
+Game_Action.prototype.isForOpponent = function () {
+  if (this.item().scope === "EVERYBODY") return true;
+  if (this.item().scope === "RANDOM ANY") return true;
+  if (this.item().scope === "TARGET ALL FOES") return true;
+  if (this.item().scope === "TARGET RANDOM FOES") return true;
+  if (this.item().scope === "MULTIPLE") {
+    if (this.item().multipleOf.contains("EVERYBODY")) return true;
+    if (this.item().multipleOf.contains("OPPONENTS")) return true;
+  }
+  if (this.item().scope === "ENEMY ROW") return true;
+  if (this.item().scope === "FRONT ENEMY ROW") return true;
+  if (this.item().scope === "BACK ENEMY ROW") return true;
+  if (this.item().scope === "SPECIFIC ENEMY ROW") return true;
+  return MageStudios.Target.Game_Action_isForOpponent.call(this);
 };
 
 MageStudios.Target.Game_Action_isForFriend = Game_Action.prototype.isForFriend;
-Game_Action.prototype.isForFriend = function() {
-    if (this.item().scope === 'EVERYBODY') return true;
-    if (this.item().scope === 'ALL BUT USER') return true;
-    if (this.item().scope === 'TARGET ALL ALLIES') return true;
-    if (this.item().scope === 'TARGET RANDOM ALLIES') return true;
-    if (this.item().scope === 'RANDOM ALLIES') return true;
-    if (this.item().scope === 'MULTIPLE') {
-      if (this.item().multipleOf.contains('FRIENDS')) return true;
-    }
-    if (this.item().scope === 'ALLY ROW') return true;
-    if (this.item().scope === 'FRONT ALLY ROW') return true;
-    if (this.item().scope === 'BACK ALLY ROW') return true;
-    if (this.item().scope === 'SPECIFIC ALLY ROW') return true;
-    return MageStudios.Target.Game_Action_isForFriend.call(this);
+Game_Action.prototype.isForFriend = function () {
+  if (this.item().scope === "EVERYBODY") return true;
+  if (this.item().scope === "ALL BUT USER") return true;
+  if (this.item().scope === "TARGET ALL ALLIES") return true;
+  if (this.item().scope === "TARGET RANDOM ALLIES") return true;
+  if (this.item().scope === "RANDOM ALLIES") return true;
+  if (this.item().scope === "MULTIPLE") {
+    if (this.item().multipleOf.contains("FRIENDS")) return true;
+  }
+  if (this.item().scope === "ALLY ROW") return true;
+  if (this.item().scope === "FRONT ALLY ROW") return true;
+  if (this.item().scope === "BACK ALLY ROW") return true;
+  if (this.item().scope === "SPECIFIC ALLY ROW") return true;
+  return MageStudios.Target.Game_Action_isForFriend.call(this);
 };
 
-Game_Action.prototype.isForCustom = function() {
-    if (this.isForEval()) return true;
-    return typeof this.item().scope === 'string';
+Game_Action.prototype.isForCustom = function () {
+  if (this.isForEval()) return true;
+  return typeof this.item().scope === "string";
 };
 
-Game_Action.prototype.isForEval = function() {
-    return this.item().customTargetEval !== '';
+Game_Action.prototype.isForEval = function () {
+  return this.item().customTargetEval !== "";
 };
 
-Game_Action.prototype.isForEverybody = function() {
-    if (this.item().scope === 'MULTIPLE') {
-      if (this.item().multipleOf.contains('EVERYBODY')) return true;
-    }
-    return this.item().scope === 'EVERYBODY';
+Game_Action.prototype.isForEverybody = function () {
+  if (this.item().scope === "MULTIPLE") {
+    if (this.item().multipleOf.contains("EVERYBODY")) return true;
+  }
+  return this.item().scope === "EVERYBODY";
 };
 
-Game_Action.prototype.isForRandomAny = function() {
-    return this.item().scope === 'RANDOM ANY';
+Game_Action.prototype.isForRandomAny = function () {
+  return this.item().scope === "RANDOM ANY";
 };
 
-Game_Action.prototype.isForTargetAllFoes = function() {
-    return this.item().scope === 'TARGET ALL FOES';
+Game_Action.prototype.isForTargetAllFoes = function () {
+  return this.item().scope === "TARGET ALL FOES";
 };
 
-Game_Action.prototype.isForTargetRandomFoes = function() {
-    return this.item().scope === 'TARGET RANDOM FOES';
+Game_Action.prototype.isForTargetRandomFoes = function () {
+  return this.item().scope === "TARGET RANDOM FOES";
 };
 
-Game_Action.prototype.isForAllButUser = function() {
-    return this.item().scope === 'ALL BUT USER';
+Game_Action.prototype.isForAllButUser = function () {
+  return this.item().scope === "ALL BUT USER";
 };
 
-Game_Action.prototype.isForTargetAllAllies = function() {
-    return this.item().scope === 'TARGET ALL ALLIES';
+Game_Action.prototype.isForTargetAllAllies = function () {
+  return this.item().scope === "TARGET ALL ALLIES";
 };
 
-Game_Action.prototype.isForTargetRandomAllies = function() {
-    return this.item().scope === 'TARGET RANDOM ALLIES';
+Game_Action.prototype.isForTargetRandomAllies = function () {
+  return this.item().scope === "TARGET RANDOM ALLIES";
 };
 
-Game_Action.prototype.isForRandomAllies = function() {
-    return this.item().scope === 'RANDOM ALLIES';
+Game_Action.prototype.isForRandomAllies = function () {
+  return this.item().scope === "RANDOM ALLIES";
 };
 
 MageStudios.Target.Game_Action_isForRandom = Game_Action.prototype.isForRandom;
-Game_Action.prototype.isForRandom = function() {
-    if (this.item().randomTargets > 0) return true;
-    return MageStudios.Target.Game_Action_isForRandom.call(this);
+Game_Action.prototype.isForRandom = function () {
+  if (this.item().randomTargets > 0) return true;
+  return MageStudios.Target.Game_Action_isForRandom.call(this);
 };
 
-Game_Action.prototype.isForMultiple = function() {
-    return this.item().scope === 'MULTIPLE';
+Game_Action.prototype.isForMultiple = function () {
+  return this.item().scope === "MULTIPLE";
 };
 
-Game_Action.prototype.isForRow = function() {
-    if (this.item().scope === 'ENEMY ROW') return true;
-    if (this.item().scope === 'ALLY ROW') return true;
-    if (this.item().scope === 'FRONT ENEMY ROW') return true;
-    if (this.item().scope === 'FRONT ALLY ROW') return true;
-    if (this.item().scope === 'BACK ENEMY ROW') return true;
-    if (this.item().scope === 'BACK ALLY ROW') return true;
-    if (this.item().scope === 'SPECIFIC ENEMY ROW') return true;
-    if (this.item().scope === 'SPECIFIC ALLY ROW') return true;
-    return false;
+Game_Action.prototype.isForRow = function () {
+  if (this.item().scope === "ENEMY ROW") return true;
+  if (this.item().scope === "ALLY ROW") return true;
+  if (this.item().scope === "FRONT ENEMY ROW") return true;
+  if (this.item().scope === "FRONT ALLY ROW") return true;
+  if (this.item().scope === "BACK ENEMY ROW") return true;
+  if (this.item().scope === "BACK ALLY ROW") return true;
+  if (this.item().scope === "SPECIFIC ENEMY ROW") return true;
+  if (this.item().scope === "SPECIFIC ALLY ROW") return true;
+  return false;
 };
 
-MageStudios.Target.Game_Action_needsSelection = Game_Action.prototype.needsSelection;
-Game_Action.prototype.needsSelection = function() {
-    if (this.item().scope === 'TARGET ALL FOES') return true;
-    if (this.item().scope === 'TARGET RANDOM FOES') return true;
-    if (this.item().scope === 'TARGET ALL ALLIES') return true;
-    if (this.item().scope === 'TARGET RANDOM ALLIES') return true;
-    if (this.item().scope === 'ENEMY ROW') return true;
-    if (this.item().scope === 'ALLY ROW') return true;
-    return MageStudios.Target.Game_Action_needsSelection.call(this);
+MageStudios.Target.Game_Action_needsSelection =
+  Game_Action.prototype.needsSelection;
+Game_Action.prototype.needsSelection = function () {
+  if (this.item().scope === "TARGET ALL FOES") return true;
+  if (this.item().scope === "TARGET RANDOM FOES") return true;
+  if (this.item().scope === "TARGET ALL ALLIES") return true;
+  if (this.item().scope === "TARGET RANDOM ALLIES") return true;
+  if (this.item().scope === "ENEMY ROW") return true;
+  if (this.item().scope === "ALLY ROW") return true;
+  return MageStudios.Target.Game_Action_needsSelection.call(this);
 };
 
 MageStudios.Target.Game_Action_numTargets = Game_Action.prototype.numTargets;
-Game_Action.prototype.numTargets = function() {
-    if (this.isForRandom()) return this.item().randomTargets;
-    return MageStudios.Target.Game_Action_numTargets.call(this);
+Game_Action.prototype.numTargets = function () {
+  if (this.isForRandom()) return this.item().randomTargets;
+  return MageStudios.Target.Game_Action_numTargets.call(this);
 };
 
 MageStudios.Target.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
-Game_Action.prototype.makeTargets = function() {
+Game_Action.prototype.makeTargets = function () {
   var targets = [];
   if (!this._forcing && this.subject().isConfused()) {
     targets = MageStudios.Target.Game_Action_makeTargets.call(this);
@@ -689,7 +685,7 @@ Game_Action.prototype.makeTargets = function() {
   return targets;
 };
 
-Game_Action.prototype.makeCustomTargets = function() {
+Game_Action.prototype.makeCustomTargets = function () {
   var targets = [];
   if (this.isForEval()) {
     targets = this.makeEvalTargets();
@@ -720,7 +716,7 @@ Game_Action.prototype.makeCustomTargets = function() {
     var unit = this.opponentsUnit();
     var number = this.numTargets();
     targets.push(unit.smoothTarget(this._targetIndex));
-    targets = targets.concat(this.getRandomTargets(number, unit))
+    targets = targets.concat(this.getRandomTargets(number, unit));
   } else if (this.isForAllButUser()) {
     var length = this.friendsUnit().aliveMembers().length;
     for (var i = 0; i < length; ++i) {
@@ -735,16 +731,16 @@ Game_Action.prototype.makeCustomTargets = function() {
     var unit = this.friendsUnit();
     var number = this.numTargets();
     targets.push(unit.smoothTarget(this._targetIndex));
-    targets = targets.concat(this.getRandomTargets(number, unit))
+    targets = targets.concat(this.getRandomTargets(number, unit));
   } else if (this.isForRandomAllies()) {
     var unit = this.friendsUnit();
     var number = this.numTargets();
-    targets = targets.concat(this.getRandomTargets(number, unit))
+    targets = targets.concat(this.getRandomTargets(number, unit));
   }
   return targets;
 };
 
-Game_Action.prototype.makeEvalTargets = function() {
+Game_Action.prototype.makeEvalTargets = function () {
   var targets = [];
   var a = this.subject();
   var user = this.subject();
@@ -766,12 +762,12 @@ Game_Action.prototype.makeEvalTargets = function() {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'MAKE CUSTOM TARGETS ERROR');
+    MageStudios.Util.displayError(e, code, "MAKE CUSTOM TARGETS ERROR");
   }
   return targets;
 };
 
-Game_Action.prototype.getRandomTargets = function(number, unit) {
+Game_Action.prototype.getRandomTargets = function (number, unit) {
   var targets = [];
   for (var i = 0; i < number; ++i) {
     targets.push(unit.randomTarget());
@@ -779,293 +775,277 @@ Game_Action.prototype.getRandomTargets = function(number, unit) {
   return targets;
 };
 
-Game_Action.prototype.makeMultipleOfTargets = function() {
-    var targets = [];
-    var unit = [];
-    var type = this.item().multipleOf[0];
-    var param = this.item().multipleOf[1];
-    var number = this.item().multipleOf[2];
-    if (['EVERYBODY', 'OPPONENTS'].contains(type)) {
-      unit = unit.concat(this.opponentsUnit().aliveMembers());
+Game_Action.prototype.makeMultipleOfTargets = function () {
+  var targets = [];
+  var unit = [];
+  var type = this.item().multipleOf[0];
+  var param = this.item().multipleOf[1];
+  var number = this.item().multipleOf[2];
+  if (["EVERYBODY", "OPPONENTS"].contains(type)) {
+    unit = unit.concat(this.opponentsUnit().aliveMembers());
+  }
+  if (["EVERYBODY", "FRIENDS"].contains(type)) {
+    unit = unit.concat(this.friendsUnit().aliveMembers());
+  }
+  var length = unit.length;
+  for (var i = 0; i < length; ++i) {
+    var member = unit[i];
+    if (param === "LEVEL") {
+      if (member.level % number === 0) targets.push(member);
+    } else if (param === "HP") {
+      if (member.hp % number === 0) targets.push(member);
+    } else if (param === "MP") {
+      if (member.mp % number === 0) targets.push(member);
+    } else if (param === "TP") {
+      if (member.tp % number === 0) targets.push(member);
+    } else {
+      if (member.param(param) % number === 0) targets.push(member);
     }
-    if (['EVERYBODY', 'FRIENDS'].contains(type)) {
-      unit = unit.concat(this.friendsUnit().aliveMembers());
-    }
-    var length = unit.length;
-    for (var i = 0; i < length; ++i) {
-      var member = unit[i];
-      if (param === 'LEVEL') {
-        if (member.level % number === 0) targets.push(member);
-      } else if (param === 'HP') {
-        if (member.hp % number === 0) targets.push(member);
-      } else if (param === 'MP') {
-        if (member.mp % number === 0) targets.push(member);
-      } else if (param === 'TP') {
-        if (member.tp % number === 0) targets.push(member);
-      } else {
-        if (member.param(param) % number === 0) targets.push(member);
-      }
-    }
-    return targets;
+  }
+  return targets;
 };
 
-Game_Action.prototype.makeRowTypeTargets = function() {
-    var targets = [];
-    var scope = this.item().scope;
-    if (scope === 'ENEMY ROW') {
-      var unit = this.opponentsUnit();
-      var target = unit.smoothTarget(this._targetIndex);
-      var row = target.row();
-      targets = unit.rowAliveMembers(row);
-    } else if (scope === 'ALLY ROW') {
-      var unit = this.friendsUnit();
-      var target = unit.smoothTarget(this._targetIndex);
-      var row = target.row();
-      targets = unit.rowAliveMembers(row);
-    } else if (scope === 'FRONT ENEMY ROW') {
-      var unit = this.opponentsUnit();
-      for (var i = 1; i < MageStudios.Param.RowMaximum + 1; ++i) {
-        if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
-      }
-    } else if (scope === 'FRONT ALLY ROW') {
-      var unit = this.friendsUnit();
-      for (var i = 1; i < MageStudios.Param.RowMaximum + 1; ++i) {
-        if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
-      }
-    } else if (scope === 'BACK ENEMY ROW') {
-      var unit = this.opponentsUnit();
-      for (var i = 10; i > 0; --i) {
-        if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
-      }
-    } else if (scope === 'BACK ALLY ROW') {
-      var unit = this.friendsUnit();
-      for (var i = 10; i > 0; --i) {
-        if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
-      }
-    } else if (scope === 'SPECIFIC ENEMY ROW') {
-      var unit = this.opponentsUnit();
-      var i = this.item().rowTarget;
-      return unit.rowAliveMembers(i);
-    } else if (scope === 'SPECIFIC ALLY ROW') {
-      var unit = this.friendsUnit();
-      var i = this.item().rowTarget;
-      return unit.rowAliveMembers(i);
+Game_Action.prototype.makeRowTypeTargets = function () {
+  var targets = [];
+  var scope = this.item().scope;
+  if (scope === "ENEMY ROW") {
+    var unit = this.opponentsUnit();
+    var target = unit.smoothTarget(this._targetIndex);
+    var row = target.row();
+    targets = unit.rowAliveMembers(row);
+  } else if (scope === "ALLY ROW") {
+    var unit = this.friendsUnit();
+    var target = unit.smoothTarget(this._targetIndex);
+    var row = target.row();
+    targets = unit.rowAliveMembers(row);
+  } else if (scope === "FRONT ENEMY ROW") {
+    var unit = this.opponentsUnit();
+    for (var i = 1; i < MageStudios.Param.RowMaximum + 1; ++i) {
+      if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
     }
-    return targets;
+  } else if (scope === "FRONT ALLY ROW") {
+    var unit = this.friendsUnit();
+    for (var i = 1; i < MageStudios.Param.RowMaximum + 1; ++i) {
+      if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
+    }
+  } else if (scope === "BACK ENEMY ROW") {
+    var unit = this.opponentsUnit();
+    for (var i = 10; i > 0; --i) {
+      if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
+    }
+  } else if (scope === "BACK ALLY ROW") {
+    var unit = this.friendsUnit();
+    for (var i = 10; i > 0; --i) {
+      if (unit.rowAliveSize(i) > 0) return unit.rowAliveMembers(i);
+    }
+  } else if (scope === "SPECIFIC ENEMY ROW") {
+    var unit = this.opponentsUnit();
+    var i = this.item().rowTarget;
+    return unit.rowAliveMembers(i);
+  } else if (scope === "SPECIFIC ALLY ROW") {
+    var unit = this.friendsUnit();
+    var i = this.item().rowTarget;
+    return unit.rowAliveMembers(i);
+  }
+  return targets;
 };
-
-//=============================================================================
-// Window_Help
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.Target.Window_Help_setBattler = Window_Help.prototype.setBattler;
-Window_Help.prototype.setBattler = function(battler) {
+  MageStudios.Target.Window_Help_setBattler = Window_Help.prototype.setBattler;
+  Window_Help.prototype.setBattler = function (battler) {
     this._battler = battler;
     MageStudios.Target.Window_Help_setBattler.call(this, battler);
-};
+  };
 
-MageStudios.Target.Window_Help_specialSelectionText =
+  MageStudios.Target.Window_Help_specialSelectionText =
     Window_Help.prototype.specialSelectionText;
-Window_Help.prototype.specialSelectionText = function(action) {
+  Window_Help.prototype.specialSelectionText = function (action) {
     BattleManager.resetSelection();
     if (!action) return false;
-    if (action.item().customTargetText !== '') return true;
+    if (action.item().customTargetText !== "") return true;
     if (action.isForRow()) return true;
-    return MageStudios.Target.Window_Help_specialSelectionText.call(this, action);
-};
+    return MageStudios.Target.Window_Help_specialSelectionText.call(
+      this,
+      action
+    );
+  };
 
-MageStudios.Target.Window_Help_drawSpecialSelectionText =
+  MageStudios.Target.Window_Help_drawSpecialSelectionText =
     Window_Help.prototype.drawSpecialSelectionText;
-Window_Help.prototype.drawSpecialSelectionText = function(action) {
-  if (action.item().customTargetText !== '') {
-    BattleManager.startAllSelection();
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var text = this.makeCustomTargetText(action);
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-  } else if (action.isForMultiple()) {
-    BattleManager.startAllSelection();
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var text = this.makeTargetMultipleOfText(action);
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-  } else if (action.isForRow()) {
-    this.makeTargetRowText(action);
-  } else if (action.isForRandomAny()) {
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var fmt = MageStudios.Param.BECHlpRandomAnyTx;
-    var number = action.item().randomTargets;
-    var text = fmt.format(MageStudios.Util.toGroup(number));
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-  } else if (action.isForEverybody()) {
-    BattleManager.startAllSelection();
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var text = MageStudios.Param.BECHlpEverybodyTx;
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-  } else if (action.isForAllButUser()) {
-    BattleManager.startAllSelection();
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var fmt = MageStudios.Param.BECHlpAllBTx;
-    var allies = MageStudios.Param.BECHelpAlliesTx;
-    var user = MageStudios.Param.BECHelpUserTx
-    var text = fmt.format(allies, user);
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-  } else {
-    MageStudios.Target.Window_Help_drawSpecialSelectionText.call(this, action);
+  Window_Help.prototype.drawSpecialSelectionText = function (action) {
+    if (action.item().customTargetText !== "") {
+      BattleManager.startAllSelection();
+      var wx = 0;
+      var wy = (this.contents.height - this.lineHeight()) / 2;
+      var text = this.makeCustomTargetText(action);
+      this.drawText(text, wx, wy, this.contents.width, "center");
+    } else if (action.isForMultiple()) {
+      BattleManager.startAllSelection();
+      var wx = 0;
+      var wy = (this.contents.height - this.lineHeight()) / 2;
+      var text = this.makeTargetMultipleOfText(action);
+      this.drawText(text, wx, wy, this.contents.width, "center");
+    } else if (action.isForRow()) {
+      this.makeTargetRowText(action);
+    } else if (action.isForRandomAny()) {
+      var wx = 0;
+      var wy = (this.contents.height - this.lineHeight()) / 2;
+      var fmt = MageStudios.Param.BECHlpRandomAnyTx;
+      var number = action.item().randomTargets;
+      var text = fmt.format(MageStudios.Util.toGroup(number));
+      this.drawText(text, wx, wy, this.contents.width, "center");
+    } else if (action.isForEverybody()) {
+      BattleManager.startAllSelection();
+      var wx = 0;
+      var wy = (this.contents.height - this.lineHeight()) / 2;
+      var text = MageStudios.Param.BECHlpEverybodyTx;
+      this.drawText(text, wx, wy, this.contents.width, "center");
+    } else if (action.isForAllButUser()) {
+      BattleManager.startAllSelection();
+      var wx = 0;
+      var wy = (this.contents.height - this.lineHeight()) / 2;
+      var fmt = MageStudios.Param.BECHlpAllBTx;
+      var allies = MageStudios.Param.BECHelpAlliesTx;
+      var user = MageStudios.Param.BECHelpUserTx;
+      var text = fmt.format(allies, user);
+      this.drawText(text, wx, wy, this.contents.width, "center");
+    } else {
+      MageStudios.Target.Window_Help_drawSpecialSelectionText.call(
+        this,
+        action
+      );
+    }
+  };
+}
+
+Window_Help.prototype.makeCustomTargetText = function (action) {
+  var text = "";
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var user = BattleManager._subject;
+  var a = user;
+  var subject = user;
+  var b = user;
+  var target = user;
+  var code = action.item().customTargetText;
+  try {
+    eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "MAKE CUSTOM TARGET TEXT ERROR");
   }
+  return text;
 };
 
-}; // Imported.MSEP_BattleEngineCore
-
-Window_Help.prototype.makeCustomTargetText = function(action) {
-    var text = ''
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var user = BattleManager._subject;
-    var a = user;
-    var subject = user;
-    var b = user;
-    var target = user;
-    var code = action.item().customTargetText;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'MAKE CUSTOM TARGET TEXT ERROR');
-    }
-    return text;
+Window_Help.prototype.makeTargetMultipleOfText = function (action) {
+  var fmt = MageStudios.Param.TargetMultipleTx;
+  if (action.isForEverybody()) {
+    var targets = MageStudios.Param.TargetMultiEvery;
+  } else if (action.isForFriend()) {
+    var targets = MageStudios.Param.TargetMultiAllies;
+  } else {
+    var targets = MageStudios.Param.TargetMultiFoes;
+  }
+  var param = action.item().multipleOf[1];
+  if (param === "LEVEL") {
+    param = TextManager.level;
+  } else if (param === "HP") {
+    param = TextManager.hp;
+  } else if (param === "MP") {
+    param = Textmanager.mp;
+  } else if (param === "TP") {
+    param = Textmanager.tp;
+  } else {
+    param = TextManager.param(param);
+  }
+  var number = action.item().multipleOf[2];
+  var text = fmt.format(targets, param, MageStudios.Util.toGroup(number));
+  return text;
 };
 
-Window_Help.prototype.makeTargetMultipleOfText = function(action) {
-    var fmt = MageStudios.Param.TargetMultipleTx;
-    if (action.isForEverybody()) {
-      var targets = MageStudios.Param.TargetMultiEvery;
-    } else if (action.isForFriend()) {
-      var targets = MageStudios.Param.TargetMultiAllies;
-    } else {
-      var targets = MageStudios.Param.TargetMultiFoes;
-    }
-    var param = action.item().multipleOf[1];
-    if (param === 'LEVEL') {
-      param = TextManager.level;
-    } else if (param === 'HP') {
-      param = TextManager.hp;
-    } else if (param === 'MP') {
-      param = Textmanager.mp;
-    } else if (param === 'TP') {
-      param = Textmanager.tp;
-    } else {
-      param = TextManager.param(param);
-    }
-    var number = action.item().multipleOf[2];
-    var text = fmt.format(targets, param, MageStudios.Util.toGroup(number));
-    return text;
+Window_Help.prototype.makeTargetRowText = function (action) {
+  action.setTarget(this._battler.index());
+  BattleManager.startAllSelection();
+  var wx = 0;
+  var wy = (this.contents.height - this.lineHeight()) / 2;
+  var scope = action.item().scope;
+  if (scope === "ENEMY ROW" || scope === "ALLY ROW") {
+    var fmt = MageStudios.Param.TargetHlpRowTx;
+    var text = fmt.format(this._battler.name());
+  } else if (scope === "FRONT ENEMY ROW") {
+    var fmt = MageStudios.Param.TargetFrontRow;
+    var text = fmt.format(MageStudios.Param.TargetRowEnemies);
+  } else if (scope === "BACK ENEMY ROW") {
+    var fmt = MageStudios.Param.TargetBackRow;
+    var text = fmt.format(MageStudios.Param.TargetRowEnemies);
+  } else if (scope === "SPECIFIC ENEMY ROW") {
+    var fmt = MageStudios.Param.TargetSpcRow;
+    var text = fmt.format(MageStudios.Param.TargetRowEnemies);
+  } else if (scope === "FRONT ALLY ROW") {
+    var fmt = MageStudios.Param.TargetFrontRow;
+    var text = fmt.format(MageStudios.Param.TargetRowAllies);
+  } else if (scope === "BACK ALLY ROW") {
+    var fmt = MageStudios.Param.TargetBackRow;
+    var text = fmt.format(MageStudios.Param.TargetRowAllies);
+  } else if (scope === "SPECIFIC ALLY ROW") {
+    var fmt = MageStudios.Param.TargetSpcRow;
+    var text = fmt.format(MageStudios.Param.TargetRowAllies);
+  }
+  this.drawText(text, wx, wy, this.contents.width, "center");
 };
-
-Window_Help.prototype.makeTargetRowText = function(action) {
-    action.setTarget(this._battler.index());
-    BattleManager.startAllSelection();
-    var wx = 0;
-    var wy = (this.contents.height - this.lineHeight()) / 2;
-    var scope = action.item().scope;
-    if (scope === 'ENEMY ROW' || scope === 'ALLY ROW') {
-      var fmt = MageStudios.Param.TargetHlpRowTx;
-      var text = fmt.format(this._battler.name());
-    } else if (scope === 'FRONT ENEMY ROW') {
-      var fmt = MageStudios.Param.TargetFrontRow;
-      var text = fmt.format(MageStudios.Param.TargetRowEnemies);
-    } else if (scope === 'BACK ENEMY ROW') {
-      var fmt = MageStudios.Param.TargetBackRow;
-      var text = fmt.format(MageStudios.Param.TargetRowEnemies);
-    } else if (scope === 'SPECIFIC ENEMY ROW') {
-      var fmt = MageStudios.Param.TargetSpcRow;
-      var text = fmt.format(MageStudios.Param.TargetRowEnemies);
-    } else if (scope === 'FRONT ALLY ROW') {
-      var fmt = MageStudios.Param.TargetFrontRow;
-      var text = fmt.format(MageStudios.Param.TargetRowAllies);
-    } else if (scope === 'BACK ALLY ROW') {
-      var fmt = MageStudios.Param.TargetBackRow;
-      var text = fmt.format(MageStudios.Param.TargetRowAllies);
-    } else if (scope === 'SPECIFIC ALLY ROW') {
-      var fmt = MageStudios.Param.TargetSpcRow;
-      var text = fmt.format(MageStudios.Param.TargetRowAllies);
-    }
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-};
-
-//=============================================================================
-// Window_EnemyVisualSelect
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.Target.Window_EnemyVisualSelect_isShowWindow =
+  MageStudios.Target.Window_EnemyVisualSelect_isShowWindow =
     Window_EnemyVisualSelect.prototype.isShowWindow;
-Window_EnemyVisualSelect.prototype.isShowWindow = function() {
+  Window_EnemyVisualSelect.prototype.isShowWindow = function () {
     if (BattleManager.customTargetSelectGroup().length > 0) {
       return BattleManager.customTargetSelectGroup().contains(this._battler);
     }
     return MageStudios.Target.Window_EnemyVisualSelect_isShowWindow.call(this);
-};
-
-}; // Imported.MSEP_BattleEngineCore
-
-//=============================================================================
-// Scene_Battle
-//=============================================================================
+  };
+}
 
 MageStudios.Target.Scene_Battle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
-Scene_Battle.prototype.onEnemyOk = function() {
-    BattleManager.clearCustomTargetSelectGroup();
-    MageStudios.Target.Scene_Battle_onEnemyOk.call(this);
+Scene_Battle.prototype.onEnemyOk = function () {
+  BattleManager.clearCustomTargetSelectGroup();
+  MageStudios.Target.Scene_Battle_onEnemyOk.call(this);
 };
 
-MageStudios.Target.Scene_Battle_onEnemyCancel = Scene_Battle.prototype.onEnemyCancel;
-Scene_Battle.prototype.onEnemyCancel = function() {
-    BattleManager.clearCustomTargetSelectGroup();
-    MageStudios.Target.Scene_Battle_onEnemyCancel.call(this);
+MageStudios.Target.Scene_Battle_onEnemyCancel =
+  Scene_Battle.prototype.onEnemyCancel;
+Scene_Battle.prototype.onEnemyCancel = function () {
+  BattleManager.clearCustomTargetSelectGroup();
+  MageStudios.Target.Scene_Battle_onEnemyCancel.call(this);
 };
 
 MageStudios.Target.Scene_Battle_onActorOk = Scene_Battle.prototype.onActorOk;
-Scene_Battle.prototype.onActorOk = function() {
-    BattleManager.clearCustomTargetSelectGroup();
-    MageStudios.Target.Scene_Battle_onActorOk.call(this);
+Scene_Battle.prototype.onActorOk = function () {
+  BattleManager.clearCustomTargetSelectGroup();
+  MageStudios.Target.Scene_Battle_onActorOk.call(this);
 };
 
-MageStudios.Target.Scene_Battle_onActorCancel = Scene_Battle.prototype.onActorCancel;
-Scene_Battle.prototype.onActorCancel = function() {
-    BattleManager.clearCustomTargetSelectGroup();
-    MageStudios.Target.Scene_Battle_onActorCancel.call(this);
+MageStudios.Target.Scene_Battle_onActorCancel =
+  Scene_Battle.prototype.onActorCancel;
+Scene_Battle.prototype.onActorCancel = function () {
+  BattleManager.clearCustomTargetSelectGroup();
+  MageStudios.Target.Scene_Battle_onActorCancel.call(this);
 };
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

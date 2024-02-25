@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Move Route Core
-// MSEP_MoveRouteCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MoveRouteCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MoveRoute = MageStudios.MoveRoute || {};
-MageStudios.MoveRoute.version = 1.00;
+MageStudios.MoveRoute.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Expand the number of movement options for the move
  * route events using this plugin.
  * @author Mage Studios Engine Plugins
@@ -33,7 +27,7 @@ MageStudios.MoveRoute.version = 1.00;
  *
  * If you want to make events move a certain way using the commands from this
  * plugin, do the following:
- * 
+ *
  * 1. Open the event you wish to move.
  * 2. Make a Movement Route command or Automatic Custom Route.
  * 3. Press "Script..."
@@ -48,12 +42,12 @@ MageStudios.MoveRoute.version = 1.00;
  * UPPER RIGHT: x
  * LOWER LEFT: x
  * LOWER RIGHT: x
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will make the designated event move the noted direction x amount of
  * times. This is no different than inserting a direction multiple times with
  * editor, but this is meant to serve as a way to consolidate commands.
  * Replace x with an integar value.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Up: 10
  *          Left: 7
  *          Down: 3
@@ -62,10 +56,10 @@ MageStudios.MoveRoute.version = 1.00;
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  * ANIMATION: x
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Play animation x on the designated event.
  * Replace x with an integar value.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Animation: 10
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  *
@@ -89,11 +83,11 @@ MageStudios.MoveRoute.version = 1.00;
  * BALLOON: USER 3
  * BALLOON: USER 4
  * BALLOON: USER 5
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Plays balloon ID x on the designated event.
  * Replace x with an integar value or replace it with one of the strings shown
  * above to produce that specific balloon.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Balloon: 5
  *          Balloon: Heart
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -101,21 +95,21 @@ MageStudios.MoveRoute.version = 1.00;
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  * ICON BALLOON: x
  * ICON BALLOON: x to y
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Requires MSEP_IconBalloons.
  * This will make the designated event display an icon balloon using icon x
  * or x to y if the latter is used.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Turn Away: 20, 30
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  * JUMP FORWARD: x
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * The designated event will jump in the direction it is facing x tiles.
  * Replace x an integar value.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Jump Forward: 5
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  *
@@ -123,11 +117,11 @@ MageStudios.MoveRoute.version = 1.00;
  * JUMP TO: x, y
  * JUMP TO: EVENT x
  * JUMP TO: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * The designated event will jump to either the coordinates x, y, or event x on
  * the map (if event x is present), or to the player's location.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Jump To: 20, 30
  *          Jump To: Event 5
  *          Jump To: Player
@@ -145,7 +139,7 @@ MageStudios.MoveRoute.version = 1.00;
  * CRASH MOVE TO: x, y
  * CRASH MOVE TO: EVENT x
  * CRASH MOVE TO: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * The designated event will move to either the coordinates x, y, or event x on
  * the map (if event x is present), or to the player's location. The designated
  * event will determine what is the best route within 12 iterations to reach
@@ -159,7 +153,7 @@ MageStudios.MoveRoute.version = 1.00;
  *
  * 'Crash Move To' will allow collision with the player and/or followers.
  *
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Move To: 20, 30
  *          Move To: Event 5
  *          Move To: Player
@@ -170,13 +164,13 @@ MageStudios.MoveRoute.version = 1.00;
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  * PATTERN LOCK: x
  * PATTERN UNLOCK
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * For some reason, RPG Maker MV does not allow you to set the currently used
  * pattern (sprite frame) within the Move Route editor. This command will allow
  * you to do so. If Pattern Lock is used, the sprite will remain locked in that
  * pattern position until unlocked.
  * Replace x an integar value.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Pattern Lock: 0
  *          Pattern Lock: 2
  *          Pattern Unlock
@@ -186,12 +180,12 @@ MageStudios.MoveRoute.version = 1.00;
  * SELF SWITCH x: ON
  * SELF SWITCH x: OFF
  * SELF SWITCH x: TOGGLE
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will turn the self switch designed event (unless it's the player) to
  * either On, Off, or Toggle it On/Off.
  * Replace x with A, B, C, or D.
  * Those using MSEP_SelfSwVar.js can use numbers, too.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Self Switch A: On
  *          Self Switch B: Off
  *          Self Switch 123: Toggle
@@ -199,12 +193,12 @@ MageStudios.MoveRoute.version = 1.00;
  *
  * =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
  * SELF VARIABLE x: y
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Requires MSEP_SelfSwVar.js. This will set the self variable x for the
  * designated event (unless it's the player) to y.
  * Replace x with an integar value.
  * Replace y with an integar value or code.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Self Variable A: On
  *          Self Variable B: Off
  *          Self Variable 123: Toggle
@@ -214,12 +208,12 @@ MageStudios.MoveRoute.version = 1.00;
  * STEP AWAY FROM: x, y
  * STEP AWAY FROM: EVENT x
  * STEP AWAY FROM: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will make the designated event step one tile away from map coordinates
  * x, y, or event x on the map (if event x is present), or from the player's
  * current location.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Step Away: 20, 30
  *          Step Away: Event 5
  *          Step Away: Player
@@ -229,12 +223,12 @@ MageStudios.MoveRoute.version = 1.00;
  * STEP TOWARD: x, y
  * STEP TOWARD: EVENT x
  * STEP TOWARD: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will make the designated event step one tile toward map coordinates
  * x, y, or event x on the map (if event x is present), or to the player's
  * current location.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Step Toward: 20, 30
  *          Step Toward: Event 5
  *          Step Toward: Player
@@ -244,12 +238,12 @@ MageStudios.MoveRoute.version = 1.00;
  * TELEPORT: x, y
  * TELEPORT: EVENT x
  * TELEPORT: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will instantly teleport the designated event to coordinates x, y, or
  * event x on the map (if event x is present), or to the player's current
  * location on the map.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Teleport: 20, 30
  *          Teleport: Event 5
  *          Teleport: Player
@@ -259,11 +253,11 @@ MageStudios.MoveRoute.version = 1.00;
  * TURN AWAY FROM: x, y
  * TURN AWAY FROM: EVENT x
  * TURN AWAY FROM: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will make the designated event turn away from map coordinates x, y, or
  * event x on the map (if event x is present), or from the player's location.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Turn Away: 20, 30
  *          Turn Away: Event 5
  *          Turn Away: Player
@@ -273,12 +267,12 @@ MageStudios.MoveRoute.version = 1.00;
  * TURN TOWARDS: x, y
  * TURN TOWARDS: EVENT x
  * TURN TOWARDS: PLAYER
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * This will make the designated event turn towards tile toward map coordinates
  * x, y, or event x on the map (if event x is present), or to the player's
  * current location.
  * Replace x and y with integar values.
- * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Example: Turn Towards: 50, 60
  *          Turn Towards: Event 5
  *          Turn Towards: Player
@@ -439,164 +433,129 @@ MageStudios.MoveRoute.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
-
-//=============================================================================
-// Game_Character
-//=============================================================================
 
 MageStudios.MoveRoute.Game_Character_setMoveRoute =
   Game_Character.prototype.setMoveRoute;
-Game_Character.prototype.setMoveRoute = function(moveRoute) {
+Game_Character.prototype.setMoveRoute = function (moveRoute) {
   var route = JsonEx.makeDeepCopy(moveRoute);
   MageStudios.MoveRoute.Game_Character_setMoveRoute.call(this, route);
 };
 
 MageStudios.MoveRoute.Game_Character_processMoveCommand =
   Game_Character.prototype.processMoveCommand;
-Game_Character.prototype.processMoveCommand = function(command) {
+Game_Character.prototype.processMoveCommand = function (command) {
   var gc = Game_Character;
   switch (command.code) {
-  case gc.ROUTE_SCRIPT:
-    this.processMoveRouteScriptCall(command.parameters[0]);
-    break;
-  default:
-    MageStudios.MoveRoute.Game_Character_processMoveCommand.call(this, command);
-    break;
+    case gc.ROUTE_SCRIPT:
+      this.processMoveRouteScriptCall(command.parameters[0]);
+      break;
+    default:
+      MageStudios.MoveRoute.Game_Character_processMoveCommand.call(
+        this,
+        command
+      );
+      break;
   }
 };
 
-Game_Character.prototype.processMoveRouteScriptCall = function(line) {
-  // EVAL
+Game_Character.prototype.processMoveRouteScriptCall = function (line) {
   if (line.match(/EVAL:[ ](.*)/i)) {
     this.processMoveRouteEval(String(RegExp.$1));
-  // ANIMATION
   } else if (line.match(/(?:ANIMATION|REQUEST ANIMATION):[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.requestAnimation(x);
-  // ICON BALLOON
   } else if (line.match(/(?:ICON BALLOON|REQUEST ICON BALLOON):[ ](.*)/i)) {
     var str = String(RegExp.$1);
     this.processMoveRouteIconBalloon(str);
-  // BALLOON
   } else if (line.match(/(?:BALLOON|REQUEST BALLOON):[ ](.*)/i)) {
     var str = String(RegExp.$1);
     this.processMoveRouteBalloon(str);
-  // JUMP FORWARD
   } else if (line.match(/(?:JUMP FORWARD|JUMP FORWARDS):[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.jumpForward(x);
-  // JUMP TO: POINT
   } else if (line.match(/JUMP[ ](?:TO|TOWARD|TOWARDS):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.jumpToPoint(x, y);
-  // JUMP TO: EVENT
   } else if (line.match(/JUMP[ ](?:TO|TOWARD|TOWARDS):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.jumpToEvent(x);
-  // JUMP TO: PLAYER
   } else if (line.match(/JUMP[ ](?:TO|TOWARD|TOWARDS):[ ]PLAYER/i)) {
     this.jumpToEvent(0);
-  // MOVE TO: POINT
   } else if (line.match(/MOVE[ ](?:TO|TOWARD|TOWARDS):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     var collision = this.checkCollisionKeywords(line);
     this.moveToPoint(x, y, collision);
-  // MOVE TO: EVENT
   } else if (line.match(/MOVE[ ](?:TO|TOWARD|TOWARDS):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var collision = this.checkCollisionKeywords(line);
     this.moveToEvent(x, collision);
-  // MOVE TO: PLAYER
   } else if (line.match(/MOVE[ ](?:TO|TOWARD|TOWARDS):[ ]PLAYER/i)) {
     this.moveToEvent(0);
-  // PATTERN LOCK
   } else if (line.match(/(?:PATTERN LOCK):[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.patternLock(x);
-  // PATTERN UNLOCK
   } else if (line.match(/(?:PATTERN UNLOCK)/i)) {
     this.patternUnlock();
-  // SELF SWITCH: ON
   } else if (line.match(/(?:SELF SWITCH)[ ](.*):[ ]ON/i)) {
     var str = String(RegExp.$1);
-    this.processMoveRouteSelfSwitch(str, 'on');
-  // SELF SWITCH: OFF
+    this.processMoveRouteSelfSwitch(str, "on");
   } else if (line.match(/(?:SELF SWITCH)[ ](.*):[ ]OFF/i)) {
     var str = String(RegExp.$1);
-    this.processMoveRouteSelfSwitch(str, 'off');
-  // SELF SWITCH: TOGGLE
+    this.processMoveRouteSelfSwitch(str, "off");
   } else if (line.match(/(?:SELF SWITCH)[ ](.*):[ ]TOGGLE/i)) {
     var str = String(RegExp.$1);
-    this.processMoveRouteSelfSwitch(str, 'toggle');
-  // SELF VARIABLE
+    this.processMoveRouteSelfSwitch(str, "toggle");
   } else if (line.match(/(?:SELF VARIABLE)[ ](.*):[ ](.*)/i)) {
     var str = String(RegExp.$1);
     var code = String(RegExp.$2);
     this.processMoveRouteSelfVariable(str, code);
-  // STEP AWAY FROM: POINT
   } else if (line.match(/(?:STEP AWAY|STEP AWAY FROM):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.stepAwayFromPoint(x, y);
-  // STEP AWAY FROM: EVENT
   } else if (line.match(/(?:STEP AWAY|STEP AWAY FROM):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.stepAwayFromEvent(x);
-  // STEP AWAY FROM: PLAYER
   } else if (line.match(/(?:STEP AWAY|STEP AWAY FROM):[ ]PLAYER/i)) {
     this.stepAwayFromEvent(0);
-  // STEP TOWARD: POINT
   } else if (line.match(/(?:STEP TOWARD|STEP TOWARDS):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.stepTowardPoint(x, y);
-  // STEP TOWARD: EVENT
   } else if (line.match(/(?:STEP TOWARD|STEP TOWARDS):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.stepTowardEvent(x);
-  // STEP TOWARD: PLAYER
   } else if (line.match(/(?:STEP TOWARD|STEP TOWARDS):[ ]PLAYER/i)) {
     this.stepTowardEvent(0);
-  // TELEPORT: POINT
   } else if (line.match(/(?:TELEPORT|TELEPORT TO):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.teleportToPoint(x, y);
-  // TELEPORT: EVENT
   } else if (line.match(/(?:TELEPORT):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.teleportToEvent(x);
-  // TELEPORT: PLAYER
   } else if (line.match(/(?:TELEPORT):[ ]PLAYER/i)) {
     this.teleportToEvent(0);
-  // TURN AWAY FROM: POINT
   } else if (line.match(/(?:TURN AWAY FROM|TURN AWAY):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.turnAwayFromPoint(x, y);
-  // TURN AWAY FROM: EVENT
   } else if (line.match(/(?:TURN AWAY FROM|TURN AWAY):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.turnAwayFromEvent(x);
-  // TURN AWAY FROM: PLAYER
   } else if (line.match(/(?:TURN AWAY FROM|TURN AWAY):[ ]PLAYER/i)) {
     this.turnAwayFromEvent(0);
-  // TURN TOWARD: POINT
   } else if (line.match(/(?:TURN TOWARD|TURN TOWARDS):[ ](\d+),[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     var y = parseInt(RegExp.$2);
     this.turnTowardPoint(x, y);
-  // TURN TOWARD: EVENT
   } else if (line.match(/(?:TURN TOWARD|TURN TOWARDS):[ ]EVENT[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.turnTowardEvent(x);
-  // TURN TOWARD: PLAYER
   } else if (line.match(/(?:TURN TOWARD|TURN TOWARDS):[ ]PLAYER/i)) {
     this.turnTowardEvent(0);
-  // MOVE DIRECTION
   } else if (line.match(/(?:MOVE LOWER LEFT|LOWER LEFT):[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.moveRepeat(1, x);
@@ -621,13 +580,12 @@ Game_Character.prototype.processMoveRouteScriptCall = function(line) {
   } else if (line.match(/(?:MOVE RIGHT|RIGHT):[ ](\d+)/i)) {
     var x = parseInt(RegExp.$1);
     this.moveRepeat(6, x);
-  // ELSE/EVAL
   } else {
     this.processMoveRouteEval(line);
   }
 };
 
-Game_Character.prototype.checkCollisionKeywords = function(line) {
+Game_Character.prototype.checkCollisionKeywords = function (line) {
   if (line.match(/(?:CRASH|COLLIDE|COLLISION|ENCOUNTER|TOUCH)/i)) {
     return true;
   } else if (line.match(/(?:AVOID|EVADE|DODGE)/i)) {
@@ -637,7 +595,7 @@ Game_Character.prototype.checkCollisionKeywords = function(line) {
   }
 };
 
-Game_Character.prototype.processMoveRouteEval = function(code) {
+Game_Character.prototype.processMoveRouteEval = function (code) {
   var a = this;
   var b = this;
   var player = $gamePlayer;
@@ -646,11 +604,11 @@ Game_Character.prototype.processMoveRouteEval = function(code) {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'MOVE ROUTE SCRIPT ERROR');
+    MageStudios.Util.displayError(e, code, "MOVE ROUTE SCRIPT ERROR");
   }
 };
 
-Game_Character.prototype.processMoveRouteIconBalloon = function(str) {
+Game_Character.prototype.processMoveRouteIconBalloon = function (str) {
   if (!MageStudios.IBalloon) return;
   if (str.match(/(\d+)[ ]TO[ ](\d+)/i)) {
     var iconIndex1 = parseInt(RegExp.$1);
@@ -664,7 +622,7 @@ Game_Character.prototype.processMoveRouteIconBalloon = function(str) {
   this.setIconBalloon(iconIndex1, iconIndex2);
 };
 
-Game_Character.prototype.processMoveRouteBalloon = function(str) {
+Game_Character.prototype.processMoveRouteBalloon = function (str) {
   var id = 0;
   if (str.match(/(?:EXCLAMATION|\!)/i)) {
     id = 1;
@@ -692,28 +650,28 @@ Game_Character.prototype.processMoveRouteBalloon = function(str) {
   this.requestBalloon(id);
 };
 
-Game_Character.prototype.processMoveRouteSelfSwitch = function(str, setting) {
+Game_Character.prototype.processMoveRouteSelfSwitch = function (str, setting) {
   if (this === $gamePlayer) return;
   if (Imported.MSEP_SelfSwVar && str.match(/(\d+)/i)) {
-    var keyName = 'SELF SWITCH ' + parseInt(RegExp.$1);
+    var keyName = "SELF SWITCH " + parseInt(RegExp.$1);
   } else {
     var keyName = str.toUpperCase();
   }
   var key = [$gameMap.mapId(), this.eventId(), keyName];
-  if (setting.toUpperCase() === 'ON') {
+  if (setting.toUpperCase() === "ON") {
     $gameSelfSwitches.setValue(key, true);
-  } else if (setting.toUpperCase() === 'OFF') {
+  } else if (setting.toUpperCase() === "OFF") {
     $gameSelfSwitches.setValue(key, false);
-  } else if (setting.toUpperCase() === 'TOGGLE') {
+  } else if (setting.toUpperCase() === "TOGGLE") {
     $gameSelfSwitches.setValue(key, !$gameSelfSwitches.value(key));
   }
 };
 
-Game_Character.prototype.processMoveRouteSelfVariable = function(str, code) {
+Game_Character.prototype.processMoveRouteSelfVariable = function (str, code) {
   if (!Imported.MSEP_SelfSwVar) return;
   if (this === $gamePlayer) return;
   if (str.match(/(\d+)/i)) {
-    var keyName = 'SELF VARIABLE ' + parseInt(RegExp.$1);
+    var keyName = "SELF VARIABLE " + parseInt(RegExp.$1);
   } else {
     var keyName = str.toUpperCase();
   }
@@ -722,52 +680,54 @@ Game_Character.prototype.processMoveRouteSelfVariable = function(str, code) {
     var value = eval(code);
   } catch (e) {
     var value = 0;
-    MageStudios.Util.displayError(e, code, 'MOVE ROUTE SELF VARIABLE SCRIPT ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "MOVE ROUTE SELF VARIABLE SCRIPT ERROR"
+    );
   }
   $gameSelfSwitches.setValue(key, value);
 };
 
-// Simplified Functions
-
-Game_Character.prototype.jumpForward = function(distance) {
+Game_Character.prototype.jumpForward = function (distance) {
   distance = Math.round(distance);
   var direction = this.direction();
   var dx = 0;
   var dy = 0;
   switch (direction) {
-  case 1:
-    dx = -distance;
-    dy = distance;
-    break;
-  case 2:
-    dy = distance;
-    break;
-  case 3:
-    dx = distance;
-    dy = distance;
-    break;
-  case 4:
-    dx = -distance;
-    break;
-  case 6:
-    dx = distance;
-    break;
-  case 7:
-    dx = -distance;
-    dy = -distance;
-    break;
-  case 8:
-    dy = -distance;
-    break;
-  case 9:
-    dx = distance;
-    dy = -distance;
-    break;
+    case 1:
+      dx = -distance;
+      dy = distance;
+      break;
+    case 2:
+      dy = distance;
+      break;
+    case 3:
+      dx = distance;
+      dy = distance;
+      break;
+    case 4:
+      dx = -distance;
+      break;
+    case 6:
+      dx = distance;
+      break;
+    case 7:
+      dx = -distance;
+      dy = -distance;
+      break;
+    case 8:
+      dy = -distance;
+      break;
+    case 9:
+      dx = distance;
+      dy = -distance;
+      break;
   }
   this.jump(dx, dy);
 };
 
-Game_Character.prototype.jumpToPoint = function(x, y) {
+Game_Character.prototype.jumpToPoint = function (x, y) {
   x = Math.round(x);
   y = Math.round(y);
   dx = (this.x - x) * -1;
@@ -775,7 +735,7 @@ Game_Character.prototype.jumpToPoint = function(x, y) {
   this.jump(dx, dy);
 };
 
-Game_Character.prototype.jumpToEvent = function(eventId) {
+Game_Character.prototype.jumpToEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -789,43 +749,43 @@ Game_Character.prototype.jumpToEvent = function(eventId) {
   }
 };
 
-Game_Character.prototype.moveRepeat = function(direction, times) {
+Game_Character.prototype.moveRepeat = function (direction, times) {
   times = times || 0;
   times = Math.round(times);
   var command = {
     code: 1,
     indent: null,
-    parameters: []
-  }
+    parameters: [],
+  };
   var gc = Game_Character;
   switch (direction) {
-  case 1:
-    command.code = gc.ROUTE_MOVE_LOWER_L;
-    break;
-  case 2:
-    command.code = gc.ROUTE_MOVE_DOWN;
-    break;
-  case 3:
-    command.code = gc.ROUTE_MOVE_LOWER_R;
-    break;
-  case 4:
-    command.code = gc.ROUTE_MOVE_LEFT;
-    break;
-  case 5:
-    return;
-    break;
-  case 6:
-    command.code = gc.ROUTE_MOVE_RIGHT;
-    break;
-  case 7:
-    command.code = gc.ROUTE_MOVE_UPPER_L;
-    break;
-  case 8:
-    command.code = gc.ROUTE_MOVE_UP;
-    break;
-  case 9:
-    command.code = gc.ROUTE_MOVE_UPPER_R;
-    break;
+    case 1:
+      command.code = gc.ROUTE_MOVE_LOWER_L;
+      break;
+    case 2:
+      command.code = gc.ROUTE_MOVE_DOWN;
+      break;
+    case 3:
+      command.code = gc.ROUTE_MOVE_LOWER_R;
+      break;
+    case 4:
+      command.code = gc.ROUTE_MOVE_LEFT;
+      break;
+    case 5:
+      return;
+      break;
+    case 6:
+      command.code = gc.ROUTE_MOVE_RIGHT;
+      break;
+    case 7:
+      command.code = gc.ROUTE_MOVE_UPPER_L;
+      break;
+    case 8:
+      command.code = gc.ROUTE_MOVE_UP;
+      break;
+    case 9:
+      command.code = gc.ROUTE_MOVE_UPPER_R;
+      break;
   }
   this._moveRoute = JsonEx.makeDeepCopy(this._moveRoute);
   while (times--) {
@@ -833,7 +793,7 @@ Game_Character.prototype.moveRepeat = function(direction, times) {
   }
 };
 
-Game_CharacterBase.prototype.moveToPoint = function(x, y, collision) {
+Game_CharacterBase.prototype.moveToPoint = function (x, y, collision) {
   collision = collision || false;
   x = Math.round(x);
   y = Math.round(y);
@@ -845,11 +805,11 @@ Game_CharacterBase.prototype.moveToPoint = function(x, y, collision) {
   this.setMovementSuccess(true);
 };
 
-Game_CharacterBase.prototype.moveTowardPoint = function(x, y, collision) {
+Game_CharacterBase.prototype.moveTowardPoint = function (x, y, collision) {
   this.moveToPoint(x, y, collision);
 };
 
-Game_Character.prototype.moveToEvent = function(eventId, collision) {
+Game_Character.prototype.moveToEvent = function (eventId, collision) {
   collision = collision || false;
   if (eventId === 0) {
     var x = $gamePlayer.x;
@@ -864,17 +824,17 @@ Game_Character.prototype.moveToEvent = function(eventId, collision) {
   }
 };
 
-Game_Character.prototype.patternLock = function(index) {
+Game_Character.prototype.patternLock = function (index) {
   index = Math.round(index);
   this._patternMoveRouteLocked = true;
   this.setPattern(index);
 };
 
-Game_Character.prototype.patternUnlock = function() {
+Game_Character.prototype.patternUnlock = function () {
   this._patternMoveRouteLocked = false;
 };
 
-Game_Character.prototype.stepAwayFromPoint = function(x, y) {
+Game_Character.prototype.stepAwayFromPoint = function (x, y) {
   var sx = this.deltaXFrom(Math.round(x));
   var sy = this.deltaYFrom(Math.round(y));
   if (Math.abs(sx) > Math.abs(sy)) {
@@ -890,7 +850,7 @@ Game_Character.prototype.stepAwayFromPoint = function(x, y) {
   }
 };
 
-Game_Character.prototype.stepAwayFromEvent = function(eventId) {
+Game_Character.prototype.stepAwayFromEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -904,7 +864,7 @@ Game_Character.prototype.stepAwayFromEvent = function(eventId) {
   }
 };
 
-Game_Character.prototype.stepTowardPoint = function(x, y) {
+Game_Character.prototype.stepTowardPoint = function (x, y) {
   var sx = this.deltaXFrom(Math.round(x));
   var sy = this.deltaYFrom(Math.round(y));
   if (Math.abs(sx) > Math.abs(sy)) {
@@ -920,7 +880,7 @@ Game_Character.prototype.stepTowardPoint = function(x, y) {
   }
 };
 
-Game_Character.prototype.stepTowardEvent = function(eventId) {
+Game_Character.prototype.stepTowardEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -934,13 +894,13 @@ Game_Character.prototype.stepTowardEvent = function(eventId) {
   }
 };
 
-Game_Character.prototype.teleportToPoint = function(x, y) {
+Game_Character.prototype.teleportToPoint = function (x, y) {
   x = Math.round(x);
   y = Math.round(y);
   this.locate(x, y);
 };
 
-Game_Character.prototype.teleportToEvent = function(eventId) {
+Game_Character.prototype.teleportToEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -954,7 +914,7 @@ Game_Character.prototype.teleportToEvent = function(eventId) {
   }
 };
 
-Game_Character.prototype.turnAwayFromPoint = function(x, y) {
+Game_Character.prototype.turnAwayFromPoint = function (x, y) {
   x = Math.round(x);
   y = Math.round(y);
   var sx = this.deltaXFrom(x);
@@ -966,7 +926,7 @@ Game_Character.prototype.turnAwayFromPoint = function(x, y) {
   }
 };
 
-Game_Character.prototype.turnAwayFromEvent = function(eventId) {
+Game_Character.prototype.turnAwayFromEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -980,7 +940,7 @@ Game_Character.prototype.turnAwayFromEvent = function(eventId) {
   }
 };
 
-Game_Character.prototype.turnTowardPoint = function(x, y) {
+Game_Character.prototype.turnTowardPoint = function (x, y) {
   x = Math.round(x);
   y = Math.round(y);
   var sx = this.deltaXFrom(x);
@@ -992,7 +952,7 @@ Game_Character.prototype.turnTowardPoint = function(x, y) {
   }
 };
 
-Game_Character.prototype.turnTowardEvent = function(eventId) {
+Game_Character.prototype.turnTowardEvent = function (eventId) {
   if (eventId === 0) {
     var x = $gamePlayer.x;
     var y = $gamePlayer.y;
@@ -1006,72 +966,59 @@ Game_Character.prototype.turnTowardEvent = function(eventId) {
   }
 };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
 MageStudios.MoveRoute.Game_CharacterBase_isNearTheScreen =
   Game_CharacterBase.prototype.isNearTheScreen;
-Game_CharacterBase.prototype.isNearTheScreen = function() {
+Game_CharacterBase.prototype.isNearTheScreen = function () {
   if (this._isAlwaysUpdateMovement) return true;
   return MageStudios.MoveRoute.Game_CharacterBase_isNearTheScreen.call(this);
 };
 
 MageStudios.MoveRoute.Game_CharacterBase_updatePattern =
   Game_CharacterBase.prototype.updatePattern;
-Game_CharacterBase.prototype.updatePattern = function() {
+Game_CharacterBase.prototype.updatePattern = function () {
   if (this._patternMoveRouteLocked) return;
   MageStudios.MoveRoute.Game_CharacterBase_updatePattern.call(this);
 };
 
 MageStudios.MoveRoute.Game_CharacterBase_requestAnimation =
   Game_CharacterBase.prototype.requestAnimation;
-Game_CharacterBase.prototype.requestAnimation = function(animationId) {
+Game_CharacterBase.prototype.requestAnimation = function (animationId) {
   animationId = Math.round(animationId);
-  MageStudios.MoveRoute.Game_CharacterBase_requestAnimation.call(this, animationId);
+  MageStudios.MoveRoute.Game_CharacterBase_requestAnimation.call(
+    this,
+    animationId
+  );
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
-MageStudios.MoveRoute.Game_Event_updateSelfMovement =  
+MageStudios.MoveRoute.Game_Event_updateSelfMovement =
   Game_Event.prototype.updateSelfMovement;
-Game_Event.prototype.updateSelfMovement = function() {
+Game_Event.prototype.updateSelfMovement = function () {
   if (this._isAlwaysUpdateMovement === undefined) this.checkUpdateSelfMove();
   MageStudios.MoveRoute.Game_Event_updateSelfMovement.call(this);
 };
 
-Game_Event.prototype.checkUpdateSelfMove = function() {
+Game_Event.prototype.checkUpdateSelfMove = function () {
   var note = this.event().note;
   this._isAlwaysUpdateMovement = note.match(/<ALWAYS UPDATE MOVEMENT>/i);
 };
 
 MageStudios.MoveRoute.Game_Event_isPlayerCollided =
   Game_Event.prototype.isCollidedWithPlayerCharacters;
-Game_Event.prototype.isCollidedWithPlayerCharacters = function(x, y) {
+Game_Event.prototype.isCollidedWithPlayerCharacters = function (x, y) {
   if ($gameTemp._moveAllowPlayerCollision) return false;
   return MageStudios.MoveRoute.Game_Event_isPlayerCollided.call(this, x, y);
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

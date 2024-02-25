@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Engine Extension - Battle Equip Change
-// MSEP_X_ChangeBattleEquip.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ChangeBattleEquip = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CBE = MageStudios.CBE || {};
-MageStudios.CBE.version = 1.00;
+MageStudios.CBE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_EquipCore)
  * Allow your actors to change equipment mid-battle.
  * @author Mage Studios Engine Plugins
@@ -79,63 +73,51 @@ MageStudios.CBE.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore && Imported.MSEP_EquipCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ChangeBattleEquip");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.CBECmd = String(MageStudios.Parameters["Command Name"]);
+  MageStudios.Param.CBECooldown = Number(
+    MageStudios.Parameters["Equip Cooldown"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ChangeBattleEquip');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.CBE.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.CBE.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_ChangeBattleEquip) {
+      this.processCBENotetags($dataActors);
+      this.processCBENotetags($dataClasses);
+      this.processCBENotetags($dataWeapons);
+      this.processCBENotetags($dataArmors);
+      this.processCBENotetags($dataStates);
+      MageStudios._loaded_MSEP_X_ChangeBattleEquip = true;
+    }
+    return true;
+  };
 
-MageStudios.Param.CBECmd = String(MageStudios.Parameters['Command Name']);
-MageStudios.Param.CBECooldown = Number(MageStudios.Parameters['Equip Cooldown']);
+  DataManager.processCBENotetags = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-//=============================================================================
-// DataManager
-//=============================================================================
+      obj.changeBattleEquipCooldown = 0;
+      obj.disableChangeBattleEquip = false;
 
-MageStudios.CBE.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.CBE.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_ChangeBattleEquip) {
-    this.processCBENotetags($dataActors);
-    this.processCBENotetags($dataClasses);
-    this.processCBENotetags($dataWeapons);
-    this.processCBENotetags($dataArmors);
-    this.processCBENotetags($dataStates);
-    MageStudios._loaded_MSEP_X_ChangeBattleEquip = true;
-  }
-  return true;
-};
-
-DataManager.processCBENotetags = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.changeBattleEquipCooldown = 0;
-    obj.disableChangeBattleEquip = false;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<CHANGE BATTLE EQUIP COOLDOWN:[ ]([\+\-]\d+)>/i)) {
-        obj.changeBattleEquipCooldown = parseInt(RegExp.$1);
-      } else if (line.match(/<DISABLE CHANGE BATTLE EQUIP>/i)) {
-        obj.disableChangeBattleEquip = true;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<CHANGE BATTLE EQUIP COOLDOWN:[ ]([\+\-]\d+)>/i)) {
+          obj.changeBattleEquipCooldown = parseInt(RegExp.$1);
+        } else if (line.match(/<DISABLE CHANGE BATTLE EQUIP>/i)) {
+          obj.disableChangeBattleEquip = true;
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.CBE.BattleManager_startBattle = BattleManager.startBattle;
-BattleManager.startBattle = function() {
+  MageStudios.CBE.BattleManager_startBattle = BattleManager.startBattle;
+  BattleManager.startBattle = function () {
     if (!$gameTemp._cbeBattle) {
       MageStudios.CBE.BattleManager_startBattle.call(this);
     } else {
@@ -144,19 +126,19 @@ BattleManager.startBattle = function() {
     $gameTemp._cbeBattle = false;
     this._bypassMoveToStartLocation = false;
     BattleManager.refreshAllBattlers();
-};
+  };
 
-BattleManager.refreshAllBattlers = function() {
-  var members = $gameParty.members().concat($gameTroop.members());
-  var length = members.length;
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) member.refresh();
-  }
-};
+  BattleManager.refreshAllBattlers = function () {
+    var members = $gameParty.members().concat($gameTroop.members());
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) member.refresh();
+    }
+  };
 
-MageStudios.CBE.BattleManager_playBattleBgm = BattleManager.playBattleBgm;
-BattleManager.playBattleBgm = function() {
+  MageStudios.CBE.BattleManager_playBattleBgm = BattleManager.playBattleBgm;
+  BattleManager.playBattleBgm = function () {
     var restartBgm = true;
     if (MageStudios.CBE.SavedBattleBgm) {
       AudioManager.playBgm(MageStudios.CBE.SavedBattleBgm);
@@ -169,63 +151,53 @@ BattleManager.playBattleBgm = function() {
       restartBgm = false;
     }
     if (restartBgm) MageStudios.CBE.BattleManager_playBattleBgm.call(this);
-};
+  };
 
-//=============================================================================
-// Game_Temp
-//=============================================================================
+  Game_Temp.prototype.hasStoredBattleSpriteset = function () {
+    return this._battleSpriteset;
+  };
 
-Game_Temp.prototype.hasStoredBattleSpriteset = function() {
-  return this._battleSpriteset;
-};
+  Game_Temp.prototype.storeBattleSpriteset = function () {
+    this._battleSpriteset = SceneManager._scene._spriteset;
+  };
 
-Game_Temp.prototype.storeBattleSpriteset = function() {
-  this._battleSpriteset = SceneManager._scene._spriteset;
-};
+  Game_Temp.prototype.restoreBattleSpriteset = function () {
+    if (this._battleSpriteset) {
+      SceneManager._scene._spriteset = this._battleSpriteset;
+      SceneManager._scene.addChild(SceneManager._scene._spriteset);
+      this._battleSpriteset = undefined;
+    }
+  };
 
-Game_Temp.prototype.restoreBattleSpriteset = function() {
-  if (this._battleSpriteset) {
-    SceneManager._scene._spriteset = this._battleSpriteset;
-    SceneManager._scene.addChild(SceneManager._scene._spriteset);
-    this._battleSpriteset = undefined;
-  }
-};
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.CBE.Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-Game_Battler.prototype.onBattleStart = function() {
+  MageStudios.CBE.Game_Battler_onBattleStart =
+    Game_Battler.prototype.onBattleStart;
+  Game_Battler.prototype.onBattleStart = function () {
     MageStudios.CBE.Game_Battler_onBattleStart.call(this);
     this._changeBattleEquipCooldown = 0;
-};
+  };
 
-MageStudios.CBE.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
-Game_Battler.prototype.onBattleEnd = function() {
+  MageStudios.CBE.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
+  Game_Battler.prototype.onBattleEnd = function () {
     MageStudios.CBE.Game_Battler_onBattleEnd.call(this);
     this._changeBattleEquipCooldown = 0;
-};
+  };
 
-MageStudios.CBE.Game_Battler_regenerateAll = Game_Battler.prototype.regenerateAll;
-Game_Battler.prototype.regenerateAll = function() {
+  MageStudios.CBE.Game_Battler_regenerateAll =
+    Game_Battler.prototype.regenerateAll;
+  Game_Battler.prototype.regenerateAll = function () {
     MageStudios.CBE.Game_Battler_regenerateAll.call(this);
     if (!$gameParty.inBattle()) return;
     if (this.isActor()) this.updateBattleEquipChangeCooldown();
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.CBE.Game_Actor_refresh = Game_Actor.prototype.refresh;
-Game_Actor.prototype.refresh = function() {
+  MageStudios.CBE.Game_Actor_refresh = Game_Actor.prototype.refresh;
+  Game_Actor.prototype.refresh = function () {
     this._cacheChangeBattleEquipCooldown = undefined;
     this._cacheCanCBattleEquipChange = undefined;
     MageStudios.CBE.Game_Actor_refresh.call(this);
-};
+  };
 
-Game_Actor.prototype.canBattleEquipChange = function() {
+  Game_Actor.prototype.canBattleEquipChange = function () {
     if (this._cacheCanCBattleEquipChange !== undefined) {
       if (this._cacheCanCBattleEquipChange) {
         this._changeBattleEquipCooldown = this._changeBattleEquipCooldown || 0;
@@ -239,7 +211,6 @@ Game_Actor.prototype.canBattleEquipChange = function() {
       return this._cacheCanCBattleEquipChange;
     }
     if (this.currentClass().disableChangeBattleEquip) {
-
       this._cacheCanCBattleEquipChange = false;
       return this._cacheCanCBattleEquipChange;
     }
@@ -262,9 +233,9 @@ Game_Actor.prototype.canBattleEquipChange = function() {
     this._cacheCanCBattleEquipChange = true;
     this._changeBattleEquipCooldown = this._changeBattleEquipCooldown || 0;
     return this._changeBattleEquipCooldown <= 0;
-};
+  };
 
-Game_Actor.prototype.setBattleEquipChange = function(value) {
+  Game_Actor.prototype.setBattleEquipChange = function (value) {
     if (!value) {
       this._changeBattleEquipCooldown = 0;
       return;
@@ -292,90 +263,70 @@ Game_Actor.prototype.setBattleEquipChange = function(value) {
     }
     this._cacheChangeBattleEquipCooldown = value;
     this._changeBattleEquipCooldown = this._cacheChangeBattleEquipCooldown;
-};
+  };
 
-Game_Actor.prototype.updateBattleEquipChangeCooldown = function() {
+  Game_Actor.prototype.updateBattleEquipChangeCooldown = function () {
     this._changeBattleEquipCooldown = this._changeBattleEquipCooldown || 0;
     this._changeBattleEquipCooldown -= 1;
-};
+  };
 
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-MageStudios.CBE.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
-Game_Unit.prototype.onBattleStart = function() {
+  MageStudios.CBE.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
+  Game_Unit.prototype.onBattleStart = function () {
     if ($gameTemp._cbeBattle) return;
     MageStudios.CBE.Game_Unit_onBattleStart.call(this);
-};
+  };
 
-MageStudios.CBE.Game_Unit_onBattleEnd = Game_Unit.prototype.onBattleEnd;
-Game_Unit.prototype.onBattleEnd = function() {
+  MageStudios.CBE.Game_Unit_onBattleEnd = Game_Unit.prototype.onBattleEnd;
+  Game_Unit.prototype.onBattleEnd = function () {
     if ($gameTemp._cbeBattle) return;
     MageStudios.CBE.Game_Unit_onBattleEnd.call(this);
-};
+  };
 
-//=============================================================================
-// Game_Party
-//=============================================================================
-
-Game_Party.prototype.loadActorImages = function() {
+  Game_Party.prototype.loadActorImages = function () {
     for (var i = 0; i < this.members().length; ++i) {
       var actor = this.members()[i];
       if (!actor) continue;
       ImageManager.loadFace(actor.faceName());
       ImageManager.loadCharacter(actor.characterName());
     }
-};
+  };
 
-//=============================================================================
-// Window_Selectable
-//=============================================================================
-
-Window_Selectable.prototype.removeHandler = function(symbol) {
+  Window_Selectable.prototype.removeHandler = function (symbol) {
     this._handlers[symbol] = undefined;
-};
+  };
 
-//=============================================================================
-// Window_ActorCommand
-//=============================================================================
-
-MageStudios.CBE.Window_ActorCommand_makeCommandList =
+  MageStudios.CBE.Window_ActorCommand_makeCommandList =
     Window_ActorCommand.prototype.makeCommandList;
-Window_ActorCommand.prototype.makeCommandList = function() {
+  Window_ActorCommand.prototype.makeCommandList = function () {
     MageStudios.CBE.Window_ActorCommand_makeCommandList.call(this);
     if (this._actor && this._actor.isActor()) this.addEquipChangeCommand();
-};
+  };
 
-Window_ActorCommand.prototype.addEquipChangeCommand = function() {
+  Window_ActorCommand.prototype.addEquipChangeCommand = function () {
     var text = MageStudios.Param.CBECmd;
     var enabled = this._actor.canBattleEquipChange();
-    this.addCommand(text, 'equip change', enabled);
-};
+    this.addCommand(text, "equip change", enabled);
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.CBE.Scene_Battle_createActorCommandWindow =
+  MageStudios.CBE.Scene_Battle_createActorCommandWindow =
     Scene_Battle.prototype.createActorCommandWindow;
-Scene_Battle.prototype.createActorCommandWindow = function() {
+  Scene_Battle.prototype.createActorCommandWindow = function () {
     MageStudios.CBE.Scene_Battle_createActorCommandWindow.call(this);
     var win = this._actorCommandWindow;
-    win.setHandler('equip change', this.commandChangeBattleEquip.bind(this));
-};
+    win.setHandler("equip change", this.commandChangeBattleEquip.bind(this));
+  };
 
-MageStudios.CBE.Scene_Battle_createSpriteset =
+  MageStudios.CBE.Scene_Battle_createSpriteset =
     Scene_Battle.prototype.createSpriteset;
-Scene_Battle.prototype.createSpriteset = function() {
-  if ($gameTemp.hasStoredBattleSpriteset()) {
-    $gameTemp.restoreBattleSpriteset();
-  } else {
-    MageStudios.CBE.Scene_Battle_createSpriteset.call(this);
-  }
-};
+  Scene_Battle.prototype.createSpriteset = function () {
+    if ($gameTemp.hasStoredBattleSpriteset()) {
+      $gameTemp.restoreBattleSpriteset();
+    } else {
+      MageStudios.CBE.Scene_Battle_createSpriteset.call(this);
+    }
+  };
 
-Scene_Battle.prototype.commandChangeBattleEquip = function() {
+  Scene_Battle.prototype.commandChangeBattleEquip = function () {
     BattleManager._bypassMoveToStartLocation = true;
     $gameParty.loadActorImages();
     this.prepareBackground();
@@ -386,42 +337,38 @@ Scene_Battle.prototype.commandChangeBattleEquip = function() {
     MageStudios.CBE.SavedBattleBgs = AudioManager.saveBgs();
     $gameTemp.storeBattleSpriteset();
     SceneManager.push(Scene_Equip);
-    BattleManager._phase = 'input';
+    BattleManager._phase = "input";
     $gameTemp._cbeBattle = true;
-};
+  };
 
-Scene_Battle.prototype.prepareBackground = function() {
+  Scene_Battle.prototype.prepareBackground = function () {
     MageStudios.CBE.SavedBackgroundBitmap = SceneManager._backgroundBitmap;
     this._prevWindowLayer = this._windowLayer.y;
     this._windowLayer.y = Graphics.boxHeight * 495;
     SceneManager.snapForBackground();
     this._windowLayer.y = this._prevWindowLayer;
-};
+  };
 
-//=============================================================================
-// Scene_Equip
-//=============================================================================
-
-MageStudios.CBE.Scene_Equip_createCommandWindow =
+  MageStudios.CBE.Scene_Equip_createCommandWindow =
     Scene_Equip.prototype.createCommandWindow;
-Scene_Equip.prototype.createCommandWindow = function() {
+  Scene_Equip.prototype.createCommandWindow = function () {
     MageStudios.CBE.Scene_Equip_createCommandWindow.call(this);
     if (!$gameTemp._cbeBattle) return;
-    this._commandWindow.removeHandler('pagedown');
-    this._commandWindow.removeHandler('pageup');
+    this._commandWindow.removeHandler("pagedown");
+    this._commandWindow.removeHandler("pageup");
     if (DataManager.isBattleTest() && !$gameTemp._bypassAddDebugEquipment) {
       this.addDebugEquipment();
     }
-};
+  };
 
-Scene_Equip.prototype.addDebugEquipment = function() {
+  Scene_Equip.prototype.addDebugEquipment = function () {
     if ($gameTemp._addDebugEquipment) return;
     $gameTemp._addDebugEquipment = true;
     var length = $dataWeapons.length;
     for (var i = 0; i < length; ++i) {
       var obj = $dataWeapons[i];
       if (!obj) continue;
-      if (obj.name === '') continue;
+      if (obj.name === "") continue;
       var value = $gameParty.maxItems(obj);
       $gameParty.gainItem(obj, value);
     }
@@ -429,13 +376,9 @@ Scene_Equip.prototype.addDebugEquipment = function() {
     for (var i = 0; i < length; ++i) {
       var obj = $dataArmors[i];
       if (!obj) continue;
-      if (obj.name === '') continue;
+      if (obj.name === "") continue;
       var value = $gameParty.maxItems(obj);
       $gameParty.gainItem(obj, value);
     }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

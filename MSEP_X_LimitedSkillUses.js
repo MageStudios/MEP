@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Skill Core Extension - Limited Skill Uses
-// MSEP_X_LimitedSkillUses.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_LimitedSkillUses = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LSU = MageStudios.LSU || {};
-MageStudios.LSU.version = 1.00;
+MageStudios.LSU.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_SkillCore.js) Make certain skills have
  * a limited amount of times they can be used in battle.
  * @author Mage Studios Engine Plugins
@@ -311,7 +305,7 @@ MageStudios.LSU.version = 1.00;
  *
  *   --- --- ---
  *
- * * Note: Keep in mind that none of the adjustments here will bypass the 
+ * * Note: Keep in mind that none of the adjustments here will bypass the
  * 'Absolute Max' setting in the plugin parameters. That is the ceiling.
  *
  * ============================================================================
@@ -345,365 +339,377 @@ MageStudios.LSU.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_SkillCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_LimitedSkillUses");
+  MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Icon = MageStudios.Icon || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_LimitedSkillUses');
-MageStudios.Param = MageStudios.Param || {};
-MageStudios.Icon = MageStudios.Icon || {};
-
-MageStudios.Icon.LimitedUse = Number(MageStudios.Parameters['Limited Use Icon']);
-MageStudios.Param.LSUFontSize = Number(MageStudios.Parameters['Font Size']);
-MageStudios.Param.LSUTextColor = Number(MageStudios.Parameters['Text Color']);
-MageStudios.Param.LSUFormat = String(MageStudios.Parameters['Cost Format']);
-MageStudios.Icon.LimitedEmpty = Number(MageStudios.Parameters['Empty Icon']);
-MageStudios.Param.LSUEmpty = String(MageStudios.Parameters['Empty Text']);
-MageStudios.Param.LimitedAbsMax = Number(MageStudios.Parameters['Absolute Max']);
-MageStudios.Param.LSUBypass = String(MageStudios.Parameters['Bypass Limits']);
-MageStudios.Param.LSUBypass = MageStudios.Param.LSUBypass.split(' ');
-MageStudios.SetupParameters = function() {
-  for (var i = 0; i < MageStudios.Param.LSUBypass.length; ++i) {
-    MageStudios.Param.LSUBypass[i] = parseInt(MageStudios.Param.LSUBypass[i]);
+  MageStudios.Icon.LimitedUse = Number(
+    MageStudios.Parameters["Limited Use Icon"]
+  );
+  MageStudios.Param.LSUFontSize = Number(MageStudios.Parameters["Font Size"]);
+  MageStudios.Param.LSUTextColor = Number(MageStudios.Parameters["Text Color"]);
+  MageStudios.Param.LSUFormat = String(MageStudios.Parameters["Cost Format"]);
+  MageStudios.Icon.LimitedEmpty = Number(MageStudios.Parameters["Empty Icon"]);
+  MageStudios.Param.LSUEmpty = String(MageStudios.Parameters["Empty Text"]);
+  MageStudios.Param.LimitedAbsMax = Number(
+    MageStudios.Parameters["Absolute Max"]
+  );
+  MageStudios.Param.LSUBypass = String(MageStudios.Parameters["Bypass Limits"]);
+  MageStudios.Param.LSUBypass = MageStudios.Param.LSUBypass.split(" ");
+  MageStudios.SetupParameters = function () {
+    for (var i = 0; i < MageStudios.Param.LSUBypass.length; ++i) {
+      MageStudios.Param.LSUBypass[i] = parseInt(MageStudios.Param.LSUBypass[i]);
+    }
+    var data = JSON.parse(MageStudios.Parameters["Bypass List"] || "[]");
+    for (var i = 0; i < data.length; ++i) {
+      var id = parseInt(data[i]);
+      if (id <= 0) continue;
+      if (MageStudios.Param.LSUBypass.contains(id)) continue;
+      MageStudios.Param.LSUBypass.push(id);
+    }
   };
-  var data = JSON.parse(MageStudios.Parameters['Bypass List'] || '[]');
-  for (var i = 0; i < data.length; ++i) {
-    var id = parseInt(data[i]);
-    if (id <= 0) continue;
-    if (MageStudios.Param.LSUBypass.contains(id)) continue;
-    MageStudios.Param.LSUBypass.push(id);
-  }
-}
-MageStudios.SetupParameters();
+  MageStudios.SetupParameters();
 
-MageStudios.Param.LSUDefLimitAll = String(MageStudios.Parameters['Limit All Skills']);
-MageStudios.Param.LSUDefLimitAll = eval(MageStudios.Param.LSUDefLimitAll);
-MageStudios.Param.LSUDefCharges = Number(MageStudios.Parameters['Limit Charges']);
-MageStudios.Param.LSURecoverAll = eval(String(MageStudios.Parameters['Recover All']));
-MageStudios.Param.LSUVictoryRecover = Number(MageStudios.Parameters['Victory Recover']);
-MageStudios.Param.LSUEscapeRecover = Number(MageStudios.Parameters['Escape Recover']);
-MageStudios.Param.LSULoseRecover = Number(MageStudios.Parameters['Lose Recover']);
+  MageStudios.Param.LSUDefLimitAll = String(
+    MageStudios.Parameters["Limit All Skills"]
+  );
+  MageStudios.Param.LSUDefLimitAll = eval(MageStudios.Param.LSUDefLimitAll);
+  MageStudios.Param.LSUDefCharges = Number(
+    MageStudios.Parameters["Limit Charges"]
+  );
+  MageStudios.Param.LSURecoverAll = eval(
+    String(MageStudios.Parameters["Recover All"])
+  );
+  MageStudios.Param.LSUVictoryRecover = Number(
+    MageStudios.Parameters["Victory Recover"]
+  );
+  MageStudios.Param.LSUEscapeRecover = Number(
+    MageStudios.Parameters["Escape Recover"]
+  );
+  MageStudios.Param.LSULoseRecover = Number(
+    MageStudios.Parameters["Lose Recover"]
+  );
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.LSU.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.LSU.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_LimitedSkillUses) {
-    this.processLSUNotetagsS($dataSkills);
-    this.processLSUNotetags1($dataSkills);
-    this.processLSUNotetags2($dataSkills);
-    this.processLSUNotetags2($dataItems);
-    this.processLSUNotetags3($dataActors);
-    this.processLSUNotetags3($dataClasses);
-    this.processLSUNotetags3($dataEnemies);
-    this.processLSUNotetags3($dataWeapons);
-    this.processLSUNotetags3($dataArmors);
-    this.processLSUNotetags3($dataStates);
-    MageStudios._loaded_MSEP_X_LimitedSkillUses = true;
-  }
-  return true;
-};
-
-DataManager.processLSUNotetagsS = function(group) {
-  if (MageStudios.SkillIdRef) return;
-  MageStudios.SkillIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processLSUNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.isLimitedUse = MageStudios.Param.LSUDefLimitAll;
-    obj.limitUses = MageStudios.Param.LSUDefCharges;
-    obj.limitRecoverAllUses = MageStudios.Param.LSURecoverAll;
-    obj.limitBattleRecover = [
-      MageStudios.Param.LSUVictoryRecover,
-      MageStudios.Param.LSUEscapeRecover,
-      MageStudios.Param.LSULoseRecover
-    ];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:LIMIT USES|LIMIT USE|LIMITED USE):[ ](\d+)>/i)) {
-        obj.limitUses = parseInt(RegExp.$1);
-        obj.isLimitedUse = true;
-      } else if (line.match(/<(?:RECOVER ALL USES)>/i)) {
-        obj.limitRecoverAllUses = true;
-      } else if (line.match(/<(?:NOT RECOVER ALL USES)>/i)) {
-        obj.limitRecoverAllUses = false;
-      } else if (line.match(/<(?:VICTORY USES RECOVER):[ ](\d+)>/i)) {
-        obj.limitBattleRecover[0] = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:ESCAPE USES RECOVER):[ ](\d+)>/i)) {
-        obj.limitBattleRecover[1] = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:LOSE USES RECOVER):[ ](\d+)>/i)) {
-        obj.limitBattleRecover[2] = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:AFTER BATTLE USES RECOVER):[ ](\d+)>/i)) {
-        obj.limitBattleRecover[0] = parseInt(RegExp.$1);
-        obj.limitBattleRecover[1] = parseInt(RegExp.$1);
-        obj.limitBattleRecover[2] = parseInt(RegExp.$1);
-      }
+  MageStudios.LSU.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.LSU.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_LimitedSkillUses) {
+      this.processLSUNotetagsS($dataSkills);
+      this.processLSUNotetags1($dataSkills);
+      this.processLSUNotetags2($dataSkills);
+      this.processLSUNotetags2($dataItems);
+      this.processLSUNotetags3($dataActors);
+      this.processLSUNotetags3($dataClasses);
+      this.processLSUNotetags3($dataEnemies);
+      this.processLSUNotetags3($dataWeapons);
+      this.processLSUNotetags3($dataArmors);
+      this.processLSUNotetags3($dataStates);
+      MageStudios._loaded_MSEP_X_LimitedSkillUses = true;
     }
+    return true;
+  };
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:UNLIMITED USE)>/i)) {
-        obj.isLimitedUse = false;
-      }
+  DataManager.processLSUNotetagsS = function (group) {
+    if (MageStudios.SkillIdRef) return;
+    MageStudios.SkillIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
     }
-  }
-};
+  };
 
-DataManager.processLSUNotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processLSUNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.globalLimitedUses = 0;
-    obj.stypeLimitedUses = {};
-    obj.skillLimitedUses = {};
-    var evalMode = 'none';
-    var evalLine = '';
-    obj.globalLimitedUsesEval = '';
-    obj.stypeLimitedUsesEval = {};
-    obj.skillLimitedUsesEval = {};
+      obj.isLimitedUse = MageStudios.Param.LSUDefLimitAll;
+      obj.limitUses = MageStudios.Param.LSUDefCharges;
+      obj.limitRecoverAllUses = MageStudios.Param.LSURecoverAll;
+      obj.limitBattleRecover = [
+        MageStudios.Param.LSUVictoryRecover,
+        MageStudios.Param.LSUEscapeRecover,
+        MageStudios.Param.LSULoseRecover,
+      ];
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<GLOBAL LIMITED USES:[ ]([\+\-]\d+)>/i)) {
-        obj.globalLimitedUses = parseInt(RegExp.$1);
-      } else if (line.match(/<STYPE[ ](\d+)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)) {
-        obj.stypeLimitedUses[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<SKILL[ ](\d+)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)) {
-        obj.skillLimitedUses[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<SKILL[ ](.*)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:LIMIT USES|LIMIT USE|LIMITED USE):[ ](\d+)>/i)) {
+          obj.limitUses = parseInt(RegExp.$1);
+          obj.isLimitedUse = true;
+        } else if (line.match(/<(?:RECOVER ALL USES)>/i)) {
+          obj.limitRecoverAllUses = true;
+        } else if (line.match(/<(?:NOT RECOVER ALL USES)>/i)) {
+          obj.limitRecoverAllUses = false;
+        } else if (line.match(/<(?:VICTORY USES RECOVER):[ ](\d+)>/i)) {
+          obj.limitBattleRecover[0] = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:ESCAPE USES RECOVER):[ ](\d+)>/i)) {
+          obj.limitBattleRecover[1] = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:LOSE USES RECOVER):[ ](\d+)>/i)) {
+          obj.limitBattleRecover[2] = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:AFTER BATTLE USES RECOVER):[ ](\d+)>/i)) {
+          obj.limitBattleRecover[0] = parseInt(RegExp.$1);
+          obj.limitBattleRecover[1] = parseInt(RegExp.$1);
+          obj.limitBattleRecover[2] = parseInt(RegExp.$1);
         }
-        obj.skillLimitedUses[id] = parseInt(RegExp.$2);
-      } else if (line.match(/<CUSTOM GLOBAL LIMITED USES>/i)) {
-        evalMode = 'customGlobalLimitedUses';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM GLOBAL LIMITED USES>/i)) {
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customGlobalLimitedUses') {
-        obj.globalLimitedUsesEval = obj.globalLimitedUsesEval + line + '\n';
-      } else if (line.match(/<CUSTOM STYPE[ ](\d+)[ ]LIMITED USES>/i)) {
-        evalMode = 'customStypeLimitedUses';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM STYPE[ ](\d+)[ ]LIMITED USES>/i)) {
-        var id = parseInt(RegExp.$1);
-        obj.stypeLimitedUsesEval[id] = evalLine;
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customStypeLimitedUses') {
-        evalLine = evalLine + line + '\n';
-      } else if (line.match(/<CUSTOM SKILL[ ](.*)[ ]LIMITED USES>/i)) {
-        evalMode = 'customSkillLimitedUses';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM SKILL[ ](\d+)[ ]LIMITED USES>/i)) {
-        var id = parseInt(RegExp.$1);
-        obj.skillLimitedUsesEval[id] = evalLine;
-        evalMode = 'none';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM SKILL[ ](.*)[ ]LIMITED USES>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var id = MageStudios.SkillIdRef[name] || 0;
-        obj.skillLimitedUsesEval[id] = evalLine;
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customSkillLimitedUses') {
-        evalLine = evalLine + line + '\n';
       }
-    }
-  }
-};
 
-DataManager.processLSUNotetags3 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.globalUseMax = 0;
-    obj.stypeUseMax = {};
-    obj.skillUseMax = {};
-    var evalMode = 'none';
-    var evalLine = '';
-    obj.globalUseMaxEval = '';
-    obj.stypeUseMaxEval = {};
-    obj.skillUseMaxEval = {};
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<GLOBAL USE MAX:[ ]([\+\-]\d+)>/i)) {
-        obj.globalUseMax = parseInt(RegExp.$1);
-      } else if (line.match(/<STYPE[ ](\d+)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
-        obj.stypeUseMax[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<SKILL[ ](\d+)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
-        obj.skillUseMax[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<SKILL[ ](.*)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:UNLIMITED USE)>/i)) {
+          obj.isLimitedUse = false;
         }
-        obj.skillUseMax[id] = parseInt(RegExp.$2);
-      } else if (line.match(/<CUSTOM GLOBAL USE MAX>/i)) {
-        evalMode = 'customGlobalMaxUse';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM GLOBAL USE MAX>/i)) {
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customGlobalMaxUse') {
-        obj.globalUseMaxEval = obj.globalUseMaxEval + line + '\n';
-      } else if (line.match(/<CUSTOM STYPE[ ](\d+)[ ]USE MAX>/i)) {
-        evalMode = 'customStypeMaxUse';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM STYPE[ ](\d+)[ ]USE MAX>/i)) {
-        var id = parseInt(RegExp.$1);
-        obj.stypeUseMaxEval[id] = evalLine;
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customStypeMaxUse') {
-        evalLine = evalLine + line + '\n';
-      } else if (line.match(/<CUSTOM SKILL[ ](.*)[ ]USE MAX>/i)) {
-        evalMode = 'customSkillMaxUse';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM SKILL[ ](\d+)[ ]USE MAX>/i)) {
-        var id = parseInt(RegExp.$1);
-        obj.skillUseMaxEval[id] = evalLine;
-        console.log(id);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM SKILL[ ](.*)[ ]USE MAX>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var id = MageStudios.SkillIdRef[name] || 0;
-        obj.skillUseMaxEval[id] = evalLine;
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'customSkillMaxUse') {
-        evalLine = evalLine + line + '\n';
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
+  DataManager.processLSUNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-MageStudios.LSU.BattleManager_endBattle = BattleManager.endBattle;
-BattleManager.endBattle = function(result) {
+      obj.globalLimitedUses = 0;
+      obj.stypeLimitedUses = {};
+      obj.skillLimitedUses = {};
+      var evalMode = "none";
+      var evalLine = "";
+      obj.globalLimitedUsesEval = "";
+      obj.stypeLimitedUsesEval = {};
+      obj.skillLimitedUsesEval = {};
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<GLOBAL LIMITED USES:[ ]([\+\-]\d+)>/i)) {
+          obj.globalLimitedUses = parseInt(RegExp.$1);
+        } else if (
+          line.match(/<STYPE[ ](\d+)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)
+        ) {
+          obj.stypeLimitedUses[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (
+          line.match(/<SKILL[ ](\d+)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)
+        ) {
+          obj.skillLimitedUses[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (
+          line.match(/<SKILL[ ](.*)[ ]LIMITED USES:[ ]([\+\-]\d+)>/i)
+        ) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.skillLimitedUses[id] = parseInt(RegExp.$2);
+        } else if (line.match(/<CUSTOM GLOBAL LIMITED USES>/i)) {
+          evalMode = "customGlobalLimitedUses";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM GLOBAL LIMITED USES>/i)) {
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customGlobalLimitedUses") {
+          obj.globalLimitedUsesEval = obj.globalLimitedUsesEval + line + "\n";
+        } else if (line.match(/<CUSTOM STYPE[ ](\d+)[ ]LIMITED USES>/i)) {
+          evalMode = "customStypeLimitedUses";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM STYPE[ ](\d+)[ ]LIMITED USES>/i)) {
+          var id = parseInt(RegExp.$1);
+          obj.stypeLimitedUsesEval[id] = evalLine;
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customStypeLimitedUses") {
+          evalLine = evalLine + line + "\n";
+        } else if (line.match(/<CUSTOM SKILL[ ](.*)[ ]LIMITED USES>/i)) {
+          evalMode = "customSkillLimitedUses";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM SKILL[ ](\d+)[ ]LIMITED USES>/i)) {
+          var id = parseInt(RegExp.$1);
+          obj.skillLimitedUsesEval[id] = evalLine;
+          evalMode = "none";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM SKILL[ ](.*)[ ]LIMITED USES>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var id = MageStudios.SkillIdRef[name] || 0;
+          obj.skillLimitedUsesEval[id] = evalLine;
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customSkillLimitedUses") {
+          evalLine = evalLine + line + "\n";
+        }
+      }
+    }
+  };
+
+  DataManager.processLSUNotetags3 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.globalUseMax = 0;
+      obj.stypeUseMax = {};
+      obj.skillUseMax = {};
+      var evalMode = "none";
+      var evalLine = "";
+      obj.globalUseMaxEval = "";
+      obj.stypeUseMaxEval = {};
+      obj.skillUseMaxEval = {};
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<GLOBAL USE MAX:[ ]([\+\-]\d+)>/i)) {
+          obj.globalUseMax = parseInt(RegExp.$1);
+        } else if (line.match(/<STYPE[ ](\d+)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
+          obj.stypeUseMax[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<SKILL[ ](\d+)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
+          obj.skillUseMax[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<SKILL[ ](.*)[ ]USE MAX:[ ]([\+\-]\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.skillUseMax[id] = parseInt(RegExp.$2);
+        } else if (line.match(/<CUSTOM GLOBAL USE MAX>/i)) {
+          evalMode = "customGlobalMaxUse";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM GLOBAL USE MAX>/i)) {
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customGlobalMaxUse") {
+          obj.globalUseMaxEval = obj.globalUseMaxEval + line + "\n";
+        } else if (line.match(/<CUSTOM STYPE[ ](\d+)[ ]USE MAX>/i)) {
+          evalMode = "customStypeMaxUse";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM STYPE[ ](\d+)[ ]USE MAX>/i)) {
+          var id = parseInt(RegExp.$1);
+          obj.stypeUseMaxEval[id] = evalLine;
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customStypeMaxUse") {
+          evalLine = evalLine + line + "\n";
+        } else if (line.match(/<CUSTOM SKILL[ ](.*)[ ]USE MAX>/i)) {
+          evalMode = "customSkillMaxUse";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM SKILL[ ](\d+)[ ]USE MAX>/i)) {
+          var id = parseInt(RegExp.$1);
+          obj.skillUseMaxEval[id] = evalLine;
+          console.log(id);
+          evalMode = "none";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM SKILL[ ](.*)[ ]USE MAX>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var id = MageStudios.SkillIdRef[name] || 0;
+          obj.skillUseMaxEval[id] = evalLine;
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "customSkillMaxUse") {
+          evalLine = evalLine + line + "\n";
+        }
+      }
+    }
+  };
+
+  MageStudios.LSU.BattleManager_endBattle = BattleManager.endBattle;
+  BattleManager.endBattle = function (result) {
     MageStudios.LSU.BattleManager_endBattle.call(this, result);
     $gameParty.recoverLimitedSkillUses(result);
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.LSU.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
+  MageStudios.LSU.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
+  Game_BattlerBase.prototype.refresh = function () {
     this._cacheLimitedUseMax = {};
     MageStudios.LSU.Game_BattlerBase_refresh.call(this);
-};
+  };
 
-Game_BattlerBase.prototype.initSkillLimitedUses = function() {
+  Game_BattlerBase.prototype.initSkillLimitedUses = function () {
     this._skillLimitedUses = {};
-};
+  };
 
-MageStudios.LSU.Game_BattlerBase_meetsSkillConditions =
+  MageStudios.LSU.Game_BattlerBase_meetsSkillConditions =
     Game_BattlerBase.prototype.meetsSkillConditions;
-Game_BattlerBase.prototype.meetsSkillConditions = function(skill) {
+  Game_BattlerBase.prototype.meetsSkillConditions = function (skill) {
     if (this.isSkillLimitedEmpty(skill)) return false;
-    return MageStudios.LSU.Game_BattlerBase_meetsSkillConditions.call(this, skill);
-};
+    return MageStudios.LSU.Game_BattlerBase_meetsSkillConditions.call(
+      this,
+      skill
+    );
+  };
 
-Game_BattlerBase.prototype.isSkillLimitedUse = function(skill) {
+  Game_BattlerBase.prototype.isSkillLimitedUse = function (skill) {
     if (!skill) return false;
     if (MageStudios.Param.LSUBypass.contains(skill.id)) return false;
     return skill.isLimitedUse;
-};
+  };
 
-Game_BattlerBase.prototype.isSkillLimitedEmpty = function(skill) {
+  Game_BattlerBase.prototype.isSkillLimitedEmpty = function (skill) {
     if (this.isSkillLimitedUse(skill)) {
       if (this.skillLimitedUseCurrent(skill.id) <= 0) return true;
     }
     return false;
-};
+  };
 
-Game_BattlerBase.prototype.getObjLimitedUseMax = function(obj, skill) {
-  if (!obj) return 0;
-  var value = 0;
-  if (obj.globalUseMax) value += obj.globalUseMax;
-  if (obj.stypeUseMax) {
-    if (obj.stypeUseMax[skill.stypeId]) value += obj.stypeUseMax[skill.stypeId];
-  }
-  if (obj.skillUseMax) {
-    if (obj.skillUseMax[skill.id]) value += obj.skillUseMax[skill.id];
-  }
-  value = this.getObjLimitUseMaxEval(obj, skill, value);
-  return value;
-};
+  Game_BattlerBase.prototype.getObjLimitedUseMax = function (obj, skill) {
+    if (!obj) return 0;
+    var value = 0;
+    if (obj.globalUseMax) value += obj.globalUseMax;
+    if (obj.stypeUseMax) {
+      if (obj.stypeUseMax[skill.stypeId])
+        value += obj.stypeUseMax[skill.stypeId];
+    }
+    if (obj.skillUseMax) {
+      if (obj.skillUseMax[skill.id]) value += obj.skillUseMax[skill.id];
+    }
+    value = this.getObjLimitUseMaxEval(obj, skill, value);
+    return value;
+  };
 
-Game_BattlerBase.prototype.getObjLimitUseMaxEval = function(obj, skill, value) {
-  var a = this;
-  var user = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  if (obj.globalUseMaxEval !== '') {
-    var code = obj.globalUseMaxEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'LIMITED USE GLOBAL ERROR');
+  Game_BattlerBase.prototype.getObjLimitUseMaxEval = function (
+    obj,
+    skill,
+    value
+  ) {
+    var a = this;
+    var user = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    if (obj.globalUseMaxEval !== "") {
+      var code = obj.globalUseMaxEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "LIMITED USE GLOBAL ERROR");
+      }
     }
-  }
-  if (obj.stypeUseMaxEval[skill.stypeId]) {
-    var code = obj.stypeUseMaxEval[skill.stypeId];
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'LIMITED USE STYPE ERROR');
+    if (obj.stypeUseMaxEval[skill.stypeId]) {
+      var code = obj.stypeUseMaxEval[skill.stypeId];
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "LIMITED USE STYPE ERROR");
+      }
     }
-  }
-  if (obj.skillUseMaxEval[skill.id]) {
-    var code = obj.skillUseMaxEval[skill.id];
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'LIMITED USE SKILL ERROR');
+    if (obj.skillUseMaxEval[skill.id]) {
+      var code = obj.skillUseMaxEval[skill.id];
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "LIMITED USE SKILL ERROR");
+      }
     }
-  }
-  return value;
-};
+    return value;
+  };
 
-Game_BattlerBase.prototype.skillLimitedUseMax = function(skillId) {
+  Game_BattlerBase.prototype.skillLimitedUseMax = function (skillId) {
     var skill = $dataSkills[skillId];
     if (!skill) return 0;
     var value = skill.limitUses;
     return value;
-};
+  };
 
-Game_BattlerBase.prototype.skillLimitedUseCurrent = function(skillId) {
+  Game_BattlerBase.prototype.skillLimitedUseCurrent = function (skillId) {
     var skill = $dataSkills[skillId];
     if (!skill) return 0;
     if (this._skillLimitedUses === undefined) this.initSkillLimitedUses();
@@ -713,17 +719,20 @@ Game_BattlerBase.prototype.skillLimitedUseCurrent = function(skillId) {
     var value = this.skillLimitedUseMax(skillId);
     value -= this._skillLimitedUses[skillId];
     return Math.max(0, value);
-};
+  };
 
-MageStudios.LSU.Game_BattlerBase_paySkillCost =
+  MageStudios.LSU.Game_BattlerBase_paySkillCost =
     Game_BattlerBase.prototype.paySkillCost;
-Game_BattlerBase.prototype.paySkillCost = function(skill) {
+  Game_BattlerBase.prototype.paySkillCost = function (skill) {
     MageStudios.LSU.Game_BattlerBase_paySkillCost.call(this, skill);
     if (!skill) return;
     if (this.isSkillLimitedUse(skill)) this.paySkillLimitedUseCost(skill.id);
-};
+  };
 
-Game_BattlerBase.prototype.paySkillLimitedUseCost = function(skillId, value) {
+  Game_BattlerBase.prototype.paySkillLimitedUseCost = function (
+    skillId,
+    value
+  ) {
     var skill = $dataSkills[skillId];
     if (value === undefined) value = 1;
     if (this._skillLimitedUses === undefined) this.initSkillLimitedUses();
@@ -733,63 +742,63 @@ Game_BattlerBase.prototype.paySkillLimitedUseCost = function(skillId, value) {
     var max = this.skillLimitedUseMax(skillId);
     this._skillLimitedUses[skillId] += value;
     this.setSkillLimitedUse(skillId, this._skillLimitedUses[skillId]);
-};
+  };
 
-Game_BattlerBase.prototype.setSkillLimitedUse = function(skillId, value) {
+  Game_BattlerBase.prototype.setSkillLimitedUse = function (skillId, value) {
     var skill = $dataSkills[skillId];
     if (!this.isSkillLimitedUse(skill)) return;
     if (this._skillLimitedUses === undefined) this.initSkillLimitedUses();
-    var max = (value === 0) ? 0 : this.skillLimitedUseMax(skillId);
+    var max = value === 0 ? 0 : this.skillLimitedUseMax(skillId);
     this._skillLimitedUses[skillId] = Math.floor(value.clamp(0, max));
-};
+  };
 
-MageStudios.LSU.Game_BattlerBase_recoverAll = Game_BattlerBase.prototype.recoverAll;
-Game_BattlerBase.prototype.recoverAll = function() {
+  MageStudios.LSU.Game_BattlerBase_recoverAll =
+    Game_BattlerBase.prototype.recoverAll;
+  Game_BattlerBase.prototype.recoverAll = function () {
     MageStudios.LSU.Game_BattlerBase_recoverAll.call(this);
     this.recoverAllLimitedSkillUses();
-};
+  };
 
-Game_BattlerBase.prototype.recoverAllLimitedSkillUses = function() {
+  Game_BattlerBase.prototype.recoverAllLimitedSkillUses = function () {
     if (!this.isActor()) return;
     var length = this.skills().length;
     for (var i = 0; i < length; ++i) {
       var skill = this.skills()[i];
       if (!skill) continue;
-    if (!this.isSkillLimitedUse(skill)) continue;
+      if (!this.isSkillLimitedUse(skill)) continue;
       if (skill.limitRecoverAllUses) this.setSkillLimitedUse(skill.id, 0);
     }
-};
+  };
 
-Game_BattlerBase.prototype.recoverLimitedSkillUsesBattle = function(result) {
+  Game_BattlerBase.prototype.recoverLimitedSkillUsesBattle = function (result) {
     var length = this.skills().length;
     for (var i = 0; i < length; ++i) {
       var skill = this.skills()[i];
       if (!skill) continue;
-    if (!this.isSkillLimitedUse(skill)) continue;
+      if (!this.isSkillLimitedUse(skill)) continue;
       var value = this.skillLimitedUseRecovery(skill.id, result);
-      this.paySkillLimitedUseCost(skill.id, -value)
+      this.paySkillLimitedUseCost(skill.id, -value);
     }
-};
+  };
 
-Game_BattlerBase.prototype.skillLimitedUseRecovery = function(skillId, result) {
+  Game_BattlerBase.prototype.skillLimitedUseRecovery = function (
+    skillId,
+    result
+  ) {
     var skill = $dataSkills[skillId];
     if (!skill) return 0;
     if (!this.isSkillLimitedUse(skill)) return 0;
     var value = skill.limitBattleRecover[result];
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.LSU.Game_Battler_initMembers = Game_Battler.prototype.initMembers;
-Game_Battler.prototype.initMembers = function() {
+  MageStudios.LSU.Game_Battler_initMembers = Game_Battler.prototype.initMembers;
+  Game_Battler.prototype.initMembers = function () {
     MageStudios.LSU.Game_Battler_initMembers.call(this);
     this.initSkillLimitedUses();
-};
+  };
 
-Game_Battler.prototype.alterLimitedUses = function(item, user) {
+  Game_Battler.prototype.alterLimitedUses = function (item, user) {
     var length = this.skills().length;
     for (var i = 0; i < length; ++i) {
       var skill = this.skills()[i];
@@ -798,9 +807,9 @@ Game_Battler.prototype.alterLimitedUses = function(item, user) {
       var value = this.getAlterLimitedUses(item, user, skill);
       this.paySkillLimitedUseCost(skill.id, -value);
     }
-};
+  };
 
-Game_Battler.prototype.getAlterLimitedUses = function(item, user, skill) {
+  Game_Battler.prototype.getAlterLimitedUses = function (item, user, skill) {
     var value = item.globalLimitedUses;
     if (item.stypeLimitedUses[skill.stypeId]) {
       value += item.stypeLimitedUses[skill.stypeId];
@@ -810,123 +819,119 @@ Game_Battler.prototype.getAlterLimitedUses = function(item, user, skill) {
     }
     value = this.getAltLimitUseEval(item, user, skill, value);
     return value;
-};
+  };
 
-Game_Battler.prototype.getAltLimitUseEval = function(obj, user, skill, value) {
-  var item = obj;
-  var a = this;
-  var user = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  if (obj.globalLimitedUsesEval !== '') {
-    var code = obj.globalLimitedUsesEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'GLOBAL LIMITED USES EVAL ERROR');
+  Game_Battler.prototype.getAltLimitUseEval = function (
+    obj,
+    user,
+    skill,
+    value
+  ) {
+    var item = obj;
+    var a = this;
+    var user = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    if (obj.globalLimitedUsesEval !== "") {
+      var code = obj.globalLimitedUsesEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "GLOBAL LIMITED USES EVAL ERROR"
+        );
+      }
     }
-  }
-  if (obj.stypeLimitedUsesEval[skill.stypeId]) {
-    var code = obj.stypeLimitedUsesEval[skill.stypeId];
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'LIMITED USES STYPE EVAL ERROR');
+    if (obj.stypeLimitedUsesEval[skill.stypeId]) {
+      var code = obj.stypeLimitedUsesEval[skill.stypeId];
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "LIMITED USES STYPE EVAL ERROR");
+      }
     }
-  }
-  if (obj.skillLimitedUsesEval[skill.id]) {
-    var code = obj.skillLimitedUsesEval[skill.id];
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'LIMITED USES SKILL EVAL ERROR');
+    if (obj.skillLimitedUsesEval[skill.id]) {
+      var code = obj.skillLimitedUsesEval[skill.id];
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "LIMITED USES SKILL EVAL ERROR");
+      }
     }
-  }
-  return value;
-};
+    return value;
+  };
 
-Game_Battler.prototype.skillLimitedUseMax = function(skillId) {
-  var skill = $dataSkills[skillId];
-  if (!skill) return 0;
-  var value = Game_BattlerBase.prototype.skillLimitedUseMax.call(this, skillId);
-  var length = this.states().length;
-  for (var i = 0; i < length; ++i) {
-    var obj = this.states()[i];
-    value += this.getObjLimitedUseMax(obj, skill);
-  }
-  return value;
-};
+  Game_Battler.prototype.skillLimitedUseMax = function (skillId) {
+    var skill = $dataSkills[skillId];
+    if (!skill) return 0;
+    var value = Game_BattlerBase.prototype.skillLimitedUseMax.call(
+      this,
+      skillId
+    );
+    var length = this.states().length;
+    for (var i = 0; i < length; ++i) {
+      var obj = this.states()[i];
+      value += this.getObjLimitedUseMax(obj, skill);
+    }
+    return value;
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.skillLimitedUseMax = function(skillId) {
-  var skill = $dataSkills[skillId];
-  if (!skill) return 0;
-  if (this._cacheLimitedUseMax[skillId] !== undefined) {
+  Game_Actor.prototype.skillLimitedUseMax = function (skillId) {
+    var skill = $dataSkills[skillId];
+    if (!skill) return 0;
+    if (this._cacheLimitedUseMax[skillId] !== undefined) {
+      return this._cacheLimitedUseMax[skillId];
+    }
+    var value = Game_Battler.prototype.skillLimitedUseMax.call(this, skillId);
+    var length = this.equips().length;
+    for (var i = 0; i < length; ++i) {
+      var obj = this.equips()[i];
+      value += this.getObjLimitedUseMax(obj, skill);
+    }
+    value += this.getObjLimitedUseMax(this.actor(), skill);
+    value += this.getObjLimitedUseMax(this.currentClass(), skill);
+    value = value.clamp(0, MageStudios.Param.LimitedAbsMax);
+    this._cacheLimitedUseMax[skillId] = value;
     return this._cacheLimitedUseMax[skillId];
-  }
-  var value = Game_Battler.prototype.skillLimitedUseMax.call(this, skillId);
-  var length = this.equips().length;
-  for (var i = 0; i < length; ++i) {
-    var obj = this.equips()[i];
-    value += this.getObjLimitedUseMax(obj, skill);
-  }
-  value += this.getObjLimitedUseMax(this.actor(), skill);
-  value += this.getObjLimitedUseMax(this.currentClass(), skill);
-  value = value.clamp(0, MageStudios.Param.LimitedAbsMax)
-  this._cacheLimitedUseMax[skillId] = value;
-  return this._cacheLimitedUseMax[skillId];
-};
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-if (!Game_Enemy.prototype.skills) {
-    Game_Enemy.prototype.skills = function() {
-      var skills = []
+  if (!Game_Enemy.prototype.skills) {
+    Game_Enemy.prototype.skills = function () {
+      var skills = [];
       for (var i = 0; i < this.enemy().actions.length; ++i) {
-        var skill = $dataSkills[this.enemy().actions[i].skillId]
+        var skill = $dataSkills[this.enemy().actions[i].skillId];
         if (skill) skills.push(skill);
       }
       return skills;
-    }
-};
-
-Game_Enemy.prototype.skillLimitedUseMax = function(skillId) {
-  var skill = $dataSkills[skillId];
-  if (!skill) return 0;
-  if (this._cacheLimitedUseMax[skillId] !== undefined) {
-    return this._cacheLimitedUseMax[skillId];
+    };
   }
-  var value = Game_Battler.prototype.skillLimitedUseMax.call(this, skillId);
-  value += this.getObjLimitedUseMax(this.enemy(), skill);
-  value = value.clamp(0, MageStudios.Param.LimitedAbsMax)
-  this._cacheLimitedUseMax[skillId] = value;
-  return this._cacheLimitedUseMax[skillId];
-};
 
-//=============================================================================
-// Game_Action
-//=============================================================================
+  Game_Enemy.prototype.skillLimitedUseMax = function (skillId) {
+    var skill = $dataSkills[skillId];
+    if (!skill) return 0;
+    if (this._cacheLimitedUseMax[skillId] !== undefined) {
+      return this._cacheLimitedUseMax[skillId];
+    }
+    var value = Game_Battler.prototype.skillLimitedUseMax.call(this, skillId);
+    value += this.getObjLimitedUseMax(this.enemy(), skill);
+    value = value.clamp(0, MageStudios.Param.LimitedAbsMax);
+    this._cacheLimitedUseMax[skillId] = value;
+    return this._cacheLimitedUseMax[skillId];
+  };
 
-MageStudios.LSU.Game_Action_applyItemUserEffect =
+  MageStudios.LSU.Game_Action_applyItemUserEffect =
     Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
+  Game_Action.prototype.applyItemUserEffect = function (target) {
     MageStudios.LSU.Game_Action_applyItemUserEffect.call(this, target);
     if (target && this.item()) {
       target.alterLimitedUses(this.item(), this.subject());
     }
-};
+  };
 
-//=============================================================================
-// Game_Party
-//=============================================================================
-
-Game_Party.prototype.recoverLimitedSkillUses = function(result) {
+  Game_Party.prototype.recoverLimitedSkillUses = function (result) {
     var condition = this._inBattle;
     this._inBattle = false;
     var length = this.allMembers().length;
@@ -935,23 +940,29 @@ Game_Party.prototype.recoverLimitedSkillUses = function(result) {
       if (member) member.recoverLimitedSkillUsesBattle(result);
     }
     this._inBattle = condition;
-};
+  };
 
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-MageStudios.LSU.Window_SkillList_drawSkillCost =
+  MageStudios.LSU.Window_SkillList_drawSkillCost =
     Window_SkillList.prototype.drawSkillCost;
-Window_SkillList.prototype.drawSkillCost = function(skill, wx, wy, width) {
+  Window_SkillList.prototype.drawSkillCost = function (skill, wx, wy, width) {
     if (skill && this._actor.isSkillLimitedEmpty(skill)) {
       return this.drawSkillLimitEmpty(skill, wx, wy, width);
     }
-    return MageStudios.LSU.Window_SkillList_drawSkillCost.call(this, skill, wx,
-      wy, width);
-};
+    return MageStudios.LSU.Window_SkillList_drawSkillCost.call(
+      this,
+      skill,
+      wx,
+      wy,
+      width
+    );
+  };
 
-Window_SkillList.prototype.drawSkillLimitEmpty = function(skill, wx, wy, ww) {
+  Window_SkillList.prototype.drawSkillLimitEmpty = function (
+    skill,
+    wx,
+    wy,
+    ww
+  ) {
     if (MageStudios.Icon.LimitedEmpty > 0) {
       var iw = wx + ww - Window_Base._iconWidth;
       this.drawIcon(MageStudios.Icon.LimitedEmpty, iw, wy + 2);
@@ -960,22 +971,29 @@ Window_SkillList.prototype.drawSkillLimitEmpty = function(skill, wx, wy, ww) {
     this.contents.fontSize = MageStudios.Param.LSUFontSize;
     this.changeTextColor(this.textColor(MageStudios.Param.LSUTextColor));
     var text = MageStudios.Param.LSUEmpty;
-    this.drawText(text, wx, wy, ww, 'right');
-    var returnWidth = ww - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
+    this.drawText(text, wx, wy, ww, "right");
+    var returnWidth =
+      ww - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
     this.resetTextColor();
     this.resetFontSettings();
     return returnWidth;
-};
+  };
 
-MageStudios.LSU.Window_SkillList_dOC = Window_SkillList.prototype.drawOtherCost;
-Window_SkillList.prototype.drawOtherCost = function(skill, wx, wy, dw) {
+  MageStudios.LSU.Window_SkillList_dOC =
+    Window_SkillList.prototype.drawOtherCost;
+  Window_SkillList.prototype.drawOtherCost = function (skill, wx, wy, dw) {
     dw = this.drawLimitedSkillUses(skill, wx, wy, dw);
     return MageStudios.LSU.Window_SkillList_dOC.call(this, skill, wx, wy, dw);
-};
+  };
 
-Window_SkillList.prototype.drawLimitedSkillUses = function(skill, wx, wy, dw) {
+  Window_SkillList.prototype.drawLimitedSkillUses = function (
+    skill,
+    wx,
+    wy,
+    dw
+  ) {
     if (!this._actor.isSkillLimitedUse(skill)) return dw;
-    if (MageStudios.Param.LSUFormat === '') return dw;
+    if (MageStudios.Param.LSUFormat === "") return dw;
     if (MageStudios.Icon.LimitedUse > 0) {
       var iw = wx + dw - Window_Base._iconWidth;
       this.drawIcon(MageStudios.Icon.LimitedUse, iw, wy + 2);
@@ -990,38 +1008,31 @@ Window_SkillList.prototype.drawLimitedSkillUses = function(skill, wx, wy, dw) {
     max = MageStudios.Util.toGroup(max);
     var text = fmt.format(current, max);
     this.contents.fontSize = MageStudios.Param.LSUFontSize;
-    this.drawText(text, wx, wy, dw, 'right');
-    var returnWidth = dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
+    this.drawText(text, wx, wy, dw, "right");
+    var returnWidth =
+      dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
     this.resetTextColor();
     this.resetFontSettings();
     return returnWidth;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
   }
-};
 
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+}

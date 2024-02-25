@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Icon Balloons
-// MSEP_IconBalloons.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_IconBalloons = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IBalloon = MageStudios.IBalloon || {};
-MageStudios.IBalloon.version = 1.00;
+MageStudios.IBalloon.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows you to use icons for your on-map balloons
  * over your characters and events!
  * @author Mage Studios Engine Plugins
@@ -91,81 +85,72 @@ MageStudios.IBalloon.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_IconBalloons');
+MageStudios.Parameters = PluginManager.parameters("MSEP_IconBalloons");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.IBallonFilename = String(MageStudios.Parameters['Empty Filename']);
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
+MageStudios.Param.IBallonFilename = String(
+  MageStudios.Parameters["Empty Filename"]
+);
 
 MageStudios.IBalloon.Game_CharacterBase_initMembers =
   Game_CharacterBase.prototype.initMembers;
-Game_CharacterBase.prototype.initMembers = function() {
+Game_CharacterBase.prototype.initMembers = function () {
   MageStudios.IBalloon.Game_CharacterBase_initMembers.call(this);
   this._iconBalloon = [];
 };
 
-Game_CharacterBase.prototype.iconBalloonId = function() {
+Game_CharacterBase.prototype.iconBalloonId = function () {
   return this._iconBalloon || [];
 };
 
-Game_CharacterBase.prototype.setIconBalloon = function(iconIndex1, iconIndex2) {
+Game_CharacterBase.prototype.setIconBalloon = function (
+  iconIndex1,
+  iconIndex2
+) {
   this._iconBalloon = [iconIndex1, iconIndex2];
 };
 
-Game_CharacterBase.prototype.startIconBalloon = function() {
+Game_CharacterBase.prototype.startIconBalloon = function () {
   this._iconBalloon = [];
   this._iconBalloonPlaying = true;
 };
 
-Game_CharacterBase.prototype.isIconBalloonPlaying = function() {
+Game_CharacterBase.prototype.isIconBalloonPlaying = function () {
   return this._iconBalloon.length > 0 || this._iconBalloonPlaying;
 };
 
-Game_CharacterBase.prototype.endIconBalloon = function() {
+Game_CharacterBase.prototype.endIconBalloon = function () {
   this._iconBalloon = [];
   this._iconBalloonPlaying = false;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.IBalloon.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.IBalloon.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowIconBalloon') {
+  if (command === "ShowIconBalloon") {
     var str = this.argsToString(args);
     if (this.canShowIconBalloons()) this.processIconBalloons(str);
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-    var str = '';
-    var length = args.length;
-    for (var i = 0; i < length; ++i) {
-      str += args[i] + ' ';
-    }
-    return str.trim();
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
+  var length = args.length;
+  for (var i = 0; i < length; ++i) {
+    str += args[i] + " ";
+  }
+  return str.trim();
 };
 
-Game_Interpreter.prototype.canShowIconBalloons = function() {
+Game_Interpreter.prototype.canShowIconBalloons = function () {
   return !$gameParty.inBattle();
 };
 
-Game_Interpreter.prototype.processIconBalloons = function(str) {
-  // Addition made by Eldaym
-  str = str.replace('This Event', 'Event ' + this.eventId());
-  // Original
+Game_Interpreter.prototype.processIconBalloons = function (str) {
+  str = str.replace("This Event", "Event " + this.eventId());
+
   if (str.match(/(\d+)[ ]TO[ ](\d+)[ ](.*)/i)) {
     var iconIndex1 = parseInt(RegExp.$1);
     var iconIndex2 = parseInt(RegExp.$2);
@@ -201,27 +186,23 @@ Game_Interpreter.prototype.processIconBalloons = function(str) {
       this._character = follower;
     }
   }
-  this._waitMode = '';
-  if (waiting) this.setWaitMode('iconBalloon');
+  this._waitMode = "";
+  if (waiting) this.setWaitMode("iconBalloon");
 };
 
 MageStudios.IBalloon.Game_Interpreter_updateWaitMode =
   Game_Interpreter.prototype.updateWaitMode;
-Game_Interpreter.prototype.updateWaitMode = function() {
-  if (this._waitMode === 'iconBalloon') {
+Game_Interpreter.prototype.updateWaitMode = function () {
+  if (this._waitMode === "iconBalloon") {
     return this._character.isIconBalloonPlaying();
   } else {
     return MageStudios.IBalloon.Game_Interpreter_updateWaitMode.call(this);
   }
 };
 
-//=============================================================================
-// Sprite_Character
-//=============================================================================
-
 MageStudios.IBalloon.Sprite_Character_setupBalloon =
   Sprite_Character.prototype.setupBalloon;
-Sprite_Character.prototype.setupBalloon = function() {
+Sprite_Character.prototype.setupBalloon = function () {
   MageStudios.IBalloon.Sprite_Character_setupBalloon.call(this);
   if (this._character.iconBalloonId().length > 0) {
     this.startIconBalloon();
@@ -229,7 +210,7 @@ Sprite_Character.prototype.setupBalloon = function() {
   }
 };
 
-Sprite_Character.prototype.startIconBalloon = function() {
+Sprite_Character.prototype.startIconBalloon = function () {
   if (!this._iconBalloonSprite) {
     this._iconBalloonSprite = new Sprite_IconBalloon();
   }
@@ -239,12 +220,12 @@ Sprite_Character.prototype.startIconBalloon = function() {
 
 MageStudios.IBalloon.Sprite_Character_updateBalloon =
   Sprite_Character.prototype.updateBalloon;
-Sprite_Character.prototype.updateBalloon = function() {
+Sprite_Character.prototype.updateBalloon = function () {
   MageStudios.IBalloon.Sprite_Character_updateBalloon.call(this);
   this.updateIconBalloon();
 };
 
-Sprite_Character.prototype.updateIconBalloon = function() {
+Sprite_Character.prototype.updateIconBalloon = function () {
   if (this._iconBalloonSprite) {
     this._iconBalloonSprite.x = this.x;
     this._iconBalloonSprite.y = this.y - this.height;
@@ -252,7 +233,7 @@ Sprite_Character.prototype.updateIconBalloon = function() {
   }
 };
 
-Sprite_Character.prototype.endIconBalloon = function() {
+Sprite_Character.prototype.endIconBalloon = function () {
   if (this._iconBalloonSprite) {
     this.parent.removeChild(this._iconBalloonSprite);
     this._iconBalloonSprite = null;
@@ -260,13 +241,9 @@ Sprite_Character.prototype.endIconBalloon = function() {
   }
 };
 
-Sprite_Character.prototype.isIconBalloonPlaying = function() {
-    return !!this._iconBalloonSprite;
+Sprite_Character.prototype.isIconBalloonPlaying = function () {
+  return !!this._iconBalloonSprite;
 };
-
-//=============================================================================
-// Sprite_IconBalloon
-//=============================================================================
 
 function Sprite_IconBalloon() {
   this.initialize.apply(this, arguments);
@@ -275,16 +252,16 @@ function Sprite_IconBalloon() {
 Sprite_IconBalloon.prototype = Object.create(Sprite_Balloon.prototype);
 Sprite_IconBalloon.prototype.constructor = Sprite_IconBalloon;
 
-Sprite_IconBalloon.prototype.initialize = function() {
+Sprite_IconBalloon.prototype.initialize = function () {
   Sprite_Balloon.prototype.initialize.call(this);
 };
 
-Sprite_IconBalloon.prototype.loadBitmap = function() {
+Sprite_IconBalloon.prototype.loadBitmap = function () {
   this.bitmap = ImageManager.loadSystem(MageStudios.Param.IBallonFilename);
   this.setFrame(0, 0, 0, 0);
 };
 
-Sprite_IconBalloon.prototype.setup = function(iconData) {
+Sprite_IconBalloon.prototype.setup = function (iconData) {
   this._duration = 8 * this.speed() + this.waitTime();
   if (this._icon) {
     this._icon.setIconIndex(iconData);
@@ -294,7 +271,7 @@ Sprite_IconBalloon.prototype.setup = function(iconData) {
   }
 };
 
-Sprite_IconBalloon.prototype.updateFrame = function() {
+Sprite_IconBalloon.prototype.updateFrame = function () {
   var w = 48;
   var h = 48;
   var sx = this.frameIndex() * w;
@@ -302,18 +279,14 @@ Sprite_IconBalloon.prototype.updateFrame = function() {
   this.setFrame(sx, sy, w, h);
 };
 
-//=============================================================================
-// Sprite_GrowingBalloonIcon
-//=============================================================================
-
 function Sprite_GrowingBalloonIcon() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Sprite_GrowingBalloonIcon.prototype = Object.create(Sprite_Base.prototype);
 Sprite_GrowingBalloonIcon.prototype.constructor = Sprite_Balloon;
 
-Sprite_GrowingBalloonIcon.prototype.initialize = function(iconData, duration) {
+Sprite_GrowingBalloonIcon.prototype.initialize = function (iconData, duration) {
   this._speed = 6;
   this._duration = duration;
   this._count = 0;
@@ -327,15 +300,15 @@ Sprite_GrowingBalloonIcon.prototype.initialize = function(iconData, duration) {
   this.y = buffer;
 };
 
-Sprite_GrowingBalloonIcon.prototype.loadBitmap = function() {
-  this.bitmap = ImageManager.loadSystem('IconSet');
+Sprite_GrowingBalloonIcon.prototype.loadBitmap = function () {
+  this.bitmap = ImageManager.loadSystem("IconSet");
   this.setFrame(0, 0, 0, 0);
 };
 
-Sprite_GrowingBalloonIcon.prototype.setIconIndex = function(iconData) {
+Sprite_GrowingBalloonIcon.prototype.setIconIndex = function (iconData) {
   this._iconIndex = iconData[0];
   this._iconIndexGoal = iconData[1];
-  this._waitFrames = this._duration * 2 / 3
+  this._waitFrames = (this._duration * 2) / 3;
   this._waitFrames /= Math.max(1, iconData[1] - iconData[0]);
   this._count = this._waitFrames;
   if (this._iconIndex === this._iconIndexGoal) {
@@ -345,29 +318,25 @@ Sprite_GrowingBalloonIcon.prototype.setIconIndex = function(iconData) {
   }
 };
 
-Sprite_GrowingBalloonIcon.prototype.update = function() {
+Sprite_GrowingBalloonIcon.prototype.update = function () {
   Sprite.prototype.update.call(this);
   this.scale.y = Math.min(1, this.scale.y + this._growth);
   this.updateFrame();
   this.updateCount();
 };
 
-Sprite_GrowingBalloonIcon.prototype.updateFrame = function() {
+Sprite_GrowingBalloonIcon.prototype.updateFrame = function () {
   var pw = Sprite_StateIcon._iconWidth;
   var ph = Sprite_StateIcon._iconHeight;
-  var sx = this._iconIndex % 16 * pw;
+  var sx = (this._iconIndex % 16) * pw;
   var sy = Math.floor(this._iconIndex / 16) * ph;
   this.setFrame(sx, sy, pw, ph);
 };
 
-Sprite_GrowingBalloonIcon.prototype.updateCount = function() {
+Sprite_GrowingBalloonIcon.prototype.updateCount = function () {
   this._count -= 1;
   if (this._count <= 0) {
     this._iconIndex = Math.min(this._iconIndexGoal, this._iconIndex + 1);
     this._count = this._waitFrames;
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

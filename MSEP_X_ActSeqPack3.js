@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Engine Extension - Action Sequence Pack 3
-// MSEP_X_ActSeqPack3.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ActSeqPack3 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP3 = MageStudios.ASP3 || {};
-MageStudios.ASP3.version = 1.00;
+MageStudios.ASP3.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore.js) Camera control is
  * added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
@@ -321,7 +315,7 @@ MageStudios.ASP3.version = 1.00;
  * ---------
  * Settings:
  * ---------
- * 
+ *
  * Name:
  * \i[302]Battle Camera
  *
@@ -344,7 +338,7 @@ MageStudios.ASP3.version = 1.00;
  * ----------
  * Functions:
  * ----------
- * 
+ *
  * Make Option Code:
  * this.addCommand(name, symbol, enabled, ext);
  *
@@ -368,7 +362,7 @@ MageStudios.ASP3.version = 1.00;
  * var symbol = this.commandSymbol(index);
  * var value = this.getConfigValue(symbol);
  * this.changeValue(symbol, true);
- * 
+ *
  * Cursor Left Code:
  * var index = this.index();
  * var symbol = this.commandSymbol(index);
@@ -376,216 +370,218 @@ MageStudios.ASP3.version = 1.00;
  * this.changeValue(symbol, false);
  *
  * Default Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Save Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Load Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ActSeqPack3");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.ASP3CameraOption = String(
+    MageStudios.Parameters["Camera Option"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack3');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.ASP3.BattleManager_processActionSequence =
+    BattleManager.processActionSequence;
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (["CAMERA CLAMP ON", "CAMERA CLAMP OFF"].contains(actionName)) {
+      return this.actionCameraClamp(actionName);
+    }
 
-MageStudios.Param.ASP3CameraOption = String(MageStudios.Parameters['Camera Option']);
+    if (["CAMERA FOCUS", "FOCUS CAMERA"].contains(actionName)) {
+      return this.actionCameraFocus(actionArgs);
+    }
 
-//=============================================================================
-// BattleManager
-//=============================================================================
+    if (["CAMERA OFFSET", "OFFSET CAMERA"].contains(actionName)) {
+      return this.actionCameraOffset(actionArgs);
+    }
 
-MageStudios.ASP3.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  // CAMERA CLAMP
-  if (['CAMERA CLAMP ON', 'CAMERA CLAMP OFF'].contains(actionName)) {
-    return this.actionCameraClamp(actionName);
-  }
-  // CAMERA FOCUS
-  if (['CAMERA FOCUS', 'FOCUS CAMERA'].contains(actionName)) {
-    return this.actionCameraFocus(actionArgs);
-  }
-  // CAMERA OFFSET
-  if (['CAMERA OFFSET', 'OFFSET CAMERA'].contains(actionName)) {
-    return this.actionCameraOffset(actionArgs);
-  }
-  // CAMERA PAN
-  if (['CAMERA PAN', 'PAN CAMERA'].contains(actionName)) {
-    return this.actionCameraPan(actionArgs);
-  }
-  // CAMERA SCREEN
-  if (actionName === 'CAMERA SCREEN') {
-    return this.actionCameraScreen(actionArgs);
-  }
-  // RESET CAMERA
-  if (actionName === 'RESET CAMERA') {
-    return this.actionResetCamera(actionArgs);
-  }
-  // RESET ZOOM
-  if (actionName === 'RESET ZOOM') {
-    return this.actionResetZoom(actionArgs);
-  }
-  // WAIT FOR CAMERA
-  if (actionName === 'WAIT FOR CAMERA') {
-    return this.actionWaitForCamera();
-  }
-  // WAIT FOR ZOOM
-  if (actionName === 'WAIT FOR ZOOM') {
-    return this.actionWaitForZoom();
-  }
-  // ZOOM
-  if (actionName === 'ZOOM') {
-    return this.actionZoom(actionArgs);
-  }
-  return MageStudios.ASP3.BattleManager_processActionSequence.call(this,
-    actionName, actionArgs);
-};
+    if (["CAMERA PAN", "PAN CAMERA"].contains(actionName)) {
+      return this.actionCameraPan(actionArgs);
+    }
 
-MageStudios.ASP3.BattleManager_actionPerformFinish =
+    if (actionName === "CAMERA SCREEN") {
+      return this.actionCameraScreen(actionArgs);
+    }
+
+    if (actionName === "RESET CAMERA") {
+      return this.actionResetCamera(actionArgs);
+    }
+
+    if (actionName === "RESET ZOOM") {
+      return this.actionResetZoom(actionArgs);
+    }
+
+    if (actionName === "WAIT FOR CAMERA") {
+      return this.actionWaitForCamera();
+    }
+
+    if (actionName === "WAIT FOR ZOOM") {
+      return this.actionWaitForZoom();
+    }
+
+    if (actionName === "ZOOM") {
+      return this.actionZoom(actionArgs);
+    }
+    return MageStudios.ASP3.BattleManager_processActionSequence.call(
+      this,
+      actionName,
+      actionArgs
+    );
+  };
+
+  MageStudios.ASP3.BattleManager_actionPerformFinish =
     BattleManager.actionPerformFinish;
-BattleManager.actionPerformFinish = function() {
+  BattleManager.actionPerformFinish = function () {
     this.actionResetZoom([30]);
     this.resetCamera([30]);
     return MageStudios.ASP3.BattleManager_actionPerformFinish.call(this);
-};
+  };
 
-BattleManager.actionCameraClamp = function(actionName) {
+  BattleManager.actionCameraClamp = function (actionName) {
     if (!ConfigManager.battleCamera) return true;
-    if (actionName === 'CAMERA CLAMP ON') {
+    if (actionName === "CAMERA CLAMP ON") {
       this._cameraClamp = true;
-    } else if (actionName === 'CAMERA CLAMP OFF') {
+    } else if (actionName === "CAMERA CLAMP OFF") {
       this._cameraClamp = false;
     }
     return true;
-};
+  };
 
-BattleManager.actionCameraFocus = function(actionArgs) {
+  BattleManager.actionCameraFocus = function (actionArgs) {
     if (!ConfigManager.battleCamera) return true;
     this._cameraFocusGroup = this.makeActionTargets(actionArgs[0]);
     if (this._cameraFocusGroup.length < 1) return false;
-    var type = (actionArgs[1]) ? actionArgs[1].toUpperCase() : 'CENTER';
+    var type = actionArgs[1] ? actionArgs[1].toUpperCase() : "CENTER";
     var frames = actionArgs[2] || 30;
-    if (['FRONT BASE', 'FRONT FOOT', 'FRONT FEET'].contains(type)) {
-      this._cameraFocusPosX = 'FRONT';
-      this._cameraFocusPosY = 'BASE';
-    } else if (['BASE', 'FOOT', 'FEET'].contains(type)) {
-      this._cameraFocusPosX = 'MIDDLE';
-      this._cameraFocusPosY = 'BASE';
-    } else if (['BACK BASE', 'BACK FOOT', 'BACK FEET'].contains(type)) {
-      this._cameraFocusPosX = 'BACK';
-      this._cameraFocusPosY = 'BASE';
-    } else if (['FRONT CENTER', 'FRONT MIDDLE', 'FRONT'].contains(type)) {
-      this._cameraFocusPosX = 'FRONT';
-      this._cameraFocusPosY = 'MIDDLE';
-    } else if (['CENTER', 'MIDDLE'].contains(type)) {
-      this._cameraFocusPosX = 'MIDDLE';
-      this._cameraFocusPosY = 'MIDDLE';
-    } else if (['BACK CENTER', 'BACK MIDDLE', 'BACK'].contains(type)) {
-      this._cameraFocusPosX = 'BACK';
-      this._cameraFocusPosY = 'MIDDLE';
-    } else if (['FRONT HEAD', 'FRONT TOP'].contains(type)) {
-      this._cameraFocusPosX = 'FRONT';
-      this._cameraFocusPosY = 'TOP';
-    } else if (['HEAD', 'TOP'].contains(type)) {
-      this._cameraFocusPosX = 'MIDDLE';
-      this._cameraFocusPosY = 'TOP';
-    } else if (['BACK HEAD', 'BACK TOP'].contains(type)) {
-      this._cameraFocusPosX = 'BACK';
-      this._cameraFocusPosY = 'TOP';
+    if (["FRONT BASE", "FRONT FOOT", "FRONT FEET"].contains(type)) {
+      this._cameraFocusPosX = "FRONT";
+      this._cameraFocusPosY = "BASE";
+    } else if (["BASE", "FOOT", "FEET"].contains(type)) {
+      this._cameraFocusPosX = "MIDDLE";
+      this._cameraFocusPosY = "BASE";
+    } else if (["BACK BASE", "BACK FOOT", "BACK FEET"].contains(type)) {
+      this._cameraFocusPosX = "BACK";
+      this._cameraFocusPosY = "BASE";
+    } else if (["FRONT CENTER", "FRONT MIDDLE", "FRONT"].contains(type)) {
+      this._cameraFocusPosX = "FRONT";
+      this._cameraFocusPosY = "MIDDLE";
+    } else if (["CENTER", "MIDDLE"].contains(type)) {
+      this._cameraFocusPosX = "MIDDLE";
+      this._cameraFocusPosY = "MIDDLE";
+    } else if (["BACK CENTER", "BACK MIDDLE", "BACK"].contains(type)) {
+      this._cameraFocusPosX = "BACK";
+      this._cameraFocusPosY = "MIDDLE";
+    } else if (["FRONT HEAD", "FRONT TOP"].contains(type)) {
+      this._cameraFocusPosX = "FRONT";
+      this._cameraFocusPosY = "TOP";
+    } else if (["HEAD", "TOP"].contains(type)) {
+      this._cameraFocusPosX = "MIDDLE";
+      this._cameraFocusPosY = "TOP";
+    } else if (["BACK HEAD", "BACK TOP"].contains(type)) {
+      this._cameraFocusPosX = "BACK";
+      this._cameraFocusPosY = "TOP";
     } else {
-      this._cameraFocusPosX = 'MIDDLE';
-      this._cameraFocusPosY = 'MIDDLE';
+      this._cameraFocusPosX = "MIDDLE";
+      this._cameraFocusPosY = "MIDDLE";
     }
-    $gameScreen.setCameraDuration(frames)
+    $gameScreen.setCameraDuration(frames);
     return true;
-};
+  };
 
-BattleManager.actionCameraOffset = function(actionArgs) {
+  BattleManager.actionCameraOffset = function (actionArgs) {
     if (!ConfigManager.battleCamera) return true;
     var cmd = actionArgs[0].toUpperCase();
-    if (['LEFT'].contains(cmd)) {
-      this._cameraOffsetX = -1 * eval(actionArgs[1]) || 100;;
-    } else if (['RIGHT'].contains(cmd)) {
-      this._cameraOffsetX = eval(actionArgs[1]) || 100;;
-    } else if (['UP'].contains(cmd)) {
-      this._cameraOffsetY = -1 * eval(actionArgs[1]) || 100;;
-    } else if (['DOWN'].contains(cmd)) {
-      this._cameraOffsetY = eval(actionArgs[1]) || 100;;
+    if (["LEFT"].contains(cmd)) {
+      this._cameraOffsetX = -1 * eval(actionArgs[1]) || 100;
+    } else if (["RIGHT"].contains(cmd)) {
+      this._cameraOffsetX = eval(actionArgs[1]) || 100;
+    } else if (["UP"].contains(cmd)) {
+      this._cameraOffsetY = -1 * eval(actionArgs[1]) || 100;
+    } else if (["DOWN"].contains(cmd)) {
+      this._cameraOffsetY = eval(actionArgs[1]) || 100;
     }
     return true;
-};
+  };
 
-BattleManager.actionCameraPan = function(actionArgs) {
-    if (!ConfigManager.battleCamera) return true;
-    var cmd = actionArgs[0].toUpperCase();
-    var frames = 30;
-    if (['LEFT'].contains(cmd)) {
-      this._cameraX -= eval(actionArgs[1]) || 100;;
-      frames = actionArgs[2] || 30;
-    } else if (['RIGHT'].contains(cmd)) {
-      this._cameraX += eval(actionArgs[1]) || 100;;
-      frames = actionArgs[2] || 30;
-    } else if (['UP'].contains(cmd)) {
-      this._cameraY -= eval(actionArgs[1]) || 100;;
-      frames = actionArgs[2] || 30;
-    } else if (['DOWN'].contains(cmd)) {
-      this._cameraY += eval(actionArgs[1]) || 100;;
-      frames = actionArgs[2] || 30;
-    }
-    $gameScreen.setCameraDuration(frames)
-    return true;
-};
-
-BattleManager.actionCameraScreen = function(actionArgs) {
+  BattleManager.actionCameraPan = function (actionArgs) {
     if (!ConfigManager.battleCamera) return true;
     var cmd = actionArgs[0].toUpperCase();
     var frames = 30;
-    if (['TOP LEFT', 'UPPER LEFT'].contains(cmd)) {
+    if (["LEFT"].contains(cmd)) {
+      this._cameraX -= eval(actionArgs[1]) || 100;
+      frames = actionArgs[2] || 30;
+    } else if (["RIGHT"].contains(cmd)) {
+      this._cameraX += eval(actionArgs[1]) || 100;
+      frames = actionArgs[2] || 30;
+    } else if (["UP"].contains(cmd)) {
+      this._cameraY -= eval(actionArgs[1]) || 100;
+      frames = actionArgs[2] || 30;
+    } else if (["DOWN"].contains(cmd)) {
+      this._cameraY += eval(actionArgs[1]) || 100;
+      frames = actionArgs[2] || 30;
+    }
+    $gameScreen.setCameraDuration(frames);
+    return true;
+  };
+
+  BattleManager.actionCameraScreen = function (actionArgs) {
+    if (!ConfigManager.battleCamera) return true;
+    var cmd = actionArgs[0].toUpperCase();
+    var frames = 30;
+    if (["TOP LEFT", "UPPER LEFT"].contains(cmd)) {
       this._cameraX = 0;
       this._cameraY = 0;
       frames = actionArgs[1] || 30;
-    } else if (['FAR LEFT', 'ABSOLUTE LEFT'].contains(cmd)) {
+    } else if (["FAR LEFT", "ABSOLUTE LEFT"].contains(cmd)) {
       this._cameraX = 0;
       this._cameraY = Graphics.boxHeight / 2;
       frames = actionArgs[1] || 30;
-    } else if (['BOTTOM LEFT', 'LOWER LEFT'].contains(cmd)) {
+    } else if (["BOTTOM LEFT", "LOWER LEFT"].contains(cmd)) {
       this._cameraX = 0;
       this._cameraY = Graphics.boxHeight;
       frames = actionArgs[1] || 30;
-    } else if (['TOP CENTER', 'UPPER CENTER'].contains(cmd)) {
+    } else if (["TOP CENTER", "UPPER CENTER"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth / 2;
       this._cameraY = 0;
       frames = actionArgs[1] || 30;
-    } else if (['CENTER', 'MIDDLE'].contains(cmd)) {
+    } else if (["CENTER", "MIDDLE"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth / 2;
       this._cameraY = Graphics.boxHeight / 2;
       frames = actionArgs[1] || 30;
-    } else if (['BOTTOM CENTER', 'LOWER CENTER'].contains(cmd)) {
+    } else if (["BOTTOM CENTER", "LOWER CENTER"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth / 2;
       this._cameraY = Graphics.boxHeight;
       frames = actionArgs[1] || 30;
-    } else if (['TOP RIGHT', 'UPPER RIGHT'].contains(cmd)) {
+    } else if (["TOP RIGHT", "UPPER RIGHT"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth;
       this._cameraY = 0;
       frames = actionArgs[1] || 30;
-    } else if (['FAR RIGHT', 'ABSOLUTE RIGHT'].contains(cmd)) {
+    } else if (["FAR RIGHT", "ABSOLUTE RIGHT"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth;
       this._cameraY = Graphics.boxHeight / 2;
       frames = actionArgs[1] || 30;
-    } else if (['BOTTOM RIGHT', 'LOWER RIGHT'].contains(cmd)) {
+    } else if (["BOTTOM RIGHT", "LOWER RIGHT"].contains(cmd)) {
       this._cameraX = Graphics.boxWidth;
       this._cameraY = Graphics.boxHeight;
       frames = actionArgs[1] || 30;
-    } else if (['POINT', 'POSITION', 'COORDINATE', 'SCREEN', 'SCREEN POS',
-    'COORDINATES'].contains(cmd)) {
+    } else if (
+      [
+        "POINT",
+        "POSITION",
+        "COORDINATE",
+        "SCREEN",
+        "SCREEN POS",
+        "COORDINATES",
+      ].contains(cmd)
+    ) {
       this._cameraX = eval(actionArgs[1]) || 0;
       this._cameraY = eval(actionArgs[2]) || 0;
       frames = actionArgs[3] || 30;
@@ -594,68 +590,68 @@ BattleManager.actionCameraScreen = function(actionArgs) {
       if (targets.length < 1) return false;
       var type = actionArgs[1].toUpperCase();
       var frames = actionArgs[2] || 30;
-      if (['FRONT BASE', 'FRONT FOOT', 'FRONT FEET',
-      'FRONT'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'FRONT');
-        this._cameraY = this.targetPosY(targets, 'BASE');
-      } else if (['BASE', 'FOOT', 'FEET'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'MIDDLE');
-        this._cameraY = this.targetPosY(targets, 'BASE');
-      } else if (['BACK BASE', 'BACK FOOT', 'BACK FEET',
-      'BACK'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'BACK');
-        this._cameraY = this.targetPosY(targets, 'BASE');
-      } else if (['FRONT CENTER', 'FRONT MIDDLE'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'FRONT');
-        this._cameraY = this.targetPosY(targets, 'MIDDLE');
-      } else if (['CENTER', 'MIDDLE'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'MIDDLE');
-        this._cameraY = this.targetPosY(targets, 'MIDDLE');
-      } else if (['BACK CENTER', 'BACK MIDDLE',].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'BACK');
-        this._cameraY = this.targetPosY(targets, 'MIDDLE');
-      } else if (['FRONT HEAD', 'FRONT TOP'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'FRONT');
-        this._cameraY = this.targetPosY(targets, 'TOP');
-      } else if (['HEAD', 'TOP'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'MIDDLE');
-        this._cameraY = this.targetPosY(targets, 'TOP');
-      } else if (['BACK HEAD', 'BACK TOP'].contains(type)) {
-        this._cameraX = this.targetPosX(targets, 'BACK');
-        this._cameraY = this.targetPosY(targets, 'TOP');
+      if (["FRONT BASE", "FRONT FOOT", "FRONT FEET", "FRONT"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "FRONT");
+        this._cameraY = this.targetPosY(targets, "BASE");
+      } else if (["BASE", "FOOT", "FEET"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "MIDDLE");
+        this._cameraY = this.targetPosY(targets, "BASE");
+      } else if (
+        ["BACK BASE", "BACK FOOT", "BACK FEET", "BACK"].contains(type)
+      ) {
+        this._cameraX = this.targetPosX(targets, "BACK");
+        this._cameraY = this.targetPosY(targets, "BASE");
+      } else if (["FRONT CENTER", "FRONT MIDDLE"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "FRONT");
+        this._cameraY = this.targetPosY(targets, "MIDDLE");
+      } else if (["CENTER", "MIDDLE"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "MIDDLE");
+        this._cameraY = this.targetPosY(targets, "MIDDLE");
+      } else if (["BACK CENTER", "BACK MIDDLE"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "BACK");
+        this._cameraY = this.targetPosY(targets, "MIDDLE");
+      } else if (["FRONT HEAD", "FRONT TOP"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "FRONT");
+        this._cameraY = this.targetPosY(targets, "TOP");
+      } else if (["HEAD", "TOP"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "MIDDLE");
+        this._cameraY = this.targetPosY(targets, "TOP");
+      } else if (["BACK HEAD", "BACK TOP"].contains(type)) {
+        this._cameraX = this.targetPosX(targets, "BACK");
+        this._cameraY = this.targetPosY(targets, "TOP");
       } else {
         return true;
       }
     }
-    $gameScreen.setCameraDuration(frames)
+    $gameScreen.setCameraDuration(frames);
     return true;
-};
+  };
 
-BattleManager.actionResetCamera = function(actionArgs) {
+  BattleManager.actionResetCamera = function (actionArgs) {
     var duration = parseInt(actionArgs[0]) || 30;
     this.resetCamera(duration);
     return true;
-};
+  };
 
-BattleManager.actionResetZoom = function(actionArgs) {
+  BattleManager.actionResetZoom = function (actionArgs) {
     var duration = parseInt(actionArgs[0]) || 30;
     $gameScreen.startBattleZoom(1, duration);
     return true;
-};
+  };
 
-BattleManager.actionWaitForCamera = function() {
+  BattleManager.actionWaitForCamera = function () {
     if (!ConfigManager.battleCamera) return true;
     this._logWindow.waitForCamera();
     return false;
-};
+  };
 
-BattleManager.actionWaitForZoom = function() {
+  BattleManager.actionWaitForZoom = function () {
     if (!ConfigManager.battleCamera) return true;
     this._logWindow.waitForZoom();
     return false;
-};
+  };
 
-BattleManager.actionZoom = function(actionArgs) {
+  BattleManager.actionZoom = function (actionArgs) {
     if (!ConfigManager.battleCamera) return true;
     if (actionArgs[0].match(/(\d+)([%％])/i)) {
       var scale = parseFloat(RegExp.$1 * 0.01) || 1.0;
@@ -665,32 +661,37 @@ BattleManager.actionZoom = function(actionArgs) {
     var duration = parseInt(actionArgs[1]) || 30;
     $gameScreen.startBattleZoom(scale, duration);
     return true;
-};
+  };
 
-MageStudios.ASP3.BattleManager_setup = BattleManager.setup;
-BattleManager.setup = function(troopId, canEscape, canLose) {
+  MageStudios.ASP3.BattleManager_setup = BattleManager.setup;
+  BattleManager.setup = function (troopId, canEscape, canLose) {
     this.resetCamera();
     this.actionResetZoom([1]);
-    MageStudios.ASP3.BattleManager_setup.call(this, troopId, canEscape, canLose);
-};
+    MageStudios.ASP3.BattleManager_setup.call(
+      this,
+      troopId,
+      canEscape,
+      canLose
+    );
+  };
 
-BattleManager.resetCamera = function(duration) {
+  BattleManager.resetCamera = function (duration) {
     this._cameraX = Graphics.boxWidth / 2;
     this._cameraY = Graphics.boxHeight / 2;
     this._cameraOffsetX = 0;
     this._cameraOffsetY = 0;
     this._cameraFocusGroup = [];
-    this._cameraFocusPosX = 'BASE';
-    this._cameraFocusPosY = 'BASE';
+    this._cameraFocusPosX = "BASE";
+    this._cameraFocusPosY = "BASE";
     this._cameraClamp = true;
     $gameScreen.setCameraDuration(duration);
-};
+  };
 
-BattleManager.cameraClamp = function() {
+  BattleManager.cameraClamp = function () {
     return this._cameraClamp;
-};
+  };
 
-BattleManager.cameraX = function() {
+  BattleManager.cameraX = function () {
     if (this._cameraFocusGroup.length > 0) {
       var value = this.cameraFocusX();
     } else {
@@ -698,9 +699,9 @@ BattleManager.cameraX = function() {
     }
     value += this._cameraOffsetX;
     return value;
-};
+  };
 
-BattleManager.cameraY = function() {
+  BattleManager.cameraY = function () {
     if (this._cameraFocusGroup.length > 0) {
       var value = this.cameraFocusY();
     } else {
@@ -708,66 +709,66 @@ BattleManager.cameraY = function() {
     }
     value += this._cameraOffsetY;
     return value;
-};
+  };
 
-BattleManager.cameraFocusX = function() {
+  BattleManager.cameraFocusX = function () {
     var i = this.targetPosX(this._cameraFocusGroup, this._cameraFocusPosX);
     return i;
-};
+  };
 
-BattleManager.cameraFocusY = function() {
+  BattleManager.cameraFocusY = function () {
     var i = this.targetPosY(this._cameraFocusGroup, this._cameraFocusPosY);
     return i;
-};
+  };
 
-BattleManager.targetPosX = function(group, position) {
+  BattleManager.targetPosX = function (group, position) {
     var value = 0;
-    if (position === 'MIDDLE') {
+    if (position === "MIDDLE") {
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
         if (!battler) continue;
         value += battler.cameraPosX();
       }
-    } else if (position === 'FRONT') {
+    } else if (position === "FRONT") {
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
         if (!battler) continue;
-        if (battler.isActor()) var offset = -1 * battler.spriteWidth() / 2;
+        if (battler.isActor()) var offset = (-1 * battler.spriteWidth()) / 2;
         if (battler.isEnemy()) var offset = battler.spriteWidth() / 2;
         value = Math.max(battler.cameraPosX() + offset, value);
       }
       value *= group.length;
-    } else if (position === 'BACK') {
+    } else if (position === "BACK") {
       value = Graphics.boxWidth;
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
         if (!battler) continue;
         if (battler.isActor()) var offset = battler.spriteWidth() / 2;
-        if (battler.isEnemy()) var offset = -1 * battler.spriteWidth() / 2;
+        if (battler.isEnemy()) var offset = (-1 * battler.spriteWidth()) / 2;
         value = Math.min(battler.cameraPosX() + offset, value);
       }
       value *= group.length;
     }
     value /= group.length;
     return value;
-};
+  };
 
-BattleManager.targetPosY = function(group, position) {
+  BattleManager.targetPosY = function (group, position) {
     var value = 0;
-    if (position === 'BASE') {
+    if (position === "BASE") {
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
         if (!battler) continue;
         value = Math.max(battler.cameraPosY(), value);
       }
       value *= group.length;
-    } else if (position === 'MIDDLE') {
+    } else if (position === "MIDDLE") {
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
         if (!battler) continue;
         value += battler.cameraPosY() - battler.spriteHeight() / 2;
       }
-    } else if (position === 'TOP') {
+    } else if (position === "TOP") {
       value = Graphics.boxHeight;
       for (var i = 0; i < group.length; ++i) {
         var battler = group[i];
@@ -778,13 +779,9 @@ BattleManager.targetPosY = function(group, position) {
     }
     value /= group.length;
     return value;
-};
+  };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-Spriteset_Battle.prototype.updatePosition = function() {
+  Spriteset_Battle.prototype.updatePosition = function () {
     var zoom = $gameScreen.zoomScale();
     var clamp = BattleManager.cameraClamp();
     this.scale.x = zoom;
@@ -804,56 +801,48 @@ Spriteset_Battle.prototype.updatePosition = function() {
       this.y = Math.round(screenY);
     }
     this.x += Math.round($gameScreen.shake());
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.cameraPosX = function() {
+  Game_Battler.prototype.cameraPosX = function () {
     var value = this.spritePosX();
     return value;
-};
+  };
 
-Game_Battler.prototype.cameraPosY = function() {
+  Game_Battler.prototype.cameraPosY = function () {
     var value = this.spritePosY();
     if (Imported.MSEP_X_ActSeqPack2) {
       value -= this.battler().getFloatHeight() * this.spriteHeight();
       value -= this.battler().getJumpHeight() * this.spriteHeight();
     }
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Screen
-//=============================================================================
-
-MageStudios.ASP3.Game_Screen_clearZoom = Game_Screen.prototype.clearZoom;
-Game_Screen.prototype.clearZoom = function() {
+  MageStudios.ASP3.Game_Screen_clearZoom = Game_Screen.prototype.clearZoom;
+  Game_Screen.prototype.clearZoom = function () {
     MageStudios.ASP3.Game_Screen_clearZoom.call(this);
     this._cameraDuration = 0;
-};
+  };
 
-MageStudios.ASP3.Game_Screen_update = Game_Screen.prototype.update;
-Game_Screen.prototype.update = function() {
+  MageStudios.ASP3.Game_Screen_update = Game_Screen.prototype.update;
+  Game_Screen.prototype.update = function () {
     MageStudios.ASP3.Game_Screen_update.call(this);
     this.updateBattleCamera();
-};
+  };
 
-Game_Screen.prototype.startBattleZoom = function(scale, duration) {
+  Game_Screen.prototype.startBattleZoom = function (scale, duration) {
     this._zoomScaleTarget = scale;
     this._zoomDuration = duration;
-};
+  };
 
-Game_Screen.prototype.isZooming = function() {
+  Game_Screen.prototype.isZooming = function () {
     return this._zoomDuration > 0;
-};
+  };
 
-Game_Screen.prototype.setCameraDuration = function(duration) {
+  Game_Screen.prototype.setCameraDuration = function (duration) {
     this._cameraDuration = duration;
-};
+  };
 
-Game_Screen.prototype.updateBattleCamera = function() {
+  Game_Screen.prototype.updateBattleCamera = function () {
     if (!$gameParty.inBattle()) return;
     if (this._cameraDuration > 0) {
       var d = this._cameraDuration;
@@ -866,88 +855,68 @@ Game_Screen.prototype.updateBattleCamera = function() {
       this._zoomX = BattleManager.cameraX();
       this._zoomY = BattleManager.cameraY();
     }
-};
+  };
 
-Game_Screen.prototype.isBattleCameraPanning = function() {
+  Game_Screen.prototype.isBattleCameraPanning = function () {
     if ($gameParty.inBattle()) return this._cameraDuration > 0;
     return false;
-};
+  };
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
+  ConfigManager.battleCamera = true;
 
-ConfigManager.battleCamera = true;
-
-MageStudios.ASP3.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
+  MageStudios.ASP3.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
     var config = MageStudios.ASP3.ConfigManager_makeData.call(this);
     config.battleCamera = this.battleCamera;
     return config;
-};
+  };
 
-MageStudios.ASP3.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
+  MageStudios.ASP3.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
     MageStudios.ASP3.ConfigManager_applyData.call(this, config);
-    this.battleCamera = this.readConfigBattleCamera(config, 'battleCamera');
-};
+    this.battleCamera = this.readConfigBattleCamera(config, "battleCamera");
+  };
 
-ConfigManager.readConfigBattleCamera = function(config, name) {
+  ConfigManager.readConfigBattleCamera = function (config, name) {
     var value = config[name];
     if (value !== undefined) {
-        return value;
+      return value;
     } else {
-        return true;
+      return true;
     }
-};
+  };
 
-//=============================================================================
-// Window_Options
-//=============================================================================
-
-MageStudios.ASP3.Window_Options_addGeneralOptions =
+  MageStudios.ASP3.Window_Options_addGeneralOptions =
     Window_Options.prototype.addGeneralOptions;
-Window_Options.prototype.addGeneralOptions = function() {
+  Window_Options.prototype.addGeneralOptions = function () {
     MageStudios.ASP3.Window_Options_addGeneralOptions.call(this);
     if (!Imported.MSEP_OptionsCore) {
-      this.addCommand(MageStudios.Param.ASP3CameraOption, 'battleCamera');
+      this.addCommand(MageStudios.Param.ASP3CameraOption, "battleCamera");
     }
-};
+  };
 
-//=============================================================================
-// Window_BattleLog
-//=============================================================================
-
-MageStudios.ASP3.Window_BattleLog_updateWaitMode =
+  MageStudios.ASP3.Window_BattleLog_updateWaitMode =
     Window_BattleLog.prototype.updateWaitMode;
-Window_BattleLog.prototype.updateWaitMode = function() {
-    if (this._waitMode === 'camera') {
+  Window_BattleLog.prototype.updateWaitMode = function () {
+    if (this._waitMode === "camera") {
       if ($gameScreen.isBattleCameraPanning()) return true;
-    } else if (this._waitMode === 'zoom') {
+    } else if (this._waitMode === "zoom") {
       if ($gameScreen.isZooming()) return true;
     }
     return MageStudios.ASP3.Window_BattleLog_updateWaitMode.call(this);
-};
+  };
 
-Window_BattleLog.prototype.waitForCamera = function() {
-    this.setWaitMode('camera');
-};
+  Window_BattleLog.prototype.waitForCamera = function () {
+    this.setWaitMode("camera");
+  };
 
-Window_BattleLog.prototype.waitForZoom = function() {
-    this.setWaitMode('zoom');
-};
+  Window_BattleLog.prototype.waitForZoom = function () {
+    this.setWaitMode("zoom");
+  };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.ASP3.Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
-Scene_Map.prototype.onMapLoaded = function() {
+  MageStudios.ASP3.Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+  Scene_Map.prototype.onMapLoaded = function () {
     MageStudios.ASP3.Scene_Map_onMapLoaded.call(this);
     $gameScreen.clearZoom();
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

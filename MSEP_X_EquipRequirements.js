@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Equip Core Extension - Equip Requirements
-// MSEP_X_EquipRequirements.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_EquipRequirements = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EqReq = MageStudios.EqReq || {};
-MageStudios.EqReq.version = 1.00;
+MageStudios.EqReq.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_EquipCore.js) Place requirements on
  * pieces of equipment before actors can use them!
  * @author Mage Studios Engine Plugins
@@ -290,413 +284,427 @@ MageStudios.EqReq.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_EquipCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_EquipRequirements");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.EqReqWindow = String(
+    MageStudios.Parameters["Requirement Window"]
+  );
+  MageStudios.Param.EqReqWindow = eval(MageStudios.Param.EqReqWindow);
+  MageStudios.Param.EqReqBTest = String(
+    MageStudios.Parameters["Battle Test Ignore"]
+  );
+  MageStudios.Param.EqReqBTest = eval(MageStudios.Param.EqReqBTest);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_EquipRequirements');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.EqReqTitle = String(
+    MageStudios.Parameters["Requirement Title"]
+  );
+  MageStudios.Param.EqReqNone = String(
+    MageStudios.Parameters["No Requirement"]
+  );
+  MageStudios.Param.EqReqPosColor = Number(
+    MageStudios.Parameters["Positive Color"]
+  );
+  MageStudios.Param.EqReqNegColor = Number(
+    MageStudios.Parameters["Negative Color"]
+  );
+  MageStudios.Param.EqReqAtLeast = String(
+    MageStudios.Parameters["At Least Text"]
+  );
+  MageStudios.Param.EqReqAtMost = String(
+    MageStudios.Parameters["At Most Text"]
+  );
+  MageStudios.Param.EqReqClasses = eval(
+    String(MageStudios.Parameters["Draw Classes"])
+  );
+  MageStudios.Param.EqReqClassStyle = Number(
+    MageStudios.Parameters["Class Style"]
+  );
+  MageStudios.Param.EqReqClassText = String(
+    MageStudios.Parameters["Class Text"]
+  );
+  MageStudios.Param.EqReqSkills = eval(
+    String(MageStudios.Parameters["Draw Skills"])
+  );
+  MageStudios.Param.EqReqSkillStyle = Number(
+    MageStudios.Parameters["Skill Style"]
+  );
+  MageStudios.Param.EqReqSkillText = String(
+    MageStudios.Parameters["Skill Text"]
+  );
+  MageStudios.Param.EqReqSwitches = eval(
+    String(MageStudios.Parameters["Draw Switches"])
+  );
 
-MageStudios.Param.EqReqWindow = String(MageStudios.Parameters['Requirement Window']);
-MageStudios.Param.EqReqWindow = eval(MageStudios.Param.EqReqWindow);
-MageStudios.Param.EqReqBTest = String(MageStudios.Parameters['Battle Test Ignore']);
-MageStudios.Param.EqReqBTest = eval(MageStudios.Param.EqReqBTest);
+  MageStudios.EqReq.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.EqReq.DataManager_isDatabaseLoaded.call(this))
+      return false;
+    if (!MageStudios._loaded_MSEP_X_EquipRequirements) {
+      this.processEqReqNotetagsC($dataClasses);
+      this.processEqReqNotetagsS($dataSkills);
+      this.processEqReqNotetags1($dataWeapons);
+      this.processEqReqNotetags1($dataArmors);
+      MageStudios._loaded_MSEP_X_EquipRequirements = true;
+    }
+    return true;
+  };
 
-MageStudios.Param.EqReqTitle = String(MageStudios.Parameters['Requirement Title']);
-MageStudios.Param.EqReqNone = String(MageStudios.Parameters['No Requirement']);
-MageStudios.Param.EqReqPosColor = Number(MageStudios.Parameters['Positive Color']);
-MageStudios.Param.EqReqNegColor = Number(MageStudios.Parameters['Negative Color']);
-MageStudios.Param.EqReqAtLeast = String(MageStudios.Parameters['At Least Text']);
-MageStudios.Param.EqReqAtMost = String(MageStudios.Parameters['At Most Text']);
-MageStudios.Param.EqReqClasses = eval(String(MageStudios.Parameters['Draw Classes']));
-MageStudios.Param.EqReqClassStyle = Number(MageStudios.Parameters['Class Style']);
-MageStudios.Param.EqReqClassText = String(MageStudios.Parameters['Class Text']);
-MageStudios.Param.EqReqSkills = eval(String(MageStudios.Parameters['Draw Skills']));
-MageStudios.Param.EqReqSkillStyle = Number(MageStudios.Parameters['Skill Style']);
-MageStudios.Param.EqReqSkillText = String(MageStudios.Parameters['Skill Text']);
-MageStudios.Param.EqReqSwitches = eval(String(MageStudios.Parameters['Draw Switches']));
+  DataManager.processEqReqNotetagsC = function (group) {
+    if (MageStudios.ClassIdRef) return;
+    MageStudios.ClassIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ClassIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  DataManager.processEqReqNotetagsS = function (group) {
+    if (MageStudios.SkillIdRef) return;
+    MageStudios.SkillIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-MageStudios.EqReq.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.EqReq.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_EquipRequirements) {
-    this.processEqReqNotetagsC($dataClasses);
-    this.processEqReqNotetagsS($dataSkills);
-    this.processEqReqNotetags1($dataWeapons);
-    this.processEqReqNotetags1($dataArmors);
-    MageStudios._loaded_MSEP_X_EquipRequirements = true;
-  }
-  return true;
-};
+  DataManager.processEqReqNotetags1 = function (group) {
+    var noteA1 = /<(?:EQUIP REQUIREMENT|EQUIP REQUIREMENTS|REQUIREMENT)>/i;
+    var noteA2 = /<\/(?:EQUIP REQUIREMENT|EQUIP REQUIREMENTS|REQUIREMENT)>/i;
+    var noteB1 = /<(?:CUSTOM EQUIP REQUIREMENT TEXT)>/i;
+    var noteB2 = /<\/(?:CUSTOM EQUIP REQUIREMENT TEXT)>/i;
+    var noteC1 = /<(?:CUSTOM EQUIP REQUIREMENT CONDITION)>/i;
+    var noteC2 = /<\/(?:CUSTOM EQUIP REQUIREMENT CONDITION)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processEqReqNotetagsC = function(group) {
-  if (MageStudios.ClassIdRef) return;
-  MageStudios.ClassIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ClassIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+      obj.equipRequirements = {
+        atLeast: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        atMost: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+        classes: [],
+        skills: [],
+        switches: [],
+        unique: false,
+      };
+      var evalMode = "none";
+      obj.customEquipReqText = "";
+      obj.customEquipReqCondition = "";
 
-DataManager.processEqReqNotetagsS = function(group) {
-  if (MageStudios.SkillIdRef) return;
-  MageStudios.SkillIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processEqReqNotetags1 = function(group) {
-  var noteA1 = /<(?:EQUIP REQUIREMENT|EQUIP REQUIREMENTS|REQUIREMENT)>/i;
-  var noteA2 = /<\/(?:EQUIP REQUIREMENT|EQUIP REQUIREMENTS|REQUIREMENT)>/i;
-  var noteB1 = /<(?:CUSTOM EQUIP REQUIREMENT TEXT)>/i;
-  var noteB2 = /<\/(?:CUSTOM EQUIP REQUIREMENT TEXT)>/i;
-  var noteC1 = /<(?:CUSTOM EQUIP REQUIREMENT CONDITION)>/i;
-  var noteC2 = /<\/(?:CUSTOM EQUIP REQUIREMENT CONDITION)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.equipRequirements = {
-      atLeast: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      atMost: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      classes: [],
-      skills: [],
-      switches: [],
-      unique: false
-    };
-    var evalMode = 'none';
-    obj.customEquipReqText = '';
-    obj.customEquipReqCondition = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(noteA1)) {
-        evalMode = 'equip requirements';
-      } else if (line.match(noteA2)) {
-        evalMode = 'none';
-      } else if (evalMode === 'equip requirements') {
-        this.makeEquipRequirement(obj, line);
-      } else if (line.match(noteB1)) {
-        evalMode = 'custom equip requirement text';
-      } else if (line.match(noteB2)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom equip requirement text') {
-        obj.customEquipReqText = obj.customEquipReqText + line + '\n';
-      } else if (line.match(noteC1)) {
-        evalMode = 'custom equip requirement condition';
-      } else if (line.match(noteC2)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom equip requirement condition') {
-        obj.customEquipReqCondition = obj.customEquipReqCondition + line + '\n';
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(noteA1)) {
+          evalMode = "equip requirements";
+        } else if (line.match(noteA2)) {
+          evalMode = "none";
+        } else if (evalMode === "equip requirements") {
+          this.makeEquipRequirement(obj, line);
+        } else if (line.match(noteB1)) {
+          evalMode = "custom equip requirement text";
+        } else if (line.match(noteB2)) {
+          evalMode = "none";
+        } else if (evalMode === "custom equip requirement text") {
+          obj.customEquipReqText = obj.customEquipReqText + line + "\n";
+        } else if (line.match(noteC1)) {
+          evalMode = "custom equip requirement condition";
+        } else if (line.match(noteC2)) {
+          evalMode = "none";
+        } else if (evalMode === "custom equip requirement condition") {
+          obj.customEquipReqCondition =
+            obj.customEquipReqCondition + line + "\n";
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.makeEquipRequirement = function(obj, line) {
-  if (line.match(/UNIQUE ONLY/i)) {
-    obj.equipRequirements['unique'] = true;
-  } else if (line.match(/SWITCH:[ ](\d+)/i)) {
-    obj.equipRequirements['switches'].push(parseInt(RegExp.$1));
-  } else if (line.match(/CLASS:[ ](\d+)/i)) {
-    obj.equipRequirements['classes'].push(parseInt(RegExp.$1));
-  } else if (line.match(/CLASS:[ ](.*)/i)) {
-    var name = String(RegExp.$1).toUpperCase();
-    if (MageStudios.ClassIdRef[name]) {
-      var id = MageStudios.ClassIdRef[name];
-      obj.equipRequirements['classes'].push(id);
+  DataManager.makeEquipRequirement = function (obj, line) {
+    if (line.match(/UNIQUE ONLY/i)) {
+      obj.equipRequirements["unique"] = true;
+    } else if (line.match(/SWITCH:[ ](\d+)/i)) {
+      obj.equipRequirements["switches"].push(parseInt(RegExp.$1));
+    } else if (line.match(/CLASS:[ ](\d+)/i)) {
+      obj.equipRequirements["classes"].push(parseInt(RegExp.$1));
+    } else if (line.match(/CLASS:[ ](.*)/i)) {
+      var name = String(RegExp.$1).toUpperCase();
+      if (MageStudios.ClassIdRef[name]) {
+        var id = MageStudios.ClassIdRef[name];
+        obj.equipRequirements["classes"].push(id);
+      }
+    } else if (line.match(/SKILL:[ ](\d+)/i)) {
+      obj.equipRequirements["skills"].push(parseInt(RegExp.$1));
+    } else if (line.match(/SKILL:[ ](.*)/i)) {
+      var name = String(RegExp.$1).toUpperCase();
+      if (MageStudios.SkillIdRef[name]) {
+        var id = MageStudios.SkillIdRef[name];
+        obj.equipRequirements["skills"].push(id);
+      }
+    } else if (line.match(/(.*)[ ]>=[ ](\d+)/i)) {
+      var stat = String(RegExp.$1).toUpperCase();
+      stat = this.getEquipRequirementStatIndex(stat);
+      var value = parseInt(RegExp.$2);
+      obj.equipRequirements["atLeast"][stat] = value;
+    } else if (line.match(/(.*)[ ]>[ ](\d+)/i)) {
+      var stat = String(RegExp.$1).toUpperCase();
+      stat = this.getEquipRequirementStatIndex(stat);
+      var value = parseInt(RegExp.$2) + 1;
+      obj.equipRequirements["atLeast"][stat] = value;
+    } else if (line.match(/(.*)[ ]<=[ ](\d+)/i)) {
+      var stat = String(RegExp.$1).toUpperCase();
+      stat = this.getEquipRequirementStatIndex(stat);
+      var value = parseInt(RegExp.$2);
+      obj.equipRequirements["atMost"][stat] = value;
+    } else if (line.match(/(.*)[ ]<[ ](\d+)/i)) {
+      var stat = String(RegExp.$1).toUpperCase();
+      stat = this.getEquipRequirementStatIndex(stat);
+      var value = parseInt(RegExp.$2) + 1;
+      obj.equipRequirements["atMost"][stat] = value;
+    } else if (line.match(/(.*)[ ](?:=|==|===)[ ](\d+)/i)) {
+      var stat = String(RegExp.$1).toUpperCase();
+      stat = this.getEquipRequirementStatIndex(stat);
+      var value = parseInt(RegExp.$2);
+      obj.equipRequirements["atLeast"][stat] = value;
+      obj.equipRequirements["atMost"][stat] = value;
     }
-  } else if (line.match(/SKILL:[ ](\d+)/i)) {
-    obj.equipRequirements['skills'].push(parseInt(RegExp.$1));
-  } else if (line.match(/SKILL:[ ](.*)/i)) {
-    var name = String(RegExp.$1).toUpperCase();
-    if (MageStudios.SkillIdRef[name]) {
-      var id = MageStudios.SkillIdRef[name];
-      obj.equipRequirements['skills'].push(id);
+  };
+
+  DataManager.getEquipRequirementStatIndex = function (stat) {
+    stat = stat.trim();
+    if (["MAX HP", "MAXHP", "HP"].contains(stat)) {
+      return 0;
+    } else if (
+      ["MAX MP", "MAXMP", "MP", "MAX SP", "MAXSP", "SP"].contains(stat)
+    ) {
+      return 1;
+    } else if (["ATK", "STR"].contains(stat)) {
+      return 2;
+    } else if (["DEF"].contains(stat)) {
+      return 3;
+    } else if (["MAT", "INT", "SPI"].contains(stat)) {
+      return 4;
+    } else if (["MDF", "RES"].contains(stat)) {
+      return 5;
+    } else if (["AGI", "SPD"].contains(stat)) {
+      return 6;
+    } else if (["LUK"].contains(stat)) {
+      return 7;
+    } else if (["LEVEL", "LV", "LVL"].contains(stat)) {
+      return 8;
     }
-  } else if (line.match(/(.*)[ ]>=[ ](\d+)/i)) {
-    var stat = String(RegExp.$1).toUpperCase();
-    stat = this.getEquipRequirementStatIndex(stat);
-    var value = parseInt(RegExp.$2);
-    obj.equipRequirements['atLeast'][stat] = value;
-  } else if (line.match(/(.*)[ ]>[ ](\d+)/i)) {
-    var stat = String(RegExp.$1).toUpperCase();
-    stat = this.getEquipRequirementStatIndex(stat);
-    var value = parseInt(RegExp.$2) + 1;
-    obj.equipRequirements['atLeast'][stat] = value;
-  } else if (line.match(/(.*)[ ]<=[ ](\d+)/i)) {
-    var stat = String(RegExp.$1).toUpperCase();
-    stat = this.getEquipRequirementStatIndex(stat);
-    var value = parseInt(RegExp.$2);
-    obj.equipRequirements['atMost'][stat] = value;
-  } else if (line.match(/(.*)[ ]<[ ](\d+)/i)) {
-    var stat = String(RegExp.$1).toUpperCase();
-    stat = this.getEquipRequirementStatIndex(stat);
-    var value = parseInt(RegExp.$2) + 1;
-    obj.equipRequirements['atMost'][stat] = value;
-  } else if (line.match(/(.*)[ ](?:=|==|===)[ ](\d+)/i)) {
-    var stat = String(RegExp.$1).toUpperCase();
-    stat = this.getEquipRequirementStatIndex(stat);
-    var value = parseInt(RegExp.$2);
-    obj.equipRequirements['atLeast'][stat] = value;
-    obj.equipRequirements['atMost'][stat] = value;
-  }
-};
+    return null;
+  };
 
-DataManager.getEquipRequirementStatIndex = function(stat) {
-  stat = stat.trim();
-  if (['MAX HP', 'MAXHP', 'HP'].contains(stat)) {
-    return 0;
-  } else if (['MAX MP', 'MAXMP', 'MP', 'MAX SP', 'MAXSP',
-  'SP'].contains(stat)) {
-    return 1;
-  } else if (['ATK', 'STR'].contains(stat)) {
-    return 2;
-  } else if (['DEF'].contains(stat)) {
-    return 3;
-  } else if (['MAT', 'INT', 'SPI'].contains(stat)) {
-    return 4;
-  } else if (['MDF', 'RES'].contains(stat)) {
-    return 5;
-  } else if (['AGI', 'SPD'].contains(stat)) {
-    return 6;
-  } else if (['LUK'].contains(stat)) {
-    return 7;
-  } else if (['LEVEL', 'LV', 'LVL'].contains(stat)) {
-    return 8;
-  }
-  return null;
-};
-
-//=============================================================================
-// MainCode
-//=============================================================================
-
-MageStudios.EqReq.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
+  MageStudios.EqReq.Game_BattlerBase_refresh =
+    Game_BattlerBase.prototype.refresh;
+  Game_BattlerBase.prototype.refresh = function () {
     this._equipReq = undefined;
     MageStudios.EqReq.Game_BattlerBase_refresh.call(this);
-};
+  };
 
-MageStudios.EqReq.Game_BattlerBase_canEquip = Game_BattlerBase.prototype.canEquip;
-Game_BattlerBase.prototype.canEquip = function(item) {
+  MageStudios.EqReq.Game_BattlerBase_canEquip =
+    Game_BattlerBase.prototype.canEquip;
+  Game_BattlerBase.prototype.canEquip = function (item) {
     var value = MageStudios.EqReq.Game_BattlerBase_canEquip.call(this, item);
     if (!value) return false;
-    if (BattleManager.isBattleTest() && MageStudios.Param.EqReqBTest) return value;
+    if (BattleManager.isBattleTest() && MageStudios.Param.EqReqBTest)
+      return value;
     if (!$gameTemp._optimizing) {
       if (SceneManager._scene instanceof Scene_Equip) return value;
       if (this._equipReq !== undefined) return this._equipReq;
     }
-    this._equipReq = this.meetAllEquipRequirements(item)
+    this._equipReq = this.meetAllEquipRequirements(item);
     return this._equipReq;
-};
+  };
 
-Game_BattlerBase.prototype.equips = function() {
+  Game_BattlerBase.prototype.equips = function () {
     return [];
-};
+  };
 
-Game_BattlerBase.prototype.meetAllEquipRequirements = function(item) {
-  if (!item.equipRequirements) {
-    if (item.baseItemId) {
-      item.equipRequirements = DataManager.getBaseItem(item).equipRequirements;
-    } else {
-      return true;
+  Game_BattlerBase.prototype.meetAllEquipRequirements = function (item) {
+    if (!item.equipRequirements) {
+      if (item.baseItemId) {
+        item.equipRequirements =
+          DataManager.getBaseItem(item).equipRequirements;
+      } else {
+        return true;
+      }
     }
-  }
-  if (!this.meetEquipParamRequirements(item)) return false;
-   if (!this.meetEquipClassRequirements(item)) return false;
-  if (!this.meetEquipSkillRequirements(item)) return false;
-  if (!this.meetEquipSwitchRequirements(item)) return false;
-  if (!this.meetEquipUniqueRequirements(item)) return false;
-  if (!this.meetEquipEvalRequirements(item)) return false;
-  return true;
-};
+    if (!this.meetEquipParamRequirements(item)) return false;
+    if (!this.meetEquipClassRequirements(item)) return false;
+    if (!this.meetEquipSkillRequirements(item)) return false;
+    if (!this.meetEquipSwitchRequirements(item)) return false;
+    if (!this.meetEquipUniqueRequirements(item)) return false;
+    if (!this.meetEquipEvalRequirements(item)) return false;
+    return true;
+  };
 
-Game_BattlerBase.prototype.meetEquipParamRequirements = function(item) {
-  var requirements = item.equipRequirements;
-  for (var i = 0; i < 9; ++i) {
-    if (i === 8) {
-      var param = this.level;
-    } else {
-      var param = this.paramBase(i) + this.paramPlus(i);
+  Game_BattlerBase.prototype.meetEquipParamRequirements = function (item) {
+    var requirements = item.equipRequirements;
+    for (var i = 0; i < 9; ++i) {
+      if (i === 8) {
+        var param = this.level;
+      } else {
+        var param = this.paramBase(i) + this.paramPlus(i);
+      }
+      if (requirements["atLeast"][i] > 0) {
+        if (requirements["atLeast"][i] > param) return false;
+      }
+      if (requirements["atMost"][i] > 0) {
+        if (requirements["atMost"][i] < param) return false;
+      }
     }
-    if (requirements['atLeast'][i] > 0) {
-      if (requirements['atLeast'][i] > param) return false;
+    return true;
+  };
+
+  Game_BattlerBase.prototype.meetEquipClassRequirements = function (item) {
+    var requirements = item.equipRequirements;
+    var classes = requirements["classes"];
+    if (classes.length <= 0) return true;
+    if (classes.contains(this.currentClass().id)) return true;
+    return false;
+  };
+
+  Game_BattlerBase.prototype.meetEquipSkillRequirements = function (item) {
+    var requirements = item.equipRequirements;
+    var skills = requirements["skills"];
+    var length = skills.length;
+    if (length <= 0) return true;
+    for (var i = 0; i < length; ++i) {
+      var skillId = skills[i];
+      if (!this.isLearnedSkill(skillId)) return false;
     }
-    if (requirements['atMost'][i] > 0) {
-      if (requirements['atMost'][i] < param) return false;
+    return true;
+  };
+
+  Game_BattlerBase.prototype.meetEquipSwitchRequirements = function (item) {
+    var requirements = item.equipRequirements;
+    var switches = requirements["switches"];
+    var length = switches.length;
+    for (var i = 0; i < length; ++i) {
+      var sw = switches[i];
+      if (!$gameSwitches.value(sw)) return false;
     }
-  }
-  return true;
-};
+    return true;
+  };
 
-Game_BattlerBase.prototype.meetEquipClassRequirements = function(item) {
-  var requirements = item.equipRequirements;
-  var classes = requirements['classes'];
-  if (classes.length <= 0) return true;
-  if (classes.contains(this.currentClass().id)) return true;
-  return false;
-};
-
-Game_BattlerBase.prototype.meetEquipSkillRequirements = function(item) {
-  var requirements = item.equipRequirements;
-  var skills = requirements['skills'];
-  var length = skills.length;
-  if (length <= 0) return true;
-  for (var i = 0; i < length; ++i) {
-    var skillId = skills[i];
-    if (!this.isLearnedSkill(skillId)) return false;
-  }
-  return true;
-};
-
-Game_BattlerBase.prototype.meetEquipSwitchRequirements = function(item) {
-  var requirements = item.equipRequirements;
-  var switches = requirements['switches'];
-  var length = switches.length;
-  for (var i = 0; i < length; ++i) {
-    var sw = switches[i];
-    if (!$gameSwitches.value(sw)) return false;
-  }
-  return true;
-};
-
-Game_BattlerBase.prototype.meetEquipUniqueRequirements = function(item) {
-  if (!this.equips().contains(item)) return true;
-  var requirements = item.equipRequirements;
-  if (!requirements['unique']) return true;
-  var length = this.equips().length;
-  for (var i = 0; i < length; ++i) {
-    var obj = this.equips()[i];
-    if (!obj) continue;
-    if (obj.id === item.id) return false;
-    if (obj.baseItemId && item.baseItemId) {
-      if (obj.baseItemId === item.baseItemId) return false;
+  Game_BattlerBase.prototype.meetEquipUniqueRequirements = function (item) {
+    if (!this.equips().contains(item)) return true;
+    var requirements = item.equipRequirements;
+    if (!requirements["unique"]) return true;
+    var length = this.equips().length;
+    for (var i = 0; i < length; ++i) {
+      var obj = this.equips()[i];
+      if (!obj) continue;
+      if (obj.id === item.id) return false;
+      if (obj.baseItemId && item.baseItemId) {
+        if (obj.baseItemId === item.baseItemId) return false;
+      }
     }
-  }
-  return true;
-};
+    return true;
+  };
 
-Game_BattlerBase.prototype.meetEquipEvalRequirements = function(item) {
-  if (item.customEquipReqCondition === '') return true;
-  var condition = true;
-  var a = this;
-  var user = this;
-  var subject = this;
-  var b = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  var code = item.customEquipReqCondition;
-  try {
-    eval(code);
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'EQUIP REQUIREMENT EVAL ERROR');
-  }
-  return condition;
-};
+  Game_BattlerBase.prototype.meetEquipEvalRequirements = function (item) {
+    if (item.customEquipReqCondition === "") return true;
+    var condition = true;
+    var a = this;
+    var user = this;
+    var subject = this;
+    var b = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    var code = item.customEquipReqCondition;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(e, code, "EQUIP REQUIREMENT EVAL ERROR");
+    }
+    return condition;
+  };
 
-//=============================================================================
-// Window_EquipSlot
-//=============================================================================
-
-Window_EquipSlot.prototype.setRequirementWindow = function(target) {
+  Window_EquipSlot.prototype.setRequirementWindow = function (target) {
     this._requirementWindow = target;
     this.update();
-};
+  };
 
-MageStudios.EqReq.Window_EqSlot_updateHelp = Window_EquipSlot.prototype.updateHelp;
-Window_EquipSlot.prototype.updateHelp = function() {
+  MageStudios.EqReq.Window_EqSlot_updateHelp =
+    Window_EquipSlot.prototype.updateHelp;
+  Window_EquipSlot.prototype.updateHelp = function () {
     MageStudios.EqReq.Window_EqSlot_updateHelp.call(this);
     if (SceneManager._scene instanceof Scene_Equip && this._requirementWindow) {
       this._requirementWindow.setItem(this.item());
     }
-};
+  };
 
-//=============================================================================
-// Window_EquipItem
-//=============================================================================
-
-MageStudios.EqReq.Window_EquipItem_isEnabled = Window_EquipItem.prototype.isEnabled;
-Window_EquipItem.prototype.isEnabled = function(item) {
+  MageStudios.EqReq.Window_EquipItem_isEnabled =
+    Window_EquipItem.prototype.isEnabled;
+  Window_EquipItem.prototype.isEnabled = function (item) {
     if (item !== null && this._actor) {
       if (!this._actor.meetAllEquipRequirements(item)) return false;
     }
     return MageStudios.EqReq.Window_EquipItem_isEnabled.call(this, item);
-};
+  };
 
-Window_EquipItem.prototype.setRequirementWindow = function(target) {
+  Window_EquipItem.prototype.setRequirementWindow = function (target) {
     this._requirementWindow = target;
     this.update();
-};
+  };
 
-MageStudios.EqReq.Window_EqItem_updateHelp = Window_EquipItem.prototype.updateHelp;
-Window_EquipItem.prototype.updateHelp = function() {
+  MageStudios.EqReq.Window_EqItem_updateHelp =
+    Window_EquipItem.prototype.updateHelp;
+  Window_EquipItem.prototype.updateHelp = function () {
     MageStudios.EqReq.Window_EqItem_updateHelp.call(this);
     if (SceneManager._scene instanceof Scene_Equip && this._requirementWindow) {
       this._requirementWindow.setItem(this.item());
     }
-};
+  };
 
-//=============================================================================
-// Window_EquipRequirement
-//=============================================================================
-
-function Window_EquipRequirement() {
+  function Window_EquipRequirement() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_EquipRequirement.prototype = Object.create(Window_Base.prototype);
-Window_EquipRequirement.prototype.constructor = Window_EquipRequirement;
+  Window_EquipRequirement.prototype = Object.create(Window_Base.prototype);
+  Window_EquipRequirement.prototype.constructor = Window_EquipRequirement;
 
-Window_EquipRequirement.prototype.initialize = function(wx, wy, ww, wh) {
+  Window_EquipRequirement.prototype.initialize = function (wx, wy, ww, wh) {
     Window_Base.prototype.initialize.call(this, wx, wy, ww, wh);
     this._actor = null;
     this._item = null;
     this.refresh();
-};
+  };
 
-Window_EquipRequirement.prototype.setActor = function(actor) {
+  Window_EquipRequirement.prototype.setActor = function (actor) {
     if (this._actor === actor) return;
     this._actor = actor;
     this.refresh();
-};
+  };
 
-Window_EquipRequirement.prototype.setItem = function(item) {
+  Window_EquipRequirement.prototype.setItem = function (item) {
     if (this._item === item) return;
     this._item = item;
     this.refresh();
-};
+  };
 
-Window_EquipRequirement.prototype.itemRect = function(index) {
+  Window_EquipRequirement.prototype.itemRect = function (index) {
     var rect = new Rectangle();
     rect.width = this.contents.width;
     rect.height = this.lineHeight();
     rect.x = 0;
     rect.y = index * rect.height;
     return rect;
-};
+  };
 
-Window_EquipRequirement.prototype.drawDarkRect = function(dx, dy, dw, dh) {
+  Window_EquipRequirement.prototype.drawDarkRect = function (dx, dy, dw, dh) {
     var color = this.gaugeBackColor();
     this.changePaintOpacity(false);
     this.contents.fillRect(dx + 1, dy + 1, dw - 2, dh - 2, color);
     this.changePaintOpacity(true);
-};
+  };
 
-Window_EquipRequirement.prototype.refresh = function() {
+  Window_EquipRequirement.prototype.refresh = function () {
     this.contents.clear();
     this.checkActor();
     if (!this._actor) return;
@@ -707,39 +715,40 @@ Window_EquipRequirement.prototype.refresh = function() {
     if (!this._item) return;
     var dy = this.drawRequirementTitle();
     if (this.drawRequirements(dy) === dy) this.drawNoRequirements(dy);
-};
+  };
 
-Window_EquipRequirement.prototype.checkActor = function() {
+  Window_EquipRequirement.prototype.checkActor = function () {
     if (this._actor) return;
     this.setActor(SceneManager._scene._actor);
-};
+  };
 
-Window_EquipRequirement.prototype.drawItem = function(index) {
+  Window_EquipRequirement.prototype.drawItem = function (index) {
     var rect = this.itemRect(index);
     this.drawDarkRect(rect.x, rect.y, rect.width, rect.height);
-};
+  };
 
-Window_EquipRequirement.prototype.drawRequirementTitle = function() {
+  Window_EquipRequirement.prototype.drawRequirementTitle = function () {
     this.resetFontSettings();
     this.changeTextColor(this.systemColor());
     var ww = this.contents.width;
-    this.drawText(MageStudios.Param.EqReqTitle, 0, 0, ww, 'center');
+    this.drawText(MageStudios.Param.EqReqTitle, 0, 0, ww, "center");
     return this.lineHeight();
-};
+  };
 
-Window_EquipRequirement.prototype.getRequirements = function() {
+  Window_EquipRequirement.prototype.getRequirements = function () {
     var requirements = this._item.equipRequirements;
     if (!requirements) {
       if (this._item.baseItemId) {
-        this._item.equipRequirements = 
-          DataManager.getBaseItem(this._item).equipRequirements;
+        this._item.equipRequirements = DataManager.getBaseItem(
+          this._item
+        ).equipRequirements;
         requirements = this._item.equipRequirements;
       }
     }
     return requirements;
-};
+  };
 
-Window_EquipRequirement.prototype.drawRequirements = function(dy) {
+  Window_EquipRequirement.prototype.drawRequirements = function (dy) {
     if (!this.getRequirements()) return dy;
     if (MageStudios.Param.EqReqClasses) dy = this.drawClassRequirements(dy);
     dy = this.drawLevelRequirements(dy);
@@ -748,12 +757,12 @@ Window_EquipRequirement.prototype.drawRequirements = function(dy) {
     if (MageStudios.Param.EqReqSwitches) dy = this.drawSwitchRequirements(dy);
     dy = this.drawCustomText(dy);
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawClassRequirements = function(dy) {
-    if (this._item.equipRequirements['classes'].length <= 0) return dy;
+  Window_EquipRequirement.prototype.drawClassRequirements = function (dy) {
+    if (this._item.equipRequirements["classes"].length <= 0) return dy;
     var style = MageStudios.Param.EqReqClassStyle;
-    var classes = this._item.equipRequirements['classes'];
+    var classes = this._item.equipRequirements["classes"];
     var classTx = MageStudios.Param.EqReqClassText;
     var currentClassId = this._actor.currentClass().id;
     var length = classes.length;
@@ -796,72 +805,72 @@ Window_EquipRequirement.prototype.drawClassRequirements = function(dy) {
       }
     }
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawLevelRequirements = function(dy) {
+  Window_EquipRequirement.prototype.drawLevelRequirements = function (dy) {
     this.resetFontSettings();
     this.changePaintOpacity(true);
     var wx = this.textPadding();
-    if (this._item.equipRequirements['atLeast'][8] > 0) {
+    if (this._item.equipRequirements["atLeast"][8] > 0) {
       var fmt = MageStudios.Param.EqReqAtLeast;
-      var value1 = this._item.equipRequirements['atLeast'][8];
+      var value1 = this._item.equipRequirements["atLeast"][8];
       if (this._actor.level >= value1) {
-        var value2 = '\\c[' + MageStudios.Param.EqReqPosColor + ']';
+        var value2 = "\\c[" + MageStudios.Param.EqReqPosColor + "]";
       } else {
-        var value2 = '\\c[' + MageStudios.Param.EqReqNegColor + ']';
+        var value2 = "\\c[" + MageStudios.Param.EqReqNegColor + "]";
       }
-      value2 += MageStudios.Util.toGroup(this._actor.level) + '\\c[0]';
+      value2 += MageStudios.Util.toGroup(this._actor.level) + "\\c[0]";
       value1 = MageStudios.Util.toGroup(value1);
       var text = fmt.format(TextManager.level, value1, value2);
       this.drawTextEx(text, wx, dy);
       dy += this.lineHeight();
     }
-    if (this._item.equipRequirements['atMost'][8] > 0) {
+    if (this._item.equipRequirements["atMost"][8] > 0) {
       var fmt = MageStudios.Param.EqReqAtMost;
-      var value1 = this._item.equipRequirements['atMost'][8];
+      var value1 = this._item.equipRequirements["atMost"][8];
       if (this._actor.level <= value1) {
-        var value2 = '\\c[' + MageStudios.Param.EqReqPosColor + ']';
+        var value2 = "\\c[" + MageStudios.Param.EqReqPosColor + "]";
       } else {
-        var value2 = '\\c[' + MageStudios.Param.EqReqNegColor + ']';
+        var value2 = "\\c[" + MageStudios.Param.EqReqNegColor + "]";
       }
-      value2 += MageStudios.Util.toGroup(this._actor.level) + '\\c[0]';
+      value2 += MageStudios.Util.toGroup(this._actor.level) + "\\c[0]";
       value1 = MageStudios.Util.toGroup(value1);
       var text = fmt.format(TextManager.level, value1, value2);
       this.drawTextEx(text, wx, dy);
       dy += this.lineHeight();
     }
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawParamRequirements = function(dy) {
+  Window_EquipRequirement.prototype.drawParamRequirements = function (dy) {
     this.resetFontSettings();
     this.changePaintOpacity(true);
     var wx = this.textPadding();
     for (var i = 0; i < 8; ++i) {
-      if (this._item.equipRequirements['atLeast'][i] > 0) {
+      if (this._item.equipRequirements["atLeast"][i] > 0) {
         var fmt = MageStudios.Param.EqReqAtLeast;
-        var value1 = this._item.equipRequirements['atLeast'][i];
+        var value1 = this._item.equipRequirements["atLeast"][i];
         var valueA = this._actor.paramBase(i) + this._actor.paramPlus(i);
         if (valueA >= value1) {
-          var value2 = '\\c[' + MageStudios.Param.EqReqPosColor + ']';
+          var value2 = "\\c[" + MageStudios.Param.EqReqPosColor + "]";
         } else {
-          var value2 = '\\c[' + MageStudios.Param.EqReqNegColor + ']';
+          var value2 = "\\c[" + MageStudios.Param.EqReqNegColor + "]";
         }
-        value2 += MageStudios.Util.toGroup(valueA) + '\\c[0]';
+        value2 += MageStudios.Util.toGroup(valueA) + "\\c[0]";
         value1 = MageStudios.Util.toGroup(value1);
         var text = fmt.format(TextManager.param(i), value1, value2);
         this.drawTextEx(text, wx, dy);
         dy += this.lineHeight();
       }
-      if (this._item.equipRequirements['atMost'][i] > 0) {
+      if (this._item.equipRequirements["atMost"][i] > 0) {
         var fmt = MageStudios.Param.EqReqAtMost;
-        var value1 = this._item.equipRequirements['atMost'][i];
+        var value1 = this._item.equipRequirements["atMost"][i];
         if (valueA <= value1) {
-          var value2 = '\\c[' + MageStudios.Param.EqReqPosColor + ']';
+          var value2 = "\\c[" + MageStudios.Param.EqReqPosColor + "]";
         } else {
-          var value2 = '\\c[' + MageStudios.Param.EqReqNegColor + ']';
+          var value2 = "\\c[" + MageStudios.Param.EqReqNegColor + "]";
         }
-        value2 += MageStudios.Util.toGroup(valueA) + '\\c[0]';
+        value2 += MageStudios.Util.toGroup(valueA) + "\\c[0]";
         value1 = MageStudios.Util.toGroup(value1);
         var text = fmt.format(TextManager.param(i), value1, value2);
         this.drawTextEx(text, wx, dy);
@@ -869,12 +878,12 @@ Window_EquipRequirement.prototype.drawParamRequirements = function(dy) {
       }
     }
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawSkillRequirements = function(dy) {
-    if (this._item.equipRequirements['skills'].length <= 0) return dy;
+  Window_EquipRequirement.prototype.drawSkillRequirements = function (dy) {
+    if (this._item.equipRequirements["skills"].length <= 0) return dy;
     var style = MageStudios.Param.EqReqSkillStyle;
-    var skills = this._item.equipRequirements['skills'];
+    var skills = this._item.equipRequirements["skills"];
     var skillTx = MageStudios.Param.EqReqSkillText;
     var length = skills.length;
     var ww = this.contents.width - this.textPadding();
@@ -916,30 +925,30 @@ Window_EquipRequirement.prototype.drawSkillRequirements = function(dy) {
       }
     }
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawSwitchRequirements = function(dy) {
+  Window_EquipRequirement.prototype.drawSwitchRequirements = function (dy) {
     this.resetFontSettings();
     this.changePaintOpacity(true);
-    var switches = this._item.equipRequirements['switches'];
+    var switches = this._item.equipRequirements["switches"];
     var length = switches.length;
     for (var i = 0; i < length; ++i) {
       var sw = switches[i];
       var name = $dataSystem.switches[sw];
-      name = name.replace(/<<(.*?)>>/i, '');
+      name = name.replace(/<<(.*?)>>/i, "");
       this.changePaintOpacity($gameSwitches.value(sw));
       this.drawTextEx(name, this.textPadding(), dy);
       dy += this.lineHeight();
     }
-    this.changePaintOpacity(true)
+    this.changePaintOpacity(true);
     return dy;
-};
+  };
 
-Window_EquipRequirement.prototype.drawCustomText = function(dy) {
-    if (this._item.customEquipReqText === '') return dy;
+  Window_EquipRequirement.prototype.drawCustomText = function (dy) {
+    if (this._item.customEquipReqText === "") return dy;
     this.resetFontSettings();
     this.changePaintOpacity(true);
-    var text = '';
+    var text = "";
     var a = this._actor;
     var user = this._actor;
     var subject = this._actor;
@@ -949,56 +958,53 @@ Window_EquipRequirement.prototype.drawCustomText = function(dy) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'EQUIP CUSTOM TEXT ERROR');
+      MageStudios.Util.displayError(e, code, "EQUIP CUSTOM TEXT ERROR");
     }
     this.drawTextEx(text, this.textPadding(), dy);
     return dy + this.lineHeight();
-};
+  };
 
-Window_EquipRequirement.prototype.drawNoRequirements = function(dy) {
+  Window_EquipRequirement.prototype.drawNoRequirements = function (dy) {
     this.resetFontSettings();
     this.changePaintOpacity(true);
     this.changeTextColor(this.normalColor());
     var ww = this.contents.width;
     dy += this.lineHeight();
-    this.drawText(MageStudios.Param.EqReqNone, 0, dy, ww, 'center');
+    this.drawText(MageStudios.Param.EqReqNone, 0, dy, ww, "center");
     return dy;
-};
+  };
 
-//=============================================================================
-// Scene_Equip
-//=============================================================================
-
-MageStudios.EqReq.Scene_Equip_createCompareWindow =
+  MageStudios.EqReq.Scene_Equip_createCompareWindow =
     Scene_Equip.prototype.createCompareWindow;
-Scene_Equip.prototype.createCompareWindow = function() {
+  Scene_Equip.prototype.createCompareWindow = function () {
     MageStudios.EqReq.Scene_Equip_createCompareWindow.call(this);
     if (MageStudios.Param.EqReqWindow) this.createRequirementWindow();
-};
+  };
 
-MageStudios.EqReq.Scene_Equip_refreshActor =
+  MageStudios.EqReq.Scene_Equip_refreshActor =
     Scene_Equip.prototype.refreshActor;
-Scene_Equip.prototype.refreshActor = function() {
+  Scene_Equip.prototype.refreshActor = function () {
     MageStudios.EqReq.Scene_Equip_refreshActor.call(this);
     if (this._requirementWindow) this._requirementWindow.setActor(this.actor());
-};
+  };
 
-MageStudios.EqReq.Scene_Equip_commandOptimize =
+  MageStudios.EqReq.Scene_Equip_commandOptimize =
     Scene_Equip.prototype.commandOptimize;
-Scene_Equip.prototype.commandOptimize = function() {
+  Scene_Equip.prototype.commandOptimize = function () {
     $gameTemp._optimizing = true;
     MageStudios.EqReq.Scene_Equip_commandOptimize.call(this);
     $gameTemp._optimizing = false;
     if (this._requirementWindow) this._requirementWindow.refresh();
-};
+  };
 
-MageStudios.EqReq.Scene_Equip_commandClear = Scene_Equip.prototype.commandClear;
-Scene_Equip.prototype.commandClear = function() {
+  MageStudios.EqReq.Scene_Equip_commandClear =
+    Scene_Equip.prototype.commandClear;
+  Scene_Equip.prototype.commandClear = function () {
     MageStudios.EqReq.Scene_Equip_commandClear.call(this);
     if (this._requirementWindow) this._requirementWindow.refresh();
-};
+  };
 
-Scene_Equip.prototype.createRequirementWindow = function() {
+  Scene_Equip.prototype.createRequirementWindow = function () {
     var wx = this._itemWindow.width;
     var wy = this._itemWindow.y;
     var ww = Graphics.boxWidth - wx;
@@ -1008,39 +1014,32 @@ Scene_Equip.prototype.createRequirementWindow = function() {
     this._itemWindow.setRequirementWindow(this._requirementWindow);
     this.addWindow(this._requirementWindow);
     this._lowerRightWindows.push(this._requirementWindow);
-};
+  };
 
-MageStudios.EqReq.Scene_Equip_onSlotCancel = Scene_Equip.prototype.onSlotCancel;
-Scene_Equip.prototype.onSlotCancel = function() {
+  MageStudios.EqReq.Scene_Equip_onSlotCancel =
+    Scene_Equip.prototype.onSlotCancel;
+  Scene_Equip.prototype.onSlotCancel = function () {
     MageStudios.EqReq.Scene_Equip_onSlotCancel.call(this);
     if (this._requirementWindow) this._requirementWindow.setItem(null);
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
   }
-};
 
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+}

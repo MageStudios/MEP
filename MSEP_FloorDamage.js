@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Floor Damage
-// MSEP_FloorDaMageStudios.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_FloorDamage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FloorDmg = MageStudios.FloorDmg || {};
-MageStudios.FloorDmg.version = 1.00;
+MageStudios.FloorDmg.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows you to modify floor damage based on terrain tags.
  * You can also change the color of the flash when damaged, too.
  * @author Mage Studios Engine Plugins
@@ -94,18 +88,15 @@ MageStudios.FloorDmg.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_FloorDamage');
+MageStudios.Parameters = PluginManager.parameters("MSEP_FloorDamage");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.FloorDmgDefault = Number(MageStudios.Parameters['Default Damage']);
-MageStudios.SetupParameters = function() {
-  var array = String(MageStudios.Parameters['Flash Color']).split(',');
+MageStudios.Param.FloorDmgDefault = Number(
+  MageStudios.Parameters["Default Damage"]
+);
+MageStudios.SetupParameters = function () {
+  var array = String(MageStudios.Parameters["Flash Color"]).split(",");
   for (var i = 0; i < array.length; ++i) {
     array[i] = parseInt(array[i].trim());
   }
@@ -113,45 +104,51 @@ MageStudios.SetupParameters = function() {
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.FloorDmg.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.FloorDmg.DataManager_isDatabaseLoaded.call(this)) return false;
+MageStudios.FloorDmg.DataManager_isDatabaseLoaded =
+  DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.FloorDmg.DataManager_isDatabaseLoaded.call(this))
+    return false;
 
   if (!MageStudios._loaded_MSEP_FloorDamage) {
     this.processFloorDmgNotetags1($dataTilesets);
     MageStudios._loaded_MSEP_FloorDamage = true;
   }
-  
+
   return true;
 };
 
-DataManager.processFloorDmgNotetags1 = function(group) {
+DataManager.processFloorDmgNotetags1 = function (group) {
   var note1a = /<(?:CUSTOM FLOOR DAMAGE|custom floor dmg)[ ](\d+)>/i;
   var note1b = /<\/(?:CUSTOM FLOOR DAMAGE|custom floor dmg)[ ](\d+)>/i;
-  var note2 = /<FLOOR FLASH[ ](\d+):[ ](.*)>/i
+  var note2 = /<FLOOR FLASH[ ](\d+):[ ](.*)>/i;
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.floorDmg = [
-      MageStudios.Param.FloorDmgDefault, MageStudios.Param.FloorDmgDefault,
-      MageStudios.Param.FloorDmgDefault, MageStudios.Param.FloorDmgDefault,
-      MageStudios.Param.FloorDmgDefault, MageStudios.Param.FloorDmgDefault,
-      MageStudios.Param.FloorDmgDefault, MageStudios.Param.FloorDmgDefault
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
+      MageStudios.Param.FloorDmgDefault,
     ];
     obj.floorDmgFlash = [
-      MageStudios.Param.FloorDmgFlash, MageStudios.Param.FloorDmgFlash,
-      MageStudios.Param.FloorDmgFlash, MageStudios.Param.FloorDmgFlash,
-      MageStudios.Param.FloorDmgFlash, MageStudios.Param.FloorDmgFlash,
-      MageStudios.Param.FloorDmgFlash, MageStudios.Param.FloorDmgFlash
-    ]
-    var evalMode = 'none';
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+      MageStudios.Param.FloorDmgFlash,
+    ];
+    var evalMode = "none";
     var terrainId = 0;
-    obj.floorDmgEval = ['', '', '', '', '', '', '', ''];
+    obj.floorDmgEval = ["", "", "", "", "", "", "", ""];
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -160,15 +157,15 @@ DataManager.processFloorDmgNotetags1 = function(group) {
         var dmg = parseInt(RegExp.$2);
         obj.floorDmg[tag] = dmg;
       } else if (line.match(note1a)) {
-        evalMode = 'custom floor damage';
+        evalMode = "custom floor damage";
         var terrainId = parseInt(RegExp.$1).clamp(0, 7);
       } else if (line.match(note1b)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom floor damage') {
-        obj.floorDmgEval[terrainId] += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom floor damage") {
+        obj.floorDmgEval[terrainId] += line + "\n";
       } else if (line.match(note2)) {
         var tag = parseInt(RegExp.$1).clamp(0, 7);
-        var array = String(RegExp.$2).split(',');
+        var array = String(RegExp.$2).split(",");
         for (var a = 0; a < array.length; ++a) {
           array[a] = parseInt(array[a].trim());
         }
@@ -178,16 +175,12 @@ DataManager.processFloorDmgNotetags1 = function(group) {
   }
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.basicFloorDamage = function() {
+Game_Actor.prototype.basicFloorDamage = function () {
   var value = $gameMap.evaluateFloorDamage(this);
   return Math.ceil(value);
 };
 
-Game_Actor.prototype.performMapDamage = function() {
+Game_Actor.prototype.performMapDamage = function () {
   if ($gameParty.inBattle()) return;
   var terrainTag = $gamePlayer.terrainTag();
   var tileset = $gameMap.tileset();
@@ -195,11 +188,7 @@ Game_Actor.prototype.performMapDamage = function() {
   $gameScreen.startFlash(data, 8);
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
-Game_Map.prototype.evaluateFloorDamage = function(actor) {
+Game_Map.prototype.evaluateFloorDamage = function (actor) {
   var terrainTag = $gamePlayer.terrainTag();
   var tileset = this.tileset();
   var value = tileset.floorDmg[terrainTag] || 10;
@@ -214,29 +203,21 @@ Game_Map.prototype.evaluateFloorDamage = function(actor) {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'CUSTOM FLOOR DAMAGE ERROR');
+    MageStudios.Util.displayError(e, code, "CUSTOM FLOOR DAMAGE ERROR");
   }
   return value;
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

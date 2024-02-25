@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Credits Page
-// MSEP_CreditsPage.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_CreditsPage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Credits = MageStudios.Credits || {};
-MageStudios.Credits.version = 1.00;
+MageStudios.Credits.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Adds a 'Credits' command to the title screen that
  * will take the player to a credits scene.
  * @author Mage Studios Engine Plugins
@@ -318,7 +312,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 30 Text
+ * @param Line 30 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -418,7 +412,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 40 Text
+ * @param Line 40 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -518,7 +512,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 50 Text
+ * @param Line 50 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -618,7 +612,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 60 Text
+ * @param Line 60 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -718,7 +712,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 70 Text
+ * @param Line 70 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -818,7 +812,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 80 Text
+ * @param Line 80 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -918,7 +912,7 @@ MageStudios.Credits.version = 1.00;
  * @desc If there is a URL, link it to here.
  * @default
  *
-  * @param Line 90 Text
+ * @param Line 90 Text
  * @parent ---Credit Lines---
  * @desc The text to be displayed on this line:
  * @default
@@ -3068,58 +3062,43 @@ MageStudios.Credits.version = 1.00;
  *   cause the player and events to be unable to move.
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_CreditsPage');
+MageStudios.Parameters = PluginManager.parameters("MSEP_CreditsPage");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.CreditsCmdName = String(MageStudios.Parameters['Command Name']);
+MageStudios.Param.CreditsCmdName = String(
+  MageStudios.Parameters["Command Name"]
+);
 MageStudios.Param.CreditsLine = {};
 MageStudios.Param.CreditsURL = {};
-MageStudios.SetupParameters = function() {
+MageStudios.SetupParameters = function () {
   for (var i = 1; i < 301; ++i) {
-    var tName = 'Line ' + i + ' Text';
-    var uName = 'Line ' + i + ' URL';
+    var tName = "Line " + i + " Text";
+    var uName = "Line " + i + " URL";
     MageStudios.Param.CreditsLine[i] = String(MageStudios.Parameters[tName]);
     MageStudios.Param.CreditsURL[i] = String(MageStudios.Parameters[uName]);
-  };
+  }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.Credits.Game_Map_isEventRunning = Game_Map.prototype.isEventRunning;
-Game_Map.prototype.isEventRunning = function() {
+Game_Map.prototype.isEventRunning = function () {
   if ($gameTemp._creditsWindowOpen) return true;
   return MageStudios.Credits.Game_Map_isEventRunning.call(this);
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.Credits.Game_Event_updateSelfMovement =
   Game_Event.prototype.updateSelfMovement;
-Game_Event.prototype.updateSelfMovement = function() {
+Game_Event.prototype.updateSelfMovement = function () {
   if ($gameTemp._creditsWindowOpen) return true;
   MageStudios.Credits.Game_Event_updateSelfMovement.call(this);
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.Credits.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.Credits.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'OpenCreditsWindow') {
+  if (command === "OpenCreditsWindow") {
     if (SceneManager._scene instanceof Scene_Map) {
       SceneManager._scene.openCreditsWindow();
       $gameTemp._creditsWindowOpen = true;
@@ -3127,66 +3106,60 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
   }
 };
 
-//=============================================================================
-// Window_Command
-//=============================================================================
-
-Window_Command.prototype.addCommandAt = function(index, name, symbol, en, ext) {
+Window_Command.prototype.addCommandAt = function (
+  index,
+  name,
+  symbol,
+  en,
+  ext
+) {
   if (en === undefined) enabled = true;
   if (ext === undefined) ext = null;
-  var obj = { name: name, symbol: symbol, enabled: en, ext: ext};
+  var obj = { name: name, symbol: symbol, enabled: en, ext: ext };
   this._list.splice(index, 0, obj);
 };
 
-//=============================================================================
-// Window_TitleCommand
-//=============================================================================
-
 MageStudios.Credits.Window_TitleCommand_makeCommandList =
   Window_TitleCommand.prototype.makeCommandList;
-Window_TitleCommand.prototype.makeCommandList = function() {
+Window_TitleCommand.prototype.makeCommandList = function () {
   MageStudios.Credits.Window_TitleCommand_makeCommandList.call(this);
-  var index = this.findSymbol('options');
+  var index = this.findSymbol("options");
   var text = MageStudios.Param.CreditsCmdName;
   var enabled = true;
-  this.addCommandAt(index, text, 'credits', enabled);
+  this.addCommandAt(index, text, "credits", enabled);
 };
 
-//=============================================================================
-// Window_CreditsPage
-//=============================================================================
-
 function Window_CreditsPage() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_CreditsPage.prototype = Object.create(Window_Command.prototype);
 Window_CreditsPage.prototype.constructor = Window_CreditsPage;
 
-Window_CreditsPage.prototype.initialize = function() {
+Window_CreditsPage.prototype.initialize = function () {
   Window_Command.prototype.initialize.call(this, 0, 0);
   this.openness = 0;
 };
 
-Window_CreditsPage.prototype.windowWidth = function() {
+Window_CreditsPage.prototype.windowWidth = function () {
   return Graphics.boxWidth;
 };
 
-Window_CreditsPage.prototype.windowHeight = function() {
+Window_CreditsPage.prototype.windowHeight = function () {
   return Graphics.boxHeight;
 };
 
-Window_CreditsPage.prototype.makeCommandList = function() {
+Window_CreditsPage.prototype.makeCommandList = function () {
   for (var i = 0; i < 301; ++i) {
     var text = MageStudios.Param.CreditsLine[i];
     var url = MageStudios.Param.CreditsURL[i];
     if (!text) continue;
-    if (text === '') continue;
-    this.addCommand(text, 'credit', true, url);
+    if (text === "") continue;
+    this.addCommand(text, "credit", true, url);
   }
 };
 
-Window_CreditsPage.prototype.drawItem = function(index) {
+Window_CreditsPage.prototype.drawItem = function (index) {
   var rect = this.itemRectForText(index);
   var align = this.itemTextAlign();
   var text = this.commandName(index);
@@ -3195,47 +3168,43 @@ Window_CreditsPage.prototype.drawItem = function(index) {
   this.drawTextEx(text, rect.x, rect.y, rect.width, align);
 };
 
-Window_CreditsPage.prototype.playOkSound = function() {
-  if (this.currentExt() !== '') SoundManager.playOk();
+Window_CreditsPage.prototype.playOkSound = function () {
+  if (this.currentExt() !== "") SoundManager.playOk();
 };
-
-//=============================================================================
-// Scene_Title
-//=============================================================================
 
 MageStudios.Credits.Scene_Title_createCommandWindow =
   Scene_Title.prototype.createCommandWindow;
-Scene_Title.prototype.createCommandWindow = function() {
+Scene_Title.prototype.createCommandWindow = function () {
   MageStudios.Credits.Scene_Title_createCommandWindow.call(this);
   this.createCreditsWindow();
-  this._commandWindow.setHandler('credits',  this.commandCredits.bind(this));
+  this._commandWindow.setHandler("credits", this.commandCredits.bind(this));
 };
 
-Scene_Title.prototype.createCreditsWindow = function() {
+Scene_Title.prototype.createCreditsWindow = function () {
   this._creditsWindow = new Window_CreditsPage();
-  this._creditsWindow.setHandler('cancel', this.onCreditsCancel.bind(this));
-  this._creditsWindow.setHandler('ok', this.onCreditsOk.bind(this));
+  this._creditsWindow.setHandler("cancel", this.onCreditsCancel.bind(this));
+  this._creditsWindow.setHandler("ok", this.onCreditsOk.bind(this));
   this.addWindow(this._creditsWindow);
 };
 
-Scene_Title.prototype.commandCredits = function() {
+Scene_Title.prototype.commandCredits = function () {
   this._commandWindow.close();
   this._creditsWindow.select(0);
   this._creditsWindow.activate();
   this._creditsWindow.open();
 };
 
-Scene_Title.prototype.onCreditsCancel = function() {
+Scene_Title.prototype.onCreditsCancel = function () {
   this._creditsWindow.close();
   this._commandWindow.activate();
   this._commandWindow.open();
 };
 
-Scene_Title.prototype.onCreditsOk = function() {
+Scene_Title.prototype.onCreditsOk = function () {
   this._creditsWindow.activate();
   var url = this._creditsWindow.currentExt();
-  if (url === '') return;
-  var win = window.open(url, '_blank');
+  if (url === "") return;
+  var win = window.open(url, "_blank");
   if (win) {
     win.focus();
   } else if (Imported.MSEP_ExternalLinks) {
@@ -3243,47 +3212,39 @@ Scene_Title.prototype.onCreditsOk = function() {
   }
 };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
 MageStudios.Credits.Scene_Map_createAllWindows =
   Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
+Scene_Map.prototype.createAllWindows = function () {
   MageStudios.Credits.Scene_Map_createAllWindows.call(this);
   this.createCreditsWindow();
 };
 
-Scene_Map.prototype.createCreditsWindow = function() {
+Scene_Map.prototype.createCreditsWindow = function () {
   this._creditsWindow = new Window_CreditsPage();
-  this._creditsWindow.setHandler('cancel', this.onCreditsCancel.bind(this));
-  this._creditsWindow.setHandler('ok', this.onCreditsOk.bind(this));
+  this._creditsWindow.setHandler("cancel", this.onCreditsCancel.bind(this));
+  this._creditsWindow.setHandler("ok", this.onCreditsOk.bind(this));
   this.addWindow(this._creditsWindow);
 };
 
-Scene_Map.prototype.openCreditsWindow = function() {
+Scene_Map.prototype.openCreditsWindow = function () {
   this._creditsWindow.select(0);
   this._creditsWindow.activate();
   this._creditsWindow.open();
 };
 
-Scene_Map.prototype.onCreditsCancel = function() {
+Scene_Map.prototype.onCreditsCancel = function () {
   this._creditsWindow.close();
   $gameTemp._creditsWindowOpen = false;
 };
 
-Scene_Map.prototype.onCreditsOk = function() {
+Scene_Map.prototype.onCreditsOk = function () {
   this._creditsWindow.activate();
   var url = this._creditsWindow.currentExt();
-  if (url === '') return;
-  var win = window.open(url, '_blank');
+  if (url === "") return;
+  var win = window.open(url, "_blank");
   if (win) {
     win.focus();
   } else if (Imported.MSEP_ExternalLinks) {
     SceneManager.openPopupBlockerMessage();
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Proximity Activate
-// MSEP_EventProxActivate.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventProxActivate = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EvPrAc = MageStudios.EvPrAc || {};
-MageStudios.EvPrAc.version = 1.00;
+MageStudios.EvPrAc.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows events to activate by being in range of them
  * instead of needing to be exactly next to or on top of them.
  * @author Mage Studios Engine Plugins
@@ -95,89 +89,84 @@ MageStudios.EvPrAc.version = 1.00;
  *   the event will automatically activate. The player is granted a few frames
  *   of movement each time the parallel process loops.
  */
-//=============================================================================
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
 
 MageStudios.EvPrAc.Game_CharacterBase_increaseSteps =
   Game_CharacterBase.prototype.increaseSteps;
-Game_CharacterBase.prototype.increaseSteps = function() {
+Game_CharacterBase.prototype.increaseSteps = function () {
   MageStudios.EvPrAc.Game_CharacterBase_increaseSteps.call(this);
   this.eventProximityIncreaseSteps();
 };
 
-Game_CharacterBase.prototype.eventProximityIncreaseSteps = function() {
-};
+Game_CharacterBase.prototype.eventProximityIncreaseSteps = function () {};
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-MageStudios.EvPrAc.Game_Player_startMapEvent = Game_Player.prototype.startMapEvent;
-Game_Player.prototype.startMapEvent = function(x, y, triggers, normal) {
-  MageStudios.EvPrAc.Game_Player_startMapEvent.call(this, x, y, triggers, normal);
+MageStudios.EvPrAc.Game_Player_startMapEvent =
+  Game_Player.prototype.startMapEvent;
+Game_Player.prototype.startMapEvent = function (x, y, triggers, normal) {
+  MageStudios.EvPrAc.Game_Player_startMapEvent.call(
+    this,
+    x,
+    y,
+    triggers,
+    normal
+  );
   if (!$gameMap.isEventRunning() && !$gameMap.isAnyEventStarting()) {
     this.startProximityEvent(triggers, normal);
   }
 };
 
-Game_Player.prototype.startProximityEvent = function(triggers, normal) {
+Game_Player.prototype.startProximityEvent = function (triggers, normal) {
   var events = $gameMap.events();
   var length = events.length;
   for (var i = 0; i < length; ++i) {
     var ev = events[i];
     if (!ev) continue;
     if (!ev.isTriggerIn(triggers)) continue;
-    if (!ev._activationType || ev._activationType === 'none') continue;
+    if (!ev._activationType || ev._activationType === "none") continue;
     if (this.meetPlayerProximityConditions(ev)) ev.start();
   }
 };
 
-Game_Player.prototype.meetPlayerProximityConditions = function(ev) {
-  if (ev._activationType === 'radius') {
+Game_Player.prototype.meetPlayerProximityConditions = function (ev) {
+  if (ev._activationType === "radius") {
     var x1 = this.x;
     var y1 = this.y;
     var x2 = ev.x;
     var y2 = ev.y;
     var radius = $gameMap.distance(x1, y1, x2, y2);
-    return ev._activationDist >= radius
-  } else if (ev._activationType === 'square') {
-    return ev._activationDist >= Math.abs(ev.deltaXFrom(this.x)) &&
-           ev._activationDist >= Math.abs(ev.deltaYFrom(this.y));
-  } else if (ev._activationType === 'row') {
+    return ev._activationDist >= radius;
+  } else if (ev._activationType === "square") {
+    return (
+      ev._activationDist >= Math.abs(ev.deltaXFrom(this.x)) &&
+      ev._activationDist >= Math.abs(ev.deltaYFrom(this.y))
+    );
+  } else if (ev._activationType === "row") {
     return ev._activationDist >= Math.abs(ev.deltaYFrom(this.y));
-  } else if (ev._activationType === 'column') {
+  } else if (ev._activationType === "column") {
     return ev._activationDist >= Math.abs(ev.deltaXFrom(this.x));
   } else {
     return false;
   }
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EvPrAc.Game_Event_setupPage = Game_Event.prototype.setupPage;
-Game_Event.prototype.setupPage = function() {
+Game_Event.prototype.setupPage = function () {
   this._initialAutoTriggerBypass = true;
   MageStudios.EvPrAc.Game_Event_setupPage.call(this);
   this._initialAutoTriggerBypass = false;
   this.setupEventProximitySettings();
 };
 
-Game_Event.prototype.setupEventProximitySettings = function() {
+Game_Event.prototype.setupEventProximitySettings = function () {
   this.initEventProximitySettings();
   this.setupEventProximityCommentTags();
 };
 
-Game_Event.prototype.initEventProximitySettings = function() {
+Game_Event.prototype.initEventProximitySettings = function () {
   this._activationDist = 0;
-  this._activationType = 'none';
+  this._activationType = "none";
 };
 
-Game_Event.prototype.setupEventProximityCommentTags = function() {
+Game_Event.prototype.setupEventProximityCommentTags = function () {
   if (!this.page()) return;
   var note1 = /<ACTIVATION SQUARE: (\d+)>/i;
   var note2 = /<ACTIVATION (?:RADIUS|PROXIMITY): (\d+)>/i;
@@ -190,22 +179,22 @@ Game_Event.prototype.setupEventProximityCommentTags = function() {
     if ([108, 408].contains(ev.code)) {
       if (ev.parameters[0].match(note1)) {
         this._activationDist = parseInt(RegExp.$1);
-        this._activationType = 'square';
+        this._activationType = "square";
       } else if (ev.parameters[0].match(note2)) {
         this._activationDist = parseInt(RegExp.$1);
-        this._activationType = 'radius';
+        this._activationType = "radius";
       } else if (ev.parameters[0].match(note3)) {
         this._activationDist = parseInt(RegExp.$1);
-        this._activationType = 'row';
+        this._activationType = "row";
       } else if (ev.parameters[0].match(note4)) {
         this._activationDist = parseInt(RegExp.$1);
-        this._activationType = 'column';
+        this._activationType = "column";
       }
     }
   }
 };
 
-Game_Event.prototype.eventProximityIncreaseSteps = function() {
+Game_Event.prototype.eventProximityIncreaseSteps = function () {
   if (!$gameMap.isEventRunning() && !$gameMap.isAnyEventStarting()) {
     $gamePlayer.startProximityEvent([2], this.isNormalPriority());
   }
@@ -213,27 +202,24 @@ Game_Event.prototype.eventProximityIncreaseSteps = function() {
 
 MageStudios.EvPrAc.Game_Event_checkEventTriggerAuto =
   Game_Event.prototype.checkEventTriggerAuto;
-Game_Event.prototype.checkEventTriggerAuto = function() {
+Game_Event.prototype.checkEventTriggerAuto = function () {
   if (this._trigger !== 3) return;
   if (this._initialAutoTriggerBypass) return;
   if (!this.meetEventProximityConditions(false)) return;
   MageStudios.EvPrAc.Game_Event_checkEventTriggerAuto.call(this);
 };
 
-MageStudios.EvPrAc.Game_Event_updateParallel = Game_Event.prototype.updateParallel;
-Game_Event.prototype.updateParallel = function() {
+MageStudios.EvPrAc.Game_Event_updateParallel =
+  Game_Event.prototype.updateParallel;
+Game_Event.prototype.updateParallel = function () {
   if (!this._interpreter) return;
   if (!this.meetEventProximityConditions(true)) return;
   MageStudios.EvPrAc.Game_Event_updateParallel.call(this);
 };
 
-Game_Event.prototype.meetEventProximityConditions = function(parallel) {
+Game_Event.prototype.meetEventProximityConditions = function (parallel) {
   if (!parallel && $gameMap.isEventRunning()) return false;
   if (!parallel && $gameMap.isAnyEventStarting()) return false;
-  if (!this._activationType || this._activationType === 'none') return true;
+  if (!this._activationType || this._activationType === "none") return true;
   return $gamePlayer.meetPlayerProximityConditions(this);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

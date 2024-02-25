@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Equip Battle Skills Extension - Tiers
-// MSEP_X_EquipSkillTiers.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_EquipSkillTiers = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ESTier = MageStudios.ESTier || {};
-MageStudios.ESTier.version = 1.00
+MageStudios.ESTier.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_EquipBattleSkills.js) Places equippable
  * skills in tiers to limit what players can equip.
  * @author Mage Studios Engine Plugins
@@ -260,45 +254,45 @@ MageStudios.ESTier.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_EquipBattleSkills) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_EquipSkillTiers");
+  MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Icon = MageStudios.Icon || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.ESTSort = eval(
+    String(MageStudios.Parameters["Sort by Tier?"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_EquipSkillTiers');
-MageStudios.Param = MageStudios.Param || {};
-MageStudios.Icon = MageStudios.Icon || {};
+  MageStudios.Param.ESTierEnabled = {};
+  MageStudios.Param.ESTierName = {};
+  MageStudios.Icon.ESTier = {};
+  MageStudios.Param.ESTierMaximum = {};
+  for (MageStudios.i = 1; MageStudios.i <= 6; ++MageStudios.i) {
+    MageStudios.line =
+      "String(MageStudios.Parameters['Tier " + MageStudios.i + " Enabled'])";
+    MageStudios.Param.ESTierEnabled[MageStudios.i] = eval(
+      eval(MageStudios.line)
+    );
+    MageStudios.line =
+      "String(MageStudios.Parameters['Tier " + MageStudios.i + " Name'])";
+    MageStudios.Param.ESTierName[MageStudios.i] = eval(MageStudios.line);
+    MageStudios.line =
+      "Number(MageStudios.Parameters['Tier " + MageStudios.i + " Icon'])";
+    MageStudios.Icon.ESTier[MageStudios.i] = eval(MageStudios.line);
+    MageStudios.line =
+      "Number(MageStudios.Parameters['Tier " + MageStudios.i + " Maximum'])";
+    MageStudios.Param.ESTierMaximum[MageStudios.i] = eval(MageStudios.line);
+  }
 
-MageStudios.Param.ESTSort = eval(String(MageStudios.Parameters['Sort by Tier?']));
-
-MageStudios.Param.ESTierEnabled = {};
-MageStudios.Param.ESTierName = {};
-MageStudios.Icon.ESTier = {};
-MageStudios.Param.ESTierMaximum = {};
-for (MageStudios.i = 1; MageStudios.i <= 6; ++MageStudios.i) {
-  MageStudios.line = "String(MageStudios.Parameters['Tier " + MageStudios.i + " Enabled'])";
-  MageStudios.Param.ESTierEnabled[MageStudios.i] = eval(eval(MageStudios.line));
-  MageStudios.line = "String(MageStudios.Parameters['Tier " + MageStudios.i + " Name'])";
-  MageStudios.Param.ESTierName[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "Number(MageStudios.Parameters['Tier " + MageStudios.i + " Icon'])";
-  MageStudios.Icon.ESTier[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "Number(MageStudios.Parameters['Tier " + MageStudios.i + " Maximum'])";
-  MageStudios.Param.ESTierMaximum[MageStudios.i] = eval(MageStudios.line);
-};
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.ESTier.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-    if (!MageStudios.ESTier.DataManager_isDatabaseLoaded.call(this)) return false;
+  MageStudios.ESTier.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.ESTier.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
     if (!MageStudios._loaded_MSEP_X_EquipSkillTiers) {
-  		this.processESTierNotetags1($dataSkills);
+      this.processESTierNotetags1($dataSkills);
       this.processESTierNotetags2($dataActors);
       this.processESTierNotetags2($dataClasses);
       this.processESTierNotetags2($dataSkills);
@@ -308,64 +302,61 @@ DataManager.isDatabaseLoaded = function() {
       MageStudios._loaded_MSEP_X_EquipSkillTiers = true;
     }
 
-		return true;
-};
+    return true;
+  };
 
-DataManager.processESTierNotetags1 = function(group) {
-	var note1 = /<(?:SKILL TIER):[ ](\d+)>/i;
-	for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processESTierNotetags1 = function (group) {
+    var note1 = /<(?:SKILL TIER):[ ](\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.equipTier = 1;
+      obj.equipTier = 1;
 
-		for (var i = 0; i < notedata.length; i++) {
-			var line = notedata[i];
-			if (line.match(note1)) {
-        var value = parseInt(RegExp.$1).clamp(1, 6);
-        if (MageStudios.Param.ESTierEnabled[value]) obj.equipTier = value;
-			}
-		}
-	}
-};
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          var value = parseInt(RegExp.$1).clamp(1, 6);
+          if (MageStudios.Param.ESTierEnabled[value]) obj.equipTier = value;
+        }
+      }
+    }
+  };
 
-DataManager.processESTierNotetags2 = function(group) {
-	var note1 = /<(?:SKILL TIER)[ ](\d+)[ ](?:SLOTS|SLOT):[ ]([\+\-]\d+)>/i;
-	for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processESTierNotetags2 = function (group) {
+    var note1 = /<(?:SKILL TIER)[ ](\d+)[ ](?:SLOTS|SLOT):[ ]([\+\-]\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.equipTierSlot = {
-      1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0
-    };
+      obj.equipTierSlot = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+      };
 
-		for (var i = 0; i < notedata.length; i++) {
-			var line = notedata[i];
-			if (line.match(note1)) {
-				var tier = parseInt(RegExp.$1).clamp(1, 6);
-        obj.equipTierSlot[tier] = parseInt(RegExp.$2);
-			}
-		}
-	}
-};
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          var tier = parseInt(RegExp.$1).clamp(1, 6);
+          obj.equipTierSlot[tier] = parseInt(RegExp.$2);
+        }
+      }
+    }
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-Game_System.prototype.usedSkillTiers = function() {
+  Game_System.prototype.usedSkillTiers = function () {
     var tiers = [];
     for (var i = 1; i <= 6; ++i) {
       if (MageStudios.Param.ESTierEnabled[i]) tiers.push(i);
     }
     return tiers;
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.getEquipSkillTierCount = function(tier) {
+  Game_Actor.prototype.getEquipSkillTierCount = function (tier) {
     var value = 0;
     for (var i = 0; i < this.battleSkillsRaw().length; ++i) {
       if (this.battleSkillsRaw()[i] === 0) continue;
@@ -373,9 +364,9 @@ Game_Actor.prototype.getEquipSkillTierCount = function(tier) {
       if (skill.equipTier === tier) value += 1;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.getEquipSkillTierMax = function(tier) {
+  Game_Actor.prototype.getEquipSkillTierMax = function (tier) {
     var value = MageStudios.Param.ESTierMaximum[tier];
     value = value.clamp(0, this.maxBattleSkills());
     value += this.actor().equipTierSlot[tier];
@@ -393,9 +384,9 @@ Game_Actor.prototype.getEquipSkillTierMax = function(tier) {
       if (equip) value += equip.equipTierSlot[tier];
     }
     return value.clamp(0, MageStudios.Param.EBSMaxSlots);
-};
+  };
 
-Game_Actor.prototype.equipSkillTiersOk = function() {
+  Game_Actor.prototype.equipSkillTiersOk = function () {
     var tiers = $gameSystem.usedSkillTiers();
     for (var i = 0; i < tiers.length; ++i) {
       var tier = tiers[i];
@@ -404,24 +395,24 @@ Game_Actor.prototype.equipSkillTiersOk = function() {
       if (cur > max) return false;
     }
     return true;
-};
+  };
 
-MageStudios.ESTier.Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
-Game_Actor.prototype.learnSkill = function(skillId) {
+  MageStudios.ESTier.Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
+  Game_Actor.prototype.learnSkill = function (skillId) {
     var hasLearnedSkill = this.isLearnedSkillRaw(skillId);
     if (!hasLearnedSkill) this._learningSkill = true;
     MageStudios.ESTier.Game_Actor_learnSkill.call(this, skillId);
     if (!hasLearnedSkill) this._learningSkill = undefined;
-};
+  };
 
-Game_Actor.prototype.isLearnedSkillRaw = function(skillId) {
-  return this._skills.contains(skillId);
-};
+  Game_Actor.prototype.isLearnedSkillRaw = function (skillId) {
+    return this._skills.contains(skillId);
+  };
 
-MageStudios.ESTier.Game_Actor_equipSkill = Game_Actor.prototype.equipSkill;
-Game_Actor.prototype.equipSkill = function(skillId, slotId) {
+  MageStudios.ESTier.Game_Actor_equipSkill = Game_Actor.prototype.equipSkill;
+  Game_Actor.prototype.equipSkill = function (skillId, slotId) {
     if (this._learningSkill) {
-      var skill = $dataSkills[skillId]; 
+      var skill = $dataSkills[skillId];
       if (skill) {
         var tier = skill.equipTier;
         var cur = this.getEquipSkillTierCount(tier);
@@ -430,96 +421,87 @@ Game_Actor.prototype.equipSkill = function(skillId, slotId) {
       }
     }
     MageStudios.ESTier.Game_Actor_equipSkill.call(this, skillId, slotId);
-};
+  };
 
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-MageStudios.ESTier.Window_SkillList_isCancelEnabled =
+  MageStudios.ESTier.Window_SkillList_isCancelEnabled =
     Window_SkillList.prototype.isCancelEnabled;
-Window_SkillList.prototype.isCancelEnabled = function() {
-    if (this._actor && this._stypeId === 'battleSkills') {
+  Window_SkillList.prototype.isCancelEnabled = function () {
+    if (this._actor && this._stypeId === "battleSkills") {
       if (!this._actor.equipSkillTiersOk()) return false;
     }
     return MageStudios.ESTier.Window_SkillList_isCancelEnabled.call(this);
-};
+  };
 
-//=============================================================================
-// Window_SkillEquip
-//=============================================================================
+  if (MageStudios.Param.ESTSort) {
+    MageStudios.ESTier.Window_SkillEquip_getSkills =
+      Window_SkillEquip.prototype.getSkills;
+    Window_SkillEquip.prototype.getSkills = function () {
+      MageStudios.ESTier.Window_SkillEquip_getSkills.call(this);
+      this._skillList.sort(function (a, b) {
+        var t1 = a.equipTier;
+        var t2 = b.equipTier;
+        if (t1 !== t2) {
+          return t1 - t2;
+        }
+        return a.name === b.name ? 0 : +(a.name > b.name) || -1;
+      });
+      return this._skillList;
+    };
+  }
 
-if (MageStudios.Param.ESTSort) {
-
-MageStudios.ESTier.Window_SkillEquip_getSkills = 
-    Window_SkillEquip.prototype.getSkills;
-Window_SkillEquip.prototype.getSkills = function() {
-    MageStudios.ESTier.Window_SkillEquip_getSkills.call(this);
-    this._skillList.sort(function(a, b) {
-      var t1 = a.equipTier;
-      var t2 = b.equipTier;
-      if (t1 !== t2) {
-        return t1 - t2;
-      }
-      return a.name === b.name ? 0 : +(a.name > b.name) || -1;
-    });
-    return this._skillList;
-};
-
-}; // MageStudios.Param.ESTSort
-
-MageStudios.ESTier.Window_SkillEquip_drawSkill =
+  MageStudios.ESTier.Window_SkillEquip_drawSkill =
     Window_SkillEquip.prototype.drawSkill;
-Window_SkillEquip.prototype.drawSkill = function(skill, rect) {
+  Window_SkillEquip.prototype.drawSkill = function (skill, rect) {
     MageStudios.ESTier.Window_SkillEquip_drawSkill.call(this, skill, rect);
     this.drawSkillTierIcon(skill, rect);
-};
+  };
 
-Window_SkillEquip.prototype.drawSkillTierIcon = function(skill, rect) {
+  Window_SkillEquip.prototype.drawSkillTierIcon = function (skill, rect) {
     this.resetFontSettings();
     this.resetTextColor();
     var tier = skill.equipTier;
     var icon = MageStudios.Icon.ESTier[tier];
     this.drawIcon(icon, rect.width - 4 - Window_Base._iconWidth, rect.y + 2);
-};
+  };
 
-//=============================================================================
-// Window_SkillEquipStatus
-//=============================================================================
-
-function Window_SkillEquipStatus() {
+  function Window_SkillEquipStatus() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_SkillEquipStatus.prototype = Object.create(Window_Base.prototype);
-Window_SkillEquipStatus.prototype.constructor = Window_SkillEquipStatus;
+  Window_SkillEquipStatus.prototype = Object.create(Window_Base.prototype);
+  Window_SkillEquipStatus.prototype.constructor = Window_SkillEquipStatus;
 
-Window_SkillEquipStatus.prototype.initialize = function(x, y, width, height) {
+  Window_SkillEquipStatus.prototype.initialize = function (
+    x,
+    y,
+    width,
+    height
+  ) {
     Window_Base.prototype.initialize.call(this, x, y, width, height);
     this._actor = null;
-};
+  };
 
-Window_SkillEquipStatus.prototype.setActor = function(actor) {
+  Window_SkillEquipStatus.prototype.setActor = function (actor) {
     if (this._actor !== actor) {
-        this._actor = actor;
-        this.refresh();
+      this._actor = actor;
+      this.refresh();
     }
-};
+  };
 
-Window_SkillEquipStatus.prototype.refresh = function() {
+  Window_SkillEquipStatus.prototype.refresh = function () {
     this.contents.clear();
     if (!this._actor) return;
     var dw = Window_Base._faceWidth;
     var dh = Window_Base._faceHeight;
     var x = dw + this.standardPadding();
-    var x2 = x + Window_Base._faceWidth + (2 * this.textPadding());
+    var x2 = x + Window_Base._faceWidth + 2 * this.textPadding();
     this.drawActorFace(this._actor, 0, 0, dw, dh);
     this.drawActorName(this._actor, x, 0);
     this.drawActorClass(this._actor, x2, 0);
     this.drawTiers();
-};
+  };
 
-Window_SkillEquipStatus.prototype.drawTiers = function() {
+  Window_SkillEquipStatus.prototype.drawTiers = function () {
     var tiers = $gameSystem.usedSkillTiers();
     var dx = Window_Base._faceWidth + this.standardPadding();
     var dy = this.lineHeight();
@@ -538,9 +520,9 @@ Window_SkillEquipStatus.prototype.drawTiers = function() {
         dy += this.lineHeight();
       }
     }
-};
+  };
 
-Window_SkillEquipStatus.prototype.drawTierInfo = function(tier, dx, dy, dw) {
+  Window_SkillEquipStatus.prototype.drawTierInfo = function (tier, dx, dy, dw) {
     var icon = MageStudios.Icon.ESTier[tier];
     var name = MageStudios.Param.ESTierName[tier];
     var ibw = Window_Base._iconWidth + 4;
@@ -549,7 +531,7 @@ Window_SkillEquipStatus.prototype.drawTierInfo = function(tier, dx, dy, dw) {
     this.drawText(name, dx + ibw, dy, dw - ibw);
     var cur = this._actor.getEquipSkillTierCount(tier);
     var max = this._actor.getEquipSkillTierMax(tier);
-    var text = cur + '/' + max;
+    var text = cur + "/" + max;
     if (cur > max) {
       this.changeTextColor(this.powerDownColor());
     } else if (cur === max) {
@@ -557,16 +539,12 @@ Window_SkillEquipStatus.prototype.drawTierInfo = function(tier, dx, dy, dw) {
     } else {
       this.changeTextColor(this.normalColor());
     }
-    this.drawText(text, dx + ibw, dy, dw - ibw, 'right');
-};
+    this.drawText(text, dx + ibw, dy, dw - ibw, "right");
+  };
 
-//=============================================================================
-// Scene_Skill
-//=============================================================================
-
-MageStudios.ESTier.Scene_Skill_createStatusWindow =
+  MageStudios.ESTier.Scene_Skill_createStatusWindow =
     Scene_Skill.prototype.createStatusWindow;
-Scene_Skill.prototype.createStatusWindow = function() {
+  Scene_Skill.prototype.createStatusWindow = function () {
     MageStudios.ESTier.Scene_Skill_createStatusWindow.call(this);
     var wx = this._skillTypeWindow.width;
     var wy = this._helpWindow.height;
@@ -575,67 +553,63 @@ Scene_Skill.prototype.createStatusWindow = function() {
     this._statusEquipWindow = new Window_SkillEquipStatus(wx, wy, ww, wh);
     this._statusEquipWindow.hide();
     this.addWindow(this._statusEquipWindow);
-};
+  };
 
-MageStudios.ESTier.Scene_Skill_refreshActor = Scene_Skill.prototype.refreshActor;
-Scene_Skill.prototype.refreshActor = function() {
+  MageStudios.ESTier.Scene_Skill_refreshActor =
+    Scene_Skill.prototype.refreshActor;
+  Scene_Skill.prototype.refreshActor = function () {
     MageStudios.ESTier.Scene_Skill_refreshActor.call(this);
     var actor = this.actor();
     if (this._statusEquipWindow) this._statusEquipWindow.setActor(actor);
-};
+  };
 
-MageStudios.ESTier.Scene_Skill_commandSkill = Scene_Skill.prototype.commandSkill;
-Scene_Skill.prototype.commandSkill = function() {
+  MageStudios.ESTier.Scene_Skill_commandSkill =
+    Scene_Skill.prototype.commandSkill;
+  Scene_Skill.prototype.commandSkill = function () {
     MageStudios.ESTier.Scene_Skill_commandSkill.call(this);
-    if (this._skillTypeWindow.currentExt() === 'battleSkills') {
+    if (this._skillTypeWindow.currentExt() === "battleSkills") {
       this._statusWindow.hide();
       this._statusEquipWindow.show();
       this._statusEquipWindow.refresh();
-    };
-};
+    }
+  };
 
-MageStudios.ESTier.Scene_Skill_onItemCancel = Scene_Skill.prototype.onItemCancel;
-Scene_Skill.prototype.onItemCancel = function() {
+  MageStudios.ESTier.Scene_Skill_onItemCancel =
+    Scene_Skill.prototype.onItemCancel;
+  Scene_Skill.prototype.onItemCancel = function () {
     MageStudios.ESTier.Scene_Skill_onItemCancel.call(this);
-    if (this._skillTypeWindow.currentExt() === 'battleSkills') {
+    if (this._skillTypeWindow.currentExt() === "battleSkills") {
       this._statusWindow.show();
       this._statusEquipWindow.hide();
       this._statusEquipWindow.refresh();
     }
-};
+  };
 
-MageStudios.ESTier.Scene_Skill_onSkillEqOk = Scene_Skill.prototype.onSkillEqOk;
-Scene_Skill.prototype.onSkillEqOk = function() {
+  MageStudios.ESTier.Scene_Skill_onSkillEqOk =
+    Scene_Skill.prototype.onSkillEqOk;
+  Scene_Skill.prototype.onSkillEqOk = function () {
     MageStudios.ESTier.Scene_Skill_onSkillEqOk.call(this);
     this._statusEquipWindow.refresh();
-};
+  };
 
-MageStudios.ESTier.Scene_Skill_onSkillEqCancel =
+  MageStudios.ESTier.Scene_Skill_onSkillEqCancel =
     Scene_Skill.prototype.onSkillEqCancel;
-Scene_Skill.prototype.onSkillEqCancel = function() {
+  Scene_Skill.prototype.onSkillEqCancel = function () {
     MageStudios.ESTier.Scene_Skill_onSkillEqCancel.call(this);
     this._statusEquipWindow.refresh();
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
+  }
 
-if (!MageStudios.Util.toGroup) {
-		MageStudios.Util.toGroup = function(inVal) {
-				return inVal;
-		}
-};
-
-MageStudios.Util.getRange = function(n, m) {
+  MageStudios.Util.getRange = function (n, m) {
     var result = [];
     for (var i = n; i <= m; ++i) result.push(i);
     return result;
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

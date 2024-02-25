@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Copier
-// MSEP_EventCopier.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventCopier = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EventCopier = MageStudios.EventCopier || {};
-MageStudios.EventCopier.version = 1.00;
+MageStudios.EventCopier.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Copy premade events from a template including all of the
  * possible data stored from a different map!
  * @author Mage Studios Engine Plugins
@@ -45,7 +39,7 @@ MageStudios.EventCopier.version = 1.00;
  * @type note
  * @desc The code used before copying over an event.
  * This is global for all Copied Events.
- * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
+ * @default "
  *
  * @param PostCopyCode
  * @text PostCopy Code
@@ -53,7 +47,7 @@ MageStudios.EventCopier.version = 1.00;
  * @type note
  * @desc The code used after copying over an event.
  * This is global for all Copied Events.
- * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
+ * @default "
  *
  */
 /* ----------------------------------------------------------------------------
@@ -87,14 +81,14 @@ MageStudios.EventCopier.version = 1.00;
  * @type note
  * @desc The code used before copying over an event.
  * This is local for only this template.
- * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
+ * @default "
  *
  * @param PostCopyCode
  * @text PostCopy Code
  * @type note
  * @desc The code used after copying over an event.
  * This is local for only this template.
- * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
+ * @default "
  *
  * @help
  * ============================================================================
@@ -130,7 +124,7 @@ MageStudios.EventCopier.version = 1.00;
  * ============================================================================
  * Instructions
  * ============================================================================
- * 
+ *
  * First, set aside a dedicated map (or maps) that will be preloaded each time
  * the game starts. Each preloaded map should contain various events that you
  * wish to completely copy. These can range from templates to trigger events to
@@ -201,7 +195,7 @@ MageStudios.EventCopier.version = 1.00;
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  *
  *  Variables      Description
- * 
+ *
  *      mapId      ID of the map to be loaded.
  *    eventId      ID of the event to be loaded.
  *     target      The event before it's copied over.
@@ -217,7 +211,7 @@ MageStudios.EventCopier.version = 1.00;
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  *
  *  Variables      Description
- * 
+ *
  *     target      The loaded event after copied over.
  *     player      The player character.
  *
@@ -225,56 +219,62 @@ MageStudios.EventCopier.version = 1.00;
  * changed and make an impact. You can, however, use them as a conditional
  * check to determine what to do with the target event or player.
  *
- * 
+ *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EventCopier');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EventCopier");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.EventCopierData = eval(MageStudios.Parameters['TemplateMaps']);
-MageStudios.Param.EventCopierList = JSON.parse(MageStudios.Parameters['TemplateNames']);
+MageStudios.Param.EventCopierData = eval(
+  MageStudios.Parameters["TemplateMaps"]
+);
+MageStudios.Param.EventCopierList = JSON.parse(
+  MageStudios.Parameters["TemplateNames"]
+);
 
-MageStudios.Param.EventCopierPreCopy = JSON.parse(MageStudios.Parameters['PreCopyCode']);
-MageStudios.Param.EventCopierPostCopy = JSON.parse(MageStudios.Parameters['PreCopyCode']);
+MageStudios.Param.EventCopierPreCopy = JSON.parse(
+  MageStudios.Parameters["PreCopyCode"]
+);
+MageStudios.Param.EventCopierPostCopy = JSON.parse(
+  MageStudios.Parameters["PreCopyCode"]
+);
 
 MageStudios.PreloadedMaps = MageStudios.PreloadedMaps || [];
 
-MageStudios.ClearComments = function(str) {
-  return str.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, '$1').trim();
+MageStudios.ClearComments = function (str) {
+  return str.replace(/\/\*[\s\S]*?\*\/|([^\\:]|^)\/\/.*$/gm, "$1").trim();
 };
 
-MageStudios.Param.EventCopierPreCopy =
-  MageStudios.ClearComments(MageStudios.Param.EventCopierPreCopy);
-MageStudios.Param.EventCopierPostCopy =
-  MageStudios.ClearComments(MageStudios.Param.EventCopierPostCopy);
+MageStudios.Param.EventCopierPreCopy = MageStudios.ClearComments(
+  MageStudios.Param.EventCopierPreCopy
+);
+MageStudios.Param.EventCopierPostCopy = MageStudios.ClearComments(
+  MageStudios.Param.EventCopierPostCopy
+);
 
-MageStudios.loadMapData = function(mapId) {
+MageStudios.loadMapData = function (mapId) {
   mapId = mapId.clamp(1, 999);
   if (MageStudios.PreloadedMaps[mapId]) return;
-  var src = 'Map%1.json'.format(mapId.padZero(3));
+  var src = "Map%1.json".format(mapId.padZero(3));
   var xhr = new XMLHttpRequest();
-  var url = 'data/' + src;
-  xhr.open('GET', url);
-  xhr.overrideMimeType('application/json');
-  xhr.onload = function() {
+  var url = "data/" + src;
+  xhr.open("GET", url);
+  xhr.overrideMimeType("application/json");
+  xhr.onload = function () {
     if (xhr.status < 400) {
       MageStudios.PreloadedMaps[mapId] = JSON.parse(xhr.responseText);
     }
   };
-  xhr.onerror = this._mapLoader || function() {
-    DataManager._errorUrl = DataManager._errorUrl || url;
-  };
+  xhr.onerror =
+    this._mapLoader ||
+    function () {
+      DataManager._errorUrl = DataManager._errorUrl || url;
+    };
   MageStudios.PreloadedMaps[mapId] = null;
   xhr.send();
 };
 
-MageStudios.SetupParameters = function() {
-  // Process Template Names
+MageStudios.SetupParameters = function () {
   MageStudios.EventCopier.Template = {};
   var length = MageStudios.Param.EventCopierList.length;
   for (var i = 0; i < length; ++i) {
@@ -285,33 +285,29 @@ MageStudios.SetupParameters = function() {
       mapId: data.MapID,
       eventId: data.EventID,
       PreCopyCode: MageStudios.ClearComments(JSON.parse(data.PreCopyCode)),
-      PostCopyCode: MageStudios.ClearComments(JSON.parse(data.PostCopyCode))
-    }
+      PostCopyCode: MageStudios.ClearComments(JSON.parse(data.PostCopyCode)),
+    };
   }
-  // Preload Map Data List
+
   var data = MageStudios.Param.EventCopierData;
   var length = data.length;
   for (var i = 0; i < length; ++i) {
     var mapId = parseInt(data[i]);
-    MageStudios.loadMapData(mapId)
+    MageStudios.loadMapData(mapId);
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EventCopier.Game_Event_initialize = Game_Event.prototype.initialize;
-Game_Event.prototype.initialize = function(mapId, eventId) {
+Game_Event.prototype.initialize = function (mapId, eventId) {
   MageStudios.EventCopier.Game_Event_initialize.call(this, mapId, eventId);
   this.setupCopyEvent();
 };
 
-Game_Event.prototype.setupCopyEvent = function() {
+Game_Event.prototype.setupCopyEvent = function () {
   var ev = this.event();
   if (ev.note.length <= 0) return;
-  // Check Notetags
+
   var template = undefined;
   if (ev.note.match(/<(?:COPY EVENT):[ ]MAP[ ](\d+),[ ]EVENT[ ](\d+)>/i)) {
     var mapId = parseInt(RegExp.$1);
@@ -332,7 +328,7 @@ Game_Event.prototype.setupCopyEvent = function() {
     return;
   }
   mapId = mapId.clamp(1, 999);
-  // Pre Copy Code
+
   var target = this;
   var player = $gamePlayer;
   var code = MageStudios.Param.EventCopierPreCopy;
@@ -340,7 +336,7 @@ Game_Event.prototype.setupCopyEvent = function() {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'EVENT COPIER PRECOPY EVAL ERROR');
+      MageStudios.Util.displayError(e, code, "EVENT COPIER PRECOPY EVAL ERROR");
     }
   }
   if (template) {
@@ -349,22 +345,32 @@ Game_Event.prototype.setupCopyEvent = function() {
       try {
         eval(code);
       } catch (e) {
-        MageStudios.Util.displayError(e, code, 'EVENT COPIER PRECOPY EVAL ERROR');
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "EVENT COPIER PRECOPY EVAL ERROR"
+        );
       }
     }
   }
-  // Check Template
+
   mapId = mapId.clamp(1, 999);
   if (MageStudios.PreloadedMaps[mapId]) {
     var map = MageStudios.PreloadedMaps[mapId];
     if (!map.events[eventId]) {
       if ($gameTemp.isPlaytest()) {
-        console.log('Map ' + mapId + ', Event ' + eventId + ' does not ' +
-        'exist so a copy cannot be made of it.');
+        console.log(
+          "Map " +
+            mapId +
+            ", Event " +
+            eventId +
+            " does not " +
+            "exist so a copy cannot be made of it."
+        );
       }
       return;
     }
-    // SUCCESS, Set Up the Copy Information
+
     this._copiedEvent = true;
     this._copiedMapId = mapId;
     this._copiedEventId = eventId;
@@ -372,13 +378,16 @@ Game_Event.prototype.setupCopyEvent = function() {
     this.findProperPageIndex();
     this.setupPage();
     this.refresh();
-  // If no map, reveal error message if debug mode is detected.
   } else if ($gameTemp.isPlaytest() && mapId !== 0) {
-    console.log('Map ' + mapId + ' is not listed in the MSEP_EventCopier ' +
-    'plugin parameters to use "Copy Event" notetag.');
+    console.log(
+      "Map " +
+        mapId +
+        " is not listed in the MSEP_EventCopier " +
+        'plugin parameters to use "Copy Event" notetag.'
+    );
     return;
   }
-  // Post Copy Code
+
   var target = this;
   var player = $gamePlayer;
   var code = MageStudios.Param.EventCopierPostCopy;
@@ -386,7 +395,11 @@ Game_Event.prototype.setupCopyEvent = function() {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'EVENT COPIER POSTCOPY EVAL ERROR');
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "EVENT COPIER POSTCOPY EVAL ERROR"
+      );
     }
   }
   if (template) {
@@ -395,39 +408,37 @@ Game_Event.prototype.setupCopyEvent = function() {
       try {
         eval(code);
       } catch (e) {
-        MageStudios.Util.displayError(e, code, 'EVENT COPIER POSTCOPY EVAL ERROR');
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "EVENT COPIER POSTCOPY EVAL ERROR"
+        );
       }
     }
   }
 };
 
 MageStudios.EventCopier.event = Game_Event.prototype.event;
-Game_Event.prototype.event = function() {
+Game_Event.prototype.event = function () {
   if (this._copiedEvent) {
-    return MageStudios.PreloadedMaps[this._copiedMapId].events[this._copiedEventId];
+    return MageStudios.PreloadedMaps[this._copiedMapId].events[
+      this._copiedEventId
+    ];
   } else {
     return MageStudios.EventCopier.event.call(this);
   }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

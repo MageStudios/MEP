@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Enhanced TP
-// MSEP_EnhancedTP.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EnhancedTP = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ETP = MageStudios.ETP || {};
-MageStudios.ETP.version = 1.00;
+MageStudios.ETP.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Gives you more control over how TP is handled in
  * your game in addition to letting players switch TP modes.
  * @author Mage Studios Engine Plugins
@@ -261,7 +255,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 2 Help Line 2
  * @parent ---Mode 2 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 2 Max TP
  * @parent ---Mode 2 Settings---
@@ -403,7 +397,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 3 Help Line 2
  * @parent ---Mode 3 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 3 Max TP
  * @parent ---Mode 3 Settings---
@@ -523,7 +517,7 @@ MageStudios.ETP.version = 1.00;
  * @parent ---Mode 3 Settings---
  * @desc Formula for how much TP is gained when user evades an attack.
  * @default 0
- * 
+ *
  * @param ---Mode 4 Settings---
  * @default
  *
@@ -545,7 +539,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 4 Help Line 2
  * @parent ---Mode 4 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 4 Max TP
  * @parent ---Mode 4 Settings---
@@ -829,7 +823,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 6 Help Line 2
  * @parent ---Mode 6 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 6 Max TP
  * @parent ---Mode 6 Settings---
@@ -971,7 +965,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 7 Help Line 2
  * @parent ---Mode 7 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 7 Max TP
  * @parent ---Mode 7 Settings---
@@ -1113,7 +1107,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 8 Help Line 2
  * @parent ---Mode 8 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 8 Max TP
  * @parent ---Mode 8 Settings---
@@ -1255,7 +1249,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 9 Help Line 2
  * @parent ---Mode 9 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 9 Max TP
  * @parent ---Mode 9 Settings---
@@ -1539,7 +1533,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 11 Help Line 2
  * @parent ---Mode 11 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 11 Max TP
  * @parent ---Mode 11 Settings---
@@ -1681,7 +1675,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 12 Help Line 2
  * @parent ---Mode 12 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 12 Max TP
  * @parent ---Mode 12 Settings---
@@ -1823,7 +1817,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 13 Help Line 2
  * @parent ---Mode 13 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 13 Max TP
  * @parent ---Mode 13 Settings---
@@ -1943,7 +1937,7 @@ MageStudios.ETP.version = 1.00;
  * @parent ---Mode 13 Settings---
  * @desc Formula for how much TP is gained when user evades an attack.
  * @default 0
- * 
+ *
  * @param ---Mode 14 Settings---
  * @default
  *
@@ -1965,7 +1959,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 14 Help Line 2
  * @parent ---Mode 14 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 14 Max TP
  * @parent ---Mode 14 Settings---
@@ -2107,7 +2101,7 @@ MageStudios.ETP.version = 1.00;
  * @param Mode 15 Help Line 2
  * @parent ---Mode 15 Settings---
  * @desc The 2nd help description line used for this TP mode.
- * @default 
+ * @default
  *
  * @param Mode 15 Max TP
  * @parent ---Mode 15 Settings---
@@ -3066,7 +3060,7 @@ MageStudios.ETP.version = 1.00;
  * You can use the following notetags to adjust the various settings for TP.
  *
  * Actor and Enemy Notetags:
- * 
+ *
  *   <TP Mode: x>
  *   This will set the actor's default TP mode to x. If this notetag isn't used
  *   then the actor will default to the mode within the plugin's parameters.
@@ -3086,7 +3080,7 @@ MageStudios.ETP.version = 1.00;
  *   TP mode available in the TP menu.
  *
  * Skill Notetags:
- * 
+ *
  *   <Learn Unlock TP Mode: x>
  *   <Learn Unlock TP Mode: x, x, x>
  *   <Learn Unlock TP Mode: x to y>
@@ -3169,75 +3163,138 @@ MageStudios.ETP.version = 1.00;
  *   This will remove all TP Modes for the battler except for the TP Mode that
  *   the battler is currently using.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EnhancedTP');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EnhancedTP");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.ETPCmdName = String(MageStudios.Parameters['Command Name']);
-MageStudios.Param.ETPShowCmd = eval(String(MageStudios.Parameters['Show Command']));
-MageStudios.Param.ETPEnableCmd = eval(String(MageStudios.Parameters['Enable Command']));
-MageStudios.Param.ETPChangeReset = eval(String(MageStudios.Parameters['Change Reset']));
-MageStudios.Param.ETPEquipColor = Number(MageStudios.Parameters['Equipped Color']);
-MageStudios.Param.ETPDefaultMode = Number(MageStudios.Parameters['Default Mode']);
-MageStudios.Param.ETPUnlocks = String(MageStudios.Parameters['Default Unlocks']);
-MageStudios.Param.ETPUnlocks = MageStudios.Param.ETPUnlocks.split(' ');
-if (MageStudios.Param.ETPUnlocks === '') MageStudios.Param.ETPUnlocks = [];
-for (MageStudios.i = 0; MageStudios.i < MageStudios.Param.ETPUnlocks.length; ++MageStudios.i) {
-  MageStudios.Param.ETPUnlocks[MageStudios.i] =
-    parseInt(MageStudios.Param.ETPUnlocks[MageStudios.i]);
-};
-MageStudios.Param.ETPCrisisHP = Number(MageStudios.Parameters['Crisis HP']);
-MageStudios.Param.ETPCrisisMP = Number(MageStudios.Parameters['Crisis MP']);
-MageStudios.Param.ETPDeadTpGain = eval(String(MageStudios.Parameters['Dead TP Gain']));
+MageStudios.Param.ETPCmdName = String(MageStudios.Parameters["Command Name"]);
+MageStudios.Param.ETPShowCmd = eval(
+  String(MageStudios.Parameters["Show Command"])
+);
+MageStudios.Param.ETPEnableCmd = eval(
+  String(MageStudios.Parameters["Enable Command"])
+);
+MageStudios.Param.ETPChangeReset = eval(
+  String(MageStudios.Parameters["Change Reset"])
+);
+MageStudios.Param.ETPEquipColor = Number(
+  MageStudios.Parameters["Equipped Color"]
+);
+MageStudios.Param.ETPDefaultMode = Number(
+  MageStudios.Parameters["Default Mode"]
+);
+MageStudios.Param.ETPUnlocks = String(
+  MageStudios.Parameters["Default Unlocks"]
+);
+MageStudios.Param.ETPUnlocks = MageStudios.Param.ETPUnlocks.split(" ");
+if (MageStudios.Param.ETPUnlocks === "") MageStudios.Param.ETPUnlocks = [];
+for (
+  MageStudios.i = 0;
+  MageStudios.i < MageStudios.Param.ETPUnlocks.length;
+  ++MageStudios.i
+) {
+  MageStudios.Param.ETPUnlocks[MageStudios.i] = parseInt(
+    MageStudios.Param.ETPUnlocks[MageStudios.i]
+  );
+}
+MageStudios.Param.ETPCrisisHP = Number(MageStudios.Parameters["Crisis HP"]);
+MageStudios.Param.ETPCrisisMP = Number(MageStudios.Parameters["Crisis MP"]);
+MageStudios.Param.ETPDeadTpGain = eval(
+  String(MageStudios.Parameters["Dead TP Gain"])
+);
 
 MageStudios.Param.ETPMax = 20;
 var $dataTpModes = [null];
-for (MageStudios.i = 1; MageStudios.i < MageStudios.Param.ETPMax + 1; ++MageStudios.i) {
+for (
+  MageStudios.i = 1;
+  MageStudios.i < MageStudios.Param.ETPMax + 1;
+  ++MageStudios.i
+) {
   $dataTpModes[MageStudios.i] = {
     id: MageStudios.i,
-    name: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Name']),
-    iconIndex: Number(MageStudios.Parameters['Mode ' + MageStudios.i + ' Icon']),
-    description: 
-      String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Help Line 1']) + '\n' +
-      String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Help Line 2']),
-    maxTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Max TP']),
-    preserve: eval(String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Preserve'])),
-    initialTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Initial TP']),
-    regenTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Regen TP']),
-    takeHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Take HP DMG']),
-    dealHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal HP DMG']),
-    healHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Heal HP DMG']),
-    allyHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally HP DMG']),
-    takeMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Take MP DMG']),
-    dealMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal MP DMG']),
-    healMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Heal MP DMG']),
-    allyMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally MP DMG']),
-    allyMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally MP DMG']),
-    dealState: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal State']),
-    gainState: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Gain State']),
-    killAlly: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Kill Ally']),
-    killEnemy: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Kill Enemy']),
-    winBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Win Battle']),
-    fleeBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Flee Battle']),
-    loseBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Lose Battle']),
-    crisisHp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Crisis HP']),
-    crisisMp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Crisis MP']),
-    onlyMember: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Only Member']),
-    evasion: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Evasion'])
-  }
-};
-
-//=============================================================================
-// DataManager
-//=============================================================================
+    name: String(MageStudios.Parameters["Mode " + MageStudios.i + " Name"]),
+    iconIndex: Number(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Icon"]
+    ),
+    description:
+      String(MageStudios.Parameters["Mode " + MageStudios.i + " Help Line 1"]) +
+      "\n" +
+      String(MageStudios.Parameters["Mode " + MageStudios.i + " Help Line 2"]),
+    maxTp: String(MageStudios.Parameters["Mode " + MageStudios.i + " Max TP"]),
+    preserve: eval(
+      String(MageStudios.Parameters["Mode " + MageStudios.i + " Preserve"])
+    ),
+    initialTp: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Initial TP"]
+    ),
+    regenTp: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Regen TP"]
+    ),
+    takeHpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Take HP DMG"]
+    ),
+    dealHpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Deal HP DMG"]
+    ),
+    healHpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Heal HP DMG"]
+    ),
+    allyHpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Ally HP DMG"]
+    ),
+    takeMpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Take MP DMG"]
+    ),
+    dealMpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Deal MP DMG"]
+    ),
+    healMpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Heal MP DMG"]
+    ),
+    allyMpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Ally MP DMG"]
+    ),
+    allyMpDmg: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Ally MP DMG"]
+    ),
+    dealState: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Deal State"]
+    ),
+    gainState: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Gain State"]
+    ),
+    killAlly: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Kill Ally"]
+    ),
+    killEnemy: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Kill Enemy"]
+    ),
+    winBattle: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Win Battle"]
+    ),
+    fleeBattle: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Flee Battle"]
+    ),
+    loseBattle: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Lose Battle"]
+    ),
+    crisisHp: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Crisis HP"]
+    ),
+    crisisMp: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Crisis MP"]
+    ),
+    onlyMember: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Only Member"]
+    ),
+    evasion: String(
+      MageStudios.Parameters["Mode " + MageStudios.i + " Evasion"]
+    ),
+  };
+}
 
 MageStudios.ETP.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.ETP.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_EnhancedTP) {
     this.processETPNotetags1($dataActors);
@@ -3250,7 +3307,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processETPNotetags1 = function(group) {
+DataManager.processETPNotetags1 = function (group) {
   var noteU1 = /<(?:UNLOCK TP MODE):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var noteU2 = /<(?:UNLOCK TP MODE):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -3259,25 +3316,29 @@ DataManager.processETPNotetags1 = function(group) {
 
     obj.tpMode = MageStudios.Param.ETPDefaultMode;
     obj.unlockedTpModes = [obj.tpMode];
-    obj.unlockedTpModes = obj.unlockedTpModes.concat(MageStudios.Param.ETPUnlocks);
+    obj.unlockedTpModes = obj.unlockedTpModes.concat(
+      MageStudios.Param.ETPUnlocks
+    );
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:TP MODE):[ ](\d+)>/i)) {
         obj.tpMode = parseInt(RegExp.$1);
       } else if (line.match(noteU1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.unlockedTpModes = obj.unlockedTpModes.concat(array);
       } else if (line.match(noteU2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.unlockedTpModes = obj.unlockedTpModes.concat(range);
       }
     }
   }
 };
 
-DataManager.processETPNotetags2 = function(group) {
+DataManager.processETPNotetags2 = function (group) {
   var noteU1 = /<(?:UNLOCK TP MODE):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var noteU2 = /<(?:UNLOCK TP MODE):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -3289,18 +3350,20 @@ DataManager.processETPNotetags2 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(noteU1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.unlockedTpModes = obj.unlockedTpModes.concat(array);
       } else if (line.match(noteU2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.unlockedTpModes = obj.unlockedTpModes.concat(range);
       }
     }
   }
 };
 
-DataManager.processETPNotetags3 = function(group) {
+DataManager.processETPNotetags3 = function (group) {
   var noteU1 = /<(?:LEARN UNLOCK TP MODE):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var noteU2 = /<(?:LEARN UNLOCK TP MODE):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -3312,79 +3375,69 @@ DataManager.processETPNotetags3 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(noteU1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.learnUnlockedTpModes = obj.learnUnlockedTpModes.concat(array);
       } else if (line.match(noteU2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.learnUnlockedTpModes = obj.learnUnlockedTpModes.concat(range);
       }
     }
   }
 };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
 MageStudios.ETP.BattleManager_endBattle = BattleManager.endBattle;
-BattleManager.endBattle = function(result) {
-    if (result === 0) {
-      $gameParty.allMembersGainTp('winBattle');
-    } else if (result === 1) {
-      $gameParty.allMembersGainTp('fleeBattle');
-    } else if (result === 2) {
-      $gameParty.allMembersGainTp('loseBattle');
-    }
-    MageStudios.ETP.BattleManager_endBattle.call(this, result);
+BattleManager.endBattle = function (result) {
+  if (result === 0) {
+    $gameParty.allMembersGainTp("winBattle");
+  } else if (result === 1) {
+    $gameParty.allMembersGainTp("fleeBattle");
+  } else if (result === 2) {
+    $gameParty.allMembersGainTp("loseBattle");
+  }
+  MageStudios.ETP.BattleManager_endBattle.call(this, result);
 };
-
-//=============================================================================
-// Game_System
-//=============================================================================
 
 MageStudios.ETP.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.ETP.Game_System_initialize.call(this);
-    this.initETPSettings();
+Game_System.prototype.initialize = function () {
+  MageStudios.ETP.Game_System_initialize.call(this);
+  this.initETPSettings();
 };
 
-Game_System.prototype.initETPSettings = function() {
-    this._showTpMode = MageStudios.Param.ETPShowCmd;
-    this._enableTpMode = MageStudios.Param.ETPEnableCmd;
+Game_System.prototype.initETPSettings = function () {
+  this._showTpMode = MageStudios.Param.ETPShowCmd;
+  this._enableTpMode = MageStudios.Param.ETPEnableCmd;
 };
 
-Game_System.prototype.isShowTpMode = function() {
-    if (this._showTpMode === undefined) this.initETPSettings();
-    return this._showTpMode;
+Game_System.prototype.isShowTpMode = function () {
+  if (this._showTpMode === undefined) this.initETPSettings();
+  return this._showTpMode;
 };
 
-Game_System.prototype.setShowTpMode = function(value) {
-    if (this._showTpMode === undefined) this.initETPSettings();
-    this._showTpMode = value;
+Game_System.prototype.setShowTpMode = function (value) {
+  if (this._showTpMode === undefined) this.initETPSettings();
+  this._showTpMode = value;
 };
 
-Game_System.prototype.isEnableTpMode = function() {
-    if (this._enableTpMode === undefined) this.initETPSettings();
-    return this._enableTpMode;
+Game_System.prototype.isEnableTpMode = function () {
+  if (this._enableTpMode === undefined) this.initETPSettings();
+  return this._enableTpMode;
 };
 
-Game_System.prototype.setEnableTpMode = function(value) {
-    if (this._enableTpMode === undefined) this.initETPSettings();
-    this._enableTpMode = value;
+Game_System.prototype.setEnableTpMode = function (value) {
+  if (this._enableTpMode === undefined) this.initETPSettings();
+  this._enableTpMode = value;
 };
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
 
 MageStudios.ETP.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    this._maxTpCache = undefined;
-    MageStudios.ETP.Game_BattlerBase_refresh.call(this);
+Game_BattlerBase.prototype.refresh = function () {
+  this._maxTpCache = undefined;
+  MageStudios.ETP.Game_BattlerBase_refresh.call(this);
 };
 
-Game_BattlerBase.prototype.initTpMode = function() {
+Game_BattlerBase.prototype.initTpMode = function () {
   this._tpMode = MageStudios.Param.ETPDefaultMode;
   this._unlockedTpModes = [];
   if (this.isActor()) {
@@ -3394,227 +3447,243 @@ Game_BattlerBase.prototype.initTpMode = function() {
     this._tpMode = this.enemy().tpMode;
     this._unlockedTpModes = this.enemy().unlockedTpModes.slice();
   }
-  this._unlockedTpModes = this._unlockedTpModes.filter(MageStudios.Util.onlyUnique);
-  this._unlockedTpModes.sort(function(a, b) { return a - b; });
+  this._unlockedTpModes = this._unlockedTpModes.filter(
+    MageStudios.Util.onlyUnique
+  );
+  this._unlockedTpModes.sort(function (a, b) {
+    return a - b;
+  });
 };
 
-Game_BattlerBase.prototype.tpMode = function() {
-    if (!this._tpMode) this.initTpMode();
-    return $dataTpModes[this._tpMode];
+Game_BattlerBase.prototype.tpMode = function () {
+  if (!this._tpMode) this.initTpMode();
+  return $dataTpModes[this._tpMode];
 };
 
-Game_BattlerBase.prototype.tpModeId = function() {
-    if (!this._tpMode) this.initTpMode();
-    return this._tpMode;
+Game_BattlerBase.prototype.tpModeId = function () {
+  if (!this._tpMode) this.initTpMode();
+  return this._tpMode;
 };
 
-Game_BattlerBase.prototype.setTpMode = function(value) {
-    if (!this._tpMode) this.initTpMode();
-    if ($dataTpModes.contains(value)) value = value.id;
-    this.configureNewTpMode(value);
-    if (this._unlockedTpModes.contains(value)) return;
-    this._unlockedTpModes.push(value);
-    this._unlockedTpModes.sort(function(a, b) { return a - b; });
+Game_BattlerBase.prototype.setTpMode = function (value) {
+  if (!this._tpMode) this.initTpMode();
+  if ($dataTpModes.contains(value)) value = value.id;
+  this.configureNewTpMode(value);
+  if (this._unlockedTpModes.contains(value)) return;
+  this._unlockedTpModes.push(value);
+  this._unlockedTpModes.sort(function (a, b) {
+    return a - b;
+  });
 };
 
-Game_BattlerBase.prototype.configureNewTpMode = function(tpModeId) {
-    this._tpMode = tpModeId;
-    if (MageStudios.Param.ETPChangeReset) this._tp = 0;
-    this.refresh();
-    this._tp = this._tp.clamp(0, this.maxTp());
+Game_BattlerBase.prototype.configureNewTpMode = function (tpModeId) {
+  this._tpMode = tpModeId;
+  if (MageStudios.Param.ETPChangeReset) this._tp = 0;
+  this.refresh();
+  this._tp = this._tp.clamp(0, this.maxTp());
 };
 
-Game_BattlerBase.prototype.tpRate = function() {
-    return this.tp / this.maxTp();
+Game_BattlerBase.prototype.tpRate = function () {
+  return this.tp / this.maxTp();
 };
 
-Game_BattlerBase.prototype.unlockTpMode = function(tpModeId) {
+Game_BattlerBase.prototype.unlockTpMode = function (tpModeId) {
   if (!this._unlockedTpModes) this.initTpMode();
   this._unlockedTpModes.push(tpModeId);
-  this._unlockedTpModes = this._unlockedTpModes.filter(MageStudios.Util.onlyUnique);
-  this._unlockedTpModes.sort(function(a, b) { return a - b; });
+  this._unlockedTpModes = this._unlockedTpModes.filter(
+    MageStudios.Util.onlyUnique
+  );
+  this._unlockedTpModes.sort(function (a, b) {
+    return a - b;
+  });
   this.refresh();
 };
 
-Game_BattlerBase.prototype.removeTpMode = function(tpModeId) {
-    if (this.tpMode() && this.tpMode().id === tpModeId) return;
-    var index = this._unlockedTpModes.indexOf(tpModeId);
-    if (index >= 0) this._unlockedTpModes.splice(index, 1);
-    this.refresh();
+Game_BattlerBase.prototype.removeTpMode = function (tpModeId) {
+  if (this.tpMode() && this.tpMode().id === tpModeId) return;
+  var index = this._unlockedTpModes.indexOf(tpModeId);
+  if (index >= 0) this._unlockedTpModes.splice(index, 1);
+  this.refresh();
 };
 
-Game_BattlerBase.prototype.forgetTpMode = function(tpModeId) {
-    this.removeTpMode(tpModeId);
+Game_BattlerBase.prototype.forgetTpMode = function (tpModeId) {
+  this.removeTpMode(tpModeId);
 };
 
-Game_BattlerBase.prototype.unlockAllTpModes = function() {
-    var length = $dataTpModes.length;
-    for (var i = 0; i < length; ++i) {
-      var tpMode = $dataTpModes[i];
-      if (tpMode) this.unlockTpMode(tpMode.id);
-    }
+Game_BattlerBase.prototype.unlockAllTpModes = function () {
+  var length = $dataTpModes.length;
+  for (var i = 0; i < length; ++i) {
+    var tpMode = $dataTpModes[i];
+    if (tpMode) this.unlockTpMode(tpMode.id);
+  }
 };
 
-Game_BattlerBase.prototype.removeAllTpModes = function() {
-    var length = $dataTpModes.length;
-    for (var i = 0; i < length; ++i) {
-      var tpMode = $dataTpModes[i];
-      if (!tpMode) continue;
-      if (this.tpMode() === tpMode) continue;
-      this.removeTpMode(tpMode.id);
-    }
+Game_BattlerBase.prototype.removeAllTpModes = function () {
+  var length = $dataTpModes.length;
+  for (var i = 0; i < length; ++i) {
+    var tpMode = $dataTpModes[i];
+    if (!tpMode) continue;
+    if (this.tpMode() === tpMode) continue;
+    this.removeTpMode(tpMode.id);
+  }
 };
 
-Game_BattlerBase.prototype.unlockedTpModes = function() {
-    if (!this._unlockedTpModes) this.initTpMode();
-    var arr = [];
-    var length = this._unlockedTpModes.length;
-    for (var i = 0; i < length; ++i) {
-      var modeId = this._unlockedTpModes[i];
-      if (!$dataTpModes[modeId]) continue;
-      if ($dataTpModes[modeId].name === '')  continue;
-      if ($dataTpModes[modeId].name.toUpperCase() === 'UNDEFINED')  continue;
-      arr.push($dataTpModes[modeId]);
-    }
-    return arr;
+Game_BattlerBase.prototype.unlockedTpModes = function () {
+  if (!this._unlockedTpModes) this.initTpMode();
+  var arr = [];
+  var length = this._unlockedTpModes.length;
+  for (var i = 0; i < length; ++i) {
+    var modeId = this._unlockedTpModes[i];
+    if (!$dataTpModes[modeId]) continue;
+    if ($dataTpModes[modeId].name === "") continue;
+    if ($dataTpModes[modeId].name.toUpperCase() === "UNDEFINED") continue;
+    arr.push($dataTpModes[modeId]);
+  }
+  return arr;
 };
 
-Game_BattlerBase.prototype.getTpEval = function(evalMode, user, target, value) {
-    var value = value || 0;
-    var a = this;
-    var target = target || this;
-    var attacker = target || this;
-    var subject = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var formula = this.tpMode()[evalMode];
-    try {
-      var tpGain = eval(formula);
-    } catch (e) {
-      var tpGain = 0;
-      MageStudios.Util.displayError(e, formula, 'CUSTOM TP MODE GAIN FORMUAL ERROR');
-    }
-    return Math.floor(parseInt(tpGain));
+Game_BattlerBase.prototype.getTpEval = function (
+  evalMode,
+  user,
+  target,
+  value
+) {
+  var value = value || 0;
+  var a = this;
+  var target = target || this;
+  var attacker = target || this;
+  var subject = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var formula = this.tpMode()[evalMode];
+  try {
+    var tpGain = eval(formula);
+  } catch (e) {
+    var tpGain = 0;
+    MageStudios.Util.displayError(
+      e,
+      formula,
+      "CUSTOM TP MODE GAIN FORMUAL ERROR"
+    );
+  }
+  return Math.floor(parseInt(tpGain));
 };
 
 MageStudios.ETP.Game_BattlerBase_maxTp = Game_BattlerBase.prototype.maxTp;
-Game_BattlerBase.prototype.maxTp = function() {
-    if (this._maxTpCache !== undefined) return this._maxTpCache;
-    if (!this.tpMode()) {
-      this._maxTpCache = MageStudios.ETP.Game_BattlerBase_maxTp.call(this);
-      return this._maxTpCache;
-    }
-    var a = this;
-    var user = this;
-    var target = this;
-    var subject = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    this._maxTpCache = this.getTpEval('maxTp', this, this, 0);
+Game_BattlerBase.prototype.maxTp = function () {
+  if (this._maxTpCache !== undefined) return this._maxTpCache;
+  if (!this.tpMode()) {
+    this._maxTpCache = MageStudios.ETP.Game_BattlerBase_maxTp.call(this);
     return this._maxTpCache;
+  }
+  var a = this;
+  var user = this;
+  var target = this;
+  var subject = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  this._maxTpCache = this.getTpEval("maxTp", this, this, 0);
+  return this._maxTpCache;
 };
 
 MageStudios.ETP.Game_BattlerBase_isPreserveTp =
-    Game_BattlerBase.prototype.isPreserveTp;
-Game_BattlerBase.prototype.isPreserveTp = function() {
-    if (this.tpMode()) return this.tpMode().preserve;
-    return MageStudios.ETP.Game_BattlerBase_isPreserveTp.call(this);
+  Game_BattlerBase.prototype.isPreserveTp;
+Game_BattlerBase.prototype.isPreserveTp = function () {
+  if (this.tpMode()) return this.tpMode().preserve;
+  return MageStudios.ETP.Game_BattlerBase_isPreserveTp.call(this);
 };
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
 
 MageStudios.ETP.Game_Battler_initTp = Game_Battler.prototype.initTp;
-Game_Battler.prototype.initTp = function() {
-    if (this.tpMode()) {
-      this.clearTp();
-    } else {
-      MageStudios.ETP.Game_Battler_initTp.call(this);
-    }
+Game_Battler.prototype.initTp = function () {
+  if (this.tpMode()) {
+    this.clearTp();
+  } else {
+    MageStudios.ETP.Game_Battler_initTp.call(this);
+  }
 };
 
-MageStudios.ETP.Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-Game_Battler.prototype.onBattleStart = function() {
-    MageStudios.ETP.Game_Battler_onBattleStart.call(this);
-    if (this.tpMode()) this.gainBattleStartTp();
+MageStudios.ETP.Game_Battler_onBattleStart =
+  Game_Battler.prototype.onBattleStart;
+Game_Battler.prototype.onBattleStart = function () {
+  MageStudios.ETP.Game_Battler_onBattleStart.call(this);
+  if (this.tpMode()) this.gainBattleStartTp();
 };
 
 MageStudios.ETP.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
-Game_Battler.prototype.onBattleEnd = function() {
-    MageStudios.ETP.Game_Battler_onBattleEnd.call(this);
-    if (this.isPreserveTp()) return;
-    this.clearTp();
+Game_Battler.prototype.onBattleEnd = function () {
+  MageStudios.ETP.Game_Battler_onBattleEnd.call(this);
+  if (this.isPreserveTp()) return;
+  this.clearTp();
 };
 
-Game_Battler.prototype.gainTpmodeTp = function(value) {
+Game_Battler.prototype.gainTpmodeTp = function (value) {
   if (this.canGainTpModeTp()) this.gainSilentTp(value);
 };
 
-Game_Battler.prototype.canGainTpModeTp = function() {
+Game_Battler.prototype.canGainTpModeTp = function () {
   if (!MageStudios.Param.ETPDeadTpGain) {
     if (this.isDead()) return false;
   }
   return true;
 };
 
-Game_Battler.prototype.gainBattleStartTp = function() {
-    var value = this.getTpEval('initialTp', this, this, 0);
-    this.gainTpmodeTp(value);
+Game_Battler.prototype.gainBattleStartTp = function () {
+  var value = this.getTpEval("initialTp", this, this, 0);
+  this.gainTpmodeTp(value);
 };
 
 MageStudios.ETP.Game_Battler_regenerateTp = Game_Battler.prototype.regenerateTp;
-Game_Battler.prototype.regenerateTp = function() {
-    if ($gameParty.inBattle() && this.tpMode()) {
-      this.regularRegenTp();
-      this.crisisRegenTp();
-      this.onlyMemberRegenTp();
-    } else {
-      MageStudios.ETP.Game_Battler_regenerateTp.call(this);
-    }
+Game_Battler.prototype.regenerateTp = function () {
+  if ($gameParty.inBattle() && this.tpMode()) {
+    this.regularRegenTp();
+    this.crisisRegenTp();
+    this.onlyMemberRegenTp();
+  } else {
+    MageStudios.ETP.Game_Battler_regenerateTp.call(this);
+  }
 };
 
-Game_Battler.prototype.regularRegenTp = function() {
-    var value = this.getTpEval('regenTp', this, this, 0);
+Game_Battler.prototype.regularRegenTp = function () {
+  var value = this.getTpEval("regenTp", this, this, 0);
+  this.gainTpmodeTp(value);
+};
+
+Game_Battler.prototype.crisisRegenTp = function () {
+  if (this.hpRate() <= MageStudios.Param.ETPCrisisHP) {
+    var value = this.getTpEval("crisisHp", this, this, 0);
     this.gainTpmodeTp(value);
-};
-
-Game_Battler.prototype.crisisRegenTp = function() {
-    if (this.hpRate() <= MageStudios.Param.ETPCrisisHP) {
-      var value = this.getTpEval('crisisHp', this, this, 0);
-      this.gainTpmodeTp(value);
-    }
-    if (this.mpRate() <= MageStudios.Param.ETPCrisisMP) {
-      var value = this.getTpEval('crisisMp', this, this, 0);
-      this.gainTpmodeTp(value);
-    }
-};
-
-Game_Battler.prototype.onlyMemberRegenTp = function() {
-    if (this.isDead()) return;
-    if (this.friendsUnit().aliveMembers().length > 1) return;
-    var value = this.getTpEval('onlyMember', this, this, 0);
+  }
+  if (this.mpRate() <= MageStudios.Param.ETPCrisisMP) {
+    var value = this.getTpEval("crisisMp", this, this, 0);
     this.gainTpmodeTp(value);
+  }
 };
 
-MageStudios.ETP.Game_Battler_chargeTpByDamage = 
-    Game_Battler.prototype.chargeTpByDamage;
-Game_Battler.prototype.chargeTpByDamage = function(damageRate) {
-    if (!this.tpMode()) {
-      MageStudios.ETP.Game_Battler_chargeTpByDaMageStudios.call(this, damageRate);
-    }
+Game_Battler.prototype.onlyMemberRegenTp = function () {
+  if (this.isDead()) return;
+  if (this.friendsUnit().aliveMembers().length > 1) return;
+  var value = this.getTpEval("onlyMember", this, this, 0);
+  this.gainTpmodeTp(value);
 };
 
-Game_Battler.prototype.chargeTpByDamageType = function(target, damage, type) {
-    if (!this.tpMode()) return
-    var value = this.getTpEval(type, this, target, damage);
-    this.gainTpmodeTp(value);
+MageStudios.ETP.Game_Battler_chargeTpByDamage =
+  Game_Battler.prototype.chargeTpByDamage;
+Game_Battler.prototype.chargeTpByDamage = function (damageRate) {
+  if (!this.tpMode()) {
+    MageStudios.ETP.Game_Battler_chargeTpByDaMageStudios.call(this, damageRate);
+  }
+};
+
+Game_Battler.prototype.chargeTpByDamageType = function (target, damage, type) {
+  if (!this.tpMode()) return;
+  var value = this.getTpEval(type, this, target, damage);
+  this.gainTpmodeTp(value);
 };
 
 MageStudios.ETP.Game_Battler_addState = Game_Battler.prototype.addState;
-Game_Battler.prototype.addState = function(stateId) {
+Game_Battler.prototype.addState = function (stateId) {
   if ($gameParty.inBattle() && this.tpMode()) {
-    var deathState = (stateId === this.deathStateId());
+    var deathState = stateId === this.deathStateId();
     var lifeState = this.isAlive();
     var affected = this.isStateAffected(stateId);
   }
@@ -3626,385 +3695,340 @@ Game_Battler.prototype.addState = function(stateId) {
   }
 };
 
-Game_Battler.prototype.chargeTpByAddState = function() {
-    var user = BattleManager._subject;
-    var target = this;
-    if (user && target && user.isActor() && target.isActor()) return;
-    if (user && target && user.isEnemy() && target.isEnemy()) return;
-    if (user) {
-      var value = user.getTpEval('dealState', user, this, 0);
-      user.gainTpmodeTp(value);
-    }
-    var value = this.getTpEval('gainState', this, user, 0);
-    this.gainTpmodeTp(value);
+Game_Battler.prototype.chargeTpByAddState = function () {
+  var user = BattleManager._subject;
+  var target = this;
+  if (user && target && user.isActor() && target.isActor()) return;
+  if (user && target && user.isEnemy() && target.isEnemy()) return;
+  if (user) {
+    var value = user.getTpEval("dealState", user, this, 0);
+    user.gainTpmodeTp(value);
+  }
+  var value = this.getTpEval("gainState", this, user, 0);
+  this.gainTpmodeTp(value);
 };
 
-Game_Battler.prototype.chargeTpByDeath = function() {
-    var length = this.friendsUnit().members().length;
-    for (var i = 0; i < length; ++i) {
-      var ally = this.friendsUnit().members()[i];
-      if (!ally) continue;
-      if (ally === this) continue;
-      var value = ally.getTpEval('killAlly', ally, this, 0);
-      ally.gainTpmodeTp(value);
-    }
-    var length = this.opponentsUnit().members().length;
-    for (var i = 0; i < length; ++i) {
-      var foe = this.opponentsUnit().members()[i];
-      if (!foe) continue;
-      var value = foe.getTpEval('killEnemy', foe, this, 0);
-      foe.gainTpmodeTp(value);
-    }
+Game_Battler.prototype.chargeTpByDeath = function () {
+  var length = this.friendsUnit().members().length;
+  for (var i = 0; i < length; ++i) {
+    var ally = this.friendsUnit().members()[i];
+    if (!ally) continue;
+    if (ally === this) continue;
+    var value = ally.getTpEval("killAlly", ally, this, 0);
+    ally.gainTpmodeTp(value);
+  }
+  var length = this.opponentsUnit().members().length;
+  for (var i = 0; i < length; ++i) {
+    var foe = this.opponentsUnit().members()[i];
+    if (!foe) continue;
+    var value = foe.getTpEval("killEnemy", foe, this, 0);
+    foe.gainTpmodeTp(value);
+  }
 };
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
 
 MageStudios.ETP.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.ETP.Game_Actor_setup.call(this, actorId);
-    this.initTpMode();
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.ETP.Game_Actor_setup.call(this, actorId);
+  this.initTpMode();
 };
 
 MageStudios.ETP.Game_Actor_learnSkill = Game_Actor.prototype.learnSkill;
-Game_Actor.prototype.learnSkill = function(skillId) {
-    MageStudios.ETP.Game_Actor_learnSkill.call(this, skillId);
-    var skill = $dataSkills[skillId];
-    if (skill) this.learnSkillTpMode(skill);
+Game_Actor.prototype.learnSkill = function (skillId) {
+  MageStudios.ETP.Game_Actor_learnSkill.call(this, skillId);
+  var skill = $dataSkills[skillId];
+  if (skill) this.learnSkillTpMode(skill);
 };
 
-Game_Actor.prototype.learnSkillTpMode = function(skill) {
-    var length = skill.learnUnlockedTpModes.length;
-    for (var i = 0; i < length; ++i) {
-      var tpMode = skill.learnUnlockedTpModes[tpMode]
-      if ($dataTpModes[tpMode]) this.unlockTpMode(tpMode);
-    }
+Game_Actor.prototype.learnSkillTpMode = function (skill) {
+  var length = skill.learnUnlockedTpModes.length;
+  for (var i = 0; i < length; ++i) {
+    var tpMode = skill.learnUnlockedTpModes[tpMode];
+    if ($dataTpModes[tpMode]) this.unlockTpMode(tpMode);
+  }
 };
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
 
 MageStudios.ETP.Game_Enemy_setup = Game_Enemy.prototype.setup;
-Game_Enemy.prototype.setup = function(enemyId, x, y) {
-    MageStudios.ETP.Game_Enemy_setup.call(this, enemyId, x, y);
-    this.initTpMode();
+Game_Enemy.prototype.setup = function (enemyId, x, y) {
+  MageStudios.ETP.Game_Enemy_setup.call(this, enemyId, x, y);
+  this.initTpMode();
 };
 
-//=============================================================================
-// Game_Party
-//=============================================================================
-
-Game_Party.prototype.allMembersGainTp = function(type) {
-    var length = this.members().length;
-    for (var i = 0; i < length; ++i) {
-      var member = this.members()[i];
-      if (member) {
-        var value = member.getTpEval(type, member, member, 0);
-        member.gainTpmodeTp(value);
-      }
-    }
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.ETP.Game_Action_apply = Game_Action.prototype.apply;
-Game_Action.prototype.apply = function(target) {
-    MageStudios.ETP.Game_Action_apply.call(this, target);
-    if (!target) return;
-    var result = target.result();
-    if (!result) return;
-    if (!target.tpMode()) return;
-    if (result.missed || result.evaded) {
-      var value = target.getTpEval('evasion', this.subject(), target, 0);
-      target.gainTpmodeTp(value);
-    }
-};
-
-MageStudios.ETP.Game_Action_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
-    MageStudios.ETP.Game_Action_executeHpDaMageStudios.call(this, target, value);
-    var user = this.subject();
-    var dmg = target.result().hpDamage;
-    if (dmg > 0) {
-      if (target) target.chargeTpByDamageType(user, dmg, 'takeHpDmg');
-      if (target) this.allyTpGain(target, dmg, 'allyHpDmg');
-      if (user) user.chargeTpByDamageType(target, dmg, 'dealHpDmg');
-    } else if (dmg < 0) {
-      if (user) user.chargeTpByDamageType(target, dmg, 'healHpDmg');
-    }
-};
-
-MageStudios.ETP.Game_Action_executeMpDamage = Game_Action.prototype.executeMpDamage;
-Game_Action.prototype.executeMpDamage = function(target, value) {
-    MageStudios.ETP.Game_Action_executeMpDaMageStudios.call(this, target, value);
-    var user = this.subject();
-    var dmg = target.result().mpDamage;
-    if (dmg > 0) {
-      if (target) target.chargeTpByDamageType(user, dmg, 'takeMpDmg');
-      if (target) this.allyTpGain(target, dmg, 'allyMpDmg');
-      if (user) user.chargeTpByDamageType(target, dmg, 'dealMpDmg');
-    } else if (dmg < 0) {
-      if (user) user.chargeTpByDamageType(target, dmg, 'healMpDmg');
-    }
-};
-
-Game_Action.prototype.allyTpGain = function(target, value, type) {
-    var length = target.friendsUnit().members().length;
-    for (var i = 0; i < length; ++i) {
-      var ally = target.friendsUnit().members()[i];
-      if (!ally) continue;
-      if (ally === target) continue;
-      ally.chargeTpByDamageType(target, value, type);
-    }
-};
-
-MageStudios.ETP.Game_Action_applyItemUserEffect =
-    Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
-    MageStudios.ETP.Game_Action_applyItemUserEffect.call(this, target);
-    if (target && this.item()) this.applyItemUnlockTpModes(target);
-};
-
-Game_Action.prototype.applyItemUnlockTpModes = function(target) {
-    var item = this.item();
-    var length = item.unlockedTpModes.length;
-    for (var i = 0; i < length; ++i) {
-      var tpMode = item.unlockedTpModes[i];
-      if ($dataTpModes[tpMode]) target.unlockTpMode(tpMode);
-    }
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.ETP.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.ETP.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowTpMode') $gameSystem.setShowTpMode(true);
-  if (command === 'HideTpMode') $gameSystem.setShowTpMode(false);
-  if (command === 'EnableTpMode') $gameSystem.setEnableTpMode(true);
-  if (command === 'DisableTpMode') $gameSystem.setEnableTpMode(false);
-  if (command === 'ChangeTpMode') this.changeTpMode(args);
-  if (command === 'UnlockTpMode') this.unlockTpMode(args);
-  if (command === 'RemoveTpMode') this.removeTpMode(args);
-  if (command === 'UnlockAllTpModes') this.unlockAllTpModes(args);
-  if (command === 'RemoveAllTpModes') this.removeAllTpModes(args);
-};
-
-Game_Interpreter.prototype.changeTpMode = function(args) {
-    if (!args) return;
-    if (args[0].toUpperCase() === 'ACTOR') {
-      var actor = $gameActors.actor(parseInt(args[1]));
-    } else if (args[0].toUpperCase() === 'PARTY') {
-      var actor = $gameParty.members()[parseInt(args[1]) - 1];
-    } else {
-      return;
-    }
-    if (!actor) return;
-    var tpModeId = parseInt(args[3]);
-    actor.setTpMode(tpModeId);
-};
-
-Game_Interpreter.prototype.unlockTpMode = function(args) {
-    if (!args) return;
-    if (args[0].toUpperCase() === 'ACTOR') {
-      var actor = $gameActors.actor(parseInt(args[1]));
-    } else if (args[0].toUpperCase() === 'PARTY') {
-      var actor = $gameParty.members()[parseInt(args[1]) - 1];
-    } else {
-      return;
-    }
-    if (!actor) return;
-    var tpModeId = parseInt(args[3]);
-    actor.unlockTpMode(tpModeId);
-};
-
-Game_Interpreter.prototype.removeTpMode = function(args) {
-    if (!args) return;
-    if (args[0].toUpperCase() === 'ACTOR') {
-      var actor = $gameActors.actor(parseInt(args[1]));
-    } else if (args[0].toUpperCase() === 'PARTY') {
-      var actor = $gameParty.members()[parseInt(args[1]) - 1];
-    } else {
-      return;
-    }
-    if (!actor) return;
-    var tpModeId = parseInt(args[3]);
-    actor.removeTpMode(tpModeId);
-};
-
-Game_Interpreter.prototype.unlockAllTpModes = function(args) {
-    if (!args) return;
-    if (args[0].toUpperCase() === 'ACTOR') {
-      var actor = $gameActors.actor(parseInt(args[1]));
-    } else if (args[0].toUpperCase() === 'PARTY') {
-      var actor = $gameParty.members()[parseInt(args[1]) - 1];
-    } else {
-      return;
-    }
-    if (!actor) return;
-    actor.unlockAllTpModes();
-};
-
-Game_Interpreter.prototype.removeAllTpModes = function(args) {
-    if (!args) return;
-    if (args[0].toUpperCase() === 'ACTOR') {
-      var actor = $gameActors.actor(parseInt(args[1]));
-    } else if (args[0].toUpperCase() === 'PARTY') {
-      var actor = $gameParty.members()[parseInt(args[1]) - 1];
-    } else {
-      return;
-    }
-    if (!actor) return;
-    actor.removeAllTpModes();
-};
-
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-Window_Base.prototype.drawTpMode = function(mode, actor, wx, wy, ww) {
-    ww = ww || 312;
-    if (!mode) return;
-    var iconBoxWidth = Window_Base._iconWidth + 4;
-    this.drawIcon(mode.iconIndex, wx + 2, wy + 2);
-    if (actor && actor.tpMode() === mode) {
-      this.changeTextColor(this.textColor(MageStudios.Param.ETPEquipColor));
-    } else {
-      this.resetTextColor();
-    }
-    this.drawText(mode.name, wx + iconBoxWidth, wy, ww - iconBoxWidth);
-};
-
-//=============================================================================
-// Window_Selectable
-//=============================================================================
-
-MageStudios.ETP.Window_Selectable_playOkSound =
-    Window_Selectable.prototype.playOkSound;
-Window_Selectable.prototype.playOkSound = function() {
-    if (SceneManager._scene instanceof Scene_Skill &&
-      this._stypeId === 'tpMode') return;
-    MageStudios.ETP.Window_Selectable_playOkSound.call(this);
-};
-
-//=============================================================================
-// Window_SkillType
-//=============================================================================
-
-MageStudios.ETP.Window_SkillType_makeCommandList =
-    Window_SkillType.prototype.makeCommandList;
-Window_SkillType.prototype.makeCommandList = function() {
-    MageStudios.ETP.Window_SkillType_makeCommandList.call(this);
-    if ($gameSystem.isShowTpMode()) this.addTpModeCommand();
-};
-
-MageStudios.ETP.Window_SkillList_isEnabled = Window_SkillList.prototype.isEnabled;
-Window_SkillList.prototype.isEnabled = function(item) {
-    if (item && this._stypeId === 'tpMode') return true;
-    return MageStudios.ETP.Window_SkillList_isEnabled.call(this, item);
-};
-
-Window_SkillType.prototype.addTpModeCommand = function() {
-    var text = MageStudios.Param.ETPCmdName;
-    var enabled = $gameSystem.isEnableTpMode();
-    this.addCommand(text, 'skill', enabled, 'tpMode');
-};
-
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-MageStudios.ETP.Window_SkillList_makeItemList =
-    Window_SkillList.prototype.makeItemList;
-Window_SkillList.prototype.makeItemList = function() {
-    if (this._actor && this._stypeId === 'tpMode') {
-      this._data = this._actor.unlockedTpModes();
-    } else {
-      MageStudios.ETP.Window_SkillList_makeItemList.call(this);
-    }
-};
-
-MageStudios.ETP.Window_SkillList_drawItem = Window_SkillList.prototype.drawItem;
-Window_SkillList.prototype.drawItem = function(index) {
-    if (this._stypeId === 'tpMode') {
-      this.drawTpItem(index);
-    } else {
-      MageStudios.ETP.Window_SkillList_drawItem.call(this, index);
-    }
-};
-
-Window_SkillList.prototype.drawTpItem = function(index) {
-    var mode = this._data[index];
-    if (!mode) return;
-    var rect = this.itemRect(index);
-    rect.width -= this.textPadding();
-    this.changePaintOpacity(this.isEnabled(mode));
-    this.drawTpMode(mode, this._actor, rect.x, rect.y, rect.width);
-};
-
-//=============================================================================
-// Scene_Skill
-//=============================================================================
-
-MageStudios.ETP.Scene_Skill_onItemOk = Scene_Skill.prototype.onItemOk;
-Scene_Skill.prototype.onItemOk = function() {
-    if (this._skillTypeWindow.currentExt() === 'tpMode') {
-      this.changeTpMode();
-    } else {
-      MageStudios.ETP.Scene_Skill_onItemOk.call(this);
-    }
-};
-
-Scene_Skill.prototype.changeTpMode = function() {
-    SoundManager.playEquip();
-    var tpMode = this._itemWindow.item();
-    this.actor().setTpMode(tpMode);
-    this._itemWindow.activate();
-    this._itemWindow.refresh();
-    this._statusWindow.refresh();
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-MageStudios.Util.getRange = function(n, m) {
-    var result = [];
-    for (var i = n; i <= m; ++i) result.push(i);
-    return result;
-};
-
-MageStudios.Util.onlyUnique = function(value, index, self) {
-    return self.indexOf(value) === index;
-};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+Game_Party.prototype.allMembersGainTp = function (type) {
+  var length = this.members().length;
+  for (var i = 0; i < length; ++i) {
+    var member = this.members()[i];
+    if (member) {
+      var value = member.getTpEval(type, member, member, 0);
+      member.gainTpmodeTp(value);
     }
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+MageStudios.ETP.Game_Action_apply = Game_Action.prototype.apply;
+Game_Action.prototype.apply = function (target) {
+  MageStudios.ETP.Game_Action_apply.call(this, target);
+  if (!target) return;
+  var result = target.result();
+  if (!result) return;
+  if (!target.tpMode()) return;
+  if (result.missed || result.evaded) {
+    var value = target.getTpEval("evasion", this.subject(), target, 0);
+    target.gainTpmodeTp(value);
+  }
+};
+
+MageStudios.ETP.Game_Action_executeHpDamage =
+  Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function (target, value) {
+  MageStudios.ETP.Game_Action_executeHpDaMageStudios.call(this, target, value);
+  var user = this.subject();
+  var dmg = target.result().hpDamage;
+  if (dmg > 0) {
+    if (target) target.chargeTpByDamageType(user, dmg, "takeHpDmg");
+    if (target) this.allyTpGain(target, dmg, "allyHpDmg");
+    if (user) user.chargeTpByDamageType(target, dmg, "dealHpDmg");
+  } else if (dmg < 0) {
+    if (user) user.chargeTpByDamageType(target, dmg, "healHpDmg");
+  }
+};
+
+MageStudios.ETP.Game_Action_executeMpDamage =
+  Game_Action.prototype.executeMpDamage;
+Game_Action.prototype.executeMpDamage = function (target, value) {
+  MageStudios.ETP.Game_Action_executeMpDaMageStudios.call(this, target, value);
+  var user = this.subject();
+  var dmg = target.result().mpDamage;
+  if (dmg > 0) {
+    if (target) target.chargeTpByDamageType(user, dmg, "takeMpDmg");
+    if (target) this.allyTpGain(target, dmg, "allyMpDmg");
+    if (user) user.chargeTpByDamageType(target, dmg, "dealMpDmg");
+  } else if (dmg < 0) {
+    if (user) user.chargeTpByDamageType(target, dmg, "healMpDmg");
+  }
+};
+
+Game_Action.prototype.allyTpGain = function (target, value, type) {
+  var length = target.friendsUnit().members().length;
+  for (var i = 0; i < length; ++i) {
+    var ally = target.friendsUnit().members()[i];
+    if (!ally) continue;
+    if (ally === target) continue;
+    ally.chargeTpByDamageType(target, value, type);
+  }
+};
+
+MageStudios.ETP.Game_Action_applyItemUserEffect =
+  Game_Action.prototype.applyItemUserEffect;
+Game_Action.prototype.applyItemUserEffect = function (target) {
+  MageStudios.ETP.Game_Action_applyItemUserEffect.call(this, target);
+  if (target && this.item()) this.applyItemUnlockTpModes(target);
+};
+
+Game_Action.prototype.applyItemUnlockTpModes = function (target) {
+  var item = this.item();
+  var length = item.unlockedTpModes.length;
+  for (var i = 0; i < length; ++i) {
+    var tpMode = item.unlockedTpModes[i];
+    if ($dataTpModes[tpMode]) target.unlockTpMode(tpMode);
+  }
+};
+
+MageStudios.ETP.Game_Interpreter_pluginCommand =
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.ETP.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "ShowTpMode") $gameSystem.setShowTpMode(true);
+  if (command === "HideTpMode") $gameSystem.setShowTpMode(false);
+  if (command === "EnableTpMode") $gameSystem.setEnableTpMode(true);
+  if (command === "DisableTpMode") $gameSystem.setEnableTpMode(false);
+  if (command === "ChangeTpMode") this.changeTpMode(args);
+  if (command === "UnlockTpMode") this.unlockTpMode(args);
+  if (command === "RemoveTpMode") this.removeTpMode(args);
+  if (command === "UnlockAllTpModes") this.unlockAllTpModes(args);
+  if (command === "RemoveAllTpModes") this.removeAllTpModes(args);
+};
+
+Game_Interpreter.prototype.changeTpMode = function (args) {
+  if (!args) return;
+  if (args[0].toUpperCase() === "ACTOR") {
+    var actor = $gameActors.actor(parseInt(args[1]));
+  } else if (args[0].toUpperCase() === "PARTY") {
+    var actor = $gameParty.members()[parseInt(args[1]) - 1];
+  } else {
+    return;
+  }
+  if (!actor) return;
+  var tpModeId = parseInt(args[3]);
+  actor.setTpMode(tpModeId);
+};
+
+Game_Interpreter.prototype.unlockTpMode = function (args) {
+  if (!args) return;
+  if (args[0].toUpperCase() === "ACTOR") {
+    var actor = $gameActors.actor(parseInt(args[1]));
+  } else if (args[0].toUpperCase() === "PARTY") {
+    var actor = $gameParty.members()[parseInt(args[1]) - 1];
+  } else {
+    return;
+  }
+  if (!actor) return;
+  var tpModeId = parseInt(args[3]);
+  actor.unlockTpMode(tpModeId);
+};
+
+Game_Interpreter.prototype.removeTpMode = function (args) {
+  if (!args) return;
+  if (args[0].toUpperCase() === "ACTOR") {
+    var actor = $gameActors.actor(parseInt(args[1]));
+  } else if (args[0].toUpperCase() === "PARTY") {
+    var actor = $gameParty.members()[parseInt(args[1]) - 1];
+  } else {
+    return;
+  }
+  if (!actor) return;
+  var tpModeId = parseInt(args[3]);
+  actor.removeTpMode(tpModeId);
+};
+
+Game_Interpreter.prototype.unlockAllTpModes = function (args) {
+  if (!args) return;
+  if (args[0].toUpperCase() === "ACTOR") {
+    var actor = $gameActors.actor(parseInt(args[1]));
+  } else if (args[0].toUpperCase() === "PARTY") {
+    var actor = $gameParty.members()[parseInt(args[1]) - 1];
+  } else {
+    return;
+  }
+  if (!actor) return;
+  actor.unlockAllTpModes();
+};
+
+Game_Interpreter.prototype.removeAllTpModes = function (args) {
+  if (!args) return;
+  if (args[0].toUpperCase() === "ACTOR") {
+    var actor = $gameActors.actor(parseInt(args[1]));
+  } else if (args[0].toUpperCase() === "PARTY") {
+    var actor = $gameParty.members()[parseInt(args[1]) - 1];
+  } else {
+    return;
+  }
+  if (!actor) return;
+  actor.removeAllTpModes();
+};
+
+Window_Base.prototype.drawTpMode = function (mode, actor, wx, wy, ww) {
+  ww = ww || 312;
+  if (!mode) return;
+  var iconBoxWidth = Window_Base._iconWidth + 4;
+  this.drawIcon(mode.iconIndex, wx + 2, wy + 2);
+  if (actor && actor.tpMode() === mode) {
+    this.changeTextColor(this.textColor(MageStudios.Param.ETPEquipColor));
+  } else {
+    this.resetTextColor();
+  }
+  this.drawText(mode.name, wx + iconBoxWidth, wy, ww - iconBoxWidth);
+};
+
+MageStudios.ETP.Window_Selectable_playOkSound =
+  Window_Selectable.prototype.playOkSound;
+Window_Selectable.prototype.playOkSound = function () {
+  if (SceneManager._scene instanceof Scene_Skill && this._stypeId === "tpMode")
+    return;
+  MageStudios.ETP.Window_Selectable_playOkSound.call(this);
+};
+
+MageStudios.ETP.Window_SkillType_makeCommandList =
+  Window_SkillType.prototype.makeCommandList;
+Window_SkillType.prototype.makeCommandList = function () {
+  MageStudios.ETP.Window_SkillType_makeCommandList.call(this);
+  if ($gameSystem.isShowTpMode()) this.addTpModeCommand();
+};
+
+MageStudios.ETP.Window_SkillList_isEnabled =
+  Window_SkillList.prototype.isEnabled;
+Window_SkillList.prototype.isEnabled = function (item) {
+  if (item && this._stypeId === "tpMode") return true;
+  return MageStudios.ETP.Window_SkillList_isEnabled.call(this, item);
+};
+
+Window_SkillType.prototype.addTpModeCommand = function () {
+  var text = MageStudios.Param.ETPCmdName;
+  var enabled = $gameSystem.isEnableTpMode();
+  this.addCommand(text, "skill", enabled, "tpMode");
+};
+
+MageStudios.ETP.Window_SkillList_makeItemList =
+  Window_SkillList.prototype.makeItemList;
+Window_SkillList.prototype.makeItemList = function () {
+  if (this._actor && this._stypeId === "tpMode") {
+    this._data = this._actor.unlockedTpModes();
+  } else {
+    MageStudios.ETP.Window_SkillList_makeItemList.call(this);
+  }
+};
+
+MageStudios.ETP.Window_SkillList_drawItem = Window_SkillList.prototype.drawItem;
+Window_SkillList.prototype.drawItem = function (index) {
+  if (this._stypeId === "tpMode") {
+    this.drawTpItem(index);
+  } else {
+    MageStudios.ETP.Window_SkillList_drawItem.call(this, index);
+  }
+};
+
+Window_SkillList.prototype.drawTpItem = function (index) {
+  var mode = this._data[index];
+  if (!mode) return;
+  var rect = this.itemRect(index);
+  rect.width -= this.textPadding();
+  this.changePaintOpacity(this.isEnabled(mode));
+  this.drawTpMode(mode, this._actor, rect.x, rect.y, rect.width);
+};
+
+MageStudios.ETP.Scene_Skill_onItemOk = Scene_Skill.prototype.onItemOk;
+Scene_Skill.prototype.onItemOk = function () {
+  if (this._skillTypeWindow.currentExt() === "tpMode") {
+    this.changeTpMode();
+  } else {
+    MageStudios.ETP.Scene_Skill_onItemOk.call(this);
+  }
+};
+
+Scene_Skill.prototype.changeTpMode = function () {
+  SoundManager.playEquip();
+  var tpMode = this._itemWindow.item();
+  this.actor().setTpMode(tpMode);
+  this._itemWindow.activate();
+  this._itemWindow.refresh();
+  this._statusWindow.refresh();
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+if (!MageStudios.Util.toGroup) {
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}
+
+MageStudios.Util.getRange = function (n, m) {
+  var result = [];
+  for (var i = n; i <= m; ++i) result.push(i);
+  return result;
+};
+
+MageStudios.Util.onlyUnique = function (value, index, self) {
+  return self.indexOf(value) === index;
+};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

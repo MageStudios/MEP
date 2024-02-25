@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Target Core Extension - Area of Effect
-// MSEP_X_AreaOfEffect.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_AreaOfEffect = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AOE = MageStudios.AOE || {};
-MageStudios.AOE.version = 1.00
+MageStudios.AOE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_TargetCore)
  * Adds Area of Effect scopes for targeting allies or enemies.
  * @author Mage Studios Engine Plugins
@@ -228,326 +222,307 @@ MageStudios.AOE.version = 1.00
  *   x or an AOE hitbox height of x.
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore && Imported.MSEP_TargetCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_AreaOfEffect");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.AOEBufferX = Number(MageStudios.Parameters["Buffer X"]);
+  MageStudios.Param.AOEBufferY = Number(MageStudios.Parameters["Buffer Y"]);
+  MageStudios.Param.AOECenterAni = eval(
+    String(MageStudios.Parameters["Center Animation"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_AreaOfEffect');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.AOECirGraphic = String(
+    MageStudios.Parameters["Circle Graphic"]
+  );
+  MageStudios.Param.AOECirBlend = Number(
+    MageStudios.Parameters["Circle Blend"]
+  );
+  MageStudios.Param.AOECirHeightRate = Number(
+    MageStudios.Parameters["Circle Height Rate"]
+  );
 
-MageStudios.Param.AOEBufferX = Number(MageStudios.Parameters['Buffer X']);
-MageStudios.Param.AOEBufferY = Number(MageStudios.Parameters['Buffer Y']);
-MageStudios.Param.AOECenterAni = eval(String(MageStudios.Parameters['Center Animation']));
+  MageStudios.Param.AOERectGraphic = String(
+    MageStudios.Parameters["Rect Graphic"]
+  );
+  MageStudios.Param.AOERectBlend = Number(MageStudios.Parameters["Rect Blend"]);
 
-MageStudios.Param.AOECirGraphic = String(MageStudios.Parameters['Circle Graphic']);
-MageStudios.Param.AOECirBlend = Number(MageStudios.Parameters['Circle Blend']);
-MageStudios.Param.AOECirHeightRate = Number(MageStudios.Parameters['Circle Height Rate']);
+  MageStudios.AOE.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.AOE.DataManager_isDatabaseLoaded.call(this)) return false;
 
-MageStudios.Param.AOERectGraphic = String(MageStudios.Parameters['Rect Graphic']);
-MageStudios.Param.AOERectBlend = Number(MageStudios.Parameters['Rect Blend']);
+    if (!MageStudios._loaded_MSEP_X_AreaOfEffect) {
+      this.processAOENotetags2($dataActors);
+      this.processAOENotetags2($dataEnemies);
+      MageStudios._loaded_MSEP_X_AreaOfEffect = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.AOE.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.AOE.DataManager_isDatabaseLoaded.call(this)) return false;
-
-  if (!MageStudios._loaded_MSEP_X_AreaOfEffect) {
-    this.processAOENotetags2($dataActors);
-    this.processAOENotetags2($dataEnemies);
-    MageStudios._loaded_MSEP_X_AreaOfEffect = true;
-  }
-  
-  return true;
-};
-
-MageStudios.AOE.DataManager_processTargetNotetags1 =
+  MageStudios.AOE.DataManager_processTargetNotetags1 =
     DataManager.processTargetNotetags1;
-DataManager.processTargetNotetags1 = function(group) {
+  DataManager.processTargetNotetags1 = function (group) {
     MageStudios.AOE.DataManager_processTargetNotetags1.call(this, group);
     this.processAOENotetags1(group);
-};
+  };
 
-DataManager.processAOENotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processAOENotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.aoeCircleRadius = 0;
-    obj.aoeCircleGraphic = MageStudios.Param.AOECirGraphic;
-    obj.aoeCircleHue = 0;
-    obj.aoeCircleBlend = MageStudios.Param.AOECirBlend;
-    obj.aoeCircleHeightRate = MageStudios.Param.AOECirHeightRate;
-    obj.aoeCenterAnimation = MageStudios.Param.AOECenterAni;
-    obj.aoeRectColumn = 0;
-    obj.aoeRectRow = 0;
-    obj.aoeRectAll = false;
-    obj.aoeRectGraphic = MageStudios.Param.AOERectGraphic
-    obj.aoeRectHue = 0;
-    obj.aoeRectBlend = MageStudios.Param.AOERectBlend;
+      obj.aoeCircleRadius = 0;
+      obj.aoeCircleGraphic = MageStudios.Param.AOECirGraphic;
+      obj.aoeCircleHue = 0;
+      obj.aoeCircleBlend = MageStudios.Param.AOECirBlend;
+      obj.aoeCircleHeightRate = MageStudios.Param.AOECirHeightRate;
+      obj.aoeCenterAnimation = MageStudios.Param.AOECenterAni;
+      obj.aoeRectColumn = 0;
+      obj.aoeRectRow = 0;
+      obj.aoeRectAll = false;
+      obj.aoeRectGraphic = MageStudios.Param.AOERectGraphic;
+      obj.aoeRectHue = 0;
+      obj.aoeRectBlend = MageStudios.Param.AOERectBlend;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<AOE RADIUS:[ ](\d+)>/i)) {
-        obj.aoeCircleRadius = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE GRAPHIC:[ ](.*)>/i)) {
-        obj.aoeCircleGraphic = String(RegExp.$1);
-      } else if (line.match(/<AOE HUE:[ ](\d+)>/i)) {
-        obj.aoeCircleHue = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE BLEND:[ ](\d+)>/i)) {
-        obj.aoeCircleBlend = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE HEIGHT:[ ](\d+)([%％])>/i)) {
-        obj.aoeCircleHeightRate = parseFloat(RegExp.$1) * 0.01;
-      } else if (line.match(/<AOE CENTER ANIMATION>/i)) {
-        obj.aoeCenterAnimation = true;
-      } else if (line.match(/<AOE GROUP ANIMATION>/i)) {
-        obj.aoeCenterAnimation = false;
-      } else if (line.match(/<RECT GRAPHIC:[ ](.*)>/i)) {
-        obj.aoeRectGraphic = String(RegExp.$1);
-      } else if (line.match(/<RECT HUE:[ ](\d+)>/i)) {
-        obj.aoeRectHue = parseInt(RegExp.$1);
-      } else if (line.match(/<RECT BLEND:[ ](\d+)>/i)) {
-        obj.aoeRectBlend = parseInt(RegExp.$1);
-      } else if (line.match(/<RECT COLUMN:[ ](\d+)>/i)) {
-        obj.aoeRectColumn = parseInt(RegExp.$1);
-        obj.aoeRectRow = 0;
-      } else if (line.match(/<RECT ROW:[ ](\d+)>/i)) {
-        obj.aoeRectRow = parseInt(RegExp.$1);
-        obj.aoeRectColumn = 0;
-      } else if (line.match(/<RECT SCREEN>/i)) {
-        obj.aoeRectAll = true;
-        obj.aoeRectColumn = 0;
-        obj.aoeRectRow = 0;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<AOE RADIUS:[ ](\d+)>/i)) {
+          obj.aoeCircleRadius = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE GRAPHIC:[ ](.*)>/i)) {
+          obj.aoeCircleGraphic = String(RegExp.$1);
+        } else if (line.match(/<AOE HUE:[ ](\d+)>/i)) {
+          obj.aoeCircleHue = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE BLEND:[ ](\d+)>/i)) {
+          obj.aoeCircleBlend = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE HEIGHT:[ ](\d+)([%％])>/i)) {
+          obj.aoeCircleHeightRate = parseFloat(RegExp.$1) * 0.01;
+        } else if (line.match(/<AOE CENTER ANIMATION>/i)) {
+          obj.aoeCenterAnimation = true;
+        } else if (line.match(/<AOE GROUP ANIMATION>/i)) {
+          obj.aoeCenterAnimation = false;
+        } else if (line.match(/<RECT GRAPHIC:[ ](.*)>/i)) {
+          obj.aoeRectGraphic = String(RegExp.$1);
+        } else if (line.match(/<RECT HUE:[ ](\d+)>/i)) {
+          obj.aoeRectHue = parseInt(RegExp.$1);
+        } else if (line.match(/<RECT BLEND:[ ](\d+)>/i)) {
+          obj.aoeRectBlend = parseInt(RegExp.$1);
+        } else if (line.match(/<RECT COLUMN:[ ](\d+)>/i)) {
+          obj.aoeRectColumn = parseInt(RegExp.$1);
+          obj.aoeRectRow = 0;
+        } else if (line.match(/<RECT ROW:[ ](\d+)>/i)) {
+          obj.aoeRectRow = parseInt(RegExp.$1);
+          obj.aoeRectColumn = 0;
+        } else if (line.match(/<RECT SCREEN>/i)) {
+          obj.aoeRectAll = true;
+          obj.aoeRectColumn = 0;
+          obj.aoeRectRow = 0;
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.processAOENotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processAOENotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.aoeBufferX = MageStudios.Param.AOEBufferX;
-    obj.aoeBufferY = MageStudios.Param.AOEBufferY;
-    obj.aoeHitboxW = 0;
-    obj.aoeHitboxH = 0;
+      obj.aoeBufferX = MageStudios.Param.AOEBufferX;
+      obj.aoeBufferY = MageStudios.Param.AOEBufferY;
+      obj.aoeHitboxW = 0;
+      obj.aoeHitboxH = 0;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<AOE BUFFER X:[ ]([\+\-]\d+)>/i)) {
-        obj.aoeBufferX = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE BUFFER Y:[ ]([\+\-]\d+)>/i)) {
-        obj.aoeBufferY = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE HITBOX WIDTH:[ ](\d+)>/i)) {
-        obj.aoeHitboxW = parseInt(RegExp.$1);
-      } else if (line.match(/<AOE HITBOX HEIGHT:[ ](\d+)>/i)) {
-        obj.aoeHitboxH = parseInt(RegExp.$1);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<AOE BUFFER X:[ ]([\+\-]\d+)>/i)) {
+          obj.aoeBufferX = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE BUFFER Y:[ ]([\+\-]\d+)>/i)) {
+          obj.aoeBufferY = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE HITBOX WIDTH:[ ](\d+)>/i)) {
+          obj.aoeHitboxW = parseInt(RegExp.$1);
+        } else if (line.match(/<AOE HITBOX HEIGHT:[ ](\d+)>/i)) {
+          obj.aoeHitboxH = parseInt(RegExp.$1);
+        }
       }
     }
-  }
-};
+  };
 
-MageStudios.AOE.DataManager_setDefaultActions = DataManager.setDefaultActions;
-DataManager.setDefaultActions = function(obj) {
+  MageStudios.AOE.DataManager_setDefaultActions = DataManager.setDefaultActions;
+  DataManager.setDefaultActions = function (obj) {
     if (obj.aoeCenterAnimation && this.isAoeSkill(obj)) {
       this.setAoeActions(obj);
     } else {
       MageStudios.AOE.DataManager_setDefaultActions.call(this, obj);
     }
-};
+  };
 
-DataManager.isAoeSkill = function(obj) {
+  DataManager.isAoeSkill = function (obj) {
     if (obj.aoeCircleRadius > 0) return true;
     if (obj.aoeRectColumn > 0) return true;
     if (obj.aoeRectRow > 0) return true;
     return obj.aoeRectAll;
-};
+  };
 
-DataManager.setAoeActions = function(obj) {
+  DataManager.setAoeActions = function (obj) {
     obj.setupActions = MageStudios.BEC.DefaultActionSetup.slice();
     if (obj.aoeCenterAnimation) {
       obj.wholeActions = [
-        ['PERFORM ACTION'],
-        ['ACTION ANIMATION', ['FIRST']], 
-        ['WAIT FOR ANIMATION']
+        ["PERFORM ACTION"],
+        ["ACTION ANIMATION", ["FIRST"]],
+        ["WAIT FOR ANIMATION"],
       ];
     } else {
       obj.wholeActions = [
-        ['PERFORM ACTION'],
-        ['ACTION ANIMATION', ['TARGETS']], 
-        ['WAIT FOR ANIMATION']
+        ["PERFORM ACTION"],
+        ["ACTION ANIMATION", ["TARGETS"]],
+        ["WAIT FOR ANIMATION"],
       ];
     }
     this.addActionEffects(obj, obj.wholeActions);
     obj.targetActions = [];
     obj.followActions = MageStudios.BEC.DefaultActionFollow.slice();
     obj.finishActions = MageStudios.BEC.DefaultActionFinish.slice();
-};
+  };
 
-DataManager.isAoeForbidden = function(obj) {
-  if (!obj) return true;
-  if (obj.isAoeForbidden !== undefined) return obj.isAoeForbidden;
-  obj.isAoeForbidden = false;
-  if (Imported.MSEP_X_SelectionControl) {
-    var arr = obj.selectConditions;
-    var length = arr.length;
-    for (var i = 0; i < length; ++i) {
-      var line = arr[i];
-      if (line) {
-        if (line.match(/ENEMY OR ACTOR SELECT/i)) {
-          obj.isAoeForbidden = true;
-          break;
-        } else if (line.match(/ACTOR OR ENEMY SELECT/i)) {
-          obj.isAoeForbidden = true;
-          break;
-        } else if (line.match(/SINGLE OR MULTIPLE SELECT/i)) {
-          obj.isAoeForbidden = true;
-          break;
-        } else if (line.match(/ROW[ ](\d+)/i)) {
-          obj.isAoeForbidden = true;
-          break;
+  DataManager.isAoeForbidden = function (obj) {
+    if (!obj) return true;
+    if (obj.isAoeForbidden !== undefined) return obj.isAoeForbidden;
+    obj.isAoeForbidden = false;
+    if (Imported.MSEP_X_SelectionControl) {
+      var arr = obj.selectConditions;
+      var length = arr.length;
+      for (var i = 0; i < length; ++i) {
+        var line = arr[i];
+        if (line) {
+          if (line.match(/ENEMY OR ACTOR SELECT/i)) {
+            obj.isAoeForbidden = true;
+            break;
+          } else if (line.match(/ACTOR OR ENEMY SELECT/i)) {
+            obj.isAoeForbidden = true;
+            break;
+          } else if (line.match(/SINGLE OR MULTIPLE SELECT/i)) {
+            obj.isAoeForbidden = true;
+            break;
+          } else if (line.match(/ROW[ ](\d+)/i)) {
+            obj.isAoeForbidden = true;
+            break;
+          }
         }
       }
     }
-  }
-  return obj.isAoeForbidden;
-};
+    return obj.isAoeForbidden;
+  };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.AOE.BattleManager_startAllSelection = BattleManager.startAllSelection;
-BattleManager.startAllSelection = function() {
+  MageStudios.AOE.BattleManager_startAllSelection =
+    BattleManager.startAllSelection;
+  BattleManager.startAllSelection = function () {
     if (this.inputtingAction().isAoe()) {
       this._customTargetSelectGroup = this.inputtingAction().makeTargets();
     } else {
       MageStudios.AOE.BattleManager_startAllSelection.call(this);
     }
-};
+  };
 
-MageStudios.AOE.BattleManager_makeActionTargets =
+  MageStudios.AOE.BattleManager_makeActionTargets =
     BattleManager.makeActionTargets;
-BattleManager.makeActionTargets = function(string) {
-    if ('FIRST' === string.toUpperCase()) {
+  BattleManager.makeActionTargets = function (string) {
+    if ("FIRST" === string.toUpperCase()) {
       return [this._targets[0]];
     }
     return MageStudios.AOE.BattleManager_makeActionTargets.call(this, string);
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.aoeX = function() {
+  Game_Battler.prototype.aoeX = function () {
     return this.spritePosX() + this.aoeBufferX();
-};
+  };
 
-Game_Battler.prototype.aoeY = function() {
+  Game_Battler.prototype.aoeY = function () {
     return this.spritePosY() + this.aoeBufferY();
-};
+  };
 
-Game_Battler.prototype.aoeBufferX = function() {
+  Game_Battler.prototype.aoeBufferX = function () {
     return 0;
-};
+  };
 
-Game_Battler.prototype.aoeBufferY = function() {
+  Game_Battler.prototype.aoeBufferY = function () {
     return 0;
-};
+  };
 
-Game_Battler.prototype.aoeWidth = function() {
+  Game_Battler.prototype.aoeWidth = function () {
     return this.spriteWidth();
-};
+  };
 
-Game_Battler.prototype.aoeHeight = function() {
+  Game_Battler.prototype.aoeHeight = function () {
     return this.spriteHeight();
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.aoeBufferX = function() {
+  Game_Actor.prototype.aoeBufferX = function () {
     return this.actor().aoeBufferX;
-};
+  };
 
-Game_Actor.prototype.aoeBufferY = function() {
+  Game_Actor.prototype.aoeBufferY = function () {
     return this.actor().aoeBufferY;
-};
+  };
 
-Game_Actor.prototype.aoeWidth = function() {
+  Game_Actor.prototype.aoeWidth = function () {
     return this.actor().aoeHitboxW || this.spriteWidth();
-};
+  };
 
-Game_Actor.prototype.aoeHeight = function() {
+  Game_Actor.prototype.aoeHeight = function () {
     return this.actor().aoeHitboxH || this.spriteHeight();
-};
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.aoeBufferX = function() {
+  Game_Enemy.prototype.aoeBufferX = function () {
     return this.enemy().aoeBufferX;
-};
+  };
 
-Game_Enemy.prototype.aoeBufferY = function() {
+  Game_Enemy.prototype.aoeBufferY = function () {
     return this.enemy().aoeBufferY;
-};
+  };
 
-Game_Enemy.prototype.aoeWidth = function() {
+  Game_Enemy.prototype.aoeWidth = function () {
     return this.enemy().aoeHitboxW || this.spriteWidth();
-};
+  };
 
-Game_Enemy.prototype.aoeHeight = function() {
+  Game_Enemy.prototype.aoeHeight = function () {
     return this.enemy().aoeHitboxH || this.spriteHeight();
-};
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.isAoeForbidden = function() {
+  Game_Action.prototype.isAoeForbidden = function () {
     return DataManager.isAoeForbidden(this.item());
-};
+  };
 
-Game_Action.prototype.isAoe = function() {
+  Game_Action.prototype.isAoe = function () {
     if (this.isAoeForbidden()) return false;
     return this.isAoeCircle() || this.isAoeRect();
-};
+  };
 
-Game_Action.prototype.isAoeCircle = function() {
+  Game_Action.prototype.isAoeCircle = function () {
     if (this.isAoeForbidden()) return false;
     return this.item().aoeCircleRadius > 0;
-};
+  };
 
-Game_Action.prototype.isAoeRect = function() {
+  Game_Action.prototype.isAoeRect = function () {
     if (this.isAoeForbidden()) return false;
     if (this.item().aoeRectColumn > 0) return true;
     if (this.item().aoeRectRow > 0) return true;
     return this.item().aoeRectAll;
-};
+  };
 
-MageStudios.AOE.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
-Game_Action.prototype.makeTargets = function() {
+  MageStudios.AOE.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
+  Game_Action.prototype.makeTargets = function () {
     var targets = MageStudios.AOE.Game_Action_makeTargets.call(this);
     if (this.isAoe()) this.addAoeTargets(targets);
     return targets;
-};
+  };
 
-Game_Action.prototype.addAoeTargets = function(targets) {
+  Game_Action.prototype.addAoeTargets = function (targets) {
     if (this.isAoeCircle()) this.addAoeCircleTargets(targets);
     if (this.isAoeRect()) this.addAoeRectTargets(targets);
-};
+  };
 
-Game_Action.prototype.addAoeCircleTargets = function(targets) {
+  Game_Action.prototype.addAoeCircleTargets = function (targets) {
     var main = targets[0];
     if (!main) return;
     if (this.isForFriend()) {
@@ -562,9 +537,9 @@ Game_Action.prototype.addAoeCircleTargets = function(targets) {
       if (targets.contains(member)) continue;
       if (this.isInsideAoeCircle(main, member)) targets.push(member);
     }
-};
+  };
 
-Game_Action.prototype.isInsideAoeCircle = function(main, target) {
+  Game_Action.prototype.isInsideAoeCircle = function (main, target) {
     var skill = this.item();
     var radius = skill.aoeCircleRadius;
     var height = skill.aoeCircleHeightRate;
@@ -582,15 +557,16 @@ Game_Action.prototype.isInsideAoeCircle = function(main, target) {
     } else if (mainY < targetY) {
       targetY = Math.max(mainY, target.aoeY() - target.aoeHeight());
     }
-    var x =  (targetX - mainX) * Math.cos(0) + (targetY - mainY) * Math.sin(0);
+    var x = (targetX - mainX) * Math.cos(0) + (targetY - mainY) * Math.sin(0);
     var y = -(targetX - mainX) * Math.sin(0) + (targetY - mainY) * Math.cos(0);
-    var a = radius; var b = radius * Math.max(height, 0.001);
-    var c = (Math.pow(x, 2) / Math.pow(a, 2));
-    c += (Math.pow(y, 2) / Math.pow(b, 2));
+    var a = radius;
+    var b = radius * Math.max(height, 0.001);
+    var c = Math.pow(x, 2) / Math.pow(a, 2);
+    c += Math.pow(y, 2) / Math.pow(b, 2);
     return c <= 1;
-};
+  };
 
-Game_Action.prototype.addAoeRectTargets = function(targets) {
+  Game_Action.prototype.addAoeRectTargets = function (targets) {
     var main = targets[0];
     if (!main) return;
     if (this.isForFriend()) {
@@ -606,9 +582,9 @@ Game_Action.prototype.addAoeRectTargets = function(targets) {
       if (targets.contains(member)) continue;
       if (this.isInsideAoeRect(rect, member)) targets.push(member);
     }
-};
+  };
 
-Game_Action.prototype.aoeRect = function(main) {
+  Game_Action.prototype.aoeRect = function (main) {
     var skill = this.item();
     var rect = new Rectangle();
     if (skill.aoeRectAll) {
@@ -628,45 +604,45 @@ Game_Action.prototype.aoeRect = function(main) {
       rect.y = main.aoeY() - rect.height / 2;
     }
     return rect;
-};
+  };
 
-Game_Action.prototype.isInsideAoeRect = function(r1, target) {
+  Game_Action.prototype.isInsideAoeRect = function (r1, target) {
     var r2 = new Rectangle();
     r2.x = target.aoeX() - target.aoeWidth() / 2;
     r2.y = target.aoeY() - target.aoeHeight();
     r2.width = target.aoeWidth();
     r2.height = target.aoeHeight();
-    return !(r2.x > r1.x + r1.width || r2.x + r2.width < r1.x || 
-      r2.y > r1.y + r1.height || r2.y + r2.height < r1.y);
-};
+    return !(
+      r2.x > r1.x + r1.width ||
+      r2.x + r2.width < r1.x ||
+      r2.y > r1.y + r1.height ||
+      r2.y + r2.height < r1.y
+    );
+  };
 
-//=============================================================================
-// Sprite_AoeCircle
-//=============================================================================
-
-function Sprite_AoeCircle() {
+  function Sprite_AoeCircle() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Sprite_AoeCircle.prototype = Object.create(Sprite_Base.prototype);
-Sprite_AoeCircle.prototype.constructor = Sprite_AoeCircle;
+  Sprite_AoeCircle.prototype = Object.create(Sprite_Base.prototype);
+  Sprite_AoeCircle.prototype.constructor = Sprite_AoeCircle;
 
-Sprite_AoeCircle.prototype.initialize = function() {
+  Sprite_AoeCircle.prototype.initialize = function () {
     Sprite_Base.prototype.initialize.call(this);
     this.initMembers();
-};
+  };
 
-Sprite_AoeCircle.prototype.initMembers = function() {
+  Sprite_AoeCircle.prototype.initMembers = function () {
     this._glowRate = 8;
     this._radius = 0;
     this._aoeGraphic = true;
-    this._currentImage = '';
+    this._currentImage = "";
     this.hide();
     this.anchor.x = 0.5;
     this.anchor.y = 0.5;
-};
+  };
 
-Sprite_AoeCircle.prototype.setup = function(skill) {
+  Sprite_AoeCircle.prototype.setup = function (skill) {
     this._skill = skill;
     if (DataManager.isAoeForbidden(skill)) return;
     if (this._skill.aoeCircleRadius <= 0) return;
@@ -676,24 +652,24 @@ Sprite_AoeCircle.prototype.setup = function(skill) {
     this.createBitmap();
     this._glowRate = 8;
     this.opacity = 0;
-};
+  };
 
-Sprite_AoeCircle.prototype.createBitmap = function() {
+  Sprite_AoeCircle.prototype.createBitmap = function () {
     var filename = this._skill.aoeCircleGraphic;
     var hue = this._skill.aoeCircleHue;
     this.bitmap = ImageManager.loadPicture(filename, hue);
     this.blendMode = this._skill.aoeCircleBlend;
-};
+  };
 
-Sprite_AoeCircle.prototype.update = function() {
+  Sprite_AoeCircle.prototype.update = function () {
     Sprite_Base.prototype.update.call(this);
     if (!this.visible) return;
     this.updateLocation();
     this.updateScale();
     this.updateOpacity();
-};
+  };
 
-Sprite_AoeCircle.prototype.updateLocation = function() {
+  Sprite_AoeCircle.prototype.updateLocation = function () {
     var scene = SceneManager._scene;
     if (scene._enemyWindow && scene._enemyWindow.active) {
       var target = scene._enemyWindow.enemy();
@@ -709,49 +685,45 @@ Sprite_AoeCircle.prototype.updateLocation = function() {
       this._targetIndex = target.index();
       BattleManager.startAllSelection();
     }
-};
+  };
 
-Sprite_AoeCircle.prototype.updateScale = function() {
+  Sprite_AoeCircle.prototype.updateScale = function () {
     var diameter = this._radius * 2;
-    this.scale.x = diameter / (Math.max(1, this.bitmap.width));
+    this.scale.x = diameter / Math.max(1, this.bitmap.width);
     this.scale.y = this.scale.x * this._skill.aoeCircleHeightRate;
-};
+  };
 
-Sprite_AoeCircle.prototype.updateOpacity = function() {
+  Sprite_AoeCircle.prototype.updateOpacity = function () {
     this.opacity += this._glowRate;
     if (this.opacity >= 255) {
       this._glowRate = -8;
     } else if (this.opacity <= 64) {
       this._glowRate = 8;
     }
-};
+  };
 
-//=============================================================================
-// Sprite_AoeRect
-//=============================================================================
-
-function Sprite_AoeRect() {
+  function Sprite_AoeRect() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Sprite_AoeRect.prototype = Object.create(Sprite_Base.prototype);
-Sprite_AoeRect.prototype.constructor = Sprite_AoeRect;
+  Sprite_AoeRect.prototype = Object.create(Sprite_Base.prototype);
+  Sprite_AoeRect.prototype.constructor = Sprite_AoeRect;
 
-Sprite_AoeRect.prototype.initialize = function() {
+  Sprite_AoeRect.prototype.initialize = function () {
     Sprite_Base.prototype.initialize.call(this);
     this.initMembers();
-};
+  };
 
-Sprite_AoeRect.prototype.initMembers = function() {
+  Sprite_AoeRect.prototype.initMembers = function () {
     this._glowRate = 8;
     this._aoeGraphic = true;
-    this._currentImage = '';
+    this._currentImage = "";
     this.hide();
     this.anchor.x = 0.5;
     this.anchor.y = 0.5;
-};
+  };
 
-Sprite_AoeRect.prototype.setup = function(skill) {
+  Sprite_AoeRect.prototype.setup = function (skill) {
     this._skill = skill;
     if (DataManager.isAoeForbidden(skill)) return;
     if (this._skill.aoeRectColumn > 0) {
@@ -771,24 +743,24 @@ Sprite_AoeRect.prototype.setup = function(skill) {
     this.createBitmap();
     this._glowRate = 8;
     this.opacity = 0;
-};
+  };
 
-Sprite_AoeRect.prototype.createBitmap = function() {
+  Sprite_AoeRect.prototype.createBitmap = function () {
     var filename = this._skill.aoeRectGraphic;
     var hue = this._skill.aoeRectHue;
     this.bitmap = ImageManager.loadPicture(filename, hue);
     this.blendMode = this._skill.aoeRectBlend;
-};
+  };
 
-Sprite_AoeRect.prototype.update = function() {
+  Sprite_AoeRect.prototype.update = function () {
     Sprite_Base.prototype.update.call(this);
     if (!this.visible) return;
     this.updateLocation();
     this.updateScale();
     this.updateOpacity();
-};
+  };
 
-Sprite_AoeRect.prototype.updateLocation = function() {
+  Sprite_AoeRect.prototype.updateLocation = function () {
     var scene = SceneManager._scene;
     if (scene._enemyWindow && scene._enemyWindow.active) {
       var target = scene._enemyWindow.enemy();
@@ -813,54 +785,50 @@ Sprite_AoeRect.prototype.updateLocation = function() {
       this._targetIndex = target.index();
       BattleManager.startAllSelection();
     }
-};
+  };
 
-Sprite_AoeRect.prototype.updateScale = function() {
-    this.scale.x = this._widthPixels / (Math.max(1, this.bitmap.width));
-    this.scale.y = this._heightPixels / (Math.max(1, this.bitmap.height));
-};
+  Sprite_AoeRect.prototype.updateScale = function () {
+    this.scale.x = this._widthPixels / Math.max(1, this.bitmap.width);
+    this.scale.y = this._heightPixels / Math.max(1, this.bitmap.height);
+  };
 
-Sprite_AoeRect.prototype.updateOpacity = function() {
+  Sprite_AoeRect.prototype.updateOpacity = function () {
     this.opacity += this._glowRate;
     if (this.opacity >= 255) {
       this._glowRate = -8;
     } else if (this.opacity <= 64) {
       this._glowRate = 8;
     }
-};
+  };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-MageStudios.AOE.Spriteset_Battle_createBattleback =
+  MageStudios.AOE.Spriteset_Battle_createBattleback =
     Spriteset_Battle.prototype.createBattleback;
-Spriteset_Battle.prototype.createBattleback = function() {
+  Spriteset_Battle.prototype.createBattleback = function () {
     MageStudios.AOE.Spriteset_Battle_createBattleback.call(this);
     this.createAoeSprites();
-};
+  };
 
-Spriteset_Battle.prototype.createAoeSprites = function() {
+  Spriteset_Battle.prototype.createAoeSprites = function () {
     this._aoeCircleSprite = new Sprite_AoeCircle();
     this._battleField.addChild(this._aoeCircleSprite);
     this._aoeRectSprite = new Sprite_AoeRect();
     this._battleField.addChild(this._aoeRectSprite);
-};
+  };
 
-Spriteset_Battle.prototype.setupAoe = function(action) {
+  Spriteset_Battle.prototype.setupAoe = function (action) {
     if (!action) return;
     if (!action.item()) return;
     this._aoeCircleSprite.setup(action.item());
     this._aoeRectSprite.setup(action.item());
-};
+  };
 
-Spriteset_Battle.prototype.closeAoe = function() {
+  Spriteset_Battle.prototype.closeAoe = function () {
     this._aoeCircleSprite.hide();
     this._aoeRectSprite.hide();
     BattleManager.clearCustomTargetSelectGroup();
-};
+  };
 
-Spriteset_Battle.prototype.battleFieldDepthCompare = function(a, b) {
+  Spriteset_Battle.prototype.battleFieldDepthCompare = function (a, b) {
     if (a.tilePosition && !b.tilePosition) return -1;
     if (b.tilePosition && !a.tilePosition) return 1;
     if (a._aoeGraphic && !b._aoeGraphic) return -1;
@@ -880,51 +848,45 @@ Spriteset_Battle.prototype.battleFieldDepthCompare = function(a, b) {
     if (a.y < b.y) return -1;
     if (a.y > b.y) return 1;
     return 0;
-};
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.AOE.Scene_Battle_selectEnemySelection =
+  MageStudios.AOE.Scene_Battle_selectEnemySelection =
     Scene_Battle.prototype.selectEnemySelection;
-Scene_Battle.prototype.selectEnemySelection = function() {
+  Scene_Battle.prototype.selectEnemySelection = function () {
     MageStudios.AOE.Scene_Battle_selectEnemySelection.call(this);
     this._spriteset.setupAoe(BattleManager.inputtingAction());
-};
+  };
 
-MageStudios.AOE.Scene_Battle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
-Scene_Battle.prototype.onEnemyOk = function() {
+  MageStudios.AOE.Scene_Battle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
+  Scene_Battle.prototype.onEnemyOk = function () {
     MageStudios.AOE.Scene_Battle_onEnemyOk.call(this);
     this._spriteset.closeAoe();
-};
+  };
 
-MageStudios.AOE.Scene_Battle_onEnemyCancel = Scene_Battle.prototype.onEnemyCancel;
-Scene_Battle.prototype.onEnemyCancel = function() {
+  MageStudios.AOE.Scene_Battle_onEnemyCancel =
+    Scene_Battle.prototype.onEnemyCancel;
+  Scene_Battle.prototype.onEnemyCancel = function () {
     MageStudios.AOE.Scene_Battle_onEnemyCancel.call(this);
     this._spriteset.closeAoe();
-};
+  };
 
-MageStudios.AOE.Scene_Battle_selectActorSelection =
+  MageStudios.AOE.Scene_Battle_selectActorSelection =
     Scene_Battle.prototype.selectActorSelection;
-Scene_Battle.prototype.selectActorSelection = function() {
+  Scene_Battle.prototype.selectActorSelection = function () {
     MageStudios.AOE.Scene_Battle_selectActorSelection.call(this);
     this._spriteset.setupAoe(BattleManager.inputtingAction());
-};
+  };
 
-MageStudios.AOE.Scene_Battle_onActorOk = Scene_Battle.prototype.onActorOk;
-Scene_Battle.prototype.onActorOk = function() {
+  MageStudios.AOE.Scene_Battle_onActorOk = Scene_Battle.prototype.onActorOk;
+  Scene_Battle.prototype.onActorOk = function () {
     MageStudios.AOE.Scene_Battle_onActorOk.call(this);
     this._spriteset.closeAoe();
-};
+  };
 
-MageStudios.AOE.Scene_Battle_onActorCancel = Scene_Battle.prototype.onActorCancel;
-Scene_Battle.prototype.onActorCancel = function() {
+  MageStudios.AOE.Scene_Battle_onActorCancel =
+    Scene_Battle.prototype.onActorCancel;
+  Scene_Battle.prototype.onActorCancel = function () {
     MageStudios.AOE.Scene_Battle_onActorCancel.call(this);
     this._spriteset.closeAoe();
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

@@ -3,10 +3,9 @@ Imported.MSEP_EventSpriteOffset = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EvSpOf = MageStudios.EvSpOf || {};
-MageStudios.EvSpOf.version = 1.00;
+MageStudios.EvSpOf.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Offset event sprites using notetags and comment tags!
  * @author Mage Studios Engine Plugins
  *
@@ -84,7 +83,7 @@ MageStudios.EvSpOf.version = 1.00;
  * ============================================================================
  * Custom Movement Route - Script Calls
  * ============================================================================
- * 
+ *
  * If you wish to change an event sprite's offset after a page has been loaded,
  * you can issue a custom movement route script calls to alter it:
  *
@@ -108,69 +107,62 @@ MageStudios.EvSpOf.version = 1.00;
  *   comment tags. A positive X goes right, a negative X goes left. A positive
  *   Y goes down, a negative Y goes up.
  */
-//=============================================================================
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
 
 MageStudios.EvSpOf.Game_CharacterBase_initMembers =
   Game_CharacterBase.prototype.initMembers;
-Game_CharacterBase.prototype.initMembers = function() {
+Game_CharacterBase.prototype.initMembers = function () {
   MageStudios.EvSpOf.Game_CharacterBase_initMembers.call(this);
   this.initSpriteOffsets();
 };
 
-Game_CharacterBase.prototype.initSpriteOffsets = function() {
+Game_CharacterBase.prototype.initSpriteOffsets = function () {
   this._spriteOffsetX = 0;
   this._spriteOffsetY = 0;
 };
 
-MageStudios.EvSpOf.Game_CharacterBase_screenX = Game_CharacterBase.prototype.screenX;
-Game_CharacterBase.prototype.screenX = function() {
+MageStudios.EvSpOf.Game_CharacterBase_screenX =
+  Game_CharacterBase.prototype.screenX;
+Game_CharacterBase.prototype.screenX = function () {
   var value = MageStudios.EvSpOf.Game_CharacterBase_screenX.call(this);
   value += this.spriteOffsetX();
   return Math.round(value);
 };
 
-MageStudios.EvSpOf.Game_CharacterBase_screenY = Game_CharacterBase.prototype.screenY;
-Game_CharacterBase.prototype.screenY = function() {
+MageStudios.EvSpOf.Game_CharacterBase_screenY =
+  Game_CharacterBase.prototype.screenY;
+Game_CharacterBase.prototype.screenY = function () {
   var value = MageStudios.EvSpOf.Game_CharacterBase_screenY.call(this);
   value += this.spriteOffsetY();
   return Math.round(value);
 };
 
-Game_CharacterBase.prototype.spriteOffsetX = function() {
+Game_CharacterBase.prototype.spriteOffsetX = function () {
   if (this._spriteOffsetX === undefined) this.initSpriteOffsets();
   var value = this._spriteOffsetX;
   return value;
 };
 
-Game_CharacterBase.prototype.spriteOffsetY = function() {
+Game_CharacterBase.prototype.spriteOffsetY = function () {
   if (this._spriteOffsetY === undefined) this.initSpriteOffsets();
   var value = this._spriteOffsetY;
   return value;
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EvSpOf.Game_Event_setupPageSettings =
   Game_Event.prototype.setupPageSettings;
-Game_Event.prototype.setupPageSettings = function() {
+Game_Event.prototype.setupPageSettings = function () {
   MageStudios.EvSpOf.Game_Event_setupPageSettings.call(this);
   this.setupSpriteOffsets();
 };
 
-Game_Event.prototype.setupSpriteOffsets = function() {
+Game_Event.prototype.setupSpriteOffsets = function () {
   this.initSpriteOffsets();
   this.setupNotetagSpriteOffsets();
   this.setupCommentTagSpriteOffsets();
 };
 
-Game_Event.prototype.setupNotetagSpriteOffsets = function() {
-  if (this.event().note === '') return;
+Game_Event.prototype.setupNotetagSpriteOffsets = function () {
+  if (this.event().note === "") return;
   var note1 = /<SPRITE OFFSET X:[ ]([\+\-]\d+)>/i;
   var note2 = /<SPRITE OFFSET Y:[ ]([\+\-]\d+)>/i;
   var note3 = /<SPRITE OFFSET:[ ]([\+\-]\d+),[ ]([\+\-]\d+)>/i;
@@ -186,7 +178,7 @@ Game_Event.prototype.setupNotetagSpriteOffsets = function() {
   }
 };
 
-Game_Event.prototype.setupCommentTagSpriteOffsets = function() {
+Game_Event.prototype.setupCommentTagSpriteOffsets = function () {
   if (!this.page()) return;
   var note1 = /<SPRITE OFFSET X:[ ]([\+\-]\d+)>/i;
   var note2 = /<SPRITE OFFSET Y:[ ]([\+\-]\d+)>/i;
@@ -209,7 +201,3 @@ Game_Event.prototype.setupCommentTagSpriteOffsets = function() {
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

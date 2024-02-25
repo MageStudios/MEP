@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Buffs & States Extension - State Categories
-// MSEP_X_StateCategories.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_StateCategories = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.StC = MageStudios.StC || {};
-MageStudios.StC.version = 1.00;
+MageStudios.StC.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BuffsStatesCore.js) Sets up categories
  * for your states to make control over them easier.
  * @author Mage Studios Engine Plugins
@@ -151,115 +145,109 @@ MageStudios.StC.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BuffsStatesCore) {
+  MageStudios.StC.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.StC.DataManager_isDatabaseLoaded.call(this)) return false;
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    if (!MageStudios._loaded_MSEP_X_StateCategories) {
+      this.processStCNotetags1($dataStates);
+      this.processStCNotetags2($dataSkills);
+      this.processStCNotetags2($dataItems);
+      MageStudios._loaded_MSEP_X_StateCategories = true;
+    }
 
-MageStudios.StC.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.StC.DataManager_isDatabaseLoaded.call(this)) return false;
+    return true;
+  };
 
-  if (!MageStudios._loaded_MSEP_X_StateCategories) {
-    this.processStCNotetags1($dataStates);
-    this.processStCNotetags2($dataSkills);
-    this.processStCNotetags2($dataItems);
-    MageStudios._loaded_MSEP_X_StateCategories = true;
-  }
-  
-  return true;
-};
+  DataManager.processStCNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processStCNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+      obj.category = [];
 
-    obj.category = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<CATEGORY:[ ](.*)>/i)) {
-        obj.category.push(String(RegExp.$1).toUpperCase())
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<CATEGORY:[ ](.*)>/i)) {
+          obj.category.push(String(RegExp.$1).toUpperCase());
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.processStCNotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processStCNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.removeCategory = {};
-    var evalMode = 'none';
-    var evalLine = '';
-    obj.removeCategoryEval = {};
+      obj.removeCategory = {};
+      var evalMode = "none";
+      var evalLine = "";
+      obj.removeCategoryEval = {};
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<REMOVE STATE CATEGORY:[ ](.*)>/i)) {
-        var category = String(RegExp.$1).toUpperCase().trim();
-        obj.removeCategory[category] = 'ALL';
-      } else if (line.match(/<REMOVE[ ](\d+)[ ]STATE CATEGORY:[ ](.*)>/i)) {
-        var value = parseInt(RegExp.$1);
-        var category = String(RegExp.$2).toUpperCase().trim();
-        obj.removeCategory[category] = value;
-      } else if (line.match(/<CUSTOM REMOVE STATE CATEGORY:[ ](.*)>/i)) {
-        var evalMode = 'custom remove state category';
-        var evalLine = '';
-      } else if (line.match(/<\/CUSTOM REMOVE STATE CATEGORY:[ ](.*)>/i)) {
-        var category = String(RegExp.$1).toUpperCase().trim();
-        obj.removeCategory[category] = obj.removeCategory[category] || 1;
-        obj.removeCategoryEval[category] = evalLine;
-        var evalMode = 'none';
-        var evalLine = '';
-      } else if (evalMode === 'custom remove state category') {
-        evalLine = evalLine + line + '\n';
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<REMOVE STATE CATEGORY:[ ](.*)>/i)) {
+          var category = String(RegExp.$1).toUpperCase().trim();
+          obj.removeCategory[category] = "ALL";
+        } else if (line.match(/<REMOVE[ ](\d+)[ ]STATE CATEGORY:[ ](.*)>/i)) {
+          var value = parseInt(RegExp.$1);
+          var category = String(RegExp.$2).toUpperCase().trim();
+          obj.removeCategory[category] = value;
+        } else if (line.match(/<CUSTOM REMOVE STATE CATEGORY:[ ](.*)>/i)) {
+          var evalMode = "custom remove state category";
+          var evalLine = "";
+        } else if (line.match(/<\/CUSTOM REMOVE STATE CATEGORY:[ ](.*)>/i)) {
+          var category = String(RegExp.$1).toUpperCase().trim();
+          obj.removeCategory[category] = obj.removeCategory[category] || 1;
+          obj.removeCategoryEval[category] = evalLine;
+          var evalMode = "none";
+          var evalLine = "";
+        } else if (evalMode === "custom remove state category") {
+          evalLine = evalLine + line + "\n";
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.StC.Game_BattlerBase_die = Game_BattlerBase.prototype.die;
-Game_BattlerBase.prototype.die = function() {
+  MageStudios.StC.Game_BattlerBase_die = Game_BattlerBase.prototype.die;
+  Game_BattlerBase.prototype.die = function () {
     $gameTemp._deathStateClear = true;
     MageStudios.StC.Game_BattlerBase_die.call(this);
     $gameTemp._deathStateClear = false;
-};
+  };
 
-MageStudios.StC.Game_BattlerBase_recoverAll = Game_BattlerBase.prototype.recoverAll;
-Game_BattlerBase.prototype.recoverAll = function() {
+  MageStudios.StC.Game_BattlerBase_recoverAll =
+    Game_BattlerBase.prototype.recoverAll;
+  Game_BattlerBase.prototype.recoverAll = function () {
     $gameTemp._recoverAllClear = true;
     MageStudios.StC.Game_BattlerBase_recoverAll.call(this);
     $gameTemp._recoverAllClear = false;
-};
+  };
 
-MageStudios.StC.Game_BattlerBase_clearStates =
+  MageStudios.StC.Game_BattlerBase_clearStates =
     Game_BattlerBase.prototype.clearStates;
-Game_BattlerBase.prototype.clearStates = function() {
-  if (this.isCustomClearStates()) {
-    var states = JsonEx.makeDeepCopy(this._states);
-    var turns = JsonEx.makeDeepCopy(this._stateTurns);
-  }
-  MageStudios.StC.Game_BattlerBase_clearStates.call(this);
-  if (this.isCustomClearStates()) this.retainCustomClearStates(states, turns);
-};
+  Game_BattlerBase.prototype.clearStates = function () {
+    if (this.isCustomClearStates()) {
+      var states = JsonEx.makeDeepCopy(this._states);
+      var turns = JsonEx.makeDeepCopy(this._stateTurns);
+    }
+    MageStudios.StC.Game_BattlerBase_clearStates.call(this);
+    if (this.isCustomClearStates()) this.retainCustomClearStates(states, turns);
+  };
 
-Game_BattlerBase.prototype.isCustomClearStates = function() {
+  Game_BattlerBase.prototype.isCustomClearStates = function () {
     if ($gameTemp._deathStateClear) return true;
     if ($gameTemp._recoverAllClear) return true;
     return false;
-};
+  };
 
-Game_BattlerBase.prototype.retainCustomClearStates = function(states, turns) {
+  Game_BattlerBase.prototype.retainCustomClearStates = function (
+    states,
+    turns
+  ) {
     var length = states.length;
     var removed = false;
     for (var i = 0; i < length; ++i) {
@@ -267,14 +255,14 @@ Game_BattlerBase.prototype.retainCustomClearStates = function(states, turns) {
       var state = $dataStates[id];
       if (!state) continue;
       if ($gameTemp._deathStateClear) {
-        if (state.category.contains('BYPASS DEATH REMOVAL')) {
+        if (state.category.contains("BYPASS DEATH REMOVAL")) {
           this._states.push(id);
           this._stateTurns[id] = turns[id];
           removed = true;
         }
       }
       if ($gameTemp._recoverAllClear) {
-        if (state.category.contains('BYPASS RECOVER ALL REMOVAL')) {
+        if (state.category.contains("BYPASS RECOVER ALL REMOVAL")) {
           this._states.push(id);
           this._stateTurns[id] = turns[id];
           removed = true;
@@ -282,43 +270,47 @@ Game_BattlerBase.prototype.retainCustomClearStates = function(states, turns) {
       }
     }
     if (removed) this.sortStates();
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.StC.Game_Battler_refresh = Game_Battler.prototype.refresh;
-Game_Battler.prototype.refresh = function() {
+  MageStudios.StC.Game_Battler_refresh = Game_Battler.prototype.refresh;
+  Game_Battler.prototype.refresh = function () {
     this._groupDefeat = undefined;
     MageStudios.StC.Game_Battler_refresh.call(this);
-};
+  };
 
-MageStudios.StC.Game_Battler_isStateAddable = Game_Battler.prototype.isStateAddable;
-Game_Battler.prototype.isStateAddable = function(stateId) {
-  var state = $dataStates[stateId];
-  if (state && state.category.contains('BYPASS DEATH REMOVAL')) {
-    return (!this.isStateResist(stateId) &&
-           !this._result.isStateRemoved(stateId) &&
-           !this.isStateRestrict(stateId));
-  }
-  return MageStudios.StC.Game_Battler_isStateAddable.call(this, stateId);
-};
+  MageStudios.StC.Game_Battler_isStateAddable =
+    Game_Battler.prototype.isStateAddable;
+  Game_Battler.prototype.isStateAddable = function (stateId) {
+    var state = $dataStates[stateId];
+    if (state && state.category.contains("BYPASS DEATH REMOVAL")) {
+      return (
+        !this.isStateResist(stateId) &&
+        !this._result.isStateRemoved(stateId) &&
+        !this.isStateRestrict(stateId)
+      );
+    }
+    return MageStudios.StC.Game_Battler_isStateAddable.call(this, stateId);
+  };
 
-Game_Battler.prototype.removeStateCategoryEffect = function(obj, user) {
+  Game_Battler.prototype.removeStateCategoryEffect = function (obj, user) {
     var categories = obj.removeCategory;
     for (var category in categories) {
       var value = categories[category];
-      if (value === 'ALL') {
+      if (value === "ALL") {
         this.removeStateCategoryAll(category);
       } else {
         value = this.removeStateCategoryEval(value, obj, category, user);
         this.removeStateCategory(category, value);
       }
     }
-};
+  };
 
-Game_Battler.prototype.removeStateCategoryEval = function(value, obj, c, user) {
+  Game_Battler.prototype.removeStateCategoryEval = function (
+    value,
+    obj,
+    c,
+    user
+  ) {
     if (!obj.removeCategoryEval[c]) return value;
     var formula = obj.removeCategoryEval[c];
     var category = c;
@@ -333,12 +325,12 @@ Game_Battler.prototype.removeStateCategoryEval = function(value, obj, c, user) {
     try {
       eval(formula);
     } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'REMOVE STATE CATEGORY ERROR');
+      MageStudios.Util.displayError(e, formula, "REMOVE STATE CATEGORY ERROR");
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.removeStateCategoryAll = function(category) {
+  Game_Battler.prototype.removeStateCategoryAll = function (category) {
     category = category.toUpperCase().trim();
     var states = JsonEx.makeDeepCopy(this._states);
     var length = states.length;
@@ -348,9 +340,9 @@ Game_Battler.prototype.removeStateCategoryAll = function(category) {
       if (!state) continue;
       if (state.category.contains(category)) this.removeState(id);
     }
-};
+  };
 
-Game_Battler.prototype.removeStateCategory = function(category, count) {
+  Game_Battler.prototype.removeStateCategory = function (category, count) {
     category = category.toUpperCase().trim();
     count = count || 0;
     var states = JsonEx.makeDeepCopy(this._states);
@@ -366,9 +358,9 @@ Game_Battler.prototype.removeStateCategory = function(category, count) {
         value += 1;
       }
     }
-};
+  };
 
-Game_Battler.prototype.isStateCategoryAffected = function(category) {
+  Game_Battler.prototype.isStateCategoryAffected = function (category) {
     category = category.toUpperCase().trim();
     var length = this.states().length;
     for (var i = 0; i < length; ++i) {
@@ -377,9 +369,9 @@ Game_Battler.prototype.isStateCategoryAffected = function(category) {
       if (state.category.contains(category.toUpperCase())) return true;
     }
     return false;
-};
+  };
 
-Game_Battler.prototype.getStateCategoryAffectedCount = function(category) {
+  Game_Battler.prototype.getStateCategoryAffectedCount = function (category) {
     category = category.toUpperCase().trim();
     var count = 0;
     var length = this.states().length;
@@ -389,82 +381,66 @@ Game_Battler.prototype.getStateCategoryAffectedCount = function(category) {
       if (state.category.contains(category.toUpperCase())) count += 1;
     }
     return count;
-};
+  };
 
-Game_Battler.prototype.isGroupDefeatAffected = function() {
+  Game_Battler.prototype.isGroupDefeatAffected = function () {
     if (this._groupDefeat !== undefined) return this._groupDefeat;
     var length = this.states().length;
     for (var i = 0; i < length; ++i) {
       var state = this.states()[i];
-      if (state.category.contains('GROUP DEFEAT')) {
+      if (state.category.contains("GROUP DEFEAT")) {
         this._groupDefeat = true;
         return this._groupDefeat;
       }
     }
     this._groupDefeat = false;
     return this._groupDefeat;
-};
+  };
 
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-MageStudios.StC.Game_Unit_isAllDead = Game_Unit.prototype.isAllDead;
-Game_Unit.prototype.isAllDead = function() {
-  $gameTemp._checkAllAliveMembers = true;
-  var length = this.aliveMembers().length;
-  var count = 0;
-  for (var i = 0; i < length; ++i) {
-    var member = this.aliveMembers()[i];
-    if (member && member.isGroupDefeatAffected()) {
-      count += 1;
+  MageStudios.StC.Game_Unit_isAllDead = Game_Unit.prototype.isAllDead;
+  Game_Unit.prototype.isAllDead = function () {
+    $gameTemp._checkAllAliveMembers = true;
+    var length = this.aliveMembers().length;
+    var count = 0;
+    for (var i = 0; i < length; ++i) {
+      var member = this.aliveMembers()[i];
+      if (member && member.isGroupDefeatAffected()) {
+        count += 1;
+      }
     }
-  }
-  if (count >= length) {
+    if (count >= length) {
+      $gameTemp._checkAllAliveMembers = undefined;
+      return true;
+    }
+    var value = MageStudios.StC.Game_Unit_isAllDead.call(this);
     $gameTemp._checkAllAliveMembers = undefined;
-    return true;
-  }
-  var value = MageStudios.StC.Game_Unit_isAllDead.call(this);
-  $gameTemp._checkAllAliveMembers = undefined;
-  return value;
-};
+    return value;
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.StC.Game_Action_applyItemUserEffect =
+  MageStudios.StC.Game_Action_applyItemUserEffect =
     Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
+  Game_Action.prototype.applyItemUserEffect = function (target) {
     MageStudios.StC.Game_Action_applyItemUserEffect.call(this, target);
     if (this.item() && this.item().removeCategory) {
       this.applyStateCategoryRemovalEffect(target);
     }
-};
+  };
 
-Game_Action.prototype.applyStateCategoryRemovalEffect = function(target) {
-  target.removeStateCategoryEffect(this.item(), this.subject());
-};
+  Game_Action.prototype.applyStateCategoryRemovalEffect = function (target) {
+    target.removeStateCategoryEffect(this.item(), this.subject());
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

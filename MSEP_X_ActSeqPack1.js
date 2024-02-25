@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Engine Extension - Action Sequence Pack 1
-// MSEP_X_ActSeqPack1.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ActSeqPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP1 = MageStudios.ASP1 || {};
-MageStudios.ASP1.version = 1.00;
+MageStudios.ASP1.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore.js) Basic functions are
  * added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
@@ -43,7 +37,7 @@ MageStudios.ASP1.version = 1.00;
  * ============================================================================
  *
  * The Action Sequence Pack 1 plugin is an extension plugin for Mage Engine
- * Plugins' Battle Engine Core. This extension plugin will not work without the
+ * Plugins Battle Engine Core. This extension plugin will not work without the
  * main plugin.
  *
  * This extension plugin contains the more basic functions used for customized
@@ -713,478 +707,424 @@ MageStudios.ASP1.version = 1.00;
  *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Usage Example: wait for popups
  *=============================================================================
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.13:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.12:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.11:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.10a:
- * - Changed the 'Change Variable' action sequence to read more effectively.
- * - Documentation update for 'Action Common Event' and 'Common Event' to
- * indicate that they will not work immediately if used as a forced action
- * since another event is already running.
- *
- * Version 1.09:
- * - Fixed a bug that didn't allow for HP and MP buff/debuff removal.
- *
- * Version 1.08:
- * - Added 'Break Action' action sequence effect to completely cancel out all
- * of the remaining action effects.
- *
- * Version 1.07:
- * - Fixed a bug with the forcing a Collapse action sequence.
- *
- * Version 1.06:
- * - If using the Add State action sequence to add the Death state, it will
- * remove immortality settings.
- *
- * Version 1.05:
- * - Optimized status window to refresh at a minimum.
- *
- * Version 1.04:
- * - Updated help file to include Character X for target typing.
- *
- * Version 1.03:
- * - Fixed a bug that didn't make the sounds played work properly (again).
- *
- * Version 1.02:
- * - Fixed a bug that didn't make the sounds played work properly.
- *
- * Version 1.01:
- * - Fixed a small bug that didn't allow Change Variable to work properly with
- * evaluated strings.
- *
- * Version 1.00:
- * - Finished plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ActSeqPack1");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameters
-//=============================================================================
+  MageStudios.Param.SoundVolume = Number(
+    MageStudios.Parameters["Default Volume"]
+  );
+  MageStudios.Param.SoundPitch = Number(
+    MageStudios.Parameters["Default Pitch"]
+  );
+  MageStudios.Param.SoundPan = Number(MageStudios.Parameters["Default Pan"]);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack1');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.SoundVolume = Number(MageStudios.Parameters['Default Volume']);
-MageStudios.Param.SoundPitch = Number(MageStudios.Parameters['Default Pitch']);
-MageStudios.Param.SoundPan = Number(MageStudios.Parameters['Default Pan']);
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.ASP1.BattleManager_processActionSequence =
+  MageStudios.ASP1.BattleManager_processActionSequence =
     BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  // ADD X BUFF
-  if (actionName.match(/ADD[ ](.*)[ ]BUFF/i)) {
-    return this.actionAddBuff(actionName, actionArgs);
-  }
-  // ADD X DEBUFF
-  if (actionName.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
-    return this.actionAddDebuff(actionName, actionArgs);
-  }
-  // ADD STATE X
-  if (actionName.match(/(?:ADD_STATE|ADD STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
-    return this.actionAddState(actionName, actionArgs);
-  }
-  // ANIMATION X
-  if (actionName.match(/ANIMATION[ ](\d+)/i)) {
-    return this.actionAnimation(parseInt(RegExp.$1), actionArgs);
-  }
-  // BGM, MUSIC, SONG
-  if (['BGM', 'MUSIC', 'SONG'].contains(actionName)) {
-    return this.actionBgmPlay(actionArgs);
-  }
-  // BGS, AMBIENCE
-  if (['BGS', 'AMBIENCE'].contains(actionName)) {
-    return this.actionBgsPlay(actionArgs);
-  }
-  // BREAK ACTION
-  if (actionName === 'BREAK ACTION') {
-    return this.actionBreakAction();
-  }
-  // COLLAPSE: target, (force)
-  if (actionName === 'COLLAPSE') {
-    return this.actionCollapse(actionArgs);
-  }
-  // COMMON EVENT: event id
-  if (actionName === 'COMMON EVENT') {
-    return this.actionCommonEvent(actionArgs[0]);
-  }
-  // CHANGE SWITCH X
-  if (actionName.match(/CHANGE[ ]SWITCH[ ](.*)/i)) {
-    return this.actionChangeSwitch(actionName, actionArgs);
-  }
-  // CHANGE VARIABLE X
-  if (actionName.match(/CHANGE[ ]VARIABLE[ ](.*)/i)) {
-    return this.actionChangeVariable(actionName);
-  }
-  // EVAL, SCRIPT
-  if (['EVAL', 'SCRIPT'].contains(actionName)) {
-    return this.actionEval(actionArgs);
-  }
-  // GAIN ITEM (item, weapon, armor) X
-  if (actionName.match(/GAIN[ ](.*)[ ](\d+)/i) ||
-  actionName.match(/LOSE[ ](.*)[ ](\d+)/i)) {
-    return this.actionGainItem(actionName, actionArgs);
-  }
-  // GOLD +/- VALUE
-  if (actionName.match(/GOLD[ ]([\+\-]\d+)/i)) {
-    return this.actionGoldModify(parseInt(RegExp.$1));
-  }
-  // ME, FANFARE
-  if (['ME', 'FANFARE'].contains(actionName)) {
-    return this.actionMePlay(actionArgs);
-  }
-  // REFRESH STATUS, REFRESH WINDOW
-  if (['REFRESH STATUS', 'REFRESH WINDOW'].contains(actionName)) {
-    return this.actionRefreshStatus();
-  }
-  // REMOVE X BUFF
-  if (actionName.match(/REMOVE[ ](.*)[ ]BUFF/i)) {
-    return this.actionRemoveBuff(actionName, actionArgs);
-  }
-  // REMOVE X DEBUFF
-  if (actionName.match(/REMOVE[ ](.*)[ ]DEBUFF/i)) {
-    return this.actionRemoveDebuff(actionName, actionArgs);
-  }
-  // REMOVE STATE X
-  if
-  (actionName.match(/(?:REMOVE_STATE|REMOVE STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
-    return this.actionRemoveState(actionName, actionArgs);
-  }
-  // SE, SOUND, SFX
-  if (['SE', 'SOUND', 'SFX'].contains(actionName)) {
-    return this.actionSePlay(actionArgs);
-  }
-  // HP +/- VALUE
-  if (actionName.match(/HP[ ](.*)/i)) {
-    return this.actionHpModify(actionName, actionArgs);
-  }
-  // MP +/- VALUE
-  if (actionName.match(/MP[ ](.*)/i)) {
-    return this.actionMpModify(actionName, actionArgs);
-  }
-  // TP +/- VALUE
-  if (actionName.match(/TP[ ](.*)/i)) {
-    return this.actionTpModify(actionName, actionArgs);
-  }
-  return MageStudios.ASP1.BattleManager_processActionSequence.call(this,
-    actionName, actionArgs);
-};
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (actionName.match(/ADD[ ](.*)[ ]BUFF/i)) {
+      return this.actionAddBuff(actionName, actionArgs);
+    }
 
-BattleManager.getParamId = function(stat) {
+    if (actionName.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
+      return this.actionAddDebuff(actionName, actionArgs);
+    }
+
+    if (actionName.match(/(?:ADD_STATE|ADD STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
+      return this.actionAddState(actionName, actionArgs);
+    }
+
+    if (actionName.match(/ANIMATION[ ](\d+)/i)) {
+      return this.actionAnimation(parseInt(RegExp.$1), actionArgs);
+    }
+
+    if (["BGM", "MUSIC", "SONG"].contains(actionName)) {
+      return this.actionBgmPlay(actionArgs);
+    }
+
+    if (["BGS", "AMBIENCE"].contains(actionName)) {
+      return this.actionBgsPlay(actionArgs);
+    }
+
+    if (actionName === "BREAK ACTION") {
+      return this.actionBreakAction();
+    }
+
+    if (actionName === "COLLAPSE") {
+      return this.actionCollapse(actionArgs);
+    }
+
+    if (actionName === "COMMON EVENT") {
+      return this.actionCommonEvent(actionArgs[0]);
+    }
+
+    if (actionName.match(/CHANGE[ ]SWITCH[ ](.*)/i)) {
+      return this.actionChangeSwitch(actionName, actionArgs);
+    }
+
+    if (actionName.match(/CHANGE[ ]VARIABLE[ ](.*)/i)) {
+      return this.actionChangeVariable(actionName);
+    }
+
+    if (["EVAL", "SCRIPT"].contains(actionName)) {
+      return this.actionEval(actionArgs);
+    }
+
+    if (
+      actionName.match(/GAIN[ ](.*)[ ](\d+)/i) ||
+      actionName.match(/LOSE[ ](.*)[ ](\d+)/i)
+    ) {
+      return this.actionGainItem(actionName, actionArgs);
+    }
+
+    if (actionName.match(/GOLD[ ]([\+\-]\d+)/i)) {
+      return this.actionGoldModify(parseInt(RegExp.$1));
+    }
+
+    if (["ME", "FANFARE"].contains(actionName)) {
+      return this.actionMePlay(actionArgs);
+    }
+
+    if (["REFRESH STATUS", "REFRESH WINDOW"].contains(actionName)) {
+      return this.actionRefreshStatus();
+    }
+
+    if (actionName.match(/REMOVE[ ](.*)[ ]BUFF/i)) {
+      return this.actionRemoveBuff(actionName, actionArgs);
+    }
+
+    if (actionName.match(/REMOVE[ ](.*)[ ]DEBUFF/i)) {
+      return this.actionRemoveDebuff(actionName, actionArgs);
+    }
+
+    if (
+      actionName.match(/(?:REMOVE_STATE|REMOVE STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)
+    ) {
+      return this.actionRemoveState(actionName, actionArgs);
+    }
+
+    if (["SE", "SOUND", "SFX"].contains(actionName)) {
+      return this.actionSePlay(actionArgs);
+    }
+
+    if (actionName.match(/HP[ ](.*)/i)) {
+      return this.actionHpModify(actionName, actionArgs);
+    }
+
+    if (actionName.match(/MP[ ](.*)/i)) {
+      return this.actionMpModify(actionName, actionArgs);
+    }
+
+    if (actionName.match(/TP[ ](.*)/i)) {
+      return this.actionTpModify(actionName, actionArgs);
+    }
+    return MageStudios.ASP1.BattleManager_processActionSequence.call(
+      this,
+      actionName,
+      actionArgs
+    );
+  };
+
+  BattleManager.getParamId = function (stat) {
     switch (stat) {
-    case 'HP':
-    case 'MAXHP':
-    case 'MAX HP':
-      return 0;
-      break;
-    case 'MP':
-    case 'MAXMP':
-    case 'MAX MP':
-    case 'SP':
-    case 'MAXSP':
-    case 'MAX SP':
-      return 1;
-      break;
-    case 'ATK':
-    case 'STR':
-      return 2;
-      break;
-    case 'DEF':
-      return 3;
-      break;
-    case 'MAT':
-    case 'INT' || 'SPI':
-      return 4;
-      break;
-    case 'MDF':
-    case 'RES':
-      return 5;
-      break;
-    case 'AGI':
-    case 'SPD':
-      return 6;
-      break;
-    case 'LUK':
-      return 7;
-      break;
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
+        return 0;
+        break;
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
+        return 1;
+        break;
+      case "ATK":
+      case "STR":
+        return 2;
+        break;
+      case "DEF":
+        return 3;
+        break;
+      case "MAT":
+      case "INT" || "SPI":
+        return 4;
+        break;
+      case "MDF":
+      case "RES":
+        return 5;
+        break;
+      case "AGI":
+      case "SPD":
+        return 6;
+        break;
+      case "LUK":
+        return 7;
+        break;
     }
     return -1;
-};
+  };
 
-BattleManager.actionAddBuff = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if (actionName.match(/ADD[ ](.*)[ ]BUFF/i)) {
-    var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
-  } else {
-    return true;
-  }
-  if (actionArgs[1] && parseInt(actionArgs[1]) > 0) {
-    var turns = parseInt(actionArgs[1]);
-  } else {
-    var turns = 5;
-  }
-  if (paramId < 0) return true;
-  targets.forEach(function(target) {
-    target.addBuff(paramId, turns);
-    if (show) this._logWindow.displayActionResults(this._subject, target);
-  }, this);
-  return true;
-};
-
-BattleManager.actionAddDebuff = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if (actionName.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
-    var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
-  } else {
-    return true;
-  }
-  if (actionArgs[1] && parseInt(actionArgs[1]) > 0) {
-    var turns = parseInt(actionArgs[1]);
-  } else {
-    var turns = 5;
-  }
-  if (paramId < 0) return true;
-  targets.forEach(function(target) {
-    target.addDebuff(paramId, turns);
-    if (show) this._logWindow.displayActionResults(this._subject, target);
-  }, this);
-  return true;
-};
-
-BattleManager.actionAddState = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if (actionName.match(/(?:ADD_STATE|ADD STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
-    var states = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
-  } else {
-    return true;
-  }
-  targets.forEach(function(target) {
-    for (var i = 0; i < states.length; ++i) {
-      stateId = states[i];
-      if (stateId === target.deathStateId()) {
-        if (target._prevImmortalState === false) target.forceRemoveImmortal();
-      }
-      target.addState(stateId);
+  BattleManager.actionAddBuff = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
+    }
+    if (actionName.match(/ADD[ ](.*)[ ]BUFF/i)) {
+      var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
+    } else {
+      return true;
+    }
+    if (actionArgs[1] && parseInt(actionArgs[1]) > 0) {
+      var turns = parseInt(actionArgs[1]);
+    } else {
+      var turns = 5;
+    }
+    if (paramId < 0) return true;
+    targets.forEach(function (target) {
+      target.addBuff(paramId, turns);
       if (show) this._logWindow.displayActionResults(this._subject, target);
-    }
-  }, this);
-  return true;
-};
-
-BattleManager.actionAnimation = function(aniId, actionArgs) {
-  if (aniId <= 0) return;
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var mirror = false;
-  if (actionArgs[1] && actionArgs[1].toUpperCase() === 'MIRROR') mirror = true;
-  this._logWindow.showNormalAnimation(targets, aniId, mirror);
-  return true;
-};
-
-BattleManager.actionBgmPlay = function(actionArgs) {
-  if (actionArgs.length < 1) return true;
-  if (actionArgs[0].toUpperCase() === 'STOP') {
-    AudioManager.stopBgm();
-  } else if (actionArgs[0].toUpperCase() === 'MEMORIZE') {
-    this._battleMemorizedBgm = AudioManager.saveBgm();
+    }, this);
     return true;
-  } else if (actionArgs[0].toUpperCase() === 'MEMORY') {
-    if (this._battleMemorizedBgm) {
-      AudioManager.replayBgm(this._battleMemorizedBgm);
-    }
-  } else {
-    var name = actionArgs[0];
-    if (!name) return true;
-    var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
-    var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
-    var pan = actionArgs[3] || MageStudios.Param.SoundPan;
-    var bgm = {
-      name: name,
-      volume: vol,
-      pitch: pitch,
-      pan: pan
-    };
-    AudioManager.playBgm(bgm);
-  }
-  return true;
-};
+  };
 
-BattleManager.actionBgsPlay = function(actionArgs) {
-  if (actionArgs.length < 1) return true;
-  if (actionArgs[0].toUpperCase() === 'STOP') {
-    AudioManager.stopBgs();
-  } else if (actionArgs[0].toUpperCase() === 'MEMORIZE') {
-    this._battleMemorizedBgs = AudioManager.saveBgs();
+  BattleManager.actionAddDebuff = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
+    }
+    if (actionName.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
+      var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
+    } else {
+      return true;
+    }
+    if (actionArgs[1] && parseInt(actionArgs[1]) > 0) {
+      var turns = parseInt(actionArgs[1]);
+    } else {
+      var turns = 5;
+    }
+    if (paramId < 0) return true;
+    targets.forEach(function (target) {
+      target.addDebuff(paramId, turns);
+      if (show) this._logWindow.displayActionResults(this._subject, target);
+    }, this);
     return true;
-  } else if (actionArgs[0].toUpperCase() === 'MEMORY') {
-    if (this._battleMemorizedBgs) {
-      AudioManager.replayBgs(this._battleMemorizedBgs);
-    }
-  } else {
-    var name = actionArgs[0];
-    if (!name) return true;
-    var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
-    var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
-    var pan = actionArgs[3] || MageStudios.Param.SoundPan;
-    var bgs = {
-      name: name,
-      volume: vol,
-      pitch: pitch,
-      pan: pan
-    };
-    AudioManager.playBgs(bgs);
-  }
-  return true;
-};
+  };
 
-BattleManager.actionBreakAction = function() {
+  BattleManager.actionAddState = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
+    }
+    if (actionName.match(/(?:ADD_STATE|ADD STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
+      var states = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
+    } else {
+      return true;
+    }
+    targets.forEach(function (target) {
+      for (var i = 0; i < states.length; ++i) {
+        stateId = states[i];
+        if (stateId === target.deathStateId()) {
+          if (target._prevImmortalState === false) target.forceRemoveImmortal();
+        }
+        target.addState(stateId);
+        if (show) this._logWindow.displayActionResults(this._subject, target);
+      }
+    }, this);
+    return true;
+  };
+
+  BattleManager.actionAnimation = function (aniId, actionArgs) {
+    if (aniId <= 0) return;
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var mirror = false;
+    if (actionArgs[1] && actionArgs[1].toUpperCase() === "MIRROR")
+      mirror = true;
+    this._logWindow.showNormalAnimation(targets, aniId, mirror);
+    return true;
+  };
+
+  BattleManager.actionBgmPlay = function (actionArgs) {
+    if (actionArgs.length < 1) return true;
+    if (actionArgs[0].toUpperCase() === "STOP") {
+      AudioManager.stopBgm();
+    } else if (actionArgs[0].toUpperCase() === "MEMORIZE") {
+      this._battleMemorizedBgm = AudioManager.saveBgm();
+      return true;
+    } else if (actionArgs[0].toUpperCase() === "MEMORY") {
+      if (this._battleMemorizedBgm) {
+        AudioManager.replayBgm(this._battleMemorizedBgm);
+      }
+    } else {
+      var name = actionArgs[0];
+      if (!name) return true;
+      var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
+      var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
+      var pan = actionArgs[3] || MageStudios.Param.SoundPan;
+      var bgm = {
+        name: name,
+        volume: vol,
+        pitch: pitch,
+        pan: pan,
+      };
+      AudioManager.playBgm(bgm);
+    }
+    return true;
+  };
+
+  BattleManager.actionBgsPlay = function (actionArgs) {
+    if (actionArgs.length < 1) return true;
+    if (actionArgs[0].toUpperCase() === "STOP") {
+      AudioManager.stopBgs();
+    } else if (actionArgs[0].toUpperCase() === "MEMORIZE") {
+      this._battleMemorizedBgs = AudioManager.saveBgs();
+      return true;
+    } else if (actionArgs[0].toUpperCase() === "MEMORY") {
+      if (this._battleMemorizedBgs) {
+        AudioManager.replayBgs(this._battleMemorizedBgs);
+      }
+    } else {
+      var name = actionArgs[0];
+      if (!name) return true;
+      var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
+      var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
+      var pan = actionArgs[3] || MageStudios.Param.SoundPan;
+      var bgs = {
+        name: name,
+        volume: vol,
+        pitch: pitch,
+        pan: pan,
+      };
+      AudioManager.playBgs(bgs);
+    }
+    return true;
+  };
+
+  BattleManager.actionBreakAction = function () {
     this._targets = [];
     this._actionList = [];
     this._individualTargets = [];
-    this._phase = 'phaseChange';
+    this._phase = "phaseChange";
     return false;
-};
+  };
 
-BattleManager.actionCollapse = function(actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  var force = false;
-  if (actionArgs[1]) var force = (actionArgs[1].toUpperCase() === 'FORCE');
-  targets.forEach(function(target) {
-    if (force) {
-      target.removeImmortal();
-      target.addState(target.deathStateId());
-    }
-    if (target.isDeathStateAffected()) target.performCollapse();
+  BattleManager.actionCollapse = function (actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    var force = false;
+    if (actionArgs[1]) var force = actionArgs[1].toUpperCase() === "FORCE";
+    targets.forEach(function (target) {
+      if (force) {
+        target.removeImmortal();
+        target.addState(target.deathStateId());
+      }
+      if (target.isDeathStateAffected()) target.performCollapse();
+    }, this);
+    return false;
+  };
 
-  }, this);
-  return false;
-};
-
-BattleManager.actionCommonEvent = function(id) {
-  if ($gameTroop.isEventRunning()) {
-    var ev = $dataCommonEvents[id];
-    if (!ev) return;
-    var list = ev.list;
-    var interpreter = $gameTroop._interpreter;
-    interpreter.setupChild(list, 0);
-  } else {
-    $gameTemp.reserveCommonEvent(id);
-  }
-  return false;
-};
-
-BattleManager.actionChangeSwitch = function(actionName, actionArgs) {
-  var subject = this._subject;
-  var user = this._subject;
-  var target = this._targets[0];
-  var targets = this._targets;
-  var action = this._action;
-  var item = this._action.item();
-  var switches = [];
-  if (actionName.match(/SWITCH[ ](\d+)/i)) {
-    switches = [parseInt(RegExp.$1)];
-  } else if (actionName.match(/SWITCH[ ](\d+)..(\d+)/i)) {
-    switches = [getRange(parseInt(RegExp.$1), parseInt(RegExp.$2))];
-  } else if (actionName.match(/SWITCH[ ](\d+)[ ]TO[ ](\d+)/i)) {
-      switches = [getRange(parseInt(RegExp.$1), parseInt(RegExp.$2))];
-  } else {
-    return true;
-  }
-  var result = actionArgs[0].toUpperCase();
-  var value;
-  if (['ON', 'TRUE'].contains(result)) {
-    value = true;
-  } else if (['OFF', 'FALSE'].contains(result)) {
-    value = false;
-  } else if (['TOGGLE', 'OPPOSITE', 'REVERSE'].contains(result)) {
-    value = 'toggle';
-  } else if (result.match(/SWITCH[ ](\d+)/i)) {
-    value = $gameSwitches.value(parseInt(RegExp.$1));
-  }
-  switches.forEach(function(switchId) {
-    if (value === 'toggle') {
-      $gameSwitches.setValue(switchId, !$gameSwitches.value(switchId));
+  BattleManager.actionCommonEvent = function (id) {
+    if ($gameTroop.isEventRunning()) {
+      var ev = $dataCommonEvents[id];
+      if (!ev) return;
+      var list = ev.list;
+      var interpreter = $gameTroop._interpreter;
+      interpreter.setupChild(list, 0);
     } else {
-      $gameSwitches.setValue(switchId, value);
+      $gameTemp.reserveCommonEvent(id);
     }
-  }, this);
-  return true;
-};
+    return false;
+  };
 
-BattleManager.actionChangeVariable = function(actionName) {
-  var cV1 =
-  /CHANGE[ ](?:VARIABLE|VAR)[ ](\d+)[ ](.*)[ ](?:VARIABLE|VAR)[ ](\d+)/i;
-  var cV2 = /CHANGE[ ](?:VARIABLE|VAR)[ ](\d+)[ ](.*?)[ ](.*)/i;
-  var subject = this._subject;
-  var user = this._subject;
-  var target = this._targets[0];
-  var targets = this._targets;
-  var action = this._action;
-  var item = this._action.item();
-  if (this._actSeq[0].match(cV1)) {
-    var mainVar = parseInt(RegExp.$1);
-    var operation = String(RegExp.$2);
-    var editVar = $gameVariables.value(parseInt(RegExp.$3));
-  } else if (this._actSeq[0].match(cV2)) {
-    var mainVar = parseInt(RegExp.$1);
-    var operation = String(RegExp.$2);
-    var editVar = eval(String(RegExp.$3));
-  } else {
+  BattleManager.actionChangeSwitch = function (actionName, actionArgs) {
+    var subject = this._subject;
+    var user = this._subject;
+    var target = this._targets[0];
+    var targets = this._targets;
+    var action = this._action;
+    var item = this._action.item();
+    var switches = [];
+    if (actionName.match(/SWITCH[ ](\d+)/i)) {
+      switches = [parseInt(RegExp.$1)];
+    } else if (actionName.match(/SWITCH[ ](\d+)..(\d+)/i)) {
+      switches = [getRange(parseInt(RegExp.$1), parseInt(RegExp.$2))];
+    } else if (actionName.match(/SWITCH[ ](\d+)[ ]TO[ ](\d+)/i)) {
+      switches = [getRange(parseInt(RegExp.$1), parseInt(RegExp.$2))];
+    } else {
+      return true;
+    }
+    var result = actionArgs[0].toUpperCase();
+    var value;
+    if (["ON", "TRUE"].contains(result)) {
+      value = true;
+    } else if (["OFF", "FALSE"].contains(result)) {
+      value = false;
+    } else if (["TOGGLE", "OPPOSITE", "REVERSE"].contains(result)) {
+      value = "toggle";
+    } else if (result.match(/SWITCH[ ](\d+)/i)) {
+      value = $gameSwitches.value(parseInt(RegExp.$1));
+    }
+    switches.forEach(function (switchId) {
+      if (value === "toggle") {
+        $gameSwitches.setValue(switchId, !$gameSwitches.value(switchId));
+      } else {
+        $gameSwitches.setValue(switchId, value);
+      }
+    }, this);
     return true;
-  }
-  var mainValue = $gameVariables.value(mainVar);
-  if (['='].contains(operation)) {
-    $gameVariables.setValue(mainVar, eval(editVar));
-  } else if (['+=', '+'].contains(operation)) {
-    $gameVariables.setValue(mainVar, mainValue + eval(editVar));
-  } else if (['-=', '-'].contains(operation)) {
-    $gameVariables.setValue(mainVar, mainValue - eval(editVar));
-  } else if (['*=', '*'].contains(operation)) {
-    $gameVariables.setValue(mainVar, mainValue * eval(editVar));
-  } else if (['/=', '/'].contains(operation)) {
-    $gameVariables.setValue(mainVar, mainValue / eval(editVar));
-  } else if (['%=', '%'].contains(operation)) {
-    $gameVariables.setValue(mainVar, mainValue % eval(editVar));
-  }
-  return true;
-};
+  };
 
-BattleManager.actionEval = function(actionArgs) {
+  BattleManager.actionChangeVariable = function (actionName) {
+    var cV1 =
+      /CHANGE[ ](?:VARIABLE|VAR)[ ](\d+)[ ](.*)[ ](?:VARIABLE|VAR)[ ](\d+)/i;
+    var cV2 = /CHANGE[ ](?:VARIABLE|VAR)[ ](\d+)[ ](.*?)[ ](.*)/i;
+    var subject = this._subject;
+    var user = this._subject;
+    var target = this._targets[0];
+    var targets = this._targets;
+    var action = this._action;
+    var item = this._action.item();
+    if (this._actSeq[0].match(cV1)) {
+      var mainVar = parseInt(RegExp.$1);
+      var operation = String(RegExp.$2);
+      var editVar = $gameVariables.value(parseInt(RegExp.$3));
+    } else if (this._actSeq[0].match(cV2)) {
+      var mainVar = parseInt(RegExp.$1);
+      var operation = String(RegExp.$2);
+      var editVar = eval(String(RegExp.$3));
+    } else {
+      return true;
+    }
+    var mainValue = $gameVariables.value(mainVar);
+    if (["="].contains(operation)) {
+      $gameVariables.setValue(mainVar, eval(editVar));
+    } else if (["+=", "+"].contains(operation)) {
+      $gameVariables.setValue(mainVar, mainValue + eval(editVar));
+    } else if (["-=", "-"].contains(operation)) {
+      $gameVariables.setValue(mainVar, mainValue - eval(editVar));
+    } else if (["*=", "*"].contains(operation)) {
+      $gameVariables.setValue(mainVar, mainValue * eval(editVar));
+    } else if (["/=", "/"].contains(operation)) {
+      $gameVariables.setValue(mainVar, mainValue / eval(editVar));
+    } else if (["%=", "%"].contains(operation)) {
+      $gameVariables.setValue(mainVar, mainValue % eval(editVar));
+    }
+    return true;
+  };
+
+  BattleManager.actionEval = function (actionArgs) {
     if (actionArgs.length < 1) return true;
     var subject = this._subject;
     var user = this._subject;
@@ -1194,17 +1134,17 @@ BattleManager.actionEval = function(actionArgs) {
     var item = this._action.item();
     var text = String(actionArgs[0]);
     for (var i = 1; i < actionArgs.length; ++i) {
-        text = text + ', ' + String(actionArgs[i]);
+      text = text + ", " + String(actionArgs[i]);
     }
     try {
       eval(text);
     } catch (e) {
-      MageStudios.Util.displayError(e, text, 'ACTION SEQUENCE EVAL ERROR');
+      MageStudios.Util.displayError(e, text, "ACTION SEQUENCE EVAL ERROR");
     }
     return false;
-};
+  };
 
-BattleManager.actionGainItem = function(actionName, actionArgs) {
+  BattleManager.actionGainItem = function (actionName, actionArgs) {
     var gainItem;
     var type;
     var itemId;
@@ -1220,40 +1160,41 @@ BattleManager.actionGainItem = function(actionName, actionArgs) {
       return true;
     }
     var item;
-    if (type === 'ITEM') {
+    if (type === "ITEM") {
       item = $dataItems[itemId];
-    } else if (['WPN', 'WEAPON'].contains(type)) {
+    } else if (["WPN", "WEAPON"].contains(type)) {
       item = $dataWeapons[itemId];
-    } else if (['ARM', 'ARMOR', 'ARMOUR'].contains(type)) {
+    } else if (["ARM", "ARMOR", "ARMOUR"].contains(type)) {
       item = $dataArmors[itemId];
     } else {
       return true;
     }
     var amount = Math.max(1, parseInt(actionArgs[0]));
     if (isNaN(amount)) amount = 1;
-    if (gainItem)  $gameParty.gainItem(item, amount);
+    if (gainItem) $gameParty.gainItem(item, amount);
     if (!gainItem) $gameParty.loseItem(item, amount);
     return true;
-};
+  };
 
-BattleManager.actionGoldModify = function(value) {
+  BattleManager.actionGoldModify = function (value) {
     $gameParty.gainGold(value);
     return true;
-};
+  };
 
-BattleManager.actionHpModify = function(actionName, actionArgs) {
+  BattleManager.actionHpModify = function (actionName, actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return false;
     var change;
     var percent;
     if (actionName.match(/HP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)/i)) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = false;
-    } else if
-    (actionName.match(/HP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)) {
+    } else if (
+      actionName.match(/HP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)
+    ) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = true;
     } else if (actionName.match(/HP[ ]([\+\-]\d+)([%％])/i)) {
       change = parseInt(RegExp.$1);
@@ -1267,12 +1208,12 @@ BattleManager.actionHpModify = function(actionName, actionArgs) {
     var show = false;
     for (var i = 0; i < actionArgs.length; ++i) {
       var actionArg = actionArgs[i];
-      if (actionArg.toUpperCase() === 'SHOW') show = true;
+      if (actionArg.toUpperCase() === "SHOW") show = true;
     }
     var value;
-    targets.forEach(function(target) {
+    targets.forEach(function (target) {
       target.clearResult();
-      value = percent ? (target.mhp * change * 0.01) : change;
+      value = percent ? target.mhp * change * 0.01 : change;
       target.gainHp(parseInt(value));
       if (show) {
         target.startDamagePopup();
@@ -1280,42 +1221,43 @@ BattleManager.actionHpModify = function(actionName, actionArgs) {
       }
     }, this);
     return true;
-};
+  };
 
-BattleManager.actionMePlay = function(actionArgs) {
-  if (actionArgs.length < 1) return true;
-  if (actionArgs[0].toUpperCase() === 'STOP') {
-    AudioManager.stopMe();
-  } else {
-    var name = actionArgs[0];
-    if (!name) return true;
-    var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
-    var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
-    var pan = actionArgs[3] || MageStudios.Param.SoundPan;
-    var me = {
-      name: name,
-      volume: vol,
-      pitch: pitch,
-      pan: pan
-    };
-    AudioManager.playMe(me);
-  }
-  return true;
-};
+  BattleManager.actionMePlay = function (actionArgs) {
+    if (actionArgs.length < 1) return true;
+    if (actionArgs[0].toUpperCase() === "STOP") {
+      AudioManager.stopMe();
+    } else {
+      var name = actionArgs[0];
+      if (!name) return true;
+      var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
+      var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
+      var pan = actionArgs[3] || MageStudios.Param.SoundPan;
+      var me = {
+        name: name,
+        volume: vol,
+        pitch: pitch,
+        pan: pan,
+      };
+      AudioManager.playMe(me);
+    }
+    return true;
+  };
 
-BattleManager.actionMpModify = function(actionName, actionArgs) {
+  BattleManager.actionMpModify = function (actionName, actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return false;
     var change;
     var percent;
     if (actionName.match(/MP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)/i)) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = false;
-    } else if
-    (actionName.match(/MP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)) {
+    } else if (
+      actionName.match(/MP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)
+    ) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = true;
     } else if (actionName.match(/MP[ ]([\+\-]\d+)([%％])/i)) {
       change = parseInt(RegExp.$1);
@@ -1329,12 +1271,12 @@ BattleManager.actionMpModify = function(actionName, actionArgs) {
     var show = false;
     for (var i = 0; i < actionArgs.length; ++i) {
       var actionArg = actionArgs[i];
-      if (actionArg.toUpperCase() === 'SHOW') show = true;
+      if (actionArg.toUpperCase() === "SHOW") show = true;
     }
     var value;
-    targets.forEach(function(target) {
+    targets.forEach(function (target) {
       target.clearResult();
-      value = percent ? (target.mmp * change * 0.01) : change;
+      value = percent ? target.mmp * change * 0.01 : change;
       target.gainMp(parseInt(value));
       if (show) {
         target.startDamagePopup();
@@ -1342,165 +1284,167 @@ BattleManager.actionMpModify = function(actionName, actionArgs) {
       }
     }, this);
     return true;
-};
+  };
 
-BattleManager.actionRefreshStatus = function() {
+  BattleManager.actionRefreshStatus = function () {
     this._statusWindow.refresh();
     return false;
-};
+  };
 
-BattleManager.actionRemoveBuff = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if (actionName.match(/REMOVE[ ](.*)[ ]BUFF/i)) {
-    var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
-  } else {
-    return true;
-  }
-  if (paramId < 0) return true;
-  targets.forEach(function(target) {
-    if (target.isBuffAffected(paramId)) {
-      target.removeBuff(paramId);
-      if (show) this._logWindow.displayActionResults(this._subject, target);
+  BattleManager.actionRemoveBuff = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
     }
-  }, this);
-  return true;
-};
-
-BattleManager.actionRemoveDebuff = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if (actionName.match(/REMOVE[ ](.*)[ ]DEBUFF/i)) {
-    var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
-  } else {
-    return true;
-  }
-  if (paramId < 0) return true;
-  targets.forEach(function(target) {
-    if (target.isDebuffAffected(paramId)) {
-      target.removeBuff(paramId);
-      if (show) this._logWindow.displayActionResults(this._subject, target);
+    if (actionName.match(/REMOVE[ ](.*)[ ]BUFF/i)) {
+      var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
+    } else {
+      return true;
     }
-  }, this);
-  return true;
-};
-
-BattleManager.actionRemoveState = function(actionName, actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  if (targets.length < 1) return false;
-  var show = false;
-  for (var i = 0; i < actionArgs.length; ++i) {
-    var actionArg = actionArgs[i];
-    if (actionArg.toUpperCase() === 'SHOW') show = true;
-  }
-  if
-  (actionName.match(/(?:REMOVE_STATE|REMOVE STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)) {
-    var states = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
-  } else {
-    return true;
-  }
-  targets.forEach(function(target) {
-    for (var i = 0; i < states.length; ++i) {
-      stateId = states[i];
-      if (target.isStateAffected(stateId)) {
-        target.removeState(stateId);
+    if (paramId < 0) return true;
+    targets.forEach(function (target) {
+      if (target.isBuffAffected(paramId)) {
+        target.removeBuff(paramId);
         if (show) this._logWindow.displayActionResults(this._subject, target);
       }
+    }, this);
+    return true;
+  };
+
+  BattleManager.actionRemoveDebuff = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
     }
-  }, this);
-  return true;
-};
+    if (actionName.match(/REMOVE[ ](.*)[ ]DEBUFF/i)) {
+      var paramId = this.getParamId(String(RegExp.$1).toUpperCase());
+    } else {
+      return true;
+    }
+    if (paramId < 0) return true;
+    targets.forEach(function (target) {
+      if (target.isDebuffAffected(paramId)) {
+        target.removeBuff(paramId);
+        if (show) this._logWindow.displayActionResults(this._subject, target);
+      }
+    }, this);
+    return true;
+  };
 
-BattleManager.actionSePlay = function(actionArgs) {
-  if (actionArgs.length < 1) return true;
-  if (actionArgs[0].toUpperCase() === 'PLAY CURSOR') {
-    SoundManager.playCursor();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY OK') {
-    SoundManager.playOk();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY CANCEL') {
-    SoundManager.playCancel();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY BUZZER') {
-    SoundManager.playBuzzer();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY EQUIP') {
-    SoundManager.playEquip();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY SAVE') {
-    SoundManager.playSave();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY LOAD') {
-    SoundManager.playLoad();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY BATTLE START') {
-    SoundManager.playBattleStart();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ESCAPE') {
-    SoundManager.playEscape();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ENEMY ATTACK') {
-    SoundManager.playEnemyAttack();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ENEMY DAMAGE') {
-    SoundManager.playEnemyDamage();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ENEMY COLLAPSE') {
-    SoundManager.playEnemyCollapse();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY BOSS COLLAPSE 1') {
-    SoundManager.playBossCollapse1();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY BOSS COLLAPSE 2') {
-    SoundManager.playBossCollapse2();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ACTOR DAMAGE') {
-    SoundManager.playActorDamage();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY ACTOR COLLAPSE') {
-    SoundManager.playActorCollapse();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY RECOVERY') {
-    SoundManager.playRecovery();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY MISS') {
-    SoundManager.playMiss();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY EVASION') {
-    SoundManager.playEvasion();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY MAGIC EVASION') {
-    SoundManager.playMagicEvasion();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY REFLECTION') {
-    SoundManager.playReflection();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY SHOP') {
-    SoundManager.playShop();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY USE ITEM') {
-    SoundManager.playUseItem();
-  } else if (actionArgs[0].toUpperCase() === 'PLAY USE SKILL') {
-    SoundManager.playUseSkill();
-  } else {
-    var name = actionArgs[0];
-    if (!name) return true;
-    var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
-    var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
-    var pan = actionArgs[3] || MageStudios.Param.SoundPan;
-    var se = {
-      name: name,
-      volume: vol,
-      pitch: pitch,
-      pan: pan
-    };
-    AudioManager.playSe(se);
-  }
-  return true;
-};
+  BattleManager.actionRemoveState = function (actionName, actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    if (targets.length < 1) return false;
+    var show = false;
+    for (var i = 0; i < actionArgs.length; ++i) {
+      var actionArg = actionArgs[i];
+      if (actionArg.toUpperCase() === "SHOW") show = true;
+    }
+    if (
+      actionName.match(/(?:REMOVE_STATE|REMOVE STATE)[ ](\d+(?:\s*,\s*\d+)*)/i)
+    ) {
+      var states = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
+    } else {
+      return true;
+    }
+    targets.forEach(function (target) {
+      for (var i = 0; i < states.length; ++i) {
+        stateId = states[i];
+        if (target.isStateAffected(stateId)) {
+          target.removeState(stateId);
+          if (show) this._logWindow.displayActionResults(this._subject, target);
+        }
+      }
+    }, this);
+    return true;
+  };
 
-BattleManager.actionTpModify = function(actionName, actionArgs) {
+  BattleManager.actionSePlay = function (actionArgs) {
+    if (actionArgs.length < 1) return true;
+    if (actionArgs[0].toUpperCase() === "PLAY CURSOR") {
+      SoundManager.playCursor();
+    } else if (actionArgs[0].toUpperCase() === "PLAY OK") {
+      SoundManager.playOk();
+    } else if (actionArgs[0].toUpperCase() === "PLAY CANCEL") {
+      SoundManager.playCancel();
+    } else if (actionArgs[0].toUpperCase() === "PLAY BUZZER") {
+      SoundManager.playBuzzer();
+    } else if (actionArgs[0].toUpperCase() === "PLAY EQUIP") {
+      SoundManager.playEquip();
+    } else if (actionArgs[0].toUpperCase() === "PLAY SAVE") {
+      SoundManager.playSave();
+    } else if (actionArgs[0].toUpperCase() === "PLAY LOAD") {
+      SoundManager.playLoad();
+    } else if (actionArgs[0].toUpperCase() === "PLAY BATTLE START") {
+      SoundManager.playBattleStart();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ESCAPE") {
+      SoundManager.playEscape();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ENEMY ATTACK") {
+      SoundManager.playEnemyAttack();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ENEMY DAMAGE") {
+      SoundManager.playEnemyDamage();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ENEMY COLLAPSE") {
+      SoundManager.playEnemyCollapse();
+    } else if (actionArgs[0].toUpperCase() === "PLAY BOSS COLLAPSE 1") {
+      SoundManager.playBossCollapse1();
+    } else if (actionArgs[0].toUpperCase() === "PLAY BOSS COLLAPSE 2") {
+      SoundManager.playBossCollapse2();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ACTOR DAMAGE") {
+      SoundManager.playActorDamage();
+    } else if (actionArgs[0].toUpperCase() === "PLAY ACTOR COLLAPSE") {
+      SoundManager.playActorCollapse();
+    } else if (actionArgs[0].toUpperCase() === "PLAY RECOVERY") {
+      SoundManager.playRecovery();
+    } else if (actionArgs[0].toUpperCase() === "PLAY MISS") {
+      SoundManager.playMiss();
+    } else if (actionArgs[0].toUpperCase() === "PLAY EVASION") {
+      SoundManager.playEvasion();
+    } else if (actionArgs[0].toUpperCase() === "PLAY MAGIC EVASION") {
+      SoundManager.playMagicEvasion();
+    } else if (actionArgs[0].toUpperCase() === "PLAY REFLECTION") {
+      SoundManager.playReflection();
+    } else if (actionArgs[0].toUpperCase() === "PLAY SHOP") {
+      SoundManager.playShop();
+    } else if (actionArgs[0].toUpperCase() === "PLAY USE ITEM") {
+      SoundManager.playUseItem();
+    } else if (actionArgs[0].toUpperCase() === "PLAY USE SKILL") {
+      SoundManager.playUseSkill();
+    } else {
+      var name = actionArgs[0];
+      if (!name) return true;
+      var vol = actionArgs[1] || MageStudios.Param.SoundVolume;
+      var pitch = actionArgs[2] || MageStudios.Param.SoundPitch;
+      var pan = actionArgs[3] || MageStudios.Param.SoundPan;
+      var se = {
+        name: name,
+        volume: vol,
+        pitch: pitch,
+        pan: pan,
+      };
+      AudioManager.playSe(se);
+    }
+    return true;
+  };
+
+  BattleManager.actionTpModify = function (actionName, actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return false;
     var change;
     var percent;
     if (actionName.match(/TP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)/i)) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = false;
-    } else if
-    (actionName.match(/TP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)) {
+    } else if (
+      actionName.match(/TP[ ]([+-])(?:VARIABLE|VAR)[ ](\d+)([%％])/i)
+    ) {
       change = parseInt($gameVariables.value(parseInt(RegExp.$2)));
-      if (String(RegExp.$1) === '-') change *= -1;
+      if (String(RegExp.$1) === "-") change *= -1;
       percent = true;
     } else if (actionName.match(/TP[ ]([\+\-]\d+)([%％])/i)) {
       change = parseInt(RegExp.$1);
@@ -1514,12 +1458,12 @@ BattleManager.actionTpModify = function(actionName, actionArgs) {
     var show = false;
     for (var i = 0; i < actionArgs.length; ++i) {
       var actionArg = actionArgs[i];
-      if (actionArg.toUpperCase() === 'SHOW') show = true;
+      if (actionArg.toUpperCase() === "SHOW") show = true;
     }
     var value;
-    targets.forEach(function(target) {
+    targets.forEach(function (target) {
       target.clearResult();
-      value = percent ? (target.maxTp() * change * 0.01) : change;
+      value = percent ? target.maxTp() * change * 0.01 : change;
       target.gainTp(parseInt(value));
       if (show) {
         target.startDamagePopup();
@@ -1527,27 +1471,19 @@ BattleManager.actionTpModify = function(actionName, actionArgs) {
       }
     }, this);
     return true;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

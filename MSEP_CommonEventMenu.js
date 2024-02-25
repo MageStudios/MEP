@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Common Event Menu
-// MSEP_CommonEventMenu.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_CommonEventMenu = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CEM = MageStudios.CEM || {};
-MageStudios.CEM.version = 1.00;
+MageStudios.CEM.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin allows the creation of windows to call
  * common events with.
  * @author Mage Studios Engine Plugins
@@ -458,91 +452,112 @@ MageStudios.CEM.version = 1.00;
  *   made of just the main list and a help window.
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_CommonEventMenu');
+MageStudios.Parameters = PluginManager.parameters("MSEP_CommonEventMenu");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.CEMIcon = Number(MageStudios.Parameters['Default Icon']);
-MageStudios.Param.CEMHelpDescription = String(MageStudios.Parameters['Default Help']);
-MageStudios.Param.CEMSubtext = String(MageStudios.Parameters['Default Subtext']);
-MageStudios.Param.CEMCancel = Number(MageStudios.Parameters['Default Cancel Event']);
+MageStudios.Param.CEMIcon = Number(MageStudios.Parameters["Default Icon"]);
+MageStudios.Param.CEMHelpDescription = String(
+  MageStudios.Parameters["Default Help"]
+);
+MageStudios.Param.CEMSubtext = String(
+  MageStudios.Parameters["Default Subtext"]
+);
+MageStudios.Param.CEMCancel = Number(
+  MageStudios.Parameters["Default Cancel Event"]
+);
 
-MageStudios.Param.CEMWindowX = String(MageStudios.Parameters['Window X']);
-MageStudios.Param.CEMWindowY = String(MageStudios.Parameters['Window Y']);
-MageStudios.Param.CEMWindowWidth = String(MageStudios.Parameters['Window Width']);
-MageStudios.Param.CEMWindowHeight = String(MageStudios.Parameters['Window Height']);
-MageStudios.Param.CEMWindowColumns = String(MageStudios.Parameters['Window Columns']);
-MageStudios.Param.CEMWindowOpacity = String(MageStudios.Parameters['Window Opacity']);
+MageStudios.Param.CEMWindowX = String(MageStudios.Parameters["Window X"]);
+MageStudios.Param.CEMWindowY = String(MageStudios.Parameters["Window Y"]);
+MageStudios.Param.CEMWindowWidth = String(
+  MageStudios.Parameters["Window Width"]
+);
+MageStudios.Param.CEMWindowHeight = String(
+  MageStudios.Parameters["Window Height"]
+);
+MageStudios.Param.CEMWindowColumns = String(
+  MageStudios.Parameters["Window Columns"]
+);
+MageStudios.Param.CEMWindowOpacity = String(
+  MageStudios.Parameters["Window Opacity"]
+);
 
-MageStudios.Param.CEMShowHelp = eval(String(MageStudios.Parameters['Show Help']));
-MageStudios.Param.CEMHelpX = String(MageStudios.Parameters['Help X']);
-MageStudios.Param.CEMHelpY = String(MageStudios.Parameters['Help Y']);
-MageStudios.Param.CEMHelpWidth = String(MageStudios.Parameters['Help Width']);
-MageStudios.Param.CEMHelpHeight = String(MageStudios.Parameters['Help Height']);
-MageStudios.Param.CEMHelpOpacity = String(MageStudios.Parameters['Help Opacity']);
+MageStudios.Param.CEMShowHelp = eval(
+  String(MageStudios.Parameters["Show Help"])
+);
+MageStudios.Param.CEMHelpX = String(MageStudios.Parameters["Help X"]);
+MageStudios.Param.CEMHelpY = String(MageStudios.Parameters["Help Y"]);
+MageStudios.Param.CEMHelpWidth = String(MageStudios.Parameters["Help Width"]);
+MageStudios.Param.CEMHelpHeight = String(MageStudios.Parameters["Help Height"]);
+MageStudios.Param.CEMHelpOpacity = String(
+  MageStudios.Parameters["Help Opacity"]
+);
 
-MageStudios.Param.CEMShowPic = eval(String(MageStudios.Parameters['Show Picture']));
-MageStudios.Param.CEMPicX = String(MageStudios.Parameters['Picture X']);
-MageStudios.Param.CEMPicY = String(MageStudios.Parameters['Picture Y']);
-MageStudios.Param.CEMPicWidth = String(MageStudios.Parameters['Picture Width']);
-MageStudios.Param.CEMPicHeight = String(MageStudios.Parameters['Picture Height']);
-MageStudios.Param.CEMPicOpacity = String(MageStudios.Parameters['Picture Opacity']);
+MageStudios.Param.CEMShowPic = eval(
+  String(MageStudios.Parameters["Show Picture"])
+);
+MageStudios.Param.CEMPicX = String(MageStudios.Parameters["Picture X"]);
+MageStudios.Param.CEMPicY = String(MageStudios.Parameters["Picture Y"]);
+MageStudios.Param.CEMPicWidth = String(MageStudios.Parameters["Picture Width"]);
+MageStudios.Param.CEMPicHeight = String(
+  MageStudios.Parameters["Picture Height"]
+);
+MageStudios.Param.CEMPicOpacity = String(
+  MageStudios.Parameters["Picture Opacity"]
+);
 
-MageStudios.Param.CEMShowSub = eval(String(MageStudios.Parameters['Show Subtext']));
-MageStudios.Param.CEMSubX = String(MageStudios.Parameters['Subtext X']);
-MageStudios.Param.CEMSubY = String(MageStudios.Parameters['Subtext Y']);
-MageStudios.Param.CEMSubWidth = String(MageStudios.Parameters['Subtext Width']);
-MageStudios.Param.CEMSubHeight = String(MageStudios.Parameters['Subtext Height']);
-MageStudios.Param.CEMSubOpacity = String(MageStudios.Parameters['Subtext Opacity']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.CEMShowSub = eval(
+  String(MageStudios.Parameters["Show Subtext"])
+);
+MageStudios.Param.CEMSubX = String(MageStudios.Parameters["Subtext X"]);
+MageStudios.Param.CEMSubY = String(MageStudios.Parameters["Subtext Y"]);
+MageStudios.Param.CEMSubWidth = String(MageStudios.Parameters["Subtext Width"]);
+MageStudios.Param.CEMSubHeight = String(
+  MageStudios.Parameters["Subtext Height"]
+);
+MageStudios.Param.CEMSubOpacity = String(
+  MageStudios.Parameters["Subtext Opacity"]
+);
 
 MageStudios.CEM.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.CEM.DataManager_isDatabaseLoaded.call(this)) return false;
 
   if (!MageStudios._loaded_MSEP_CommonEventMenu) {
     this.processCEMNotetags1($dataCommonEvents);
     MageStudios._loaded_MSEP_CommonEventMenu = true;
   }
-  
+
   return true;
 };
 
-DataManager.convertCommentsToText = function(obj) {
-  var comment = '';
+DataManager.convertCommentsToText = function (obj) {
+  var comment = "";
   var length = obj.list.length;
   for (var i = 0; i < length; ++i) {
     var ev = obj.list[i];
     if ([108, 408].contains(ev.code)) {
-      comment += obj.list[i].parameters[0] + '\n';
+      comment += obj.list[i].parameters[0] + "\n";
     }
   }
   return comment.split(/[\r\n]+/);
 };
 
-DataManager.processCEMNotetags1 = function(group) {
+DataManager.processCEMNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = this.convertCommentsToText(obj);
 
     obj.iconIndex = MageStudios.Param.CEMIcon;
     obj.description = MageStudios.Param.CEMHelpDescription;
-    obj.picture = '';
+    obj.picture = "";
     obj.menuSettings = {
       name: obj.name,
       subtext: MageStudios.Param.CEMSubtext,
-      enabled: 'enabled = true',
-      show: 'visible = true'
+      enabled: "enabled = true",
+      show: "visible = true",
     };
-    var evalMode = 'none';
+    var evalMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -553,50 +568,258 @@ DataManager.processCEMNotetags1 = function(group) {
       } else if (line.match(/<PICTURE:[ ](.*)>/i)) {
         obj.picture = String(RegExp.$1);
       } else if (line.match(/<HELP DESCRIPTION>/i)) {
-        evalMode = 'help description';
-        obj.description = '';
+        evalMode = "help description";
+        obj.description = "";
       } else if (line.match(/<\/HELP DESCRIPTION>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'help description') {
-        obj.description += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "help description") {
+        obj.description += line + "\n";
       } else if (line.match(/<SUBTEXT>/i)) {
-        evalMode = 'subtext';
-        obj.menuSettings.subtext = '';
+        evalMode = "subtext";
+        obj.menuSettings.subtext = "";
       } else if (line.match(/<\/SUBTEXT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'subtext') {
-        obj.menuSettings.subtext += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "subtext") {
+        obj.menuSettings.subtext += line + "\n";
       } else if (line.match(/<MENU ENABLE EVAL>/i)) {
-        evalMode = 'menu enable eval';
-        obj.menuSettings.enabled = '';
+        evalMode = "menu enable eval";
+        obj.menuSettings.enabled = "";
       } else if (line.match(/<\/MENU ENABLE EVAL>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'menu enable eval') {
-        obj.menuSettings.enabled += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "menu enable eval") {
+        obj.menuSettings.enabled += line + "\n";
       } else if (line.match(/<MENU VISIBLE EVAL>/i)) {
-        evalMode = 'menu visible eval';
-        obj.menuSettings.show = '';
+        evalMode = "menu visible eval";
+        obj.menuSettings.show = "";
       } else if (line.match(/<\/MENU VISIBLE EVAL>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'menu visible eval') {
-        obj.menuSettings.show += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "menu visible eval") {
+        obj.menuSettings.show += line + "\n";
       }
     }
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.CEM.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.CEM.Game_System_initialize.call(this);
-    this.initCommonEventMenuSettings();
+Game_System.prototype.initialize = function () {
+  MageStudios.CEM.Game_System_initialize.call(this);
+  this.initCommonEventMenuSettings();
 };
 
-Game_System.prototype.initCommonEventMenuSettings = function() {
-    this._commonEventMenuSettings = {
+Game_System.prototype.initCommonEventMenuSettings = function () {
+  this._commonEventMenuSettings = {
+    mainX: MageStudios.Param.CEMWindowX,
+    mainY: MageStudios.Param.CEMWindowY,
+    mainW: MageStudios.Param.CEMWindowWidth,
+    mainH: MageStudios.Param.CEMWindowHeight,
+    mainC: MageStudios.Param.CEMWindowColumns,
+    mainO: MageStudios.Param.CEMWindowOpacity,
+
+    helpS: MageStudios.Param.CEMShowHelp,
+    helpX: MageStudios.Param.CEMHelpX,
+    helpY: MageStudios.Param.CEMHelpY,
+    helpW: MageStudios.Param.CEMHelpWidth,
+    helpH: MageStudios.Param.CEMHelpHeight,
+    helpO: MageStudios.Param.CEMHelpOpacity,
+
+    picS: MageStudios.Param.CEMShowPic,
+    picX: MageStudios.Param.CEMPicX,
+    picY: MageStudios.Param.CEMPicY,
+    picW: MageStudios.Param.CEMPicWidth,
+    picH: MageStudios.Param.CEMPicHeight,
+    picO: MageStudios.Param.CEMPicOpacity,
+
+    subS: MageStudios.Param.CEMShowSub,
+    subX: MageStudios.Param.CEMSubX,
+    subY: MageStudios.Param.CEMSubY,
+    subW: MageStudios.Param.CEMSubWidth,
+    subH: MageStudios.Param.CEMSubHeight,
+    subO: MageStudios.Param.CEMSubOpacity,
+  };
+  this._commonEventMenuData = [];
+  this._commonEventMenuCancel = MageStudios.Param.CEMCancel;
+  this._commonEventMenuConfirm = true;
+};
+
+Game_System.prototype.getCommonEventMenuSettings = function (key) {
+  if (this._commonEventMenuSettings === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  return this._commonEventMenuSettings[key];
+};
+
+Game_System.prototype.setCommonEventMenuSetupKey = function (key, value) {
+  if (this._commonEventMenuSettings === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  this._commonEventMenuSettings[key] = value;
+};
+
+Game_System.prototype.getCommonEventMenuData = function () {
+  if (this._commonEventMenuData === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  return this._commonEventMenuData;
+};
+
+Game_System.prototype.clearCommonEventMenu = function () {
+  if (this._commonEventMenuData === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  this._commonEventMenuData = [];
+};
+
+Game_System.prototype.addCommonEventMenu = function (arr) {
+  if (this._commonEventMenuData === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  var length = arr.length;
+  for (var i = 0; i < length; ++i) {
+    this._commonEventMenuData.push(arr[i]);
+  }
+};
+
+Game_System.prototype.getCommonEventMenuCancel = function () {
+  if (this._commonEventMenuCancel === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  return this._commonEventMenuCancel;
+};
+
+Game_System.prototype.setCommonEventMenuCancel = function (value) {
+  if (this._commonEventMenuCancel === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  this._commonEventMenuCancel = value;
+};
+
+Game_System.prototype.canCommonEventMenuConfirm = function () {
+  if (this._commonEventMenuConfirm === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  return this._commonEventMenuConfirm;
+};
+
+Game_System.prototype.setCommonEventMenuConfirm = function (value) {
+  if (this._commonEventMenuConfirm === undefined) {
+    this.initCommonEventMenuSettings();
+  }
+  this._commonEventMenuConfirm = value;
+};
+
+Game_System.prototype.setCommonEventMenuSettings = function (settings) {
+  this._commonEventMenuSettings = settings;
+};
+
+MageStudios.CEM.Game_Interpreter_pluginCommand =
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.CEM.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "ClearCommonEventMenu") {
+    $gameSystem.clearCommonEventMenu();
+  } else if (command === "AddCommonEventMenu") {
+    this.addCommonEventMenu(args);
+  } else if (command === "OpenCommonEventMenu") {
+    this.openCommonEventMenu();
+  } else if (command === "SetCommonEventMenuCancel") {
+    $gameSystem.setCommonEventMenuCancel(parseInt(args[0]));
+  } else if (command === "DisableCommonEventMenuCancel") {
+    $gameSystem.setCommonEventMenuCancel(-1);
+  } else if (command === "DisableCommonEventMenuConfirm") {
+    $gameSystem.setCommonEventMenuConfirm(false);
+  } else if (command === "EnableCommonEventMenuCancel") {
+    $gameSystem.setCommonEventMenuCancel(0);
+  } else if (command === "EnableCommonEventMenuConfirm") {
+    $gameSystem.setCommonEventMenuConfirm(true);
+  } else if (command === "CommonEventMenuX") {
+    $gameSystem.setCommonEventMenuSetupKey("mainX", this.argsToString(args));
+  } else if (command === "CommonEventMenuY") {
+    $gameSystem.setCommonEventMenuSetupKey("mainY", this.argsToString(args));
+  } else if (command === "CommonEventMenuWidth") {
+    $gameSystem.setCommonEventMenuSetupKey("mainW", this.argsToString(args));
+  } else if (command === "CommonEventMenuHeight") {
+    $gameSystem.setCommonEventMenuSetupKey("mainH", this.argsToString(args));
+  } else if (command === "CommonEventMenuOpacity") {
+    $gameSystem.setCommonEventMenuSetupKey("mainO", this.argsToString(args));
+  } else if (command === "CommonEventMenuColumns") {
+    $gameSystem.setCommonEventMenuSetupKey("mainC", this.argsToString(args));
+  } else if (command === "ShowCommonEventMenuHelp") {
+    $gameSystem.setCommonEventMenuSetupKey("helpS", true);
+  } else if (command === "HideCommonEventMenuHelp") {
+    $gameSystem.setCommonEventMenuSetupKey("helpS", false);
+  } else if (command === "CommonEventMenuHelpX") {
+    $gameSystem.setCommonEventMenuSetupKey("helpX", this.argsToString(args));
+  } else if (command === "CommonEventMenuHelpY") {
+    $gameSystem.setCommonEventMenuSetupKey("helpY", this.argsToString(args));
+  } else if (command === "CommonEventMenuHelpWidth") {
+    $gameSystem.setCommonEventMenuSetupKey("helpW", this.argsToString(args));
+  } else if (command === "CommonEventMenuHelpHeight") {
+    $gameSystem.setCommonEventMenuSetupKey("helpH", this.argsToString(args));
+  } else if (command === "CommonEventMenuHelpOpacity") {
+    $gameSystem.setCommonEventMenuSetupKey("helpO", this.argsToString(args));
+  } else if (command === "ShowCommonEventMenuPicture") {
+    $gameSystem.setCommonEventMenuSetupKey("picS", true);
+  } else if (command === "HideCommonEventMenuPicture") {
+    $gameSystem.setCommonEventMenuSetupKey("picS", false);
+  } else if (command === "CommonEventMenuPictureX") {
+    $gameSystem.setCommonEventMenuSetupKey("picX", this.argsToString(args));
+  } else if (command === "CommonEventMenuPictureY") {
+    $gameSystem.setCommonEventMenuSetupKey("picY", this.argsToString(args));
+  } else if (command === "CommonEventMenuPictureWidth") {
+    $gameSystem.setCommonEventMenuSetupKey("picW", this.argsToString(args));
+  } else if (command === "CommonEventMenuPictureHeight") {
+    $gameSystem.setCommonEventMenuSetupKey("picH", this.argsToString(args));
+  } else if (command === "CommonEventMenuPictureOpacity") {
+    $gameSystem.setCommonEventMenuSetupKey("picO", this.argsToString(args));
+  } else if (command === "ShowCommonEventMenuSubtext") {
+    $gameSystem.setCommonEventMenuSetupKey("subS", true);
+  } else if (command === "HideCommonEventMenuSubtext") {
+    $gameSystem.setCommonEventMenuSetupKey("subS", false);
+  } else if (command === "CommonEventMenuSubtextX") {
+    $gameSystem.setCommonEventMenuSetupKey("subX", this.argsToString(args));
+  } else if (command === "CommonEventMenuSubtextY") {
+    $gameSystem.setCommonEventMenuSetupKey("subY", this.argsToString(args));
+  } else if (command === "CommonEventMenuSubtextWidth") {
+    $gameSystem.setCommonEventMenuSetupKey("subW", this.argsToString(args));
+  } else if (command === "CommonEventMenuSubtextHeight") {
+    $gameSystem.setCommonEventMenuSetupKey("subH", this.argsToString(args));
+  } else if (command === "CommonEventMenuSubtextOpacity") {
+    $gameSystem.setCommonEventMenuSetupKey("subO", this.argsToString(args));
+  } else if (command === "SetCommonEventMenuSettings") {
+    this.setCommonEventMenuSettings(this.argsToString(args));
+  }
+};
+
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
+  var length = args.length;
+  for (var i = 0; i < length; ++i) {
+    str += args[i] + " ";
+  }
+  return str.trim();
+};
+
+Game_Interpreter.prototype.addCommonEventMenu = function (args) {
+  var str = this.argsToString(args);
+  var array = [];
+  if (str.match(/(\d+)[ ](?:THROUGH|to)[ ](\d+)/i)) {
+    array = MageStudios.Util.getRange(parseInt(RegExp.$1), parseInt(RegExp.$2));
+  } else if (str.match(/(\d+(?:\s*,\s*\d+)*)/i)) {
+    array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
+  }
+  $gameSystem.addCommonEventMenu(array);
+};
+
+Game_Interpreter.prototype.openCommonEventMenu = function () {
+  if ($gameParty.inBattle() && !Imported.MSEP_BattleEngineCore) return;
+  SceneManager._scene.openCommonEventMenu(this._mapId, this._eventId);
+  this.wait(10);
+};
+
+Game_Interpreter.prototype.setCommonEventMenuSettings = function (name) {
+  var settings;
+  if (name.match(/DEFAULT SETUP/i)) {
+    settings = {
       mainX: MageStudios.Param.CEMWindowX,
       mainY: MageStudios.Param.CEMWindowY,
       mainW: MageStudios.Param.CEMWindowWidth,
@@ -623,659 +846,415 @@ Game_System.prototype.initCommonEventMenuSettings = function() {
       subY: MageStudios.Param.CEMSubY,
       subW: MageStudios.Param.CEMSubWidth,
       subH: MageStudios.Param.CEMSubHeight,
-      subO: MageStudios.Param.CEMSubOpacity
-    }
-    this._commonEventMenuData = [];
-    this._commonEventMenuCancel = MageStudios.Param.CEMCancel;
-    this._commonEventMenuConfirm = true;
-};
+      subO: MageStudios.Param.CEMSubOpacity,
+    };
+  } else if (name.match(/BASIC SETUP/i)) {
+    settings = {
+      mainX: 0,
+      mainY: "this.fittingHeight(2)",
+      mainW: "Graphics.boxWidth",
+      mainH: "Graphics.boxHeight - this.fittingHeight(2)",
+      mainC: 1,
+      mainO: 255,
 
-Game_System.prototype.getCommonEventMenuSettings = function(key) {
-    if (this._commonEventMenuSettings === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    return this._commonEventMenuSettings[key];
-};
+      helpS: true,
+      helpX: 0,
+      helpY: 0,
+      helpW: "Graphics.boxWidth",
+      helpH: "this.fittingHeight(2)",
+      helpO: 255,
 
-Game_System.prototype.setCommonEventMenuSetupKey = function(key, value) {
-    if (this._commonEventMenuSettings === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    this._commonEventMenuSettings[key] = value;
-};
+      picS: false,
+      picX: 0,
+      picY: 0,
+      picW: 1,
+      picH: 1,
+      picO: 255,
 
-Game_System.prototype.getCommonEventMenuData = function() {
-    if (this._commonEventMenuData === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    return this._commonEventMenuData;
-};
-
-Game_System.prototype.clearCommonEventMenu = function() {
-    if (this._commonEventMenuData === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    this._commonEventMenuData = [];
-};
-
-Game_System.prototype.addCommonEventMenu = function(arr) {
-    if (this._commonEventMenuData === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    var length = arr.length;
-    for (var i = 0; i < length; ++i) {
-      this._commonEventMenuData.push(arr[i]);
-    }
-};
-
-Game_System.prototype.getCommonEventMenuCancel = function() {
-    if (this._commonEventMenuCancel === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    return this._commonEventMenuCancel;
-};
-
-Game_System.prototype.setCommonEventMenuCancel = function(value) {
-    if (this._commonEventMenuCancel === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    this._commonEventMenuCancel = value;
-};
-
-Game_System.prototype.canCommonEventMenuConfirm = function() {
-    if (this._commonEventMenuConfirm === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    return this._commonEventMenuConfirm;
-};
-
-Game_System.prototype.setCommonEventMenuConfirm = function(value) {
-    if (this._commonEventMenuConfirm === undefined) {
-      this.initCommonEventMenuSettings();
-    }
-    this._commonEventMenuConfirm = value;
-};
-
-Game_System.prototype.setCommonEventMenuSettings = function(settings) {
-    this._commonEventMenuSettings = settings;
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.CEM.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.CEM.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ClearCommonEventMenu') {
-    $gameSystem.clearCommonEventMenu();
-  } else if (command === 'AddCommonEventMenu') {
-    this.addCommonEventMenu(args);
-  } else if (command === 'OpenCommonEventMenu') {
-    this.openCommonEventMenu();
-  } else if (command === 'SetCommonEventMenuCancel') {
-    $gameSystem.setCommonEventMenuCancel(parseInt(args[0]));
-  } else if (command === 'DisableCommonEventMenuCancel') {
-    $gameSystem.setCommonEventMenuCancel(-1);
-  } else if (command === 'DisableCommonEventMenuConfirm') {
-    $gameSystem.setCommonEventMenuConfirm(false);
-  } else if (command === 'EnableCommonEventMenuCancel') {
-    $gameSystem.setCommonEventMenuCancel(0);
-  } else if (command === 'EnableCommonEventMenuConfirm') {
-    $gameSystem.setCommonEventMenuConfirm(true);
-  // Main Settings
-  } else if (command === 'CommonEventMenuX') {
-    $gameSystem.setCommonEventMenuSetupKey('mainX', this.argsToString(args));
-  } else if (command === 'CommonEventMenuY') {
-    $gameSystem.setCommonEventMenuSetupKey('mainY', this.argsToString(args));
-  } else if (command === 'CommonEventMenuWidth') {
-    $gameSystem.setCommonEventMenuSetupKey('mainW', this.argsToString(args));
-  } else if (command === 'CommonEventMenuHeight') {
-    $gameSystem.setCommonEventMenuSetupKey('mainH', this.argsToString(args));
-  } else if (command === 'CommonEventMenuOpacity') {
-    $gameSystem.setCommonEventMenuSetupKey('mainO', this.argsToString(args));
-  } else if (command === 'CommonEventMenuColumns') {
-    $gameSystem.setCommonEventMenuSetupKey('mainC', this.argsToString(args));
-  // Help Settings
-  } else if (command === 'ShowCommonEventMenuHelp') {
-    $gameSystem.setCommonEventMenuSetupKey('helpS', true);
-  } else if (command === 'HideCommonEventMenuHelp') {
-    $gameSystem.setCommonEventMenuSetupKey('helpS', false);
-  } else if (command === 'CommonEventMenuHelpX') {
-    $gameSystem.setCommonEventMenuSetupKey('helpX', this.argsToString(args));
-  } else if (command === 'CommonEventMenuHelpY') {
-    $gameSystem.setCommonEventMenuSetupKey('helpY', this.argsToString(args));
-  } else if (command === 'CommonEventMenuHelpWidth') {
-    $gameSystem.setCommonEventMenuSetupKey('helpW', this.argsToString(args));
-  } else if (command === 'CommonEventMenuHelpHeight') {
-    $gameSystem.setCommonEventMenuSetupKey('helpH', this.argsToString(args));
-  } else if (command === 'CommonEventMenuHelpOpacity') {
-    $gameSystem.setCommonEventMenuSetupKey('helpO', this.argsToString(args));
-  // Picture Settings
-  } else if (command === 'ShowCommonEventMenuPicture') {
-    $gameSystem.setCommonEventMenuSetupKey('picS', true);
-  } else if (command === 'HideCommonEventMenuPicture') {
-    $gameSystem.setCommonEventMenuSetupKey('picS', false);
-  } else if (command === 'CommonEventMenuPictureX') {
-    $gameSystem.setCommonEventMenuSetupKey('picX', this.argsToString(args));
-  } else if (command === 'CommonEventMenuPictureY') {
-    $gameSystem.setCommonEventMenuSetupKey('picY', this.argsToString(args));
-  } else if (command === 'CommonEventMenuPictureWidth') {
-    $gameSystem.setCommonEventMenuSetupKey('picW', this.argsToString(args));
-  } else if (command === 'CommonEventMenuPictureHeight') {
-    $gameSystem.setCommonEventMenuSetupKey('picH', this.argsToString(args));
-  } else if (command === 'CommonEventMenuPictureOpacity') {
-    $gameSystem.setCommonEventMenuSetupKey('picO', this.argsToString(args));
-  // Subtext Settings
-  } else if (command === 'ShowCommonEventMenuSubtext') {
-    $gameSystem.setCommonEventMenuSetupKey('subS', true);
-  } else if (command === 'HideCommonEventMenuSubtext') {
-    $gameSystem.setCommonEventMenuSetupKey('subS', false);
-  } else if (command === 'CommonEventMenuSubtextX') {
-    $gameSystem.setCommonEventMenuSetupKey('subX', this.argsToString(args));
-  } else if (command === 'CommonEventMenuSubtextY') {
-    $gameSystem.setCommonEventMenuSetupKey('subY', this.argsToString(args));
-  } else if (command === 'CommonEventMenuSubtextWidth') {
-    $gameSystem.setCommonEventMenuSetupKey('subW', this.argsToString(args));
-  } else if (command === 'CommonEventMenuSubtextHeight') {
-    $gameSystem.setCommonEventMenuSetupKey('subH', this.argsToString(args));
-  } else if (command === 'CommonEventMenuSubtextOpacity') {
-    $gameSystem.setCommonEventMenuSetupKey('subO', this.argsToString(args));
-  // 
-  } else if (command === 'SetCommonEventMenuSettings') {
-    this.setCommonEventMenuSettings(this.argsToString(args));
+      subS: false,
+      subX: 0,
+      subY: 0,
+      subW: 1,
+      subH: 1,
+      subO: 255,
+    };
   }
+  if (settings) $gameSystem.setCommonEventMenuSettings(settings);
 };
-
-Game_Interpreter.prototype.argsToString = function(args) {
-    var str = '';
-    var length = args.length;
-    for (var i = 0; i < length; ++i) {
-      str += args[i] + ' ';
-    }
-    return str.trim();
-};
-
-Game_Interpreter.prototype.addCommonEventMenu = function(args) {
-    var str = this.argsToString(args);
-    var array = [];
-    if (str.match(/(\d+)[ ](?:THROUGH|to)[ ](\d+)/i)) {
-      array = MageStudios.Util.getRange(parseInt(RegExp.$1), parseInt(RegExp.$2));
-    } else if (str.match(/(\d+(?:\s*,\s*\d+)*)/i)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
-    }
-    $gameSystem.addCommonEventMenu(array);
-};
-
-Game_Interpreter.prototype.openCommonEventMenu = function() {
-    if ($gameParty.inBattle() && !Imported.MSEP_BattleEngineCore) return;
-    SceneManager._scene.openCommonEventMenu(this._mapId, this._eventId);
-    this.wait(10);
-};
-
-Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
-    var settings;
-    if (name.match(/DEFAULT SETUP/i)) {
-      settings = {
-        mainX: MageStudios.Param.CEMWindowX,
-        mainY: MageStudios.Param.CEMWindowY,
-        mainW: MageStudios.Param.CEMWindowWidth,
-        mainH: MageStudios.Param.CEMWindowHeight,
-        mainC: MageStudios.Param.CEMWindowColumns,
-        mainO: MageStudios.Param.CEMWindowOpacity,
-
-        helpS: MageStudios.Param.CEMShowHelp,
-        helpX: MageStudios.Param.CEMHelpX,
-        helpY: MageStudios.Param.CEMHelpY,
-        helpW: MageStudios.Param.CEMHelpWidth,
-        helpH: MageStudios.Param.CEMHelpHeight,
-        helpO: MageStudios.Param.CEMHelpOpacity,
-
-        picS: MageStudios.Param.CEMShowPic,
-        picX: MageStudios.Param.CEMPicX,
-        picY: MageStudios.Param.CEMPicY,
-        picW: MageStudios.Param.CEMPicWidth,
-        picH: MageStudios.Param.CEMPicHeight,
-        picO: MageStudios.Param.CEMPicOpacity,
-
-        subS: MageStudios.Param.CEMShowSub,
-        subX: MageStudios.Param.CEMSubX,
-        subY: MageStudios.Param.CEMSubY,
-        subW: MageStudios.Param.CEMSubWidth,
-        subH: MageStudios.Param.CEMSubHeight,
-        subO: MageStudios.Param.CEMSubOpacity
-      }
-    } else if (name.match(/BASIC SETUP/i)) {
-      settings = {
-        mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2)',
-        mainC: 1,
-        mainO: 255,
-
-        helpS: true,
-        helpX: 0,
-        helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
-        helpO: 255,
-
-        picS: false,
-        picX: 0,
-        picY: 0,
-        picW: 1,
-        picH: 1,
-        picO: 255,
-
-        subS: false,
-        subX: 0,
-        subY: 0,
-        subW: 1,
-        subH: 1,
-        subO: 255
-      }
-    }
-    if (settings) $gameSystem.setCommonEventMenuSettings(settings);
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 function Window_CommonEventMenu() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_CommonEventMenu.prototype = Object.create(Window_Command.prototype);
 Window_CommonEventMenu.prototype.constructor = Window_CommonEventMenu;
 
-Window_CommonEventMenu.prototype.initialize = function() {
-  var width = eval($gameSystem.getCommonEventMenuSettings('mainW'));
-  var height = eval($gameSystem.getCommonEventMenuSettings('mainH'));
-  var x = eval($gameSystem.getCommonEventMenuSettings('mainX'));
-  var y = eval($gameSystem.getCommonEventMenuSettings('mainY'));
-  this._cols = eval($gameSystem.getCommonEventMenuSettings('mainC'));
+Window_CommonEventMenu.prototype.initialize = function () {
+  var width = eval($gameSystem.getCommonEventMenuSettings("mainW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("mainH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("mainX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("mainY"));
+  this._cols = eval($gameSystem.getCommonEventMenuSettings("mainC"));
   this._eventId = 0;
   Window_Command.prototype.initialize.call(this, x, y);
   this.deactivate();
   this.openness = 0;
 };
 
-Window_CommonEventMenu.prototype.isCancelEnabled = function() {
-    return $gameSystem.getCommonEventMenuCancel() >= 0;
+Window_CommonEventMenu.prototype.isCancelEnabled = function () {
+  return $gameSystem.getCommonEventMenuCancel() >= 0;
 };
 
-Window_CommonEventMenu.prototype.setPictureWindow = function(win) {
-    this._pictureWindow = win;
+Window_CommonEventMenu.prototype.setPictureWindow = function (win) {
+  this._pictureWindow = win;
 };
 
-Window_CommonEventMenu.prototype.setSubtextWindow = function(win) {
-    this._subtextWindow = win;
+Window_CommonEventMenu.prototype.setSubtextWindow = function (win) {
+  this._subtextWindow = win;
 };
 
-Window_CommonEventMenu.prototype.isOkEnabled = function() {
-    if (!$gameSystem.canCommonEventMenuConfirm()) return false;
-    return Window_Selectable.prototype.isOkEnabled.call(this);
+Window_CommonEventMenu.prototype.isOkEnabled = function () {
+  if (!$gameSystem.canCommonEventMenuConfirm()) return false;
+  return Window_Selectable.prototype.isOkEnabled.call(this);
 };
 
-Window_CommonEventMenu.prototype.setup = function(mapId, eventId) {
-    this._mapId = mapId;
-    this._eventId = eventId;
-    this.activate();
-    this.relocateMainWindow();
-    this.relocateSupportingWindows();
-    this.open();
-    this.select(0);
-    this.refresh();
-    this.updateHelp();
+Window_CommonEventMenu.prototype.setup = function (mapId, eventId) {
+  this._mapId = mapId;
+  this._eventId = eventId;
+  this.activate();
+  this.relocateMainWindow();
+  this.relocateSupportingWindows();
+  this.open();
+  this.select(0);
+  this.refresh();
+  this.updateHelp();
 };
 
-Window_CommonEventMenu.prototype.item = function() {
-    return $dataCommonEvents[this.currentExt()];
+Window_CommonEventMenu.prototype.item = function () {
+  return $dataCommonEvents[this.currentExt()];
 };
 
-Window_CommonEventMenu.prototype.updateHelp = function() {
-    this.setHelpWindowItem(this.item());
-    this.setPictureWindowItem(this.item());
-    this.setSubtextWindowItem(this.item());
+Window_CommonEventMenu.prototype.updateHelp = function () {
+  this.setHelpWindowItem(this.item());
+  this.setPictureWindowItem(this.item());
+  this.setSubtextWindowItem(this.item());
 };
 
-Window_CommonEventMenu.prototype.setPictureWindowItem = function(item) {
-    if (this._pictureWindow) this._pictureWindow.setItem(item);
+Window_CommonEventMenu.prototype.setPictureWindowItem = function (item) {
+  if (this._pictureWindow) this._pictureWindow.setItem(item);
 };
 
-Window_CommonEventMenu.prototype.setSubtextWindowItem = function(item) {
-    if (!item && this._subtextWindow) this._subtextWindow.setText('');
-    if (item && this._subtextWindow) {
-      this._subtextWindow.resetFontSettings();
-      this._subtextWindow.setText(item.menuSettings.subtext);
+Window_CommonEventMenu.prototype.setSubtextWindowItem = function (item) {
+  if (!item && this._subtextWindow) this._subtextWindow.setText("");
+  if (item && this._subtextWindow) {
+    this._subtextWindow.resetFontSettings();
+    this._subtextWindow.setText(item.menuSettings.subtext);
+  }
+};
+
+Window_CommonEventMenu.prototype.mapId = function () {
+  return this._mapId;
+};
+
+Window_CommonEventMenu.prototype.eventId = function () {
+  return this._eventId;
+};
+
+Window_CommonEventMenu.prototype.relocateMainWindow = function () {
+  var width = eval($gameSystem.getCommonEventMenuSettings("mainW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("mainH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("mainX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("mainY"));
+  this._cols = eval($gameSystem.getCommonEventMenuSettings("mainC"));
+  this.width = width;
+  this.height = height;
+  this.x = x;
+  this.y = y;
+  this.opacity = eval($gameSystem.getCommonEventMenuSettings("mainO"));
+};
+
+Window_CommonEventMenu.prototype.relocateSupportingWindows = function () {
+  if (this._helpWindow) this.relocateHelpWindow();
+  if (this._pictureWindow) this.relocatePictureWindow();
+  if (this._subtextWindow) this.relocateSubtextWindow();
+};
+
+Window_CommonEventMenu.prototype.relocateHelpWindow = function () {
+  var show = $gameSystem.getCommonEventMenuSettings("helpS");
+  if (!show) return;
+  var width = eval($gameSystem.getCommonEventMenuSettings("helpW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("helpH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("helpX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("helpY"));
+  var opacity = eval($gameSystem.getCommonEventMenuSettings("helpO"));
+  this._helpWindow.width = width;
+  this._helpWindow.height = height;
+  this._helpWindow.x = x;
+  this._helpWindow.y = y;
+  this._helpWindow.opacity = opacity;
+  this._helpWindow.createContents();
+  this._helpWindow._text = "";
+  this._helpWindow.refresh();
+  this._helpWindow.open();
+};
+
+Window_CommonEventMenu.prototype.relocatePictureWindow = function () {
+  var show = $gameSystem.getCommonEventMenuSettings("picS");
+  if (!show) return;
+  var width = eval($gameSystem.getCommonEventMenuSettings("picW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("picH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("picX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("picY"));
+  var opacity = eval($gameSystem.getCommonEventMenuSettings("picO"));
+  this._pictureWindow.width = width;
+  this._pictureWindow.height = height;
+  this._pictureWindow.x = x;
+  this._pictureWindow.y = y;
+  this._pictureWindow.opacity = opacity;
+  this._pictureWindow.createContents();
+  this._pictureWindow._picture = "";
+  this._pictureWindow.refresh();
+  this._pictureWindow.open();
+};
+
+Window_CommonEventMenu.prototype.relocateSubtextWindow = function () {
+  var show = $gameSystem.getCommonEventMenuSettings("subS");
+  if (!show) return;
+  var width = eval($gameSystem.getCommonEventMenuSettings("subW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("subH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("subX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("subY"));
+  var opacity = eval($gameSystem.getCommonEventMenuSettings("subO"));
+  this._subtextWindow.width = width;
+  this._subtextWindow.height = height;
+  this._subtextWindow.x = x;
+  this._subtextWindow.y = y;
+  this._subtextWindow.opacity = opacity;
+  this._subtextWindow.createContents();
+  this._subtextWindow._text = "";
+  this._subtextWindow.refresh();
+  this._subtextWindow.open();
+};
+
+Window_CommonEventMenu.prototype.maxCols = function () {
+  return Math.max(1, this._cols);
+};
+
+Window_CommonEventMenu.prototype.makeCommandList = function () {
+  var data = $gameSystem.getCommonEventMenuData();
+  var length = data.length;
+  for (var i = 0; i < length; ++i) {
+    var id = data[i];
+    var ce = $dataCommonEvents[id];
+    if (!ce) continue;
+    if (this.includes(ce)) {
+      var name = "\\i[" + ce.iconIndex + "]" + ce.menuSettings.name;
+      var enabled = this.isEnabled(ce);
+      this.addCommand(name, "commonEvent", enabled, id);
     }
+  }
 };
 
-Window_CommonEventMenu.prototype.mapId = function() {
-    return this._mapId;
+Window_CommonEventMenu.prototype.includes = function (ce) {
+  if (!ce) return false;
+  if (ce.menuSettings.name === "") return false;
+  var visible = true;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  eval(ce.menuSettings.show);
+  return visible;
 };
 
-Window_CommonEventMenu.prototype.eventId = function() {
-    return this._eventId;
+Window_CommonEventMenu.prototype.isEnabled = function (ce) {
+  if (!ce) return false;
+  var enabled = true;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  eval(ce.menuSettings.enabled);
+  return enabled;
 };
 
-Window_CommonEventMenu.prototype.relocateMainWindow = function() {
-    var width = eval($gameSystem.getCommonEventMenuSettings('mainW'));
-    var height = eval($gameSystem.getCommonEventMenuSettings('mainH'));
-    var x = eval($gameSystem.getCommonEventMenuSettings('mainX'));
-    var y = eval($gameSystem.getCommonEventMenuSettings('mainY'));
-    this._cols = eval($gameSystem.getCommonEventMenuSettings('mainC'));
-    this.width = width;
-    this.height = height;
-    this.x = x;
-    this.y = y;
-    this.opacity = eval($gameSystem.getCommonEventMenuSettings('mainO'));
+Window_CommonEventMenu.prototype.drawItem = function (index) {
+  var rect = this.itemRectForText(index);
+  var align = this.itemTextAlign();
+  this.resetFontSettings();
+  this.changePaintOpacity(this.isCommandEnabled(index));
+  this.resetTextColor();
+  this.drawTextEx(this.commandName(index), rect.x, rect.y);
 };
-
-Window_CommonEventMenu.prototype.relocateSupportingWindows = function() {
-    if (this._helpWindow) this.relocateHelpWindow();
-    if (this._pictureWindow) this.relocatePictureWindow();
-    if (this._subtextWindow) this.relocateSubtextWindow();
-};
-
-Window_CommonEventMenu.prototype.relocateHelpWindow = function() {
-    var show = $gameSystem.getCommonEventMenuSettings('helpS');
-    if (!show) return;
-    var width = eval($gameSystem.getCommonEventMenuSettings('helpW'));
-    var height = eval($gameSystem.getCommonEventMenuSettings('helpH'));
-    var x = eval($gameSystem.getCommonEventMenuSettings('helpX'));
-    var y = eval($gameSystem.getCommonEventMenuSettings('helpY'));
-    var opacity = eval($gameSystem.getCommonEventMenuSettings('helpO'));
-    this._helpWindow.width = width;
-    this._helpWindow.height = height;
-    this._helpWindow.x = x;
-    this._helpWindow.y = y;
-    this._helpWindow.opacity = opacity;
-    this._helpWindow.createContents();
-    this._helpWindow._text = '';
-    this._helpWindow.refresh();
-    this._helpWindow.open();
-};
-
-Window_CommonEventMenu.prototype.relocatePictureWindow = function() {
-    var show = $gameSystem.getCommonEventMenuSettings('picS');
-    if (!show) return;
-    var width = eval($gameSystem.getCommonEventMenuSettings('picW'));
-    var height = eval($gameSystem.getCommonEventMenuSettings('picH'));
-    var x = eval($gameSystem.getCommonEventMenuSettings('picX'));
-    var y = eval($gameSystem.getCommonEventMenuSettings('picY'));
-    var opacity = eval($gameSystem.getCommonEventMenuSettings('picO'));
-    this._pictureWindow.width = width;
-    this._pictureWindow.height = height;
-    this._pictureWindow.x = x;
-    this._pictureWindow.y = y;
-    this._pictureWindow.opacity = opacity;
-    this._pictureWindow.createContents();
-    this._pictureWindow._picture = '';
-    this._pictureWindow.refresh();
-    this._pictureWindow.open();
-};
-
-Window_CommonEventMenu.prototype.relocateSubtextWindow = function() {
-    var show = $gameSystem.getCommonEventMenuSettings('subS');
-    if (!show) return;
-    var width = eval($gameSystem.getCommonEventMenuSettings('subW'));
-    var height = eval($gameSystem.getCommonEventMenuSettings('subH'));
-    var x = eval($gameSystem.getCommonEventMenuSettings('subX'));
-    var y = eval($gameSystem.getCommonEventMenuSettings('subY'));
-    var opacity = eval($gameSystem.getCommonEventMenuSettings('subO'));
-    this._subtextWindow.width = width;
-    this._subtextWindow.height = height;
-    this._subtextWindow.x = x;
-    this._subtextWindow.y = y;
-    this._subtextWindow.opacity = opacity;
-    this._subtextWindow.createContents();
-    this._subtextWindow._text = '';
-    this._subtextWindow.refresh();
-    this._subtextWindow.open();
-};
-
-Window_CommonEventMenu.prototype.maxCols = function() {
-    return Math.max(1, this._cols);
-};
-
-Window_CommonEventMenu.prototype.makeCommandList = function() {
-    var data = $gameSystem.getCommonEventMenuData();
-    var length = data.length;
-    for (var i = 0; i < length; ++i) {
-      var id = data[i];
-      var ce = $dataCommonEvents[id];
-      if (!ce) continue;
-      if (this.includes(ce)) {
-        var name = '\\i[' + ce.iconIndex + ']' + ce.menuSettings.name;
-        var enabled = this.isEnabled(ce);
-        this.addCommand(name, 'commonEvent', enabled, id);
-      }
-    }
-};
-
-Window_CommonEventMenu.prototype.includes = function(ce) {
-    if (!ce) return false;
-    if (ce.menuSettings.name === '') return false;
-    var visible = true;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    eval(ce.menuSettings.show);
-    return visible;
-};
-
-Window_CommonEventMenu.prototype.isEnabled = function(ce) {
-    if (!ce) return false;
-    var enabled = true;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    eval(ce.menuSettings.enabled);
-    return enabled;
-};
-
-Window_CommonEventMenu.prototype.drawItem = function(index) {
-    var rect = this.itemRectForText(index);
-    var align = this.itemTextAlign();
-    this.resetFontSettings();
-    this.changePaintOpacity(this.isCommandEnabled(index));
-    this.resetTextColor();
-    this.drawTextEx(this.commandName(index), rect.x, rect.y);
-};
-
-//=============================================================================
-// Window_CommonEventMenuPicture
-//=============================================================================
 
 function Window_CommonEventMenuPicture() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_CommonEventMenuPicture.prototype = Object.create(Window_Base.prototype);
 Window_CommonEventMenuPicture.prototype.constructor =
   Window_CommonEventMenuPicture;
 
-Window_CommonEventMenuPicture.prototype.initialize = function() {
-    var width = eval($gameSystem.getCommonEventMenuSettings('picW'));
-    var height = eval($gameSystem.getCommonEventMenuSettings('picH'));
-    var x = eval($gameSystem.getCommonEventMenuSettings('picX'));
-    var y = eval($gameSystem.getCommonEventMenuSettings('picY'));
-    this._picture = '';
-    Window_Base.prototype.initialize.call(this, x, y, width, height);
-    this.openness = 0;
+Window_CommonEventMenuPicture.prototype.initialize = function () {
+  var width = eval($gameSystem.getCommonEventMenuSettings("picW"));
+  var height = eval($gameSystem.getCommonEventMenuSettings("picH"));
+  var x = eval($gameSystem.getCommonEventMenuSettings("picX"));
+  var y = eval($gameSystem.getCommonEventMenuSettings("picY"));
+  this._picture = "";
+  Window_Base.prototype.initialize.call(this, x, y, width, height);
+  this.openness = 0;
 };
 
-Window_CommonEventMenuPicture.prototype.setPicture = function(picture) {
-    if (this._picture !== picture) {
-        this._picture = picture;
-        this.refresh();
-    }
-};
-
-Window_CommonEventMenuPicture.prototype.clear = function() {
-    this.setText('');
-};
-
-Window_CommonEventMenuPicture.prototype.setItem = function(item) {
-    this.setPicture(item ? item.picture : '');
-};
-
-Window_CommonEventMenuPicture.prototype.refresh = function() {
-    if (this._picture === '') return this.contents.clear();
-    this._pictureBitmap = ImageManager.loadPicture(this._picture);
-    this.drawPicture();
-};
-
-Window_CommonEventMenuPicture.prototype.drawPicture = function() {
-    if (this._pictureBitmap.width <= 0) {
-      return setTimeout(this.drawPicture.bind(this), 10);
-    }
-    this.contents.clear();
-    var rateW = 1;
-    var rateH = 1;
-    if (this._pictureBitmap.width > this.contents.width) {
-      var rateW = this.contents.width / this._pictureBitmap.width;
-    }
-    if (this._pictureBitmap.height > this.contents.height) {
-      var rateH = this.contents.height / this._pictureBitmap.height;
-    }
-    var rate = Math.min(rateW, rateH);
-    var pw = this._pictureBitmap.width;
-    var ph = this._pictureBitmap.height;
-    var dw = Math.floor(pw * rate);
-    var dh = Math.floor(ph * rate);
-    this.contents.blt(this._pictureBitmap, 0, 0, pw, ph, 0, 0, dw, dh);
-};
-
-//=============================================================================
-// Scene_Base
-//=============================================================================
-
-Scene_Base.prototype.createCommonEventMenuWindows = function() {
-    this.createCommonEventMenuHelpWindow();
-    this.createCommonEventMenuWindow();
-    this.createCommonEventMenuPictureWindow();
-    this.createCommonEventMenuSubtextWindow();
-};
-
-Scene_Base.prototype.createCommonEventMenuHelpWindow = function() {
-    this._commonEventMenuHelpWindow = new Window_Help(2);
-    this._commonEventMenuHelpWindow.setText('');
-    this._commonEventMenuHelpWindow.openness = 0;
-    this.addChild(this._commonEventMenuHelpWindow);
-};
-
-Scene_Base.prototype.createCommonEventMenuWindow = function() {
-    this._commonEventMenuWindow = new Window_CommonEventMenu();
-    this.addChild(this._commonEventMenuWindow);
-    this._commonEventMenuWindow.setHelpWindow(this._commonEventMenuHelpWindow);
-    if ($gameSystem.canCommonEventMenuConfirm()) {
-      this._commonEventMenuWindow.setHandler('ok', 
-        this.onCommonEventMenuOk.bind(this));
-    }
-    this._commonEventMenuWindow.setHandler('cancel', 
-      this.onCommonEventMenuCancel.bind(this));
-};
-
-Scene_Base.prototype.createCommonEventMenuPictureWindow = function() {
-    this._commonEventMenuPictureWindow = new Window_CommonEventMenuPicture();
-    this.addChild(this._commonEventMenuPictureWindow);
-    var win = this._commonEventMenuPictureWindow;
-    this._commonEventMenuWindow.setPictureWindow(win);
-};
-
-Scene_Base.prototype.createCommonEventMenuSubtextWindow = function() {
-    this._commonEventMenuSubtextWindow = new Window_Help(2);
-    this._commonEventMenuSubtextWindow.setText('');
-    this._commonEventMenuSubtextWindow.openness = 0;
-    this.addChild(this._commonEventMenuSubtextWindow);
-    var win = this._commonEventMenuSubtextWindow;
-    this._commonEventMenuWindow.setSubtextWindow(win);
-};
-
-Scene_Base.prototype.openCommonEventMenu = function(mapId, eventId) {
-    if (!this._commonEventMenuWindow) return;
-    this._commonEventMenuWindow.setup(mapId, eventId);
-    this._active = false;
-};
-
-Scene_Base.prototype.closeCommonEventMenuWindows = function() {
-    this._commonEventMenuWindow.close();
-    this._commonEventMenuHelpWindow.close();
-    this._commonEventMenuPictureWindow.close();
-    this._commonEventMenuSubtextWindow.close();
-    this._active = true;
-};
-
-Scene_Base.prototype.onCommonEventMenuOk = function() {
-    this.closeCommonEventMenuWindows();
-    var id = this._commonEventMenuWindow.currentExt();
-    this.commonEventMenuSetupList(id);
-};
-
-Scene_Base.prototype.onCommonEventMenuCancel = function() {
-    this.closeCommonEventMenuWindows();
-    var id = $gameSystem.getCommonEventMenuCancel();
-    this.commonEventMenuSetupList(id);
-};
-
-Scene_Base.prototype.commonEventMenuSetupList = function(id) {
-    var commonEvent = $dataCommonEvents[id];
-    if (!commonEvent) return;
-    var mapId = this._commonEventMenuWindow.mapId();
-    if (mapId === $gameMap.mapId()) {
-      var eventId = this._commonEventMenuWindow.eventId();
-    } else {
-      var eventId = 0;
-    }
-    if ($gameParty.inBattle()) {
-      $gameTroop._interpreter.setupChild(commonEvent.list, eventId);
-    } else {
-      $gameMap._interpreter.setupChild(commonEvent.list, eventId);
-    }
-};
-
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.CEM.Scene_Map_createAllWindows = Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
-    MageStudios.CEM.Scene_Map_createAllWindows.call(this);
-    this.createCommonEventMenuWindows();
-};
-
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.CEM.Scene_Battle_createAllWindows =
-    Scene_Battle.prototype.createAllWindows;
-Scene_Battle.prototype.createAllWindows = function() {
-    MageStudios.CEM.Scene_Battle_createAllWindows.call(this);
-    this.createCommonEventMenuWindows();
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+Window_CommonEventMenuPicture.prototype.setPicture = function (picture) {
+  if (this._picture !== picture) {
+    this._picture = picture;
+    this.refresh();
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+Window_CommonEventMenuPicture.prototype.clear = function () {
+  this.setText("");
+};
+
+Window_CommonEventMenuPicture.prototype.setItem = function (item) {
+  this.setPicture(item ? item.picture : "");
+};
+
+Window_CommonEventMenuPicture.prototype.refresh = function () {
+  if (this._picture === "") return this.contents.clear();
+  this._pictureBitmap = ImageManager.loadPicture(this._picture);
+  this.drawPicture();
+};
+
+Window_CommonEventMenuPicture.prototype.drawPicture = function () {
+  if (this._pictureBitmap.width <= 0) {
+    return setTimeout(this.drawPicture.bind(this), 10);
+  }
+  this.contents.clear();
+  var rateW = 1;
+  var rateH = 1;
+  if (this._pictureBitmap.width > this.contents.width) {
+    var rateW = this.contents.width / this._pictureBitmap.width;
+  }
+  if (this._pictureBitmap.height > this.contents.height) {
+    var rateH = this.contents.height / this._pictureBitmap.height;
+  }
+  var rate = Math.min(rateW, rateH);
+  var pw = this._pictureBitmap.width;
+  var ph = this._pictureBitmap.height;
+  var dw = Math.floor(pw * rate);
+  var dh = Math.floor(ph * rate);
+  this.contents.blt(this._pictureBitmap, 0, 0, pw, ph, 0, 0, dw, dh);
+};
+
+Scene_Base.prototype.createCommonEventMenuWindows = function () {
+  this.createCommonEventMenuHelpWindow();
+  this.createCommonEventMenuWindow();
+  this.createCommonEventMenuPictureWindow();
+  this.createCommonEventMenuSubtextWindow();
+};
+
+Scene_Base.prototype.createCommonEventMenuHelpWindow = function () {
+  this._commonEventMenuHelpWindow = new Window_Help(2);
+  this._commonEventMenuHelpWindow.setText("");
+  this._commonEventMenuHelpWindow.openness = 0;
+  this.addChild(this._commonEventMenuHelpWindow);
+};
+
+Scene_Base.prototype.createCommonEventMenuWindow = function () {
+  this._commonEventMenuWindow = new Window_CommonEventMenu();
+  this.addChild(this._commonEventMenuWindow);
+  this._commonEventMenuWindow.setHelpWindow(this._commonEventMenuHelpWindow);
+  if ($gameSystem.canCommonEventMenuConfirm()) {
+    this._commonEventMenuWindow.setHandler(
+      "ok",
+      this.onCommonEventMenuOk.bind(this)
+    );
+  }
+  this._commonEventMenuWindow.setHandler(
+    "cancel",
+    this.onCommonEventMenuCancel.bind(this)
+  );
+};
+
+Scene_Base.prototype.createCommonEventMenuPictureWindow = function () {
+  this._commonEventMenuPictureWindow = new Window_CommonEventMenuPicture();
+  this.addChild(this._commonEventMenuPictureWindow);
+  var win = this._commonEventMenuPictureWindow;
+  this._commonEventMenuWindow.setPictureWindow(win);
+};
+
+Scene_Base.prototype.createCommonEventMenuSubtextWindow = function () {
+  this._commonEventMenuSubtextWindow = new Window_Help(2);
+  this._commonEventMenuSubtextWindow.setText("");
+  this._commonEventMenuSubtextWindow.openness = 0;
+  this.addChild(this._commonEventMenuSubtextWindow);
+  var win = this._commonEventMenuSubtextWindow;
+  this._commonEventMenuWindow.setSubtextWindow(win);
+};
+
+Scene_Base.prototype.openCommonEventMenu = function (mapId, eventId) {
+  if (!this._commonEventMenuWindow) return;
+  this._commonEventMenuWindow.setup(mapId, eventId);
+  this._active = false;
+};
+
+Scene_Base.prototype.closeCommonEventMenuWindows = function () {
+  this._commonEventMenuWindow.close();
+  this._commonEventMenuHelpWindow.close();
+  this._commonEventMenuPictureWindow.close();
+  this._commonEventMenuSubtextWindow.close();
+  this._active = true;
+};
+
+Scene_Base.prototype.onCommonEventMenuOk = function () {
+  this.closeCommonEventMenuWindows();
+  var id = this._commonEventMenuWindow.currentExt();
+  this.commonEventMenuSetupList(id);
+};
+
+Scene_Base.prototype.onCommonEventMenuCancel = function () {
+  this.closeCommonEventMenuWindows();
+  var id = $gameSystem.getCommonEventMenuCancel();
+  this.commonEventMenuSetupList(id);
+};
+
+Scene_Base.prototype.commonEventMenuSetupList = function (id) {
+  var commonEvent = $dataCommonEvents[id];
+  if (!commonEvent) return;
+  var mapId = this._commonEventMenuWindow.mapId();
+  if (mapId === $gameMap.mapId()) {
+    var eventId = this._commonEventMenuWindow.eventId();
+  } else {
+    var eventId = 0;
+  }
+  if ($gameParty.inBattle()) {
+    $gameTroop._interpreter.setupChild(commonEvent.list, eventId);
+  } else {
+    $gameMap._interpreter.setupChild(commonEvent.list, eventId);
+  }
+};
+
+MageStudios.CEM.Scene_Map_createAllWindows =
+  Scene_Map.prototype.createAllWindows;
+Scene_Map.prototype.createAllWindows = function () {
+  MageStudios.CEM.Scene_Map_createAllWindows.call(this);
+  this.createCommonEventMenuWindows();
+};
+
+MageStudios.CEM.Scene_Battle_createAllWindows =
+  Scene_Battle.prototype.createAllWindows;
+Scene_Battle.prototype.createAllWindows = function () {
+  MageStudios.CEM.Scene_Battle_createAllWindows.call(this);
+  this.createCommonEventMenuWindows();
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

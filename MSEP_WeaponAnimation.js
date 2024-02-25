@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Weapon Animation
-// MSEP_WeaponAnimation.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_WeaponAnimation = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WA = MageStudios.WA || {};
-MageStudios.WA.version = 1.00;
+MageStudios.WA.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin allows you to go past the standard
  * weapon images and even using custom images.
  * @author Mage Studios Engine Plugins
@@ -177,26 +171,19 @@ MageStudios.WA.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_WeaponAnimation');
+MageStudios.Parameters = PluginManager.parameters("MSEP_WeaponAnimation");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.WAFilepath = String(MageStudios.Parameters['Image Filepath']);
-MageStudios.Param.WASmoothing = eval(String(MageStudios.Parameters['Image Smoothing']));
-MageStudios.Param.WAMotion = String(MageStudios.Parameters['Default Motion']);
+MageStudios.Param.WAFilepath = String(MageStudios.Parameters["Image Filepath"]);
+MageStudios.Param.WASmoothing = eval(
+  String(MageStudios.Parameters["Image Smoothing"])
+);
+MageStudios.Param.WAMotion = String(MageStudios.Parameters["Default Motion"]);
 MageStudios.Param.WAMotion = MageStudios.Param.WAMotion.toLowerCase();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.WA.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.WA.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_WeaponAnimation) {
     this.processWANotetags1($dataActors);
@@ -210,7 +197,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processWANotetags1 = function(group) {
+DataManager.processWANotetags1 = function (group) {
   this._loadedWeaponsSheets = this._loadedWeaponsSheets || [];
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
@@ -229,18 +216,18 @@ DataManager.processWANotetags1 = function(group) {
         var motion = $dataSystem.attackMotions[parseInt(RegExp.$1)];
         if (motion) {
           if (motion.type === 0) {
-            obj.weaponAttackMotion = 'thrust';
+            obj.weaponAttackMotion = "thrust";
           } else if (motion.type === 1) {
-            obj.weaponAttackMotion = 'swing';
+            obj.weaponAttackMotion = "swing";
           } else {
-            obj.weaponAttackMotion = 'missile';
+            obj.weaponAttackMotion = "missile";
           }
         } else {
           obj.weaponAttackMotion = MageStudios.Param.WAMotion;
         }
         if (obj.weaponHue === undefined) obj.weaponHue = 0;
         var weaponSheetId = Math.ceil(obj.weaponImageIndex / 12);
-        var filename = 'Weapons' + weaponSheetId;
+        var filename = "Weapons" + weaponSheetId;
         if (!this._loadedWeaponsSheets.contains(filename)) {
           this._loadedWeaponsSheets.push(filename);
           ImageManager.loadSystem(filename);
@@ -259,308 +246,283 @@ DataManager.processWANotetags1 = function(group) {
   }
 };
 
-//=============================================================================
-// ImageManager
-//=============================================================================
-
-ImageManager.loadWeapon = function(filename, hue) {
-    var filepath = MageStudios.Param.WAFilepath;
-    var smooth = MageStudios.Param.WASmoothing;
-    return this.loadBitmap(filepath, filename, hue, smooth);
+ImageManager.loadWeapon = function (filename, hue) {
+  var filepath = MageStudios.Param.WAFilepath;
+  var smooth = MageStudios.Param.WASmoothing;
+  return this.loadBitmap(filepath, filename, hue, smooth);
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
 MageStudios.WA.Game_Battler_refresh = Game_Battler.prototype.refresh;
-Game_Battler.prototype.refresh = function() {
-    this._cacheWeaponImage = undefined;
-    this._cacheWeaponHue = undefined;
-    this._cacheWeaponMotion = undefined;
-    this._cacheWeaponAni = undefined;
-    MageStudios.WA.Game_Battler_refresh.call(this);
+Game_Battler.prototype.refresh = function () {
+  this._cacheWeaponImage = undefined;
+  this._cacheWeaponHue = undefined;
+  this._cacheWeaponMotion = undefined;
+  this._cacheWeaponAni = undefined;
+  MageStudios.WA.Game_Battler_refresh.call(this);
 };
 
 MageStudios.WA.Game_Battler_startWeaponAnimation =
-    Game_Battler.prototype.startWeaponAnimation;
-Game_Battler.prototype.startWeaponAnimation = function(id) {
-    var unique = false;
-    if (this.getUniqWeapAniId()) {
-      id = this.getUniqWeapAniId();
-      unique = true;
-    }
-    MageStudios.WA.Game_Battler_startWeaponAnimation.call(this, id);
-    if (!unique) return;
-    if (Imported.MSEP_BattleEngineCore) {
-      this.forceMotion(this.getUniqueWeaponMotion());
-    } else {
-      this.requestMotion(this.getUniqueWeaponMotion());
-    }
+  Game_Battler.prototype.startWeaponAnimation;
+Game_Battler.prototype.startWeaponAnimation = function (id) {
+  var unique = false;
+  if (this.getUniqWeapAniId()) {
+    id = this.getUniqWeapAniId();
+    unique = true;
+  }
+  MageStudios.WA.Game_Battler_startWeaponAnimation.call(this, id);
+  if (!unique) return;
+  if (Imported.MSEP_BattleEngineCore) {
+    this.forceMotion(this.getUniqueWeaponMotion());
+  } else {
+    this.requestMotion(this.getUniqueWeaponMotion());
+  }
 };
 
-Game_Battler.prototype.getUniqWeapAniId = function() {
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.weaponImageIndex) {
-        this._cacheWeaponImage = obj.weaponImageIndex;
-        this._cacheWeaponHue = obj.weaponHue;
-        return this._cacheWeaponImage;
-      }
-    }
-    return undefined;
-};
-
-Game_Battler.prototype.getUniqueWeaponHue = function() {
-    if (this._cacheWeaponHue === undefined) this.getUniqWeapAniId();
-    return this._cacheWeaponHue ||0;
-};
-
-Game_Battler.prototype.getUniqueWeaponMotion = function() {
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.weaponAttackMotion) {
-        this._cacheWeaponMotion = obj.weaponAttackMotion;
-        return this._cacheWeaponMotion;
-      }
-    }
-    return undefined;
-};
-
-Game_Battler.prototype.getUniqueWeaponAni = function() {
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.weaponAnimationId) {
-        this._cacheWeaponAni = obj.weaponAnimationId;
-        return this._cacheWeaponAni;
-      }
-    }
-    return undefined;
-};
-
-Game_Battler.prototype.isWeaponAnimationRequested = function() {
-    return this._weaponImageId !== 0;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.getUniqWeapAniId = function() {
-    if (this._cacheWeaponImage !== undefined) return this._cacheWeaponImage;
-    var id = Game_Battler.prototype.getUniqWeapAniId.call(this);
-    if (id) {
-      this._cacheWeaponImage = id;
+Game_Battler.prototype.getUniqWeapAniId = function () {
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.weaponImageIndex) {
+      this._cacheWeaponImage = obj.weaponImageIndex;
+      this._cacheWeaponHue = obj.weaponHue;
       return this._cacheWeaponImage;
     }
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.weaponImageIndex) {
-        this._cacheWeaponImage = obj.weaponImageIndex;
-        this._cacheWeaponHue = obj.weaponHue;
-        return this._cacheWeaponImage;
-      }
-    }
-    if (this.currentClass().weaponImageIndex) {
-      this._cacheWeaponImage = this.currentClass().weaponImageIndex;
-        this._cacheWeaponHue = this.currentClass().weaponHue;
-      return this._cacheWeaponImage;
-    }
-    if (this.actor().weaponImageIndex) {
-      this._cacheWeaponImage = this.actor().weaponImageIndex;
-        this._cacheWeaponHue = this.actor().weaponHue;
-      return this._cacheWeaponImage;
-    }
-    this._cacheWeaponImage = 0;
-    return this._cacheWeaponImage;
+  }
+  return undefined;
 };
 
-Game_Actor.prototype.getUniqueWeaponMotion = function() {
-    if (this._cacheWeaponMotion !== undefined) return this._cacheWeaponMotion;
-    var motion = Game_Battler.prototype.getUniqueWeaponMotion.call(this);
-    if (motion) {
-      this._cacheWeaponMotion = motion;
-      return this._cacheWeaponMotion;
-    }
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.weaponAttackMotion) {
-        this._cacheWeaponMotion = obj.weaponAttackMotion;
-        return this._cacheWeaponMotion;
-      }
-    }
-    if (this.currentClass().weaponAttackMotion) {
-      this._cacheWeaponMotion = this.currentClass().weaponAttackMotion;
-      return this._cacheWeaponMotion;
-    }
-    if (this.actor().weaponAttackMotion) {
-      this._cacheWeaponMotion = this.actor().weaponAttackMotion;
-      return this._cacheWeaponMotion;
-    }
-    this._cacheWeaponMotion = 'thrust';
-    return 'thrust';
+Game_Battler.prototype.getUniqueWeaponHue = function () {
+  if (this._cacheWeaponHue === undefined) this.getUniqWeapAniId();
+  return this._cacheWeaponHue || 0;
 };
 
-Game_Actor.prototype.getUniqueWeaponAni = function() {
-    if (this._cacheWeaponAni !== undefined) return this._cacheWeaponAni;
-    var ani = Game_Battler.prototype.getUniqueWeaponAni.call(this);
-    if (ani) {
-      this._cacheWeaponAni = ani;
+Game_Battler.prototype.getUniqueWeaponMotion = function () {
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.weaponAttackMotion) {
+      this._cacheWeaponMotion = obj.weaponAttackMotion;
+      return this._cacheWeaponMotion;
+    }
+  }
+  return undefined;
+};
+
+Game_Battler.prototype.getUniqueWeaponAni = function () {
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.weaponAnimationId) {
+      this._cacheWeaponAni = obj.weaponAnimationId;
       return this._cacheWeaponAni;
     }
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.weaponAnimationId) {
-        this._cacheWeaponAni = obj.weaponAnimationId;
-        return this.weaponAnimationId;
-      }
+  }
+  return undefined;
+};
+
+Game_Battler.prototype.isWeaponAnimationRequested = function () {
+  return this._weaponImageId !== 0;
+};
+
+Game_Actor.prototype.getUniqWeapAniId = function () {
+  if (this._cacheWeaponImage !== undefined) return this._cacheWeaponImage;
+  var id = Game_Battler.prototype.getUniqWeapAniId.call(this);
+  if (id) {
+    this._cacheWeaponImage = id;
+    return this._cacheWeaponImage;
+  }
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.weaponImageIndex) {
+      this._cacheWeaponImage = obj.weaponImageIndex;
+      this._cacheWeaponHue = obj.weaponHue;
+      return this._cacheWeaponImage;
     }
-    if (this.currentClass().weaponAnimationId) {
-      this._cacheWeaponAni = this.currentClass().weaponAnimationId;
+  }
+  if (this.currentClass().weaponImageIndex) {
+    this._cacheWeaponImage = this.currentClass().weaponImageIndex;
+    this._cacheWeaponHue = this.currentClass().weaponHue;
+    return this._cacheWeaponImage;
+  }
+  if (this.actor().weaponImageIndex) {
+    this._cacheWeaponImage = this.actor().weaponImageIndex;
+    this._cacheWeaponHue = this.actor().weaponHue;
+    return this._cacheWeaponImage;
+  }
+  this._cacheWeaponImage = 0;
+  return this._cacheWeaponImage;
+};
+
+Game_Actor.prototype.getUniqueWeaponMotion = function () {
+  if (this._cacheWeaponMotion !== undefined) return this._cacheWeaponMotion;
+  var motion = Game_Battler.prototype.getUniqueWeaponMotion.call(this);
+  if (motion) {
+    this._cacheWeaponMotion = motion;
+    return this._cacheWeaponMotion;
+  }
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.weaponAttackMotion) {
+      this._cacheWeaponMotion = obj.weaponAttackMotion;
+      return this._cacheWeaponMotion;
+    }
+  }
+  if (this.currentClass().weaponAttackMotion) {
+    this._cacheWeaponMotion = this.currentClass().weaponAttackMotion;
+    return this._cacheWeaponMotion;
+  }
+  if (this.actor().weaponAttackMotion) {
+    this._cacheWeaponMotion = this.actor().weaponAttackMotion;
+    return this._cacheWeaponMotion;
+  }
+  this._cacheWeaponMotion = "thrust";
+  return "thrust";
+};
+
+Game_Actor.prototype.getUniqueWeaponAni = function () {
+  if (this._cacheWeaponAni !== undefined) return this._cacheWeaponAni;
+  var ani = Game_Battler.prototype.getUniqueWeaponAni.call(this);
+  if (ani) {
+    this._cacheWeaponAni = ani;
+    return this._cacheWeaponAni;
+  }
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.weaponAnimationId) {
+      this._cacheWeaponAni = obj.weaponAnimationId;
       return this.weaponAnimationId;
     }
-    if (this.actor().weaponAttackMotion) {
-      this._cacheWeaponAni = this.actor().weaponAnimationId;
-      return this.weaponAnimationId;
-    }
-    this.weaponAnimationId = 0;
+  }
+  if (this.currentClass().weaponAnimationId) {
+    this._cacheWeaponAni = this.currentClass().weaponAnimationId;
     return this.weaponAnimationId;
+  }
+  if (this.actor().weaponAttackMotion) {
+    this._cacheWeaponAni = this.actor().weaponAnimationId;
+    return this.weaponAnimationId;
+  }
+  this.weaponAnimationId = 0;
+  return this.weaponAnimationId;
 };
 
 MageStudios.WA.Game_Actor_attackAnimationId1 =
-    Game_Actor.prototype.attackAnimationId1;
-Game_Actor.prototype.attackAnimationId1 = function() {
-    if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
-    return MageStudios.WA.Game_Actor_attackAnimationId1.call(this);
+  Game_Actor.prototype.attackAnimationId1;
+Game_Actor.prototype.attackAnimationId1 = function () {
+  if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
+  return MageStudios.WA.Game_Actor_attackAnimationId1.call(this);
 };
 
 MageStudios.WA.Game_Actor_attackAnimationId2 =
-    Game_Actor.prototype.attackAnimationId2;
-Game_Actor.prototype.attackAnimationId2 = function() {
-    if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
-    return MageStudios.WA.Game_Actor_attackAnimationId2.call(this);
+  Game_Actor.prototype.attackAnimationId2;
+Game_Actor.prototype.attackAnimationId2 = function () {
+  if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
+  return MageStudios.WA.Game_Actor_attackAnimationId2.call(this);
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.getUniqWeapAniId = function() {
-    if (this._cacheWeaponImage !== undefined) return this._cacheWeaponImage;
-    var id = Game_Battler.prototype.getUniqWeapAniId.call(this);
-    if (id) {
-      this._cacheWeaponImage = id;
-      return this._cacheWeaponImage;
-    }
-    if (this.enemy().weaponImageIndex) {
-      this._cacheWeaponImage = this.enemy().weaponImageIndex;
-        this._cacheWeaponHue = this.enemy().weaponHue;
-      return this._cacheWeaponImage;
-    }
-    this._cacheWeaponImage = undefined;
+Game_Enemy.prototype.getUniqWeapAniId = function () {
+  if (this._cacheWeaponImage !== undefined) return this._cacheWeaponImage;
+  var id = Game_Battler.prototype.getUniqWeapAniId.call(this);
+  if (id) {
+    this._cacheWeaponImage = id;
     return this._cacheWeaponImage;
+  }
+  if (this.enemy().weaponImageIndex) {
+    this._cacheWeaponImage = this.enemy().weaponImageIndex;
+    this._cacheWeaponHue = this.enemy().weaponHue;
+    return this._cacheWeaponImage;
+  }
+  this._cacheWeaponImage = undefined;
+  return this._cacheWeaponImage;
 };
 
-Game_Enemy.prototype.getUniqueWeaponMotion = function() {
-    if (this._cacheWeaponMotion !== undefined) return this._cacheWeaponMotion;
-    var motion = Game_Battler.prototype.getUniqueWeaponMotion.call(this);
-    if (motion) {
-      this._cacheWeaponMotion = motion;
-      return this._cacheWeaponMotion;
-    }
-    if (this.enemy().weaponAttackMotion) {
-      this._cacheWeaponMotion = this.enemy().weaponAttackMotion;
-      return this._cacheWeaponMotion;
-    }
-    this._cacheWeaponMotion = 'thrust';
+Game_Enemy.prototype.getUniqueWeaponMotion = function () {
+  if (this._cacheWeaponMotion !== undefined) return this._cacheWeaponMotion;
+  var motion = Game_Battler.prototype.getUniqueWeaponMotion.call(this);
+  if (motion) {
+    this._cacheWeaponMotion = motion;
     return this._cacheWeaponMotion;
+  }
+  if (this.enemy().weaponAttackMotion) {
+    this._cacheWeaponMotion = this.enemy().weaponAttackMotion;
+    return this._cacheWeaponMotion;
+  }
+  this._cacheWeaponMotion = "thrust";
+  return this._cacheWeaponMotion;
 };
 
-Game_Enemy.prototype.getUniqueWeaponAni = function() {
-    if (this._cacheWeaponAni !== undefined) return this._cacheWeaponAni;
-    var ani = Game_Battler.prototype.getUniqueWeaponAni.call(this);
-    if (ani) {
-      this._cacheWeaponAni = ani;
-      return this._cacheWeaponAni;
-    }
-    if (this.enemy().weaponAnimationId) {
-      this._cacheWeaponAni = this.enemy().weaponAnimationId;
-      return this.weaponAnimationId;
-    }
-    this.weaponAnimationId = 0;
+Game_Enemy.prototype.getUniqueWeaponAni = function () {
+  if (this._cacheWeaponAni !== undefined) return this._cacheWeaponAni;
+  var ani = Game_Battler.prototype.getUniqueWeaponAni.call(this);
+  if (ani) {
+    this._cacheWeaponAni = ani;
+    return this._cacheWeaponAni;
+  }
+  if (this.enemy().weaponAnimationId) {
+    this._cacheWeaponAni = this.enemy().weaponAnimationId;
     return this.weaponAnimationId;
+  }
+  this.weaponAnimationId = 0;
+  return this.weaponAnimationId;
 };
 
-MageStudios.WA.Game_Enemy_attackAnimationId = Game_Enemy.prototype.attackAnimationId;
-Game_Enemy.prototype.attackAnimationId = function() {
-    if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
-    return MageStudios.WA.Game_Enemy_attackAnimationId.call(this);
+MageStudios.WA.Game_Enemy_attackAnimationId =
+  Game_Enemy.prototype.attackAnimationId;
+Game_Enemy.prototype.attackAnimationId = function () {
+  if (this.getUniqueWeaponAni()) return this.getUniqueWeaponAni();
+  return MageStudios.WA.Game_Enemy_attackAnimationId.call(this);
 };
 
 if (Imported.MSEP_X_AnimatedSVEnemies) {
-
-MageStudios.WA.Game_Enemy_attackMotion = Game_Enemy.prototype.attackMotion;
-Game_Enemy.prototype.attackMotion = function() {
+  MageStudios.WA.Game_Enemy_attackMotion = Game_Enemy.prototype.attackMotion;
+  Game_Enemy.prototype.attackMotion = function () {
     if (this._cacheWeaponMotion !== undefined) return this._cacheWeaponMotion;
     return MageStudios.WA.Game_Enemy_attackMotion.call(this);
-};
+  };
 
-MageStudios.WA.Game_Enemy_weaponImageId = Game_Enemy.prototype.weaponImageId;
-Game_Enemy.prototype.weaponImageId = function() {
+  MageStudios.WA.Game_Enemy_weaponImageId = Game_Enemy.prototype.weaponImageId;
+  Game_Enemy.prototype.weaponImageId = function () {
     if (this._cacheWeaponImage !== undefined) return this._cacheWeaponImage;
     return MageStudios.WA.Game_Enemy_weaponImageId.call(this);
-};
-
-}; // Imported.MSEP_X_AnimatedSVEnemies
-
-//=============================================================================
-// Sprite_Weapon
-//=============================================================================
+  };
+}
 
 MageStudios.WA.Sprite_Weapon_loadBitmap = Sprite_Weapon.prototype.loadBitmap;
-Sprite_Weapon.prototype.loadBitmap = function() {
-    if (this.isCustomGraphic()) return this.loadCustomBitmap();
-    MageStudios.WA.Sprite_Weapon_loadBitmap.call(this);
+Sprite_Weapon.prototype.loadBitmap = function () {
+  if (this.isCustomGraphic()) return this.loadCustomBitmap();
+  MageStudios.WA.Sprite_Weapon_loadBitmap.call(this);
 };
 
-Sprite_Weapon.prototype.isCustomGraphic = function() {
-    return typeof this._weaponImageId === 'string';
+Sprite_Weapon.prototype.isCustomGraphic = function () {
+  return typeof this._weaponImageId === "string";
 };
 
-Sprite_Weapon.prototype.loadCustomBitmap = function() {
-    if (this.parent && this.parent._battler) {
-      var hue = this.parent._battler.getUniqueWeaponHue();
-    } else {
-      var hue = 0;
-    }
-    this.bitmap = ImageManager.loadWeapon(this._weaponImageId, hue);
+Sprite_Weapon.prototype.loadCustomBitmap = function () {
+  if (this.parent && this.parent._battler) {
+    var hue = this.parent._battler.getUniqueWeaponHue();
+  } else {
+    var hue = 0;
+  }
+  this.bitmap = ImageManager.loadWeapon(this._weaponImageId, hue);
 };
 
 MageStudios.WA.Sprite_Weapon_updateFrame = Sprite_Weapon.prototype.updateFrame;
-Sprite_Weapon.prototype.updateFrame = function() {
-    if (this.isCustomGraphic()) {
-      var w = Math.floor(this.bitmap.width / 3);
-      var h = this.bitmap.height;
-      var sx = this._pattern * w;
-      var sy = 0;
-      this.setFrame(sx, sy, w, h);
-    } else {
-      MageStudios.WA.Sprite_Weapon_updateFrame.call(this);
-    }
+Sprite_Weapon.prototype.updateFrame = function () {
+  if (this.isCustomGraphic()) {
+    var w = Math.floor(this.bitmap.width / 3);
+    var h = this.bitmap.height;
+    var sx = this._pattern * w;
+    var sy = 0;
+    this.setFrame(sx, sy, w, h);
+  } else {
+    MageStudios.WA.Sprite_Weapon_updateFrame.call(this);
+  }
 };
 
 MageStudios.WA.Sprite_Weapon_update = Sprite_Weapon.prototype.update;
-Sprite_Weapon.prototype.update = function() {
-    MageStudios.WA.Sprite_Weapon_update.call(this);
-    this.updateFrame();
+Sprite_Weapon.prototype.update = function () {
+  MageStudios.WA.Sprite_Weapon_update.call(this);
+  this.updateFrame();
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

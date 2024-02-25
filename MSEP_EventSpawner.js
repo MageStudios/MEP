@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Spawner
-// MSEP_EventSpawner.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventSpawner = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EventSpawn = MageStudios.EventSpawn || {};
-MageStudios.EventSpawn.version = 1.00;
+MageStudios.EventSpawn.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Spawn premade events at specific locations or random
  * points marked by regions.
  * @author Mage Studios Engine Plugins
@@ -304,7 +298,7 @@ MageStudios.EventSpawn.version = 1.00;
  *
  * @param Name
  * @desc Name of the template. The template is used with
- * the script call: 
+ * the script call:
  * @default Untitled
  *
  * @param MapID
@@ -321,45 +315,47 @@ MageStudios.EventSpawn.version = 1.00;
  * @max 999
  * @desc The ID of the event to be spawned when using this template.
  * @default 1
- * 
+ *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EventSpawner');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EventSpawner");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.EventSpawnerData = eval(MageStudios.Parameters['TemplateMaps']);
-MageStudios.Param.EventSpawnerList = JSON.parse(MageStudios.Parameters['TemplateNames']);
-MageStudios.Param.EventSpawnerID = Number(MageStudios.Parameters['IdStartRange']);
+MageStudios.Param.EventSpawnerData = eval(
+  MageStudios.Parameters["TemplateMaps"]
+);
+MageStudios.Param.EventSpawnerList = JSON.parse(
+  MageStudios.Parameters["TemplateNames"]
+);
+MageStudios.Param.EventSpawnerID = Number(
+  MageStudios.Parameters["IdStartRange"]
+);
 
 MageStudios.PreloadedMaps = MageStudios.PreloadedMaps || [];
 
-MageStudios.loadMapData = function(mapId) {
+MageStudios.loadMapData = function (mapId) {
   mapId = mapId.clamp(1, 999);
   if (MageStudios.PreloadedMaps[mapId]) return;
-  var src = 'Map%1.json'.format(mapId.padZero(3));
+  var src = "Map%1.json".format(mapId.padZero(3));
   var xhr = new XMLHttpRequest();
-  var url = 'data/' + src;
-  xhr.open('GET', url);
-  xhr.overrideMimeType('application/json');
-  xhr.onload = function() {
+  var url = "data/" + src;
+  xhr.open("GET", url);
+  xhr.overrideMimeType("application/json");
+  xhr.onload = function () {
     if (xhr.status < 400) {
       MageStudios.PreloadedMaps[mapId] = JSON.parse(xhr.responseText);
     }
   };
-  xhr.onerror = this._mapLoader || function() {
-    DataManager._errorUrl = DataManager._errorUrl || url;
-  };
+  xhr.onerror =
+    this._mapLoader ||
+    function () {
+      DataManager._errorUrl = DataManager._errorUrl || url;
+    };
   MageStudios.PreloadedMaps[mapId] = null;
   xhr.send();
 };
 
-MageStudios.SetupParameters = function() {
-  // Process Template Names
+MageStudios.SetupParameters = function () {
   MageStudios.EventSpawn.Template = {};
   var length = MageStudios.Param.EventSpawnerList.length;
   for (var i = 0; i < length; ++i) {
@@ -368,74 +364,98 @@ MageStudios.SetupParameters = function() {
     MageStudios.loadMapData(parseInt(data.MapID));
     MageStudios.EventSpawn.Template[name] = {
       mapId: data.MapID,
-      eventId: data.EventID
-    }
+      eventId: data.EventID,
+    };
   }
-  // Preload Map Data List
+
   var data = MageStudios.Param.EventSpawnerData;
   var length = data.length;
   for (var i = 0; i < length; ++i) {
     var mapId = parseInt(data[i]);
-    MageStudios.loadMapData(mapId)
+    MageStudios.loadMapData(mapId);
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Mage Spawn Event - Script Calls
-//=============================================================================
-
-MageStudios.SpawnEventFailChecks = function(mapId, eventId, x, y) {
+MageStudios.SpawnEventFailChecks = function (mapId, eventId, x, y) {
   if (!MageStudios.PreloadedMaps[mapId]) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Map ID ' + mapId + ' has not been preloaded. ' +
-        'It cannot be used for the Spawn Spawn function.');
+      console.log(
+        "Map ID " +
+          mapId +
+          " has not been preloaded. " +
+          "It cannot be used for the Spawn Spawn function."
+      );
     }
     return true;
   }
   if (!MageStudios.PreloadedMaps[mapId].events[eventId]) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Map ID ' + mapId + ', Event ID ' + eventId + ' does not ' +
-        'exist. It cannot be used for the Spawn Event function.');
+      console.log(
+        "Map ID " +
+          mapId +
+          ", Event ID " +
+          eventId +
+          " does not " +
+          "exist. It cannot be used for the Spawn Event function."
+      );
     }
     return true;
   }
   if ($gameMap.eventsXy(x, y).length > 0) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Cannot spawn event at ' + x + ', ' + y + '.' + 
-        'There is already an event there.');
+      console.log(
+        "Cannot spawn event at " +
+          x +
+          ", " +
+          y +
+          "." +
+          "There is already an event there."
+      );
     }
     return true;
   }
   if ($gameMap.boat().posNt(x, y) || $gameMap.ship().posNt(x, y)) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Cannot spawn event at ' + x + ', ' + y + '.' + 
-        'There is a vehicle there.');
+      console.log(
+        "Cannot spawn event at " +
+          x +
+          ", " +
+          y +
+          "." +
+          "There is a vehicle there."
+      );
     }
     return true;
   }
   if (x < 0 || x >= $gameMap.width() || y < 0 || y >= $gameMap.height()) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Cannot spawn event at ' + x + ', ' + y + '.' + 
-        "This is outside of the map's boundaries.");
+      console.log(
+        "Cannot spawn event at " +
+          x +
+          ", " +
+          y +
+          "." +
+          "This is outside of the map's boundaries."
+      );
     }
     return true;
   }
   return false;
 };
 
-MageStudios.SpawnEvent = function(mapId, eventId, x, y, preserved) {
+MageStudios.SpawnEvent = function (mapId, eventId, x, y, preserved) {
   if ($gameParty.inBattle()) return;
   if (MageStudios.SpawnEventFailChecks(mapId, eventId, x, y)) return;
   preserved = preserved || false;
   $gameMap.spawnEvent(mapId, eventId, x, y, preserved);
 };
 
-MageStudios.SpawnEventAt = function(mapId, eventId, x, y, preserved) {
+MageStudios.SpawnEventAt = function (mapId, eventId, x, y, preserved) {
   MageStudios.SpawnEvent(mapId, eventId, x, y, preserved);
 };
 
-MageStudios.SpawnEventInRegion = function(mapId, eventId, regions, preserved) {
+MageStudios.SpawnEventInRegion = function (mapId, eventId, regions, preserved) {
   if (regions.constructor !== Array) regions = [regions];
   var data = $gameMap.validSpawnPoints(regions);
   if (data.length <= 0) return;
@@ -443,55 +463,59 @@ MageStudios.SpawnEventInRegion = function(mapId, eventId, regions, preserved) {
   MageStudios.SpawnEvent(mapId, eventId, random[0], random[1], preserved);
 };
 
-MageStudios.SpawnEventTemplate = function(template, x, y, preserved) {
+MageStudios.SpawnEventTemplate = function (template, x, y, preserved) {
   var str = template.toUpperCase();
   if (MageStudios.EventSpawn.Template[str]) {
     var mapId = MageStudios.EventSpawn.Template[str].mapId;
     var eventId = MageStudios.EventSpawn.Template[str].eventId;
     MageStudios.SpawnEvent(mapId, eventId, x, y, preserved);
   } else {
-    console.log('Template ' + template + ' does not exist to spawn from!');
+    console.log("Template " + template + " does not exist to spawn from!");
   }
 };
 
-MageStudios.SpawnEventTemplateAt = function(template, x, y, preserved) {
+MageStudios.SpawnEventTemplateAt = function (template, x, y, preserved) {
   MageStudios.SpawnEventTemplate(template, x, y, preserved);
 };
 
-MageStudios.SpawnEventTemplateInRegion = function(template, regions, preserved) {
+MageStudios.SpawnEventTemplateInRegion = function (
+  template,
+  regions,
+  preserved
+) {
   var str = template.toUpperCase();
   if (MageStudios.EventSpawn.Template[str]) {
     var mapId = MageStudios.EventSpawn.Template[str].mapId;
     var eventId = MageStudios.EventSpawn.Template[str].eventId;
     MageStudios.SpawnEventInRegion(mapId, eventId, regions, preserved);
   } else {
-    console.log('Template ' + template + ' does not exist to spawn from!');
+    console.log("Template " + template + " does not exist to spawn from!");
   }
 };
 
-MageStudios.DespawnEvent = function(ev) {
+MageStudios.DespawnEvent = function (ev) {
   if (!ev) return;
   var eventId = ev.eventId();
   if (!ev.this._spawned) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Event ' + eventId + ' is not a valid spawned event.');
+      console.log("Event " + eventId + " is not a valid spawned event.");
       return;
     }
   }
   MageStudios.DespawnEventID(eventId);
 };
 
-MageStudios.DespawnEventID = function(eventId) {
+MageStudios.DespawnEventID = function (eventId) {
   if (eventId < MageStudios.Param.EventSpawnerID) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Event ID ' + eventId + ' is not a valid spawned event ID.');
+      console.log("Event ID " + eventId + " is not a valid spawned event ID.");
       return;
     }
   }
   $gameMap.despawnEventId(eventId);
 };
 
-MageStudios.ClearSpawnedEvents = function(mapId) {
+MageStudios.ClearSpawnedEvents = function (mapId) {
   mapId = mapId || $gameMap.mapId();
   var data = $gameSystem.getMapSpawnedEventData(mapId);
   var length = data.length;
@@ -507,31 +531,28 @@ MageStudios.ClearSpawnedEvents = function(mapId) {
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.EventSpawn.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+MageStudios.EventSpawn.Game_System_initialize =
+  Game_System.prototype.initialize;
+Game_System.prototype.initialize = function () {
   MageStudios.EventSpawn.Game_System_initialize.call(this);
-  this.initEventSpawner()
+  this.initEventSpawner();
 };
 
-Game_System.prototype.initEventSpawner = function() {
+Game_System.prototype.initEventSpawner = function () {
   this._MapSpawnedEventData = [];
 };
 
-Game_System.prototype.getMapSpawnedEventData = function(mapId) {
+Game_System.prototype.getMapSpawnedEventData = function (mapId) {
   if (this._MapSpawnedEventData === undefined) this.initEventSpawner();
   this._MapSpawnedEventData[mapId] = this._MapSpawnedEventData[mapId] || [null];
   return this._MapSpawnedEventData[mapId];
 };
 
-Game_System.prototype.getMapSpawnedEventTotal = function(mapId) {
+Game_System.prototype.getMapSpawnedEventTotal = function (mapId) {
   return this.getMapSpawnedEventData(mapId).length - 1;
 };
 
-Game_System.prototype.removeTemporaryMapSpawnedEvents = function(mapId) {
+Game_System.prototype.removeTemporaryMapSpawnedEvents = function (mapId) {
   var data = this.getMapSpawnedEventData(mapId);
   var length = data.length;
   for (var i = 1; i < length; ++i) {
@@ -542,25 +563,21 @@ Game_System.prototype.removeTemporaryMapSpawnedEvents = function(mapId) {
   }
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.EventSpawn.Game_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
+Game_Map.prototype.setup = function (mapId) {
   this.setupSpawnedEvents(mapId);
   MageStudios.EventSpawn.Game_Map_setup.call(this, mapId);
   this.restoreSpawnedEvents();
 };
 
-Game_Map.prototype.setupSpawnedEvents = function(mapId) {
+Game_Map.prototype.setupSpawnedEvents = function (mapId) {
   if (mapId !== this.mapId() && $gamePlayer) {
-    $gameSystem.removeTemporaryMapSpawnedEvents(this.mapId())
+    $gameSystem.removeTemporaryMapSpawnedEvents(this.mapId());
   }
   this._spawnedEvents = $gameSystem.getMapSpawnedEventData(mapId);
 };
 
-Game_Map.prototype.restoreSpawnedEvents = function() {
+Game_Map.prototype.restoreSpawnedEvents = function () {
   var length = this._spawnedEvents.length;
   for (var i = 0; i < length; ++i) {
     var spawnedEvent = this._spawnedEvents[i];
@@ -571,24 +588,25 @@ Game_Map.prototype.restoreSpawnedEvents = function() {
   }
 };
 
-Game_Map.prototype.spawnEvent = function(mapId, eventId, x, y, preserved) {
+Game_Map.prototype.spawnEvent = function (mapId, eventId, x, y, preserved) {
   var spawnId = this._spawnedEvents.length + MageStudios.Param.EventSpawnerID;
   $gameTemp._SpawnData = {
     baseMapId: this.mapId(),
     spawnId: spawnId,
     mapId: mapId,
-    eventId: eventId, 
-    x: x, 
+    eventId: eventId,
+    x: x,
     y: y,
-    preserved: preserved
+    preserved: preserved,
   };
   var spawnedEvent = new Game_Event(mapId, eventId);
   this._events[spawnId] = spawnedEvent;
-  this._spawnedEvents[spawnId - MageStudios.Param.EventSpawnerID] = spawnedEvent;
+  this._spawnedEvents[spawnId - MageStudios.Param.EventSpawnerID] =
+    spawnedEvent;
   $gameTemp._SpawnData = undefined;
 };
 
-Game_Map.prototype.despawnEventId = function(eventId) {
+Game_Map.prototype.despawnEventId = function (eventId) {
   if (eventId < MageStudios.Param.EventSpawnerID) return;
   if (!this._spawnedEvents) return;
   var ev = this.event(eventId);
@@ -597,7 +615,7 @@ Game_Map.prototype.despawnEventId = function(eventId) {
   this._spawnedEvents[eventId - MageStudios.Param.EventSpawnerID] = null;
 };
 
-Game_Map.prototype.validSpawnPoints = function(regions) {
+Game_Map.prototype.validSpawnPoints = function (regions) {
   var data = [];
   var width = this.width();
   var height = this.height();
@@ -614,7 +632,7 @@ Game_Map.prototype.validSpawnPoints = function(regions) {
   return data;
 };
 
-Game_Map.prototype.FirstSpawnedEvent = function() {
+Game_Map.prototype.FirstSpawnedEvent = function () {
   var length = this._spawnedEvents.length;
   for (var i = 0; i < length; ++i) {
     var eventData = this._spawnedEvents[i];
@@ -623,7 +641,7 @@ Game_Map.prototype.FirstSpawnedEvent = function() {
   return undefined;
 };
 
-Game_Map.prototype.FirstSpawnedEventID = function() {
+Game_Map.prototype.FirstSpawnedEventID = function () {
   var eventData = this.FirstSpawnedEvent();
   if (eventData) {
     return eventData.eventId();
@@ -632,7 +650,7 @@ Game_Map.prototype.FirstSpawnedEventID = function() {
   }
 };
 
-Game_Map.prototype.LastSpawnedEvent = function() {
+Game_Map.prototype.LastSpawnedEvent = function () {
   var length = this._spawnedEvents.length;
   for (var i = length; i >= 0; --i) {
     var eventData = this._spawnedEvents[i];
@@ -641,7 +659,7 @@ Game_Map.prototype.LastSpawnedEvent = function() {
   return undefined;
 };
 
-Game_Map.prototype.LastSpawnedEventID = function() {
+Game_Map.prototype.LastSpawnedEventID = function () {
   var eventData = this.LastSpawnedEvent();
   if (eventData) {
     return eventData.eventId();
@@ -650,25 +668,21 @@ Game_Map.prototype.LastSpawnedEventID = function() {
   }
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EventSpawn.Game_Event_initialize = Game_Event.prototype.initialize;
-Game_Event.prototype.initialize = function(mapId, eventId) {
+Game_Event.prototype.initialize = function (mapId, eventId) {
   this._spawned = !!$gameTemp._SpawnData;
   this.initPreSpawnEventData();
   MageStudios.EventSpawn.Game_Event_initialize.call(this, mapId, eventId);
   this.initPostSpawnEventData();
 };
 
-Game_Event.prototype.initPreSpawnEventData = function() {
+Game_Event.prototype.initPreSpawnEventData = function () {
   if ($gameTemp._SpawnData === undefined) return;
   var data = $gameTemp._SpawnData;
   this._spawnData = data;
   this._spawned = true;
   this._pageIndex = -2;
-  
+
   this._mapId = data.baseMapId;
   this._eventId = data.spawnId;
 
@@ -678,7 +692,7 @@ Game_Event.prototype.initPreSpawnEventData = function() {
   this._spawnPreserved = data.preserved;
 };
 
-Game_Event.prototype.initPostSpawnEventData = function() {
+Game_Event.prototype.initPostSpawnEventData = function () {
   if ($gameTemp._SpawnData === undefined) return;
   var data = $gameTemp._SpawnData;
 
@@ -691,7 +705,7 @@ Game_Event.prototype.initPostSpawnEventData = function() {
 };
 
 MageStudios.EventSpawn.Game_Event_eventId = Game_Event.prototype.eventId;
-Game_Event.prototype.eventId = function() {
+Game_Event.prototype.eventId = function () {
   if (this._spawned) {
     return this._spawnId;
   } else {
@@ -700,26 +714,20 @@ Game_Event.prototype.eventId = function() {
 };
 
 MageStudios.EventSpawn.event = Game_Event.prototype.event;
-Game_Event.prototype.event = function() {
+Game_Event.prototype.event = function () {
   if (this._spawned) {
-    return MageStudios.PreloadedMaps[this._spawnMapId].events[this._spawnEventId];
+    return MageStudios.PreloadedMaps[this._spawnMapId].events[
+      this._spawnEventId
+    ];
   } else {
     return MageStudios.EventSpawn.event.call(this);
   }
 };
 
-//=============================================================================
-// Spriteset_Map
-//=============================================================================
-
-Spriteset_Map.prototype.createSpawnedEvent = function(target) {
+Spriteset_Map.prototype.createSpawnedEvent = function (target) {
   this._characterSprites = this._characterSprites || [];
   var length = this._characterSprites.length;
   this._characterSprites[length] = new Sprite_Character(target);
   this._characterSprites[length].update();
   this._tilemap.addChild(this._characterSprites[length]);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

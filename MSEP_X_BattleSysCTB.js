@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle System - Charge Turn Battle
-// MSEP_X_BattleSysCTB.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_BattleSysCTB = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CTB = MageStudios.CTB || {};
-MageStudios.CTB.version = 1.00;
+MageStudios.CTB.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore.js) Add CTB (Charge
  * Turn Battle) into your game using this plugin!
  * @author Mage Studios Engine Plugins
@@ -380,7 +374,7 @@ MageStudios.CTB.version = 1.00;
  *   25% full for the target.
  *
  *   --- --- --- --- ---
- * 
+ *
  *   <Target CTB Order Eval>
  *   order = x;
  *   </Target CTB Order Eval>
@@ -401,7 +395,7 @@ MageStudios.CTB.version = 1.00;
  *   If the target when attacked has over 1000 HP left, the target will have to
  *   wait 3 more turns before its turn arrives. If the target has 1000 or less,
  *   the target actually waits 1 less turn.
- * 
+ *
  *   --- --- --- --- ---
  *
  *   <After CTB Eval>
@@ -535,2164 +529,2183 @@ MageStudios.CTB.version = 1.00;
  * Version 1.00:
  * - It's doooooooooone!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
+    MageStudios.Parameters = PluginManager.parameters("MSEP_X_BattleSysCTB");
+    MageStudios.Param = MageStudios.Param || {};
 
-if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
+    MageStudios.Param.CTBPerTick = String(MageStudios.Parameters["Per Tick"]);
+    MageStudios.Param.CTBInitSpeed = String(
+      MageStudios.Parameters["Initial Speed"]
+    );
+    MageStudios.Param.CTBFullGauge = String(
+      MageStudios.Parameters["Full Gauge"]
+    );
+    MageStudios.Param.CTBPreEmptive = Number(
+      MageStudios.Parameters["Pre-Emptive Bonuses"]
+    );
+    MageStudios.Param.CTBSurprise = Number(
+      MageStudios.Parameters["Surprise Bonuses"]
+    );
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+    MageStudios.Param.CTBEscapeRatio = String(
+      MageStudios.Parameters["Escape Ratio"]
+    );
+    MageStudios.Param.CTBEscapeBoost = Number(
+      MageStudios.Parameters["Fail Escape Boost"]
+    );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_BattleSysCTB');
-MageStudios.Param = MageStudios.Param || {};
+    MageStudios.Param.CTBFullTurn = String(MageStudios.Parameters["Full Turn"]);
+    MageStudios.Param.CTBTurnStructure = false;
 
-MageStudios.Param.CTBPerTick = String(MageStudios.Parameters['Per Tick']);
-MageStudios.Param.CTBInitSpeed = String(MageStudios.Parameters['Initial Speed']);
-MageStudios.Param.CTBFullGauge = String(MageStudios.Parameters['Full Gauge']);
-MageStudios.Param.CTBPreEmptive = Number(MageStudios.Parameters['Pre-Emptive Bonuses']);
-MageStudios.Param.CTBSurprise = Number(MageStudios.Parameters['Surprise Bonuses']);
+    MageStudios.Param.CTBRubberband = String(
+      MageStudios.Parameters["Enable Rubberband"]
+    );
+    MageStudios.Param.CTBMinSpeed = String(
+      MageStudios.Parameters["Minimum Speed"]
+    );
+    MageStudios.Param.CTBMaxSpeed = String(
+      MageStudios.Parameters["Maximum Speed"]
+    );
 
-MageStudios.Param.CTBEscapeRatio = String(MageStudios.Parameters['Escape Ratio']);
-MageStudios.Param.CTBEscapeBoost = Number(MageStudios.Parameters['Fail Escape Boost']);
+    MageStudios.Param.CTBReadyName = String(
+      MageStudios.Parameters["Ready Sound"]
+    );
+    MageStudios.Param.CTBReadyVol = Number(
+      MageStudios.Parameters["Ready Volume"]
+    );
+    MageStudios.Param.CTBReadyPitch = Number(
+      MageStudios.Parameters["Ready Pitch"]
+    );
+    MageStudios.Param.CTBReadyPan = Number(MageStudios.Parameters["Ready Pan"]);
 
-MageStudios.Param.CTBFullTurn = String(MageStudios.Parameters['Full Turn']);
-MageStudios.Param.CTBTurnStructure = false;
+    MageStudios.Param.CTBOptionSpeedTx = String(
+      MageStudios.Parameters["CTB Speed Text"]
+    );
+    MageStudios.Param.CTBDefaultSpeed = Number(
+      MageStudios.Parameters["Default CTB Speed"]
+    );
 
-MageStudios.Param.CTBRubberband = String(MageStudios.Parameters['Enable Rubberband']);
-MageStudios.Param.CTBMinSpeed = String(MageStudios.Parameters['Minimum Speed']);
-MageStudios.Param.CTBMaxSpeed = String(MageStudios.Parameters['Maximum Speed']);
+    MageStudios.Param.CTBTurnOrder = eval(
+      String(MageStudios.Parameters["Show Turn Order"])
+    );
+    MageStudios.Param.CTBTurnPosY = Number(
+      MageStudios.Parameters["Position Y"]
+    );
+    MageStudios.Param.CTBTurnPosX = String(
+      MageStudios.Parameters["Position X"]
+    );
+    MageStudios.Param.CTBIconSize = Number(MageStudios.Parameters["Icon Size"]);
+    MageStudios.Param.CTBTurnDirection = String(
+      MageStudios.Parameters["Turn Direction"]
+    );
+    MageStudios.Param.CTBColorAllyBr = Number(
+      MageStudios.Parameters["Ally Border Color"]
+    );
+    MageStudios.Param.CTBColorAllyBg = Number(
+      MageStudios.Parameters["Ally Back Color"]
+    );
+    MageStudios.Param.CTBAllyIcon = Number(MageStudios.Parameters["Ally Icon"]);
+    MageStudios.Param.CTBColorEnemyBr = Number(
+      MageStudios.Parameters["Enemy Border Color"]
+    );
+    MageStudios.Param.CTBColorEnemyBg = Number(
+      MageStudios.Parameters["Enemy Back Color"]
+    );
+    MageStudios.Param.CTBColorBackground = Number(
+      MageStudios.Parameters["Background Color"]
+    );
+    MageStudios.Param.CTBEnemyIcon = Number(
+      MageStudios.Parameters["Enemy Icon"]
+    );
+    MageStudios.Param.CTBEnemySVBattler = String(
+      MageStudios.Parameters["Enemy SV Battlers"]
+    );
+    MageStudios.Param.CTBEnemySVBattler = eval(
+      MageStudios.Param.CTBEnemySVBattler
+    );
 
-MageStudios.Param.CTBReadyName = String(MageStudios.Parameters['Ready Sound']);
-MageStudios.Param.CTBReadyVol = Number(MageStudios.Parameters['Ready Volume']);
-MageStudios.Param.CTBReadyPitch = Number(MageStudios.Parameters['Ready Pitch']);
-MageStudios.Param.CTBReadyPan = Number(MageStudios.Parameters['Ready Pan']);
+    MageStudios.CTB.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+    DataManager.isDatabaseLoaded = function () {
+      if (!MageStudios.CTB.DataManager_isDatabaseLoaded.call(this))
+        return false;
+      this.processCTBNotetagsC($dataClasses);
+      this.processCTBNotetags1($dataSkills);
+      this.processCTBNotetags1($dataItems);
+      this.processCTBNotetags2($dataActors);
+      this.processCTBNotetags2($dataClasses);
+      this.processCTBNotetags2($dataEnemies);
+      this.processCTBNotetags2($dataWeapons);
+      this.processCTBNotetags2($dataArmors);
+      this.processCTBNotetags2($dataStates);
+      this.processCTBNotetags3($dataActors, true);
+      this.processCTBNotetags3($dataEnemies, false);
+      return true;
+    };
 
-MageStudios.Param.CTBOptionSpeedTx = String(MageStudios.Parameters['CTB Speed Text']);
-MageStudios.Param.CTBDefaultSpeed = Number(MageStudios.Parameters['Default CTB Speed']);
+    DataManager.processCTBNotetagsC = function (group) {
+      if (MageStudios.ClassIdRef) return;
+      MageStudios.ClassIdRef = {};
+      for (var n = 1; n < group.length; n++) {
+        var obj = group[n];
+        if (obj.name.length <= 0) continue;
+        MageStudios.ClassIdRef[obj.name.toUpperCase()] = n;
+      }
+    };
 
-MageStudios.Param.CTBTurnOrder = eval(String(MageStudios.Parameters['Show Turn Order']));
-MageStudios.Param.CTBTurnPosY = Number(MageStudios.Parameters['Position Y']);
-MageStudios.Param.CTBTurnPosX = String(MageStudios.Parameters['Position X']);
-MageStudios.Param.CTBIconSize = Number(MageStudios.Parameters['Icon Size']);
-MageStudios.Param.CTBTurnDirection = String(MageStudios.Parameters['Turn Direction']);
-MageStudios.Param.CTBColorAllyBr = Number(MageStudios.Parameters['Ally Border Color']);
-MageStudios.Param.CTBColorAllyBg = Number(MageStudios.Parameters['Ally Back Color']);
-MageStudios.Param.CTBAllyIcon = Number(MageStudios.Parameters['Ally Icon']);
-MageStudios.Param.CTBColorEnemyBr = Number(MageStudios.Parameters['Enemy Border Color']);
-MageStudios.Param.CTBColorEnemyBg = Number(MageStudios.Parameters['Enemy Back Color']);
-MageStudios.Param.CTBColorBackground = Number(MageStudios.Parameters['Background Color']);
-MageStudios.Param.CTBEnemyIcon = Number(MageStudios.Parameters['Enemy Icon']);
-MageStudios.Param.CTBEnemySVBattler = String(MageStudios.Parameters['Enemy SV Battlers']);
-MageStudios.Param.CTBEnemySVBattler = eval(MageStudios.Param.CTBEnemySVBattler);
+    DataManager.processCTBNotetags1 = function (group) {
+      var noteA1 = /<(?:CTB SPEED):[ ](\d+)>/i;
+      var noteA2 = /<(?:CTB SPEED):[ ]([\+\-]\d+)>/i;
+      var noteA3 = /<(?:CTB SPEED):[ ](\d+)([%％])>/i;
+      var noteA4 = /<(?:CTB SPEED):[ ]([\+\-]\d+)([%％])>/i;
+      var noteB1 = /<(?:CTB ORDER):[ ]([\+\-]\d+)>/i;
+      var noteS1 = /<(?:AFTER CTB):[ ](\d+)>/i;
+      var noteS2 = /<(?:AFTER CTB):[ ](\d+)([%％])>/i;
+      for (var n = 1; n < group.length; n++) {
+        var obj = group[n];
+        var notedata = obj.note.split(/[\r\n]+/);
 
-//=============================================================================
-// DataManager
-//=============================================================================
+        obj.setCTBGaugeFlat = undefined;
+        obj.addCTBGaugeFlat = 0;
+        obj.setCTBGaugeRate = undefined;
+        obj.addCTBGaugeRate = 0.0;
+        obj.ctbOrderModifier = 0;
+        obj.afterCTBFlat = undefined;
+        obj.afterCTBRate = undefined;
+        var evalMode = "none";
+        obj.ctbEval = "";
+        obj.ctbOrderEval = "";
+        obj.ctbAfterEval = "";
+        obj.ctbHelp = undefined;
 
-MageStudios.CTB.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-    if (!MageStudios.CTB.DataManager_isDatabaseLoaded.call(this)) return false;
-    this.processCTBNotetagsC($dataClasses);
-    this.processCTBNotetags1($dataSkills);
-    this.processCTBNotetags1($dataItems);
-    this.processCTBNotetags2($dataActors);
-    this.processCTBNotetags2($dataClasses);
-    this.processCTBNotetags2($dataEnemies);
-    this.processCTBNotetags2($dataWeapons);
-    this.processCTBNotetags2($dataArmors);
-    this.processCTBNotetags2($dataStates);
-    this.processCTBNotetags3($dataActors, true);
-    this.processCTBNotetags3($dataEnemies, false);
-    return true;
-};
-
-DataManager.processCTBNotetagsC = function(group) {
-  if (MageStudios.ClassIdRef) return;
-  MageStudios.ClassIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ClassIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processCTBNotetags1 = function(group) {
-  var noteA1 = /<(?:CTB SPEED):[ ](\d+)>/i;
-  var noteA2 = /<(?:CTB SPEED):[ ]([\+\-]\d+)>/i;
-  var noteA3 = /<(?:CTB SPEED):[ ](\d+)([%％])>/i;
-  var noteA4 = /<(?:CTB SPEED):[ ]([\+\-]\d+)([%％])>/i;
-  var noteB1 = /<(?:CTB ORDER):[ ]([\+\-]\d+)>/i;
-  var noteS1 = /<(?:AFTER CTB):[ ](\d+)>/i;
-  var noteS2 = /<(?:AFTER CTB):[ ](\d+)([%％])>/i;
-    for (var n = 1; n < group.length; n++) {
-      var obj = group[n];
-      var notedata = obj.note.split(/[\r\n]+/);
-
-      obj.setCTBGaugeFlat = undefined;
-      obj.addCTBGaugeFlat = 0;
-      obj.setCTBGaugeRate = undefined;
-      obj.addCTBGaugeRate = 0.0;
-      obj.ctbOrderModifier = 0;
-      obj.afterCTBFlat = undefined;
-      obj.afterCTBRate = undefined;
-      var evalMode = 'none';
-      obj.ctbEval = '';
-      obj.ctbOrderEval = '';
-      obj.ctbAfterEval = '';
-      obj.ctbHelp = undefined;
-
-      for (var i = 0; i < notedata.length; i++) {
-        var line = notedata[i];
-        if (line.match(noteA1)) {
-          obj.setCTBGaugeFlat = parseInt(RegExp.$1);
-        } else if (line.match(noteA2)) {
-          obj.addCTBGaugeFlat = parseInt(RegExp.$1);
-        } else if (line.match(noteA3)) {
-          obj.setCTBGaugeRate = parseFloat(RegExp.$1 * 0.01);
-        } else if (line.match(noteA4)) {
-          obj.addCTBGaugeRate = parseFloat(RegExp.$1 * 0.01);
-        } else if (line.match(noteB1)) {
-          obj.ctbOrderModifier = parseInt(RegExp.$1);
-        } else if (line.match(noteS1)) {
-          obj.afterCTBFlat = parseInt(RegExp.$1);
-        } else if (line.match(noteS2)) {
-          obj.afterCTBRate = parseFloat(RegExp.$1 * 0.01);
-        } else if (line.match(/<(?:TARGET CTB SPEED EVAL)>/i)) {
-          evalMode = 'ctb speed eval';
-        } else if (line.match(/<\/(?:TARGET CTB SPEED EVAL)>/i)) {
-          evalMode = 'none';
-        } else if (line.match(/<(?:TARGET CTB ORDER EVAL)>/i)) {
-          evalMode = 'ctb order eval';
-        } else if (line.match(/<\/(?:TARGET CTB ORDER EVAL)>/i)) {
-          evalMode = 'none';
-        } else if (line.match(/<(?:AFTER CTB EVAL)>/i)) {
-          evalMode = 'after ctb eval';
-        } else if (line.match(/<\/(?:AFTER CTB EVAL)>/i)) {
-          evalMode = 'none';
-        } else if (line.match(/<(?:CTB HELP)>/i)) {
-          evalMode = 'ctb help';
-          obj.ctbHelp = '';
-        } else if (line.match(/<\/(?:CTB HELP)>/i)) {
-          evalMode = 'none';
-        } else if (evalMode === 'ctb help') {
-          obj.ctbHelp = obj.ctbHelp + line + '\n';
-        } else if (evalMode === 'ctb speed eval') {
-          obj.ctbEval = obj.ctbEval + line + '\n';
-        } else if (evalMode === 'ctb order eval') {
-          obj.ctbOrderEval = obj.ctbOrderEval + line + '\n';
-        } else if (evalMode === 'after ctb eval') {
-          obj.ctbAfterEval = obj.ctbAfterEval + line + '\n';
+        for (var i = 0; i < notedata.length; i++) {
+          var line = notedata[i];
+          if (line.match(noteA1)) {
+            obj.setCTBGaugeFlat = parseInt(RegExp.$1);
+          } else if (line.match(noteA2)) {
+            obj.addCTBGaugeFlat = parseInt(RegExp.$1);
+          } else if (line.match(noteA3)) {
+            obj.setCTBGaugeRate = parseFloat(RegExp.$1 * 0.01);
+          } else if (line.match(noteA4)) {
+            obj.addCTBGaugeRate = parseFloat(RegExp.$1 * 0.01);
+          } else if (line.match(noteB1)) {
+            obj.ctbOrderModifier = parseInt(RegExp.$1);
+          } else if (line.match(noteS1)) {
+            obj.afterCTBFlat = parseInt(RegExp.$1);
+          } else if (line.match(noteS2)) {
+            obj.afterCTBRate = parseFloat(RegExp.$1 * 0.01);
+          } else if (line.match(/<(?:TARGET CTB SPEED EVAL)>/i)) {
+            evalMode = "ctb speed eval";
+          } else if (line.match(/<\/(?:TARGET CTB SPEED EVAL)>/i)) {
+            evalMode = "none";
+          } else if (line.match(/<(?:TARGET CTB ORDER EVAL)>/i)) {
+            evalMode = "ctb order eval";
+          } else if (line.match(/<\/(?:TARGET CTB ORDER EVAL)>/i)) {
+            evalMode = "none";
+          } else if (line.match(/<(?:AFTER CTB EVAL)>/i)) {
+            evalMode = "after ctb eval";
+          } else if (line.match(/<\/(?:AFTER CTB EVAL)>/i)) {
+            evalMode = "none";
+          } else if (line.match(/<(?:CTB HELP)>/i)) {
+            evalMode = "ctb help";
+            obj.ctbHelp = "";
+          } else if (line.match(/<\/(?:CTB HELP)>/i)) {
+            evalMode = "none";
+          } else if (evalMode === "ctb help") {
+            obj.ctbHelp = obj.ctbHelp + line + "\n";
+          } else if (evalMode === "ctb speed eval") {
+            obj.ctbEval = obj.ctbEval + line + "\n";
+          } else if (evalMode === "ctb order eval") {
+            obj.ctbOrderEval = obj.ctbOrderEval + line + "\n";
+          } else if (evalMode === "after ctb eval") {
+            obj.ctbAfterEval = obj.ctbAfterEval + line + "\n";
+          }
         }
       }
-    }
-};
+    };
 
-DataManager.processCTBNotetags2 = function(group) {
-  var noteA1 = /<(?:CTB START):[ ]([\+\-]\d+)>/i;
-  var noteA2 = /<(?:CTB START):[ ]([\+\-]\d+)([%％])>/i;
-  var noteB1 = /<(?:CTB TURN):[ ]([\+\-]\d+)>/i;
-  var noteB2 = /<(?:CTB TURN):[ ]([\+\-]\d+)([%％])>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+    DataManager.processCTBNotetags2 = function (group) {
+      var noteA1 = /<(?:CTB START):[ ]([\+\-]\d+)>/i;
+      var noteA2 = /<(?:CTB START):[ ]([\+\-]\d+)([%％])>/i;
+      var noteB1 = /<(?:CTB TURN):[ ]([\+\-]\d+)>/i;
+      var noteB2 = /<(?:CTB TURN):[ ]([\+\-]\d+)([%％])>/i;
+      for (var n = 1; n < group.length; n++) {
+        var obj = group[n];
+        var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.ctbStartFlat = 0;
-    obj.ctbStartRate = 0;
-    obj.ctbTurnFlat = 0;
-    obj.ctbTurnRate = 0;
-    var evalMode = 'none';
-    obj.ctbHelp = undefined;
+        obj.ctbStartFlat = 0;
+        obj.ctbStartRate = 0;
+        obj.ctbTurnFlat = 0;
+        obj.ctbTurnRate = 0;
+        var evalMode = "none";
+        obj.ctbHelp = undefined;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(noteA1)) {
-        obj.ctbStartFlat = parseInt(RegExp.$1);
-      } else if (line.match(noteA2)) {
-        obj.ctbStartRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(noteB1)) {
-        obj.ctbTurnFlat = parseInt(RegExp.$1);
-      } else if (line.match(noteB2)) {
-        obj.ctbTurnRate = parseFloat(RegExp.$1 * 0.01);
-      } else if (line.match(/<(?:CTB HELP)>/i)) {
-        evalMode = 'ctb help';
-        obj.ctbHelp = '';
-      } else if (line.match(/<\/(?:CTB HELP)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'ctb help') {
-        obj.ctbHelp = obj.ctbHelp + line + '\n';
+        for (var i = 0; i < notedata.length; i++) {
+          var line = notedata[i];
+          if (line.match(noteA1)) {
+            obj.ctbStartFlat = parseInt(RegExp.$1);
+          } else if (line.match(noteA2)) {
+            obj.ctbStartRate = parseFloat(RegExp.$1 * 0.01);
+          } else if (line.match(noteB1)) {
+            obj.ctbTurnFlat = parseInt(RegExp.$1);
+          } else if (line.match(noteB2)) {
+            obj.ctbTurnRate = parseFloat(RegExp.$1 * 0.01);
+          } else if (line.match(/<(?:CTB HELP)>/i)) {
+            evalMode = "ctb help";
+            obj.ctbHelp = "";
+          } else if (line.match(/<\/(?:CTB HELP)>/i)) {
+            evalMode = "none";
+          } else if (evalMode === "ctb help") {
+            obj.ctbHelp = obj.ctbHelp + line + "\n";
+          }
+        }
       }
-    }
-  }
-};
+    };
 
-DataManager.processCTBNotetags3 = function(group, isActor) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-    
-    if (isActor) obj.ctbIcon = MageStudios.Param.CTBAllyIcon;
-    if (isActor) obj.ctbBorderColor = MageStudios.Param.CTBColorAllyBr;
-    if (isActor) obj.ctbBackgroundColor = MageStudios.Param.CTBColorAllyBg;
-    if (isActor) obj.ctbClassIcon = {};
-    if (!isActor) obj.ctbIcon = MageStudios.Param.CTBEnemyIcon;
-    if (!isActor) obj.ctbBorderColor = MageStudios.Param.CTBColorEnemyBr;
-    if (!isActor) obj.ctbBackgroundColor = MageStudios.Param.CTBColorEnemyBg;
+    DataManager.processCTBNotetags3 = function (group, isActor) {
+      for (var n = 1; n < group.length; n++) {
+        var obj = group[n];
+        var notedata = obj.note.split(/[\r\n]+/);
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:CTB ICON):[ ](\d+)>/i)) {
-        obj.ctbIcon = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:CTB BORDER COLOR):[ ](\d+)>/i)) {
-        obj.ctbBorderColor = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:CTB BACKGROUND COLOR):[ ](\d+)>/i)) {
-        obj.ctbBackgroundColor = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:CLASS)[ ](\d+)[ ](?:CTB ICON):[ ](\d+)>/i)) {
-        var classId = parseInt(RegExp.$1);
-        var icon = parseInt(RegExp.$2);
-        obj.ctbClassIcon[classId] = icon;
-      } else if (line.match(/<(.*)[ ](?:CTB ICON):[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var icon = parseInt(RegExp.$2);
-        var classId = MageStudios.ClassIdRef[name];
-        if (classId) obj.ctbClassIcon[classId] = icon;
+        if (isActor) obj.ctbIcon = MageStudios.Param.CTBAllyIcon;
+        if (isActor) obj.ctbBorderColor = MageStudios.Param.CTBColorAllyBr;
+        if (isActor) obj.ctbBackgroundColor = MageStudios.Param.CTBColorAllyBg;
+        if (isActor) obj.ctbClassIcon = {};
+        if (!isActor) obj.ctbIcon = MageStudios.Param.CTBEnemyIcon;
+        if (!isActor) obj.ctbBorderColor = MageStudios.Param.CTBColorEnemyBr;
+        if (!isActor)
+          obj.ctbBackgroundColor = MageStudios.Param.CTBColorEnemyBg;
+
+        for (var i = 0; i < notedata.length; i++) {
+          var line = notedata[i];
+          if (line.match(/<(?:CTB ICON):[ ](\d+)>/i)) {
+            obj.ctbIcon = parseInt(RegExp.$1);
+          } else if (line.match(/<(?:CTB BORDER COLOR):[ ](\d+)>/i)) {
+            obj.ctbBorderColor = parseInt(RegExp.$1);
+          } else if (line.match(/<(?:CTB BACKGROUND COLOR):[ ](\d+)>/i)) {
+            obj.ctbBackgroundColor = parseInt(RegExp.$1);
+          } else if (
+            line.match(/<(?:CLASS)[ ](\d+)[ ](?:CTB ICON):[ ](\d+)>/i)
+          ) {
+            var classId = parseInt(RegExp.$1);
+            var icon = parseInt(RegExp.$2);
+            obj.ctbClassIcon[classId] = icon;
+          } else if (line.match(/<(.*)[ ](?:CTB ICON):[ ](\d+)>/i)) {
+            var name = String(RegExp.$1).toUpperCase();
+            var icon = parseInt(RegExp.$2);
+            var classId = MageStudios.ClassIdRef[name];
+            if (classId) obj.ctbClassIcon[classId] = icon;
+          }
+        }
       }
-    }
-  }
-};
+    };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
+    BattleManager.isCTB = function () {
+      return this.isBattleSystem("ctb");
+    };
 
-BattleManager.isCTB = function() {
-    return this.isBattleSystem('ctb');
-};
+    MageStudios.CTB.BattleManager_isTurnBased = BattleManager.isTurnBased;
+    BattleManager.isTurnBased = function () {
+      if (this.isCTB()) return false;
+      return MageStudios.CTB.BattleManager_isTurnBased.call(this);
+    };
 
-MageStudios.CTB.BattleManager_isTurnBased = BattleManager.isTurnBased;
-BattleManager.isTurnBased = function() {
-    if (this.isCTB()) return false;
-    return MageStudios.CTB.BattleManager_isTurnBased.call(this);
-};
+    BattleManager.ctbTickRate = function () {
+      var rate = 0.1 * ConfigManager.ctbSpeed;
+      return rate;
+    };
 
-BattleManager.ctbTickRate = function() {
-    var rate = 0.1 * ConfigManager.ctbSpeed;
-    return rate;
-};
+    MageStudios.CTB.BattleManager_makeEscapeRatio =
+      BattleManager.makeEscapeRatio;
+    BattleManager.makeEscapeRatio = function () {
+      if (this.isCTB()) {
+        var code = MageStudios.Param.CTBEscapeRatio;
+        try {
+          this._escapeRatio = eval(code);
+        } catch (e) {
+          this._escapeRatio = 0;
+          MageStudios.Util.displayError(e, code, "CTB ESCAPE RATIO ERROR");
+        }
+        var code = MageStudios.Param.CTBEscapeBoost;
+        try {
+          this._escapeFailBoost = eval(code);
+        } catch (e) {
+          this._escapeFailBoost = 0;
+          MageStudios.Util.displayError(e, code, "CTB ESCAPE BOOST ERROR");
+        }
+      } else {
+        this._escapeFailBoost = 0.1;
+        MageStudios.CTB.BattleManager_makeEscapeRatio.call(this);
+      }
+    };
 
-MageStudios.CTB.BattleManager_makeEscapeRatio = BattleManager.makeEscapeRatio;
-BattleManager.makeEscapeRatio = function() {
-  if (this.isCTB()) {
-    var code = MageStudios.Param.CTBEscapeRatio;
-    try {
-      this._escapeRatio = eval(code);
-    } catch (e) {
-      this._escapeRatio = 0;
-      MageStudios.Util.displayError(e, code, 'CTB ESCAPE RATIO ERROR');
-    }
-    var code = MageStudios.Param.CTBEscapeBoost;
-    try {
-      this._escapeFailBoost = eval(code);
-    } catch (e) {
-      this._escapeFailBoost = 0;
-      MageStudios.Util.displayError(e, code, 'CTB ESCAPE BOOST ERROR');
-    }
-  } else {
-    this._escapeFailBoost = 0.1;
-    MageStudios.CTB.BattleManager_makeEscapeRatio.call(this);
-  }
-};
+    MageStudios.CTB.BattleManager_startBattle = BattleManager.startBattle;
+    BattleManager.startBattle = function () {
+      MageStudios.CTB.BattleManager_startBattle.call(this);
+      if (this.isCTB()) {
+        this._phase = null;
+        this._counterAttacking = false;
+        this.ctbTicksToReadyClear();
+        this.startCTB();
+      }
+    };
 
-MageStudios.CTB.BattleManager_startBattle = BattleManager.startBattle;
-BattleManager.startBattle = function() {
-    MageStudios.CTB.BattleManager_startBattle.call(this);
-    if (this.isCTB()) {
-      this._phase = null;
-      this._counterAttacking = false;
+    MageStudios.CTB.BattleManager_endBattle = BattleManager.endBattle;
+    BattleManager.endBattle = function (result) {
+      MageStudios.CTB.BattleManager_endBattle.call(this, result);
       this.ctbTicksToReadyClear();
-      this.startCTB();
-    }
-};
+      this.clearCTBData();
+    };
 
-MageStudios.CTB.BattleManager_endBattle = BattleManager.endBattle;
-BattleManager.endBattle = function(result) {
-    MageStudios.CTB.BattleManager_endBattle.call(this, result);
-    this.ctbTicksToReadyClear();
-    this.clearCTBData();
-};
-
-BattleManager.startCTB = function() {
-    if (this._phase === 'battleEnd') return;
-    this.clearCTBData();
-    this._ctbTarget = Math.max(1, eval(MageStudios.Param.CTBFullGauge));
-    this._ctbFullTurn = Math.max(1, eval(MageStudios.Param.CTBFullTurn));
-    this._ctbRubberband = eval(MageStudios.Param.CTBRubberband);
-    if (this.ctbRubberband()) {
-      this._ctbMinimumSpeed = Math.max(1, eval(MageStudios.Param.CTBMinSpeed));
-      this._ctbMaximumSpeed = Math.max(1, eval(MageStudios.Param.CTBMaxSpeed));
-    }
-    this._ctbTicks = this._ctbFullTurn;
-    this._ctbReadySound = {
-      name: MageStudios.Param.CTBReadyName,
-      volume: MageStudios.Param.CTBReadyVol,
-      pitch: MageStudios.Param.CTBReadyPitch,
-      pan: MageStudios.Param.CTBReadyPan
-    }
-    $gameParty.onCTBStart();
-    $gameTroop.onCTBStart();
-    this._phase = 'start';
-};
-
-BattleManager.clearCTBData = function() {
-    this._highestBaseAgi = undefined;
-    this._averageBaseAgi = undefined;
-    this._lowestBaseAgi = undefined;
-    this._ctbTarget = undefined;
-    this._ctbCharge = undefined;
-    this._ctbTarget = undefined;
-    this._ctbCharge = undefined;
-    this._ctbFullTurn = undefined;
-    this._ctbRubberband = undefined;
-    this._ctbMinimumSpeed = undefined;
-    this._ctbMaximumSpeed = undefined;
-    this._ctbTicks = 0;
-};
-
-BattleManager.ctbTarget = function() {
-    if (!this._ctbTarget) this.startCTB();
-    return this._ctbTarget;
-};
-
-BattleManager.ctbRubberband = function() {
-    return this._ctbRubberband;
-};
-
-BattleManager.ctbMinimumSpeed = function() {
-    return this._ctbMinimumSpeed;
-};
-
-BattleManager.ctbMaximumSpeed = function() {
-    return this._ctbMaximumSpeed;
-};
-
-BattleManager.highestBaseAgi = function() {
-    if (this._highestBaseAgi) return this._highestBaseAgi;
-    var agi = 0;
-    for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
-      var battler = $gameParty.battleMembers()[i];
-      if (battler) agi = Math.max(agi, battler.agi);
-    }
-    for (var i = 0; i < $gameTroop.members().length; ++i) {
-      var battler = $gameTroop.members()[i];
-      if (battler) agi = Math.max(agi, battler.agi);
-    }
-    this._highestBaseAgi = agi;
-    return this._highestBaseAgi;
-};
-
-BattleManager.averageBaseAgi = function() {
-    if (this._averageBaseAgi) return this._averageBaseAgi;
-    var agi = 0;
-    for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
-      var battler = $gameParty.battleMembers()[i];
-      if (battler) agi += battler.agi;
-    }
-    for (var i = 0; i < $gameTroop.members().length; ++i) {
-      var battler = $gameTroop.members()[i];
-      if (battler) agi += battler.agi;
-    }
-    var sum = $gameParty.battleMembers().length;
-    sum += $gameTroop.members().length;
-    this._averageBaseAgi = agi / sum;
-    return this._averageBaseAgi;
-};
-
-BattleManager.lowestBaseAgi = function() {
-    if (this._lowestBaseAgi) return this._lowestBaseAgi;
-    var agi = this.highestBaseAgi();
-    for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
-      var battler = $gameParty.battleMembers()[i];
-      if (battler) agi = Math.min(agi, battler.agi);
-    }
-    for (var i = 0; i < $gameTroop.members().length; ++i) {
-      var battler = $gameTroop.members()[i];
-      if (battler) agi = Math.min(agi, battler.agi);
-    }
-    this._lowestBaseAgi = agi;
-    return this._lowestBaseAgi;
-};
-
-BattleManager.ctbTurnOrder = function() {
-    var battlers = $gameParty.aliveMembers().concat($gameTroop.aliveMembers());
-    battlers.sort(function(a, b) {
-      if (a.ctbTicksToReady() > b.ctbTicksToReady()) return 1;
-      if (a.ctbTicksToReady() < b.ctbTicksToReady()) return -1;
-      return 0;
-    });
-    return battlers;
-};
-
-BattleManager.ctbTicksToReadyClear = function() {
-    var length = this.allBattleMembers().length;
-    for (var i = 0; i < length; ++i) {
-      var member = this.allBattleMembers()[i];
-      if (member) member._ctbTicksToReady = undefined;
-    }
-};
-
-MageStudios.CTB.BattleManager_update = BattleManager.update;
-BattleManager.update = function() {
-    if (this.isCTB()) {
-      if (this.isBusy()) return;
-      if (this.updateEvent()) return;
-      if (this._phase === 'battleEnd') {
-        return MageStudios.CTB.BattleManager_update.call(this);
+    BattleManager.startCTB = function () {
+      if (this._phase === "battleEnd") return;
+      this.clearCTBData();
+      this._ctbTarget = Math.max(1, eval(MageStudios.Param.CTBFullGauge));
+      this._ctbFullTurn = Math.max(1, eval(MageStudios.Param.CTBFullTurn));
+      this._ctbRubberband = eval(MageStudios.Param.CTBRubberband);
+      if (this.ctbRubberband()) {
+        this._ctbMinimumSpeed = Math.max(
+          1,
+          eval(MageStudios.Param.CTBMinSpeed)
+        );
+        this._ctbMaximumSpeed = Math.max(
+          1,
+          eval(MageStudios.Param.CTBMaxSpeed)
+        );
       }
-      if (this.checkBattleEnd()) return;
-      if (this._phase === 'ctb') {
-        this.updateCTBPhase();
+      this._ctbTicks = this._ctbFullTurn;
+      this._ctbReadySound = {
+        name: MageStudios.Param.CTBReadyName,
+        volume: MageStudios.Param.CTBReadyVol,
+        pitch: MageStudios.Param.CTBReadyPitch,
+        pan: MageStudios.Param.CTBReadyPan,
+      };
+      $gameParty.onCTBStart();
+      $gameTroop.onCTBStart();
+      this._phase = "start";
+    };
+
+    BattleManager.clearCTBData = function () {
+      this._highestBaseAgi = undefined;
+      this._averageBaseAgi = undefined;
+      this._lowestBaseAgi = undefined;
+      this._ctbTarget = undefined;
+      this._ctbCharge = undefined;
+      this._ctbTarget = undefined;
+      this._ctbCharge = undefined;
+      this._ctbFullTurn = undefined;
+      this._ctbRubberband = undefined;
+      this._ctbMinimumSpeed = undefined;
+      this._ctbMaximumSpeed = undefined;
+      this._ctbTicks = 0;
+    };
+
+    BattleManager.ctbTarget = function () {
+      if (!this._ctbTarget) this.startCTB();
+      return this._ctbTarget;
+    };
+
+    BattleManager.ctbRubberband = function () {
+      return this._ctbRubberband;
+    };
+
+    BattleManager.ctbMinimumSpeed = function () {
+      return this._ctbMinimumSpeed;
+    };
+
+    BattleManager.ctbMaximumSpeed = function () {
+      return this._ctbMaximumSpeed;
+    };
+
+    BattleManager.highestBaseAgi = function () {
+      if (this._highestBaseAgi) return this._highestBaseAgi;
+      var agi = 0;
+      for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
+        var battler = $gameParty.battleMembers()[i];
+        if (battler) agi = Math.max(agi, battler.agi);
+      }
+      for (var i = 0; i < $gameTroop.members().length; ++i) {
+        var battler = $gameTroop.members()[i];
+        if (battler) agi = Math.max(agi, battler.agi);
+      }
+      this._highestBaseAgi = agi;
+      return this._highestBaseAgi;
+    };
+
+    BattleManager.averageBaseAgi = function () {
+      if (this._averageBaseAgi) return this._averageBaseAgi;
+      var agi = 0;
+      for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
+        var battler = $gameParty.battleMembers()[i];
+        if (battler) agi += battler.agi;
+      }
+      for (var i = 0; i < $gameTroop.members().length; ++i) {
+        var battler = $gameTroop.members()[i];
+        if (battler) agi += battler.agi;
+      }
+      var sum = $gameParty.battleMembers().length;
+      sum += $gameTroop.members().length;
+      this._averageBaseAgi = agi / sum;
+      return this._averageBaseAgi;
+    };
+
+    BattleManager.lowestBaseAgi = function () {
+      if (this._lowestBaseAgi) return this._lowestBaseAgi;
+      var agi = this.highestBaseAgi();
+      for (var i = 0; i < $gameParty.battleMembers().length; ++i) {
+        var battler = $gameParty.battleMembers()[i];
+        if (battler) agi = Math.min(agi, battler.agi);
+      }
+      for (var i = 0; i < $gameTroop.members().length; ++i) {
+        var battler = $gameTroop.members()[i];
+        if (battler) agi = Math.min(agi, battler.agi);
+      }
+      this._lowestBaseAgi = agi;
+      return this._lowestBaseAgi;
+    };
+
+    BattleManager.ctbTurnOrder = function () {
+      var battlers = $gameParty
+        .aliveMembers()
+        .concat($gameTroop.aliveMembers());
+      battlers.sort(function (a, b) {
+        if (a.ctbTicksToReady() > b.ctbTicksToReady()) return 1;
+        if (a.ctbTicksToReady() < b.ctbTicksToReady()) return -1;
+        return 0;
+      });
+      return battlers;
+    };
+
+    BattleManager.ctbTicksToReadyClear = function () {
+      var length = this.allBattleMembers().length;
+      for (var i = 0; i < length; ++i) {
+        var member = this.allBattleMembers()[i];
+        if (member) member._ctbTicksToReady = undefined;
+      }
+    };
+
+    MageStudios.CTB.BattleManager_update = BattleManager.update;
+    BattleManager.update = function () {
+      if (this.isCTB()) {
+        if (this.isBusy()) return;
+        if (this.updateEvent()) return;
+        if (this._phase === "battleEnd") {
+          return MageStudios.CTB.BattleManager_update.call(this);
+        }
+        if (this.checkBattleEnd()) return;
+        if (this._phase === "ctb") {
+          this.updateCTBPhase();
+        } else {
+          MageStudios.CTB.BattleManager_update.call(this);
+        }
       } else {
         MageStudios.CTB.BattleManager_update.call(this);
       }
-    } else {
-      MageStudios.CTB.BattleManager_update.call(this);
-    }
-};
+    };
 
-MageStudios.CTB.BattleManager_updateEventMain = BattleManager.updateEventMain;
-BattleManager.updateEventMain = function() {
-    if (this.isCTB()) {
-      $gameTroop.updateInterpreter();
-      $gameParty.requestMotionRefresh();
-      if ($gameTroop.isEventRunning()) {
-          return true;
-      }
-      $gameTroop.setupBattleEvent();
-      if ($gameTroop.isEventRunning() || SceneManager.isSceneChanging()) {
-          return true;
-      }
-      return false;
-    } else {
-      return MageStudios.CTB.BattleManager_updateEventMain.call(this);
-    }
-};
-
-BattleManager.updateCTBPhase = function() {
-    this._ctbLoops = 0;
-    for (;;) {
-      if (this.breakCTBPhase()) break;
-      var chargedBattler = this.getChargedCTBBattler();
-      if (chargedBattler) return this.startCTBAction(chargedBattler);
-      var readyBattler = this.getReadyCTBBattler();
-      if (readyBattler) {
-        return this.startCTBInput(readyBattler);
-      } else {
-        if (this.updateCTBTicks()) break;
-        this.updateBattlerCTB();
-      }
-    }
-};
-
-BattleManager.breakCTBPhase = function() {
-    if (this._victoryPhase) return true;
-    if (this._processingForcedAction) return true;
-    if ($gameTroop.isEventRunning()) return true;
-    if (++this._ctbLoops >= 1000000) return true;
-    return this._phase !== 'ctb';
-};
-
-BattleManager.updateCTBTicks = function() {
-    this._ctbTicks += 1 * this.tickRate();
-    if (this._ctbTicks < this._ctbFullTurn) return false;
-    this._ctbTicks = 0;
-    $gameTroop.increaseTurn();
-    this.endTurn();
-    return true;
-};
-
-BattleManager.getChargedCTBBattler = function() {
-    if ($gameParty.aliveMembers() <= 0 || $gameTroop.aliveMembers() <= 0) {
-      return false;
-    }
-    var fastest = false;
-    for (var i = 0; i < this.allBattleMembers().length; ++i) {
-      var battler = this.allBattleMembers()[i];
-      if (!battler) continue;
-      if (!this.isBattlerCTBCharged(battler)) continue;
-      if (!fastest) {
-        fastest = battler;
-      } else if (battler.ctbTicksToReady() < fastest.ctbTicksToReady()) {
-        fastest = battler;
-      }
-    }
-    return fastest;
-};
-
-BattleManager.isBattlerCTBCharged = function(battler) {
-    if (!battler.isCTBCharging()) return false;
-    if (battler.isConfused()) {
-      battler.makeActions();
-      if (battler.isActor()) battler.makeConfusionActions();
-    }
-    if (battler.ctbChargeRate() < 1) return false;
-    if (battler.ctbTurnOrder() > 0) return false;
-    return battler.currentAction() && battler.currentAction().item();
-};
-
-BattleManager.getReadyCTBBattler = function() {
-    var fastest = false;
-    for (var i = 0; i < this.allBattleMembers().length; ++i) {
-      var battler = this.allBattleMembers()[i];
-      if (!battler) continue;
-      if (!this.isBattlerCTBReady(battler)) continue;
-      if (!fastest) {
-        fastest = battler;
-      } else if (battler.ctbTicksToReady() < fastest.ctbTicksToReady()) {
-        fastest = battler;
-      }
-    }
-    return fastest;
-};
-
-BattleManager.isBattlerCTBReady = function(battler) {
-    if (battler.ctbRate() < 1) return false;
-    if (battler.isCTBCharging()) return false;
-    if (battler.ctbTurnOrder() > 0) return false;
-    if (battler.currentAction() && battler.currentAction().item()) {
-      this._subject = battler;
-      battler.makeActions();
-      battler.setupCTBCharge();
-      return true;
-    }
-    return true;
-};
-
-BattleManager.updateBattlerCTB = function() {
-    $gameParty.updateTick();
-    $gameTroop.updateTick();
-};
-
-BattleManager.setCTBPhase = function() {
-    this._phase = 'ctb';
-};
-
-MageStudios.CTB.BattleManager_startInput = BattleManager.startInput;
-BattleManager.startInput = function() {
-    if (this.isCTB()) {
-      this.setCTBPhase();
-    } else {
-      MageStudios.CTB.BattleManager_startInput.call(this);
-    }
-};
-
-MageStudios.CTB.BattleManager_selectNextCommand = BattleManager.selectNextCommand;
-BattleManager.selectNextCommand = function() {
-    if (this.isCTB()) {
-      if (!this.actor()) return this.setCTBPhase();
-      this.resetNonPartyActorCTB();
-      this._subject = this.actor();
-      this.actor().setupCTBCharge();
-      if (this.actor().isCTBCharging()) {
-        this.actor().spriteStepBack();
-        this.actor().requestMotionRefresh();
-        this._actorIndex = undefined;
-        this.setCTBPhase();
-      } else if (this.isValidCTBActorAction()) {
-        this.startCTBAction(this.actor());
-      } else {
-        if (this.actor()) this.ctbSkipTurn();
+    MageStudios.CTB.BattleManager_updateEventMain =
+      BattleManager.updateEventMain;
+    BattleManager.updateEventMain = function () {
+      if (this.isCTB()) {
+        $gameTroop.updateInterpreter();
         $gameParty.requestMotionRefresh();
-        this.setCTBPhase();
-      }
-    } else {
-      MageStudios.CTB.BattleManager_selectNextCommand.call(this);
-    }
-};
-
-BattleManager.ctbSkipTurn = function() {
-    this.actor().clearActions();
-    this.actor().setActionState('undecided');
-    this.actor().requestMotionRefresh();
-    if (!this._bypassCtbEndTurn) this.actor().endTurnAllCTB();
-    this.actor().spriteStepBack();
-};
-
-BattleManager.isValidCTBActorAction = function() {
-    if (!this.actor()) return false;
-    if (!this.actor().currentAction()) return false;
-    return this.actor().currentAction().item();
-};
-
-BattleManager.resetNonPartyActorCTB = function() {
-    for (var i = 0; i < $gameParty.allMembers().length; ++i) {
-      var actor = $gameParty.allMembers()[i];
-      if (!actor) continue;
-      if ($gameParty.battleMembers().contains(actor)) continue;
-      actor.resetAllCTB();
-    }
-};
-
-MageStudios.CTB.BattleManager_selectPreviousCommand =
-    BattleManager.selectPreviousCommand;
-BattleManager.selectPreviousCommand = function() {
-    if (this.isCTB()) {
-      if (this.actor()) this.actor().spriteStepBack();
-      var actorIndex = this._actorIndex;
-      var scene = SceneManager._scene;
-      this._bypassCtbEndTurn = true;
-      scene.startPartyCommandSelection();
-      this._bypassCtbEndTurn = undefined;
-      this._actorIndex = actorIndex;
-    } else {
-      MageStudios.CTB.BattleManager_selectPreviousCommand.call(this);
-    }
-};
-
-MageStudios.CTB.BattleManager_startTurn = BattleManager.startTurn;
-BattleManager.startTurn = function() {
-    if (this.isCTB() && !this.isTurnBased()) return;
-    MageStudios.CTB.BattleManager_startTurn.call(this);
-};
-
-MageStudios.CTB.BattleManager_updateTurnEnd = BattleManager.updateTurnEnd;
-BattleManager.updateTurnEnd = function() {
-    if (this.isCTB()) {
-      this.setCTBPhase();
-    } else {
-      MageStudios.CTB.BattleManager_updateTurnEnd.call(this);
-    }
-};
-
-BattleManager.startCTBInput = function(battler) {
-    if (battler.isDead()) return;
-    battler.onTurnStart();
-    battler.makeActions();
-    if (battler.isEnemy()) {
-      battler.setupCTBCharge();
-    } else if (battler.canInput()) {
-      this._actorIndex = battler.index();
-      this.playCTBReadySound();
-      battler.setActionState('inputting');
-      battler.spriteStepForward();
-      this._phase = 'input';
-      return;
-    } else if (battler.isConfused()) {
-      battler.makeConfusionActions();
-      battler.setupCTBCharge();
-    } else {
-      battler.makeAutoBattleActions();
-      battler.setupCTBCharge();
-    }
-    if (battler.isCTBCharging()) {
-      this.setCTBPhase();
-    } else {
-      this.startCTBAction(battler);
-    }
-};
-
-BattleManager.playCTBReadySound = function() {
-    AudioManager.playSe(this._ctbReadySound);
-};
-
-BattleManager.startCTBAction = function(battler) {
-    this._subject = battler;
-    var action = this._subject.currentAction();
-    if (action && action.isValid()) {
-      this.startAction();
-    } else {
-      this.endAction();
-    }
-};
-
-MageStudios.CTB.BattleManager_processForcedAction =
-    BattleManager.processForcedAction;
-BattleManager.processForcedAction = function() {
-    var forced = false;
-    if (this._actionForcedBattler && this.isCTB()) {
-      var action = this._actionForcedBattler.currentAction();
-      forced = true;
-    }
-    MageStudios.CTB.BattleManager_processForcedAction.call(this);
-    if (forced) this._subject.setAction(0, action);
-};
-
-MageStudios.CTB.BattleManager_endAction = BattleManager.endAction;
-BattleManager.endAction = function() {
-    if (this.isCTB()) {
-      this.endCTBAction();
-    } else {
-      MageStudios.CTB.BattleManager_endAction.call(this);
-    }
-};
-
-BattleManager.endCTBAction = function() {
-    if (Imported.MSEP_BattleEngineCore) {
-      if (this._processingForcedAction) this._phase = this._preForcePhase;
-      this._processingForcedAction = false;
-    }
-    if (this._subject) this._subject.onAllActionsEnd();
-    if (this.updateEventMain()) return;
-    this._subject.endTurnAllCTB();
-    if (this.loadPreForceActionSettings()) return;
-    var chargedBattler = this.getChargedCTBBattler();
-    if (chargedBattler) {
-      this.startCTBAction(chargedBattler);
-    } else {
-      this.setCTBPhase();
-    }
-};
-
-MageStudios.CTB.BattleManager_invokeCounterAttack =
-    BattleManager.invokeCounterAttack;
-BattleManager.invokeCounterAttack = function(subject, target) {
-    if (this.isCTB()) this._counterAttacking = true;
-    MageStudios.CTB.BattleManager_invokeCounterAttack.call(this, subject, target);
-    if (this.isCTB()) this._counterAttacking = false;
-};
-
-BattleManager.isCounterAttacking = function() {
-    return this._counterAttacking;
-};
-
-MageStudios.CTB.BattleManager_processEscape = BattleManager.processEscape;
-BattleManager.processEscape = function() {
-    if (this.isCTB()) {
-      return this.processEscapeCTB();
-    } else {
-      return MageStudios.CTB.BattleManager_processEscape.call(this);
-    }
-};
-
-BattleManager.processEscapeCTB = function() {
-  $gameParty.performEscape();
-  SoundManager.playEscape();
-  var success = this._preemptive ? true : (Math.random() < this._escapeRatio);
-  if (success) {
-      $gameParty.removeBattleStates();
-      $gameParty.performEscapeSuccess();
-      this.displayEscapeSuccessMessage();
-      this._escaped = true;
-      this.processAbort();
-  } else {
-      this.actor().spriteStepBack();
-      this.actor().clearActions();
-      this.displayEscapeFailureMessage();
-      this._escapeRatio += this._escapeFailBoost;
-      this.startTurn();
-      this.processFailEscapeCTB();
-  }
-  return success;
-};
-
-BattleManager.processFailEscapeCTB = function() {
-    var actor = $gameParty.members()[this._actorIndex];
-    if (!actor) return;
-    actor.resetAllCTB();
-};
-
-BattleManager.redrawCTBIcons = function() {
-    var max = $gameTroop.members().length;
-    for (var i = 0; i < max; ++i) {
-      var member = $gameTroop.members()[i];
-      if (!member) continue;
-      if (!member.battler()._ctbIcon) continue;
-      member.battler()._ctbIcon.forceRedraw();
-    }
-};
-
-MageStudios.CTB.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  if (this.isCTB()) {
-    // CTB SPEED
-    if (actionName === 'CTB SPEED') {
-        this.actionCTBCharge(actionArgs);
-      return this.actionCTBSpeed(actionArgs);
-    }
-    // CTB ORDER
-    if (actionName === 'CTB ORDER') {
-      return this.actionCTBOrder(actionArgs);
-    }
-  }
-  return MageStudios.CTB.BattleManager_processActionSequence.call(this,
-    actionName, actionArgs);
-};
-
-BattleManager.actionCTBCharge = function(actionArgs) {
-    var targets = this.makeActionTargets(actionArgs[0]);
-    if (targets.length < 1) return true;
-    var cmd = actionArgs[1];
-    if (cmd.match(/([\+\-]\d+)([%％])/i)) {
-      var rate = parseFloat(RegExp.$1 * 0.01);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (!target.isCTBCharging()) continue;
-        var max = target.ctbChargeDestination();
-        var value = rate * max + target.ctbCharge();
-        target.setCTBCharge(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/([\+\-]\d+)/i)) {
-      var plus = parseInt(RegExp.$1);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (!target.isCTBCharging()) continue;
-        var value = plus + target.ctbCharge();
-        target.setCTBCharge(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/(\d+)([%％])/i)) {
-      var rate = parseFloat(RegExp.$1 * 0.01);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (!target.isCTBCharging()) continue;
-        var max = target.ctbChargeDestination();
-        var value = rate * max;
-        target.setCTBCharge(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/(\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (!target.isCTBCharging()) continue;
-        target.setCTBCharge(value);
-        target.refresh();
-      }
-    }
-    return true;
-};
-
-BattleManager.actionCTBSpeed = function(actionArgs) {
-    var targets = this.makeActionTargets(actionArgs[0]);
-    if (targets.length < 1) return true;
-    var cmd = actionArgs[1];
-    if (cmd.match(/([\+\-]\d+)([%％])/i)) {
-      var rate = parseFloat(RegExp.$1 * 0.01);
-      var max = this.ctbTarget();
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (target.isCTBCharging()) continue;
-        var value = rate * max + target.ctbSpeed();
-        target.setCTBSpeed(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/([\+\-]\d+)/i)) {
-      var plus = parseInt(RegExp.$1);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (target.isCTBCharging()) continue;
-        var value = plus + target.ctbSpeed();
-        target.setCTBSpeed(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/(\d+)([%％])/i)) {
-      var rate = parseFloat(RegExp.$1 * 0.01);
-      var max = this.ctbTarget();
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (target.isCTBCharging()) continue;
-        var value = rate * max;
-        target.setCTBSpeed(value);
-        target.refresh();
-      }
-    } else if (cmd.match(/(\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-      for (var i = 0; i < targets.length; ++i) {
-        var target = targets[i];
-        if (!target) continue;
-        if (target === this._subject) continue;
-        if (target.isCTBCharging()) continue;
-        target.setCTBSpeed(value);
-        target.refresh();
-      }
-    }
-    return true;
-};
-
-BattleManager.actionCTBOrder = function(actionArgs) {
-    var targets = this.makeActionTargets(actionArgs[0]);
-    if (targets.length < 1) return true;
-    var value = parseInt(actionArgs[1]);
-    for (var i = 0; i < targets.length; ++i) {
-      var target = targets[i];
-      if (!target) continue;
-      target.ctbAlterTurnOrder(value);
-    }
-    return true;
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.CTB.Game_Action_applyItemUserEffect =
-    Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
-    MageStudios.CTB.Game_Action_applyItemUserEffect.call(this, target);
-    if (BattleManager.isCTB() && $gameParty.inBattle()) {
-      this.applyItemCTBEffect(target);
-    }
-};
-
-Game_Action.prototype.applyItemCTBEffect = function(target) {
-  if (!target) return;
-  this.applyItemCTBOrderEffect(target);
-  this.applyItemCTBOrderEvalEffect(target);
-  this.applyItemCTBSetEffects(target);
-  this.applyItemCTBAddEffects(target);
-  this.applyItemCTBEvalEffect(target);
-  if (BattleManager.isCounterAttacking()) return;
-  this.rebalanceCTBSpeed(target);
-};
-
-Game_Action.prototype.applyItemCTBOrderEffect = function(target) {
-    var item = this.item();
-    if (!item) return;
-    if (item.ctbOrderModifier === 0) return;
-    target.ctbAlterTurnOrder(item.ctbOrderModifier);
-};
-
-Game_Action.prototype.applyItemCTBSetEffects = function(target) {
-  var item = this.item();
-  if (!item) return;
-  var value = undefined;
-  if (target.isCTBCharging()) {
-    var max = target.ctbChargeDestination();
-    if (item.setCTBGaugeFlat !== undefined) {
-      value = item.setCTBGaugeFlat;
-    } else if (item.setCTBGaugeRate !== undefined) {
-      value = item.setCTBGaugeRate * max;
-    }
-    if (value !== undefined) target.setCTBCharge(value);
-  } else {
-    var max = BattleManager.ctbTarget();
-    if (item.setCTBGaugeFlat !== undefined) {
-      value = item.setCTBGaugeFlat;
-    } else if (item.setCTBGaugeRate !== undefined) {
-      value = item.setCTBGaugeRate * max;
-    }
-    if (value !== undefined) target.setCTBSpeed(value);
-  }
-};
-
-Game_Action.prototype.applyItemCTBAddEffects = function(target) {
-    var item = this.item();
-    if (!item) return;
-    if (target.isCTBCharging()) {
-      var value = target.ctbCharge();
-      var max = target.ctbChargeDestination();
-      value += item.addCTBGaugeRate * max;
-      value += item.addCTBGaugeFlat;
-      target.setCTBCharge(value);
-    } else {
-      var value = target.ctbSpeed();
-      var max = BattleManager.ctbTarget()
-      value += item.addCTBGaugeRate * max;
-      value += item.addCTBGaugeFlat;
-      target.setCTBSpeed(value);
-    }
-};
-
-Game_Action.prototype.applyItemCTBEvalEffect = function(target) {
-    if (this.item().ctbEval === '') return;
-    var a = this.subject();
-    var user = this.subject();
-    var b = target;
-    var item = this.item();
-    var skill = this.item();
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var speed = target.ctbSpeed();
-    var charge = target.ctbCharge();
-    if (target.isCTBCharging()) {
-      var max = target.ctbChargeDestination();
-    } else {
-      var max = BattleManager.ctbTarget();
-    }
-    var code = item.ctbEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CTB EVAL ERROR');
-    }
-    target.setCTBSpeed(speed);
-    target.setCTBCharge(charge);
-};
-
-Game_Action.prototype.applyItemCTBOrderEvalEffect = function(target) {
-    if (this.item().ctbOrderEval === '') return;
-    var a = this.subject();
-    var user = this.subject();
-    var b = target;
-    var item = this.item();
-    var skill = this.item();
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var order = 0;
-    var code = item.ctbOrderEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CTB ORDER EVAL ERROR');
-    }
-    target.ctbAlterTurnOrder(order);
-};
-
-Game_Action.prototype.rebalanceCTBSpeed = function(target) {
-    var speed = this.subject().ctbSpeed();
-    var offset = 00000000001;
-    speed = Math.max(speed + offset, target.ctbSpeed() + target.ctbCharge());
-    this.subject().setCTBSpeed(speed);
-};
-
-//=============================================================================
-// Game_Battlerbase
-//=============================================================================
-
-MageStudios.CTB.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    if (BattleManager.isCTB() && $gameParty.inBattle()) {
-      BattleManager.ctbTicksToReadyClear();
-      this._ctbTickValue = undefined;
-      this.clearCTBCommandWindowCache();
-    }
-    MageStudios.CTB.Game_BattlerBase_refresh.call(this);
-};
-
-Game_BattlerBase.prototype.clearCTBCommandWindowCache = function() {
-    this._commandWindowIndex = undefined;
-    this._commandWindowItem = undefined;
-    this._skillWindowIndex = undefined;
-    this._skillWindowItem = undefined;
-    this._itemWindowIndex = undefined;
-    this._itemWindowItem = undefined;
-};
-
-MageStudios.CTB.Game_BattlerBase_die = Game_BattlerBase.prototype.die;
-Game_BattlerBase.prototype.die = function() {
-    MageStudios.CTB.Game_BattlerBase_die.call(this);
-    if (BattleManager.isCTB() && $gameParty.inBattle()) this.resetAllCTB();
-};
-
-MageStudios.CTB.Game_BattlerBase_appear = Game_BattlerBase.prototype.appear;
-Game_BattlerBase.prototype.appear = function() {
-    MageStudios.CTB.Game_BattlerBase_appear.call(this);
-    if (BattleManager.isCTB() && this.isEnemy()) {
-      BattleManager.redrawCTBIcons();
-    }
-};
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.ctbIcon = function() {
-    return 0;
-};
-
-Game_Battler.prototype.ctbBorderColor = function() {
-    return 0;
-};
-
-Game_Battler.prototype.ctbBackgroundColor = function() {
-    return 0;
-};
-
-Game_Battler.prototype.onCTBStart = function() {
-    this._ctbSpeed = eval(MageStudios.Param.CTBInitSpeed);
-    this._ctbSpeed += BattleManager.ctbTarget() * this.ctbStartRate();
-    this._ctbSpeed += this.ctbStartFlat();
-    this._ctbCharge = 0;
-    this._ctbCharging = false;
-    this._ctbChargeMod = 0;
-    this.applyPreemptiveBonusCTB();
-    this.applySurpriseBonusCTB();
-    this.refresh();
-};
-
-Game_Battler.prototype.applyPreemptiveBonusCTB = function() {
-    if (!BattleManager._preemptive) return;
-    if (!this.isActor()) return;
-    var rate = MageStudios.Param.CTBPreEmptive;
-    this._ctbSpeed += rate * BattleManager.ctbTarget();
-};
-
-Game_Battler.prototype.applySurpriseBonusCTB = function() {
-    if (!BattleManager._surprise) return;
-    if (!this.isEnemy()) return;
-    var rate = MageStudios.Param.CTBSurprise;
-    this._ctbSpeed += rate * BattleManager.ctbTarget();
-};
-
-MageStudios.CTB.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
-Game_Battler.prototype.onBattleEnd = function() {
-    MageStudios.CTB.Game_Battler_onBattleEnd.call(this);
-    this._ctbSpeed = 0;
-    this._ctbCharge = 0;
-    this._ctbCharging = false;
-    this._ctbChargeMod = 0;
-    this.clearCTBCommandWindowCache();
-};
-
-Game_Battler.prototype.ctbTicksToReady = function() {
-    if (this._ctbTicksToReady !== undefined) return this._ctbTicksToReady;
-    var goal = BattleManager.ctbTarget();
-    if (this.isCTBCharging()) goal += this.ctbChargeDestination();
-    goal -= this.ctbSpeed();
-    goal -= (this.isCTBCharging()) ? this.ctbCharge() : 0;
-    var rate = this.ctbSpeedTick();
-    if (this.ctbTicksToReadyActionCheck()) {
-      var item = this.ctbTicksToReadyActionCheck();
-      if (item.speed < 0) goal -= item.speed;
-    }
-    this._ctbTicksToReady = goal / Math.max(1, rate);
-    return this._ctbTicksToReady;
-};
-
-Game_Battler.prototype.ctbTicksToReadyActionCheck = function() {
-    if (!BattleManager.isInputting()) return false;
-    if (BattleManager.actor() !== this) return false;
-    var scene = SceneManager._scene;
-    if (scene._skillWindow.active) {
-      if (this._skillWindowIndex === scene._skillWindow.index()) {
-        return this._skillWindowItem;
-      }
-      this._skillWindowIndex = scene._skillWindow.index();
-      this._skillWindowItem = scene._skillWindow.item();
-      return this._skillWindowItem;
-    } else if (scene._itemWindow.active) {
-      if (this._itemWindowIndex === scene._itemWindow.index()) {
-        return this._itemWindowItem;
-      }
-      this._itemWindowIndex = scene._itemWindow.index();
-      this._itemWindowItem = scene._itemWindow.item();
-      return this._itemWindowItem;
-    } else if (scene._actorCommandWindow.active) {
-      if (this._commandWindowIndex === scene._actorCommandWindow.index()) {
-        return this._commandWindowItem;
-      }
-      var win = scene._actorCommandWindow;
-      var symbol = win.currentSymbol();
-      this._commandWindowIndex = win.index();
-      if (symbol === 'attack') {
-        this._commandWindowItem = $dataSkills[this.attackSkillId()];
-        return this._commandWindowItem;
-      } else if (symbol === 'guard') {
-        this._commandWindowItem = $dataSkills[this.guardSkillId()];
-        return this._commandWindowItem;
-      } else {
-        this._commandWindowItem = undefined;
+        if ($gameTroop.isEventRunning()) {
+          return true;
+        }
+        $gameTroop.setupBattleEvent();
+        if ($gameTroop.isEventRunning() || SceneManager.isSceneChanging()) {
+          return true;
+        }
         return false;
-      }
-    }
-    if (!this.currentAction()) return false;
-    return this.currentAction().item();
-};
-
-Game_Battler.prototype.ctbSpeed = function() {
-    if (this.isDead()) return -1 * BattleManager.ctbTarget();
-    if (this.isHidden()) return -1 * BattleManager.ctbTarget();
-    if (this._ctbSpeed === undefined) this.onCTBStart();
-    return this._ctbSpeed;
-};
-
-Game_Battler.prototype.ctbRate = function() {
-    if (this._ctbSpeed === undefined) this.onCTBStart();
-    var rate = this._ctbSpeed / BattleManager.ctbTarget();
-    return rate.clamp(0, 1);
-};
-
-Game_Battler.prototype.isCTBCharging = function() {
-    return this._ctbCharging;
-};
-
-Game_Battler.prototype.setCTBCharging = function(value) {
-    this._ctbCharging = value;
-};
-
-Game_Battler.prototype.ctbCharge = function() {
-  if (this._ctbCharge === undefined) this.onCTBStart();
-  return this._ctbCharge;
-};
-
-Game_Battler.prototype.ctbChargeDestination = function() {
-    var denom = Math.max(1, -1 * this._ctbChargeMod);
-    return denom;
-};
-
-Game_Battler.prototype.ctbChargeRate = function() {
-    if (this._ctbCharge === undefined) this.onCTBStart();
-    if (!this.isCTBCharging()) return 0;
-    var rate = this._ctbCharge / this.ctbChargeDestination();
-    return rate.clamp(0, 1);
-};
-
-Game_Battler.prototype.setCTBSpeed = function(value) {
-    this._ctbSpeed = value;
-};
-
-Game_Battler.prototype.setCTBCharge = function(value) {
-    if (this.isCTBCharging()) this._ctbCharge = value;
-};
-
-Game_Battler.prototype.setupCTBCharge = function() {
-    if (BattleManager._subject !== this) return;
-    if (BattleManager._bypassCtbEndTurn) return;
-    if (!this.currentAction()) this.makeActions();
-    if (this.currentAction()) {
-      var item = this.currentAction().item();
-      if (item && item.speed < 0) {
-        this.setCTBCharging(true);
-        this._ctbChargeMod = item.speed;
-        this.setCTBCharge(0);
-      } else if (!item) {
-        this._ctbChargeMod = 0;
       } else {
-        this._ctbChargeMod = 0;
+        return MageStudios.CTB.BattleManager_updateEventMain.call(this);
       }
-    } else {
-      this._ctbChargeMod = 0;
-    }
-    this.setActionState('waiting');
-};
-
-MageStudios.CTB.Game_Battler_updateTick = Game_Battler.prototype.updateTick;
-Game_Battler.prototype.updateTick = function() {
-    MageStudios.CTB.Game_Battler_updateTick.call(this);
-    if (BattleManager.isCTB()) this.updateCTB();
-};
-
-Game_Battler.prototype.updateCTB = function() {
-    if (this.isDead()) return this.resetAllCTB();
-    if (!this.canMove()) {
-      this.updateCTBStates();
-      return;
-    }
-    if (this.isCTBCharging()) {
-      if (!this.currentAction()) this.resetAllCTB();
-      if (this.currentAction() && this.currentAction().item() === null) {
-        this.resetAllCTB();
-      }
-    }
-    if (this.isCTBCharging()) {
-      var value = this.ctbCharge() + this.ctbSpeedTick();
-      this.setCTBCharge(value);
-    } else if (this.ctbRate() < 1) {
-      var value = this.ctbSpeed() + this.ctbSpeedTick();
-      this.setCTBSpeed(value);
-    }
-};
-
-Game_Battler.prototype.updateCTBStates = function() {
-    if (BattleManager.timeBasedBuffs()) return;
-    for (var i = 0; i < this._states.length; ++i) {
-      var stateId = this._states[i];
-      var state = $dataStates[stateId];
-      if (!state) continue;
-      if (!this._stateTurns[stateId]) continue;
-      if (state.restriction >= 4 && state.autoRemovalTiming !== 0) {
-        var value = BattleManager.tickRate() / MageStudios.Param.BECTurnTime;
-        this._stateTurns[stateId] -= value;
-        if (this._stateTurns[stateId] <= 0) this.removeState(stateId);
-      }
-    }
-};
-
-Game_Battler.prototype.resetAllCTB = function() {
-    this._ctbCharge = 0;
-    this._ctbChargeMod = 0;
-    this._ctbCharging = false;
-    this._ctbSpeed = 0;
-    this.clearActions();
-};
-
-Game_Battler.prototype.endTurnAllCTB = function() {
-    this._ctbCharge = 0;
-    this._ctbChargeMod = 0;
-    this._ctbCharging = false;
-    if (this.checkCTBEndInstantCast()) return;
-    this.setEndActionCTBSpeed();
-    this.clearActions();
-    this.setActionState('undecided');
-    if (this.battler()) this.battler().refreshMotion();
-    if (BattleManager.isTickBased()) this.onTurnEnd();
-};
-
-Game_Battler.prototype.checkCTBEndInstantCast = function() {
-    if (!Imported.MSEP_InstantCast) return false;
-    var action = this.currentAction();
-    if (!action) return false;
-    var item = action.item();
-    if (!item) return false;
-    if (!this.isInstantCast(item)) return false;
-    var length = BattleManager.allBattleMembers().length;
-    for (var i = 0; i < length; ++i) {
-      var member = BattleManager.allBattleMembers()[i];
-      if (!member) continue;
-      var max = member.ctbSpeed() + member.ctbCharge();
-      this._ctbSpeed = Math.max(this._ctbSpeed, max);
-    }
-    this._ctbSpeed = Math.max(this._ctbSpeed, BattleManager.ctbTarget());
-    this._ctbSpeed += 0.00000000001;
-    return true;
-};
-
-Game_Battler.prototype.ctbSpeedRate = function() {
-    if (!this.canMove()) return 0;
-    var base = this.paramBase(6) + this.paramPlus(6);
-    if (base >= this.paramMax(6) && this.agi >= this.paramMax(6)) return 1;
-    var rate = this.agi / base;
-    return rate;
-};
-
-Game_Battler.prototype.ctbSpeedTick = function() {
-    var value = this.ctbTickValue();
-    if (BattleManager.ctbRubberband()) {
-      var min = BattleManager.ctbMinimumSpeed();
-      var max = BattleManager.ctbMaximumSpeed();
-      value = value.clamp(min, max);
-      value += this.minorCTBOffset();
-    }
-    return value * BattleManager.tickRate();
-};
-
-Game_Battler.prototype.ctbTickValue = function() {
-    if (this._ctbTickValue !== undefined) return this._ctbTickValue;
-    var a = this;
-    var user = this;
-    var subject = this;
-    this._ctbTickValue = eval(MageStudios.Param.CTBPerTick);
-    return this._ctbTickValue;
-};
-
-Game_Battler.prototype.setEndActionCTBSpeed = function() {
-    this._ctbSpeed = 0;
-    var action = this.currentAction();
-    if (!action) return;
-    var item = action.item();;
-    if (item) {
-      if (item.afterCTBFlat !== undefined) this.setCTBSpeed(item.afterCTBFlat);
-      if (item.afterCTBRate !== undefined) {
-        this.setCTBSpeed(item.afterCTBRate * BattleManager.ctbTarget());
-      }
-      if (item.speed > 0) this._ctbSpeed += item.speed;
-    }
-    this._ctbSpeed += BattleManager.ctbTarget() * this.ctbTurnRate();
-    this._ctbSpeed += this.ctbTurnFlat();
-    if (item) this.afterCTBEval(item);
-};
-
-Game_Battler.prototype.afterCTBEval = function(item) {
-    if (!item) return;
-    var a = this;
-    var user = this;
-    var skill = item;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var speed = this._ctbSpeed;
-    var max = BattleManager.ctbTarget();
-    var code = item.ctbAfterEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'AFTER CTB ERROR');
-    }
-    this.setCTBSpeed(speed);
-};
-
-Game_Battler.prototype.ctbStartFlat = function() {
-    var value = 0;
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state) value += state.ctbStartFlat;
-    }
-    return value;
-};
-
-Game_Battler.prototype.ctbStartRate = function() {
-    var value = 0;
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state) value += state.ctbStartRate;
-    }
-    return value;
-};
-
-Game_Battler.prototype.ctbTurnFlat = function() {
-    var value = 0;
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state) value += state.ctbTurnFlat;
-    }
-    return value;
-};
-
-Game_Battler.prototype.ctbTurnRate = function() {
-    var value = 0;
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state) value += state.ctbTurnRate;
-    }
-    return value;
-};
-
-MageStudios.CTB.Game_Battler_removeState = Game_Battler.prototype.removeState;
-Game_Battler.prototype.removeState = function(stateId) {
-    if (BattleManager.isCTB()) {
-      var confuseCondition = this.isConfused();
-    }
-    MageStudios.CTB.Game_Battler_removeState.call(this, stateId);
-    if (BattleManager.isCTB()) {
-      if (confuseCondition !== this.isConfused()) this.resetAllCTB();
-    }
-};
-
-Game_Battler.prototype.minorCTBOffset = function() {
-    var value = 0.00000000001;
-    if (this.isActor()) value *= $gameParty.members().length - this.index();
-    if (this.isEnemy()) value *= -1 * this.index();
-    return value;
-};
-
-Game_Battler.prototype.ctbTurnOrder = function() {
-    var index = BattleManager.ctbTurnOrder().indexOf(this);
-    return index;
-};
-
-Game_Battler.prototype.ctbAlterTurnOrder = function(value) {
-    var sign = (value > 0) ? 1 : -1;
-    var max = BattleManager.ctbTurnOrder().length - 1;
-    var index = this.ctbTurnOrder();
-    index += value;
-    index = index.clamp(0, max);
-    var battler = BattleManager.ctbTurnOrder()[index];
-    if (!battler) battler = this;
-    var ticksTarget = battler.ctbTicksToReady();
-    var ticksCurrent = this.ctbTicksToReady();
-    var ticksChange = ticksTarget - ticksCurrent;
-    ticksChange += sign * Math.abs(this.minorCTBOffset());
-    this._ctbSpeed -= this.ctbSpeedTick() * ticksChange;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.ctbIcon = function() {
-    if (this.actor().ctbClassIcon) {
-      if (this.actor().ctbClassIcon[this._classId]) {
-        return this.actor().ctbClassIcon[this._classId];
-      }
-    }
-    return this.actor().ctbIcon;
-};
-
-Game_Actor.prototype.ctbBorderColor = function() {
-    return this.actor().ctbBorderColor;
-};
-
-Game_Actor.prototype.ctbBackgroundColor = function() {
-    return this.actor().ctbBackgroundColor;
-};
-
-Game_Actor.prototype.ctbStartFlat = function() {
-    var value = Game_Battler.prototype.ctbStartFlat.call(this);
-    value += this.actor().ctbStartFlat;
-    value += this.currentClass().ctbStartFlat;
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.ctbStartFlat) value += equip.ctbStartFlat;
-    }
-    return value;
-};
-
-Game_Actor.prototype.ctbStartRate = function() {
-    var value = Game_Battler.prototype.ctbStartRate.call(this);
-    value += this.actor().ctbStartRate;
-    value += this.currentClass().ctbStartRate;
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.ctbStartRate) value += equip.ctbStartRate;
-    }
-    return value;
-};
-
-Game_Actor.prototype.ctbTurnFlat = function() {
-    var value = Game_Battler.prototype.ctbTurnFlat.call(this);
-    value += this.actor().ctbTurnFlat;
-    value += this.currentClass().ctbTurnFlat;
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.ctbTurnFlat) value += equip.ctbTurnFlat;
-    }
-    return value;
-};
-
-Game_Actor.prototype.ctbTurnRate = function() {
-    var value = Game_Battler.prototype.ctbTurnRate.call(this);
-    value += this.actor().ctbTurnRate;
-    value += this.currentClass().ctbTurnRate;
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.ctbTurnRate) value += equip.ctbTurnRate;
-    }
-    return value;
-};
-
-MageStudios.CTB.Game_Actor_changeClass = Game_Actor.prototype.changeClass;
-Game_Actor.prototype.changeClass = function(classId, keepExp) {
-    MageStudios.CTB.Game_Actor_changeClass.call(this, classId, keepExp);
-    this.ctbTransform();
-};
-
-MageStudios.CTB.Game_Actor_setCharacterImage =
-    Game_Actor.prototype.setCharacterImage;
-Game_Actor.prototype.setCharacterImage = function(name, index) {
-    MageStudios.CTB.Game_Actor_setCharacterIMageStudios.call(this, name, index)
-    this.ctbTransform();
-};
-
-MageStudios.CTB.Game_Actor_setFaceImage = Game_Actor.prototype.setFaceImage;
-Game_Actor.prototype.setFaceImage = function(faceName, faceIndex) {
-    MageStudios.CTB.Game_Actor_setFaceIMageStudios.call(this, faceName, faceIndex);
-    this.ctbTransform();
-};
-
-MageStudios.CTB.Game_Actor_setBattlerImage = Game_Actor.prototype.setBattlerImage;
-Game_Actor.prototype.setBattlerImage = function(battlerName) {
-    MageStudios.CTB.Game_Actor_setBattlerIMageStudios.call(this, battlerName);
-    this.ctbTransform();
-};
-
-Game_Actor.prototype.ctbTransform = function() {
-    if (!$gameParty.inBattle()) return;
-    if (!BattleManager.isCTB()) return;
-    this._ctbTransformed = true;
-};
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.ctbIcon = function() {
-    return this.enemy().ctbIcon;
-};
-
-Game_Enemy.prototype.ctbBorderColor = function() {
-    return this.enemy().ctbBorderColor;
-};
-
-Game_Enemy.prototype.ctbBackgroundColor = function() {
-    return this.enemy().ctbBackgroundColor;
-};
-
-Game_Enemy.prototype.ctbStartFlat = function() {
-    var value = Game_Battler.prototype.ctbStartFlat.call(this);
-    value += this.enemy().ctbStartFlat;
-    return value;
-};
-
-Game_Enemy.prototype.ctbStartRate = function() {
-    var value = Game_Battler.prototype.ctbStartRate.call(this);
-    value += this.enemy().ctbStartRate;
-    return value;
-};
-
-Game_Enemy.prototype.ctbTurnFlat = function() {
-    var value = Game_Battler.prototype.ctbTurnFlat.call(this);
-    value += this.enemy().ctbTurnFlat;
-    return value;
-};
-
-Game_Enemy.prototype.ctbTurnRate = function() {
-    var value = Game_Battler.prototype.ctbTurnRate.call(this);
-    value += this.enemy().ctbTurnRate;
-    return value;
-};
-
-MageStudios.CTB.Game_Enemy_transform = Game_Enemy.prototype.transform;
-Game_Enemy.prototype.transform = function(enemyId) {
-    MageStudios.CTB.Game_Enemy_transform.call(this, enemyId);
-    this._ctbTransformed = true;
-};
-
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-Game_Unit.prototype.onCTBStart = function() {
-    if (!BattleManager.isCTB()) return;
-    for (var i = 0; i < this.members().length; ++i) {
-      var member = this.members()[i];
-      if (member) member.onCTBStart();
-    }
-};
-
-Game_Unit.prototype.increaseTurnTimeBasedCTB = function() {
-    for (var i = 0; i < this.members().length; ++i) {
-      var member = this.members()[i];
-      if (!member) continue;
-      if (member.isDead()) continue;
-      if (member.isHidden()) continue;
-      if (member.canMove()) continue;
-      member.onTurnEnd();
-    }
-};
-
-//=============================================================================
-// Game_Party
-//=============================================================================
-
-MageStudios.CTB.Game_Party_performEscape = Game_Party.prototype.performEscape;
-Game_Party.prototype.performEscape = function() {
-    if (BattleManager.isCTB()) return;
-    MageStudios.CTB.Game_Party_performEscape.call(this);
-};
-
-//=============================================================================
-// Game_Troop
-//=============================================================================
-
-MageStudios.CTB.Game_Troop_increaseTurn = Game_Troop.prototype.increaseTurn;
-Game_Troop.prototype.increaseTurn = function() {
-    MageStudios.CTB.Game_Troop_increaseTurn.call(this);
-    if (BattleManager.isCTB() && BattleManager.timeBasedStates()) {
-      $gameParty.increaseTurnTimeBasedCTB();
-      this.increaseTurnTimeBasedCTB();
-    }
-};
-
-//=============================================================================
-// Sprite_Battler
-//=============================================================================
-
-MageStudios.CTB.Sprite_Battler_postSpriteInitialize =
-        Sprite_Battler.prototype.postSpriteInitialize;
-Sprite_Battler.prototype.postSpriteInitialize = function() {
-    MageStudios.CTB.Sprite_Battler_postSpriteInitialize.call(this);
-    if (BattleManager.isCTB()) this.createCTBIcon();
-};
-
-Sprite_Battler.prototype.createCTBIcon = function() {
-    if (!MageStudios.Param.CTBTurnOrder) return;
-    this._ctbIcon = new Window_CTBIcon(this);
-};
-
-MageStudios.CTB.Sprite_Battler_update = Sprite_Battler.prototype.update;
-Sprite_Battler.prototype.update = function() {
-    MageStudios.CTB.Sprite_Battler_update.call(this);
-    this.addCTBIcon();
-};
-
-Sprite_Battler.prototype.addCTBIcon = function() {
-    if (!this._ctbIcon) return;
-    if (this._addedCTBIcon) return;
-    if (!SceneManager._scene) return;
-    var scene = SceneManager._scene;
-    if (!scene._windowLayer) return;
-    this._addedCTBIcon = true;
-    this._ctbIcon.setWindowLayer(scene._windowLayer);
-    scene.addChild(this._ctbIcon);
-};
-
-//=============================================================================
-// Window_Help
-//=============================================================================
-
-MageStudios.CTB.Window_Help_setItem = Window_Help.prototype.setItem;
-Window_Help.prototype.setItem = function(item) {
-    if (this.meetCTBConditions(item)) return this.setText(item.ctbHelp);
-    MageStudios.CTB.Window_Help_setItem.call(this, item);
-};
-
-Window_Help.prototype.meetCTBConditions = function(item) {
-    if (!item) return false;
-    if (!BattleManager.isCTB()) return false;
-    return item.ctbHelp !== undefined;
-};
-
-//=============================================================================
-// Window_Selectable
-//=============================================================================
-
-MageStudios.CTB.Window_Selectable_select = Window_Selectable.prototype.select;
-Window_Selectable.prototype.select = function(index) {
-    if ($gameParty.inBattle() && BattleManager.isCTB()) {
-      BattleManager.ctbTicksToReadyClear();
-    }
-    MageStudios.CTB.Window_Selectable_select.call(this, index);
-};
-
-//=============================================================================
-// Window_CTBIcon
-//=============================================================================
-
-function Window_CTBIcon() {
-    this.initialize.apply(this, arguments);
-}
-
-Window_CTBIcon.prototype = Object.create(Window_Base.prototype);
-Window_CTBIcon.prototype.constructor = Window_CTBIcon;
-
-Window_CTBIcon.prototype.initialize = function(mainSprite) {
-    this._mainSprite = mainSprite;
-    var width = this.iconWidth() + 8 + this.standardPadding() * 2;
-    var height = this.iconHeight() + 8 + this.standardPadding() * 2;
-    this._redraw = false;
-    this._position = MageStudios.Param.CTBTurnPosX.toLowerCase();
-    this._direction = MageStudios.Param.CTBTurnDirection.toLowerCase();
-    this._lowerWindows = eval(MageStudios.Param.BECLowerWindows);
-    Window_Base.prototype.initialize.call(this, 0, 0, width, height);
-    this.opacity = 0;
-    this.contentsOpacity = 0;
-};
-
-Window_CTBIcon.prototype.iconWidth = function() {
-    return MageStudios.Param.CTBIconSize;
-};
-
-Window_CTBIcon.prototype.iconHeight = function() {
-    return MageStudios.Param.CTBIconSize;
-};
-
-Window_CTBIcon.prototype.setWindowLayer = function(windowLayer) {
-        this._windowLayer = windowLayer;
-};
-
-Window_CTBIcon.prototype.update = function() {
-    Window_Base.prototype.update.call(this);
-    this.updateBattler();
-    this.updateIconIndex();
-    this.updateRedraw();
-    this.updateDestinationX();
-    this.updateOpacity();
-    this.updatePositionX();
-    this.updatePositionY();
-};
-
-Window_CTBIcon.prototype.updateBattler = function() {
-    var changed = this._battler !== this._mainSprite._battler;
-    if (this._battler && this._battler._ctbTransformed) changed = true;
-    if (!changed) return;
-    this._battler = this._mainSprite._battler;
-    if (!this._battler) return this.removeCTBIcon();
-    this._battler._ctbTransformed = undefined;
-    this._iconIndex = this._battler.ctbIcon();
-    if (this._iconIndex > 0) {
-      this._image = ImageManager.loadSystem('IconSet');
-    } else if (this._battler.isEnemy()) {
-      if (this.isUsingSVBattler()) {
-        var name = this._battler.svBattlerName();
-        this._image = ImageManager.loadSvActor(name);
-      } else {
-        var battlerName = this._battler.battlerName();
-        var battlerHue = this._battler.battlerHue();
-        if ($gameSystem.isSideView()) {
-          this._image = ImageManager.loadSvEnemy(battlerName, battlerHue);
+    };
+
+    BattleManager.updateCTBPhase = function () {
+      this._ctbLoops = 0;
+      for (;;) {
+        if (this.breakCTBPhase()) break;
+        var chargedBattler = this.getChargedCTBBattler();
+        if (chargedBattler) return this.startCTBAction(chargedBattler);
+        var readyBattler = this.getReadyCTBBattler();
+        if (readyBattler) {
+          return this.startCTBInput(readyBattler);
         } else {
-          this._image = ImageManager.loadEnemy(battlerName, battlerHue);
+          if (this.updateCTBTicks()) break;
+          this.updateBattlerCTB();
         }
       }
-    } else if (this._battler.isActor()) {
-      var faceName = this._battler.faceName();
-      this._image = ImageManager.loadFace(faceName);
+    };
+
+    BattleManager.breakCTBPhase = function () {
+      if (this._victoryPhase) return true;
+      if (this._processingForcedAction) return true;
+      if ($gameTroop.isEventRunning()) return true;
+      if (++this._ctbLoops >= 1000000) return true;
+      return this._phase !== "ctb";
+    };
+
+    BattleManager.updateCTBTicks = function () {
+      this._ctbTicks += 1 * this.tickRate();
+      if (this._ctbTicks < this._ctbFullTurn) return false;
+      this._ctbTicks = 0;
+      $gameTroop.increaseTurn();
+      this.endTurn();
+      return true;
+    };
+
+    BattleManager.getChargedCTBBattler = function () {
+      if ($gameParty.aliveMembers() <= 0 || $gameTroop.aliveMembers() <= 0) {
+        return false;
+      }
+      var fastest = false;
+      for (var i = 0; i < this.allBattleMembers().length; ++i) {
+        var battler = this.allBattleMembers()[i];
+        if (!battler) continue;
+        if (!this.isBattlerCTBCharged(battler)) continue;
+        if (!fastest) {
+          fastest = battler;
+        } else if (battler.ctbTicksToReady() < fastest.ctbTicksToReady()) {
+          fastest = battler;
+        }
+      }
+      return fastest;
+    };
+
+    BattleManager.isBattlerCTBCharged = function (battler) {
+      if (!battler.isCTBCharging()) return false;
+      if (battler.isConfused()) {
+        battler.makeActions();
+        if (battler.isActor()) battler.makeConfusionActions();
+      }
+      if (battler.ctbChargeRate() < 1) return false;
+      if (battler.ctbTurnOrder() > 0) return false;
+      return battler.currentAction() && battler.currentAction().item();
+    };
+
+    BattleManager.getReadyCTBBattler = function () {
+      var fastest = false;
+      for (var i = 0; i < this.allBattleMembers().length; ++i) {
+        var battler = this.allBattleMembers()[i];
+        if (!battler) continue;
+        if (!this.isBattlerCTBReady(battler)) continue;
+        if (!fastest) {
+          fastest = battler;
+        } else if (battler.ctbTicksToReady() < fastest.ctbTicksToReady()) {
+          fastest = battler;
+        }
+      }
+      return fastest;
+    };
+
+    BattleManager.isBattlerCTBReady = function (battler) {
+      if (battler.ctbRate() < 1) return false;
+      if (battler.isCTBCharging()) return false;
+      if (battler.ctbTurnOrder() > 0) return false;
+      if (battler.currentAction() && battler.currentAction().item()) {
+        this._subject = battler;
+        battler.makeActions();
+        battler.setupCTBCharge();
+        return true;
+      }
+      return true;
+    };
+
+    BattleManager.updateBattlerCTB = function () {
+      $gameParty.updateTick();
+      $gameTroop.updateTick();
+    };
+
+    BattleManager.setCTBPhase = function () {
+      this._phase = "ctb";
+    };
+
+    MageStudios.CTB.BattleManager_startInput = BattleManager.startInput;
+    BattleManager.startInput = function () {
+      if (this.isCTB()) {
+        this.setCTBPhase();
+      } else {
+        MageStudios.CTB.BattleManager_startInput.call(this);
+      }
+    };
+
+    MageStudios.CTB.BattleManager_selectNextCommand =
+      BattleManager.selectNextCommand;
+    BattleManager.selectNextCommand = function () {
+      if (this.isCTB()) {
+        if (!this.actor()) return this.setCTBPhase();
+        this.resetNonPartyActorCTB();
+        this._subject = this.actor();
+        this.actor().setupCTBCharge();
+        if (this.actor().isCTBCharging()) {
+          this.actor().spriteStepBack();
+          this.actor().requestMotionRefresh();
+          this._actorIndex = undefined;
+          this.setCTBPhase();
+        } else if (this.isValidCTBActorAction()) {
+          this.startCTBAction(this.actor());
+        } else {
+          if (this.actor()) this.ctbSkipTurn();
+          $gameParty.requestMotionRefresh();
+          this.setCTBPhase();
+        }
+      } else {
+        MageStudios.CTB.BattleManager_selectNextCommand.call(this);
+      }
+    };
+
+    BattleManager.ctbSkipTurn = function () {
+      this.actor().clearActions();
+      this.actor().setActionState("undecided");
+      this.actor().requestMotionRefresh();
+      if (!this._bypassCtbEndTurn) this.actor().endTurnAllCTB();
+      this.actor().spriteStepBack();
+    };
+
+    BattleManager.isValidCTBActorAction = function () {
+      if (!this.actor()) return false;
+      if (!this.actor().currentAction()) return false;
+      return this.actor().currentAction().item();
+    };
+
+    BattleManager.resetNonPartyActorCTB = function () {
+      for (var i = 0; i < $gameParty.allMembers().length; ++i) {
+        var actor = $gameParty.allMembers()[i];
+        if (!actor) continue;
+        if ($gameParty.battleMembers().contains(actor)) continue;
+        actor.resetAllCTB();
+      }
+    };
+
+    MageStudios.CTB.BattleManager_selectPreviousCommand =
+      BattleManager.selectPreviousCommand;
+    BattleManager.selectPreviousCommand = function () {
+      if (this.isCTB()) {
+        if (this.actor()) this.actor().spriteStepBack();
+        var actorIndex = this._actorIndex;
+        var scene = SceneManager._scene;
+        this._bypassCtbEndTurn = true;
+        scene.startPartyCommandSelection();
+        this._bypassCtbEndTurn = undefined;
+        this._actorIndex = actorIndex;
+      } else {
+        MageStudios.CTB.BattleManager_selectPreviousCommand.call(this);
+      }
+    };
+
+    MageStudios.CTB.BattleManager_startTurn = BattleManager.startTurn;
+    BattleManager.startTurn = function () {
+      if (this.isCTB() && !this.isTurnBased()) return;
+      MageStudios.CTB.BattleManager_startTurn.call(this);
+    };
+
+    MageStudios.CTB.BattleManager_updateTurnEnd = BattleManager.updateTurnEnd;
+    BattleManager.updateTurnEnd = function () {
+      if (this.isCTB()) {
+        this.setCTBPhase();
+      } else {
+        MageStudios.CTB.BattleManager_updateTurnEnd.call(this);
+      }
+    };
+
+    BattleManager.startCTBInput = function (battler) {
+      if (battler.isDead()) return;
+      battler.onTurnStart();
+      battler.makeActions();
+      if (battler.isEnemy()) {
+        battler.setupCTBCharge();
+      } else if (battler.canInput()) {
+        this._actorIndex = battler.index();
+        this.playCTBReadySound();
+        battler.setActionState("inputting");
+        battler.spriteStepForward();
+        this._phase = "input";
+        return;
+      } else if (battler.isConfused()) {
+        battler.makeConfusionActions();
+        battler.setupCTBCharge();
+      } else {
+        battler.makeAutoBattleActions();
+        battler.setupCTBCharge();
+      }
+      if (battler.isCTBCharging()) {
+        this.setCTBPhase();
+      } else {
+        this.startCTBAction(battler);
+      }
+    };
+
+    BattleManager.playCTBReadySound = function () {
+      AudioManager.playSe(this._ctbReadySound);
+    };
+
+    BattleManager.startCTBAction = function (battler) {
+      this._subject = battler;
+      var action = this._subject.currentAction();
+      if (action && action.isValid()) {
+        this.startAction();
+      } else {
+        this.endAction();
+      }
+    };
+
+    MageStudios.CTB.BattleManager_processForcedAction =
+      BattleManager.processForcedAction;
+    BattleManager.processForcedAction = function () {
+      var forced = false;
+      if (this._actionForcedBattler && this.isCTB()) {
+        var action = this._actionForcedBattler.currentAction();
+        forced = true;
+      }
+      MageStudios.CTB.BattleManager_processForcedAction.call(this);
+      if (forced) this._subject.setAction(0, action);
+    };
+
+    MageStudios.CTB.BattleManager_endAction = BattleManager.endAction;
+    BattleManager.endAction = function () {
+      if (this.isCTB()) {
+        this.endCTBAction();
+      } else {
+        MageStudios.CTB.BattleManager_endAction.call(this);
+      }
+    };
+
+    BattleManager.endCTBAction = function () {
+      if (Imported.MSEP_BattleEngineCore) {
+        if (this._processingForcedAction) this._phase = this._preForcePhase;
+        this._processingForcedAction = false;
+      }
+      if (this._subject) this._subject.onAllActionsEnd();
+      if (this.updateEventMain()) return;
+      this._subject.endTurnAllCTB();
+      if (this.loadPreForceActionSettings()) return;
+      var chargedBattler = this.getChargedCTBBattler();
+      if (chargedBattler) {
+        this.startCTBAction(chargedBattler);
+      } else {
+        this.setCTBPhase();
+      }
+    };
+
+    MageStudios.CTB.BattleManager_invokeCounterAttack =
+      BattleManager.invokeCounterAttack;
+    BattleManager.invokeCounterAttack = function (subject, target) {
+      if (this.isCTB()) this._counterAttacking = true;
+      MageStudios.CTB.BattleManager_invokeCounterAttack.call(
+        this,
+        subject,
+        target
+      );
+      if (this.isCTB()) this._counterAttacking = false;
+    };
+
+    BattleManager.isCounterAttacking = function () {
+      return this._counterAttacking;
+    };
+
+    MageStudios.CTB.BattleManager_processEscape = BattleManager.processEscape;
+    BattleManager.processEscape = function () {
+      if (this.isCTB()) {
+        return this.processEscapeCTB();
+      } else {
+        return MageStudios.CTB.BattleManager_processEscape.call(this);
+      }
+    };
+
+    BattleManager.processEscapeCTB = function () {
+      $gameParty.performEscape();
+      SoundManager.playEscape();
+      var success = this._preemptive ? true : Math.random() < this._escapeRatio;
+      if (success) {
+        $gameParty.removeBattleStates();
+        $gameParty.performEscapeSuccess();
+        this.displayEscapeSuccessMessage();
+        this._escaped = true;
+        this.processAbort();
+      } else {
+        this.actor().spriteStepBack();
+        this.actor().clearActions();
+        this.displayEscapeFailureMessage();
+        this._escapeRatio += this._escapeFailBoost;
+        this.startTurn();
+        this.processFailEscapeCTB();
+      }
+      return success;
+    };
+
+    BattleManager.processFailEscapeCTB = function () {
+      var actor = $gameParty.members()[this._actorIndex];
+      if (!actor) return;
+      actor.resetAllCTB();
+    };
+
+    BattleManager.redrawCTBIcons = function () {
+      var max = $gameTroop.members().length;
+      for (var i = 0; i < max; ++i) {
+        var member = $gameTroop.members()[i];
+        if (!member) continue;
+        if (!member.battler()._ctbIcon) continue;
+        member.battler()._ctbIcon.forceRedraw();
+      }
+    };
+
+    MageStudios.CTB.BattleManager_processActionSequence =
+      BattleManager.processActionSequence;
+    BattleManager.processActionSequence = function (actionName, actionArgs) {
+      if (this.isCTB()) {
+        if (actionName === "CTB SPEED") {
+          this.actionCTBCharge(actionArgs);
+          return this.actionCTBSpeed(actionArgs);
+        }
+
+        if (actionName === "CTB ORDER") {
+          return this.actionCTBOrder(actionArgs);
+        }
+      }
+      return MageStudios.CTB.BattleManager_processActionSequence.call(
+        this,
+        actionName,
+        actionArgs
+      );
+    };
+
+    BattleManager.actionCTBCharge = function (actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return true;
+      var cmd = actionArgs[1];
+      if (cmd.match(/([\+\-]\d+)([%％])/i)) {
+        var rate = parseFloat(RegExp.$1 * 0.01);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (!target.isCTBCharging()) continue;
+          var max = target.ctbChargeDestination();
+          var value = rate * max + target.ctbCharge();
+          target.setCTBCharge(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/([\+\-]\d+)/i)) {
+        var plus = parseInt(RegExp.$1);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (!target.isCTBCharging()) continue;
+          var value = plus + target.ctbCharge();
+          target.setCTBCharge(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/(\d+)([%％])/i)) {
+        var rate = parseFloat(RegExp.$1 * 0.01);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (!target.isCTBCharging()) continue;
+          var max = target.ctbChargeDestination();
+          var value = rate * max;
+          target.setCTBCharge(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/(\d+)/i)) {
+        var value = parseInt(RegExp.$1);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (!target.isCTBCharging()) continue;
+          target.setCTBCharge(value);
+          target.refresh();
+        }
+      }
+      return true;
+    };
+
+    BattleManager.actionCTBSpeed = function (actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return true;
+      var cmd = actionArgs[1];
+      if (cmd.match(/([\+\-]\d+)([%％])/i)) {
+        var rate = parseFloat(RegExp.$1 * 0.01);
+        var max = this.ctbTarget();
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (target.isCTBCharging()) continue;
+          var value = rate * max + target.ctbSpeed();
+          target.setCTBSpeed(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/([\+\-]\d+)/i)) {
+        var plus = parseInt(RegExp.$1);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (target.isCTBCharging()) continue;
+          var value = plus + target.ctbSpeed();
+          target.setCTBSpeed(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/(\d+)([%％])/i)) {
+        var rate = parseFloat(RegExp.$1 * 0.01);
+        var max = this.ctbTarget();
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (target.isCTBCharging()) continue;
+          var value = rate * max;
+          target.setCTBSpeed(value);
+          target.refresh();
+        }
+      } else if (cmd.match(/(\d+)/i)) {
+        var value = parseInt(RegExp.$1);
+        for (var i = 0; i < targets.length; ++i) {
+          var target = targets[i];
+          if (!target) continue;
+          if (target === this._subject) continue;
+          if (target.isCTBCharging()) continue;
+          target.setCTBSpeed(value);
+          target.refresh();
+        }
+      }
+      return true;
+    };
+
+    BattleManager.actionCTBOrder = function (actionArgs) {
+      var targets = this.makeActionTargets(actionArgs[0]);
+      if (targets.length < 1) return true;
+      var value = parseInt(actionArgs[1]);
+      for (var i = 0; i < targets.length; ++i) {
+        var target = targets[i];
+        if (!target) continue;
+        target.ctbAlterTurnOrder(value);
+      }
+      return true;
+    };
+
+    MageStudios.CTB.Game_Action_applyItemUserEffect =
+      Game_Action.prototype.applyItemUserEffect;
+    Game_Action.prototype.applyItemUserEffect = function (target) {
+      MageStudios.CTB.Game_Action_applyItemUserEffect.call(this, target);
+      if (BattleManager.isCTB() && $gameParty.inBattle()) {
+        this.applyItemCTBEffect(target);
+      }
+    };
+
+    Game_Action.prototype.applyItemCTBEffect = function (target) {
+      if (!target) return;
+      this.applyItemCTBOrderEffect(target);
+      this.applyItemCTBOrderEvalEffect(target);
+      this.applyItemCTBSetEffects(target);
+      this.applyItemCTBAddEffects(target);
+      this.applyItemCTBEvalEffect(target);
+      if (BattleManager.isCounterAttacking()) return;
+      this.rebalanceCTBSpeed(target);
+    };
+
+    Game_Action.prototype.applyItemCTBOrderEffect = function (target) {
+      var item = this.item();
+      if (!item) return;
+      if (item.ctbOrderModifier === 0) return;
+      target.ctbAlterTurnOrder(item.ctbOrderModifier);
+    };
+
+    Game_Action.prototype.applyItemCTBSetEffects = function (target) {
+      var item = this.item();
+      if (!item) return;
+      var value = undefined;
+      if (target.isCTBCharging()) {
+        var max = target.ctbChargeDestination();
+        if (item.setCTBGaugeFlat !== undefined) {
+          value = item.setCTBGaugeFlat;
+        } else if (item.setCTBGaugeRate !== undefined) {
+          value = item.setCTBGaugeRate * max;
+        }
+        if (value !== undefined) target.setCTBCharge(value);
+      } else {
+        var max = BattleManager.ctbTarget();
+        if (item.setCTBGaugeFlat !== undefined) {
+          value = item.setCTBGaugeFlat;
+        } else if (item.setCTBGaugeRate !== undefined) {
+          value = item.setCTBGaugeRate * max;
+        }
+        if (value !== undefined) target.setCTBSpeed(value);
+      }
+    };
+
+    Game_Action.prototype.applyItemCTBAddEffects = function (target) {
+      var item = this.item();
+      if (!item) return;
+      if (target.isCTBCharging()) {
+        var value = target.ctbCharge();
+        var max = target.ctbChargeDestination();
+        value += item.addCTBGaugeRate * max;
+        value += item.addCTBGaugeFlat;
+        target.setCTBCharge(value);
+      } else {
+        var value = target.ctbSpeed();
+        var max = BattleManager.ctbTarget();
+        value += item.addCTBGaugeRate * max;
+        value += item.addCTBGaugeFlat;
+        target.setCTBSpeed(value);
+      }
+    };
+
+    Game_Action.prototype.applyItemCTBEvalEffect = function (target) {
+      if (this.item().ctbEval === "") return;
+      var a = this.subject();
+      var user = this.subject();
+      var b = target;
+      var item = this.item();
+      var skill = this.item();
+      var s = $gameSwitches._data;
+      var v = $gameVariables._data;
+      var speed = target.ctbSpeed();
+      var charge = target.ctbCharge();
+      if (target.isCTBCharging()) {
+        var max = target.ctbChargeDestination();
+      } else {
+        var max = BattleManager.ctbTarget();
+      }
+      var code = item.ctbEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "CTB EVAL ERROR");
+      }
+      target.setCTBSpeed(speed);
+      target.setCTBCharge(charge);
+    };
+
+    Game_Action.prototype.applyItemCTBOrderEvalEffect = function (target) {
+      if (this.item().ctbOrderEval === "") return;
+      var a = this.subject();
+      var user = this.subject();
+      var b = target;
+      var item = this.item();
+      var skill = this.item();
+      var s = $gameSwitches._data;
+      var v = $gameVariables._data;
+      var order = 0;
+      var code = item.ctbOrderEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "CTB ORDER EVAL ERROR");
+      }
+      target.ctbAlterTurnOrder(order);
+    };
+
+    Game_Action.prototype.rebalanceCTBSpeed = function (target) {
+      var speed = this.subject().ctbSpeed();
+      var offset = 00000000001;
+      speed = Math.max(speed + offset, target.ctbSpeed() + target.ctbCharge());
+      this.subject().setCTBSpeed(speed);
+    };
+
+    MageStudios.CTB.Game_BattlerBase_refresh =
+      Game_BattlerBase.prototype.refresh;
+    Game_BattlerBase.prototype.refresh = function () {
+      if (BattleManager.isCTB() && $gameParty.inBattle()) {
+        BattleManager.ctbTicksToReadyClear();
+        this._ctbTickValue = undefined;
+        this.clearCTBCommandWindowCache();
+      }
+      MageStudios.CTB.Game_BattlerBase_refresh.call(this);
+    };
+
+    Game_BattlerBase.prototype.clearCTBCommandWindowCache = function () {
+      this._commandWindowIndex = undefined;
+      this._commandWindowItem = undefined;
+      this._skillWindowIndex = undefined;
+      this._skillWindowItem = undefined;
+      this._itemWindowIndex = undefined;
+      this._itemWindowItem = undefined;
+    };
+
+    MageStudios.CTB.Game_BattlerBase_die = Game_BattlerBase.prototype.die;
+    Game_BattlerBase.prototype.die = function () {
+      MageStudios.CTB.Game_BattlerBase_die.call(this);
+      if (BattleManager.isCTB() && $gameParty.inBattle()) this.resetAllCTB();
+    };
+
+    MageStudios.CTB.Game_BattlerBase_appear = Game_BattlerBase.prototype.appear;
+    Game_BattlerBase.prototype.appear = function () {
+      MageStudios.CTB.Game_BattlerBase_appear.call(this);
+      if (BattleManager.isCTB() && this.isEnemy()) {
+        BattleManager.redrawCTBIcons();
+      }
+    };
+
+    Game_Battler.prototype.ctbIcon = function () {
+      return 0;
+    };
+
+    Game_Battler.prototype.ctbBorderColor = function () {
+      return 0;
+    };
+
+    Game_Battler.prototype.ctbBackgroundColor = function () {
+      return 0;
+    };
+
+    Game_Battler.prototype.onCTBStart = function () {
+      this._ctbSpeed = eval(MageStudios.Param.CTBInitSpeed);
+      this._ctbSpeed += BattleManager.ctbTarget() * this.ctbStartRate();
+      this._ctbSpeed += this.ctbStartFlat();
+      this._ctbCharge = 0;
+      this._ctbCharging = false;
+      this._ctbChargeMod = 0;
+      this.applyPreemptiveBonusCTB();
+      this.applySurpriseBonusCTB();
+      this.refresh();
+    };
+
+    Game_Battler.prototype.applyPreemptiveBonusCTB = function () {
+      if (!BattleManager._preemptive) return;
+      if (!this.isActor()) return;
+      var rate = MageStudios.Param.CTBPreEmptive;
+      this._ctbSpeed += rate * BattleManager.ctbTarget();
+    };
+
+    Game_Battler.prototype.applySurpriseBonusCTB = function () {
+      if (!BattleManager._surprise) return;
+      if (!this.isEnemy()) return;
+      var rate = MageStudios.Param.CTBSurprise;
+      this._ctbSpeed += rate * BattleManager.ctbTarget();
+    };
+
+    MageStudios.CTB.Game_Battler_onBattleEnd =
+      Game_Battler.prototype.onBattleEnd;
+    Game_Battler.prototype.onBattleEnd = function () {
+      MageStudios.CTB.Game_Battler_onBattleEnd.call(this);
+      this._ctbSpeed = 0;
+      this._ctbCharge = 0;
+      this._ctbCharging = false;
+      this._ctbChargeMod = 0;
+      this.clearCTBCommandWindowCache();
+    };
+
+    Game_Battler.prototype.ctbTicksToReady = function () {
+      if (this._ctbTicksToReady !== undefined) return this._ctbTicksToReady;
+      var goal = BattleManager.ctbTarget();
+      if (this.isCTBCharging()) goal += this.ctbChargeDestination();
+      goal -= this.ctbSpeed();
+      goal -= this.isCTBCharging() ? this.ctbCharge() : 0;
+      var rate = this.ctbSpeedTick();
+      if (this.ctbTicksToReadyActionCheck()) {
+        var item = this.ctbTicksToReadyActionCheck();
+        if (item.speed < 0) goal -= item.speed;
+      }
+      this._ctbTicksToReady = goal / Math.max(1, rate);
+      return this._ctbTicksToReady;
+    };
+
+    Game_Battler.prototype.ctbTicksToReadyActionCheck = function () {
+      if (!BattleManager.isInputting()) return false;
+      if (BattleManager.actor() !== this) return false;
+      var scene = SceneManager._scene;
+      if (scene._skillWindow.active) {
+        if (this._skillWindowIndex === scene._skillWindow.index()) {
+          return this._skillWindowItem;
+        }
+        this._skillWindowIndex = scene._skillWindow.index();
+        this._skillWindowItem = scene._skillWindow.item();
+        return this._skillWindowItem;
+      } else if (scene._itemWindow.active) {
+        if (this._itemWindowIndex === scene._itemWindow.index()) {
+          return this._itemWindowItem;
+        }
+        this._itemWindowIndex = scene._itemWindow.index();
+        this._itemWindowItem = scene._itemWindow.item();
+        return this._itemWindowItem;
+      } else if (scene._actorCommandWindow.active) {
+        if (this._commandWindowIndex === scene._actorCommandWindow.index()) {
+          return this._commandWindowItem;
+        }
+        var win = scene._actorCommandWindow;
+        var symbol = win.currentSymbol();
+        this._commandWindowIndex = win.index();
+        if (symbol === "attack") {
+          this._commandWindowItem = $dataSkills[this.attackSkillId()];
+          return this._commandWindowItem;
+        } else if (symbol === "guard") {
+          this._commandWindowItem = $dataSkills[this.guardSkillId()];
+          return this._commandWindowItem;
+        } else {
+          this._commandWindowItem = undefined;
+          return false;
+        }
+      }
+      if (!this.currentAction()) return false;
+      return this.currentAction().item();
+    };
+
+    Game_Battler.prototype.ctbSpeed = function () {
+      if (this.isDead()) return -1 * BattleManager.ctbTarget();
+      if (this.isHidden()) return -1 * BattleManager.ctbTarget();
+      if (this._ctbSpeed === undefined) this.onCTBStart();
+      return this._ctbSpeed;
+    };
+
+    Game_Battler.prototype.ctbRate = function () {
+      if (this._ctbSpeed === undefined) this.onCTBStart();
+      var rate = this._ctbSpeed / BattleManager.ctbTarget();
+      return rate.clamp(0, 1);
+    };
+
+    Game_Battler.prototype.isCTBCharging = function () {
+      return this._ctbCharging;
+    };
+
+    Game_Battler.prototype.setCTBCharging = function (value) {
+      this._ctbCharging = value;
+    };
+
+    Game_Battler.prototype.ctbCharge = function () {
+      if (this._ctbCharge === undefined) this.onCTBStart();
+      return this._ctbCharge;
+    };
+
+    Game_Battler.prototype.ctbChargeDestination = function () {
+      var denom = Math.max(1, -1 * this._ctbChargeMod);
+      return denom;
+    };
+
+    Game_Battler.prototype.ctbChargeRate = function () {
+      if (this._ctbCharge === undefined) this.onCTBStart();
+      if (!this.isCTBCharging()) return 0;
+      var rate = this._ctbCharge / this.ctbChargeDestination();
+      return rate.clamp(0, 1);
+    };
+
+    Game_Battler.prototype.setCTBSpeed = function (value) {
+      this._ctbSpeed = value;
+    };
+
+    Game_Battler.prototype.setCTBCharge = function (value) {
+      if (this.isCTBCharging()) this._ctbCharge = value;
+    };
+
+    Game_Battler.prototype.setupCTBCharge = function () {
+      if (BattleManager._subject !== this) return;
+      if (BattleManager._bypassCtbEndTurn) return;
+      if (!this.currentAction()) this.makeActions();
+      if (this.currentAction()) {
+        var item = this.currentAction().item();
+        if (item && item.speed < 0) {
+          this.setCTBCharging(true);
+          this._ctbChargeMod = item.speed;
+          this.setCTBCharge(0);
+        } else if (!item) {
+          this._ctbChargeMod = 0;
+        } else {
+          this._ctbChargeMod = 0;
+        }
+      } else {
+        this._ctbChargeMod = 0;
+      }
+      this.setActionState("waiting");
+    };
+
+    MageStudios.CTB.Game_Battler_updateTick = Game_Battler.prototype.updateTick;
+    Game_Battler.prototype.updateTick = function () {
+      MageStudios.CTB.Game_Battler_updateTick.call(this);
+      if (BattleManager.isCTB()) this.updateCTB();
+    };
+
+    Game_Battler.prototype.updateCTB = function () {
+      if (this.isDead()) return this.resetAllCTB();
+      if (!this.canMove()) {
+        this.updateCTBStates();
+        return;
+      }
+      if (this.isCTBCharging()) {
+        if (!this.currentAction()) this.resetAllCTB();
+        if (this.currentAction() && this.currentAction().item() === null) {
+          this.resetAllCTB();
+        }
+      }
+      if (this.isCTBCharging()) {
+        var value = this.ctbCharge() + this.ctbSpeedTick();
+        this.setCTBCharge(value);
+      } else if (this.ctbRate() < 1) {
+        var value = this.ctbSpeed() + this.ctbSpeedTick();
+        this.setCTBSpeed(value);
+      }
+    };
+
+    Game_Battler.prototype.updateCTBStates = function () {
+      if (BattleManager.timeBasedBuffs()) return;
+      for (var i = 0; i < this._states.length; ++i) {
+        var stateId = this._states[i];
+        var state = $dataStates[stateId];
+        if (!state) continue;
+        if (!this._stateTurns[stateId]) continue;
+        if (state.restriction >= 4 && state.autoRemovalTiming !== 0) {
+          var value = BattleManager.tickRate() / MageStudios.Param.BECTurnTime;
+          this._stateTurns[stateId] -= value;
+          if (this._stateTurns[stateId] <= 0) this.removeState(stateId);
+        }
+      }
+    };
+
+    Game_Battler.prototype.resetAllCTB = function () {
+      this._ctbCharge = 0;
+      this._ctbChargeMod = 0;
+      this._ctbCharging = false;
+      this._ctbSpeed = 0;
+      this.clearActions();
+    };
+
+    Game_Battler.prototype.endTurnAllCTB = function () {
+      this._ctbCharge = 0;
+      this._ctbChargeMod = 0;
+      this._ctbCharging = false;
+      if (this.checkCTBEndInstantCast()) return;
+      this.setEndActionCTBSpeed();
+      this.clearActions();
+      this.setActionState("undecided");
+      if (this.battler()) this.battler().refreshMotion();
+      if (BattleManager.isTickBased()) this.onTurnEnd();
+    };
+
+    Game_Battler.prototype.checkCTBEndInstantCast = function () {
+      if (!Imported.MSEP_InstantCast) return false;
+      var action = this.currentAction();
+      if (!action) return false;
+      var item = action.item();
+      if (!item) return false;
+      if (!this.isInstantCast(item)) return false;
+      var length = BattleManager.allBattleMembers().length;
+      for (var i = 0; i < length; ++i) {
+        var member = BattleManager.allBattleMembers()[i];
+        if (!member) continue;
+        var max = member.ctbSpeed() + member.ctbCharge();
+        this._ctbSpeed = Math.max(this._ctbSpeed, max);
+      }
+      this._ctbSpeed = Math.max(this._ctbSpeed, BattleManager.ctbTarget());
+      this._ctbSpeed += 0.00000000001;
+      return true;
+    };
+
+    Game_Battler.prototype.ctbSpeedRate = function () {
+      if (!this.canMove()) return 0;
+      var base = this.paramBase(6) + this.paramPlus(6);
+      if (base >= this.paramMax(6) && this.agi >= this.paramMax(6)) return 1;
+      var rate = this.agi / base;
+      return rate;
+    };
+
+    Game_Battler.prototype.ctbSpeedTick = function () {
+      var value = this.ctbTickValue();
+      if (BattleManager.ctbRubberband()) {
+        var min = BattleManager.ctbMinimumSpeed();
+        var max = BattleManager.ctbMaximumSpeed();
+        value = value.clamp(min, max);
+        value += this.minorCTBOffset();
+      }
+      return value * BattleManager.tickRate();
+    };
+
+    Game_Battler.prototype.ctbTickValue = function () {
+      if (this._ctbTickValue !== undefined) return this._ctbTickValue;
+      var a = this;
+      var user = this;
+      var subject = this;
+      this._ctbTickValue = eval(MageStudios.Param.CTBPerTick);
+      return this._ctbTickValue;
+    };
+
+    Game_Battler.prototype.setEndActionCTBSpeed = function () {
+      this._ctbSpeed = 0;
+      var action = this.currentAction();
+      if (!action) return;
+      var item = action.item();
+      if (item) {
+        if (item.afterCTBFlat !== undefined)
+          this.setCTBSpeed(item.afterCTBFlat);
+        if (item.afterCTBRate !== undefined) {
+          this.setCTBSpeed(item.afterCTBRate * BattleManager.ctbTarget());
+        }
+        if (item.speed > 0) this._ctbSpeed += item.speed;
+      }
+      this._ctbSpeed += BattleManager.ctbTarget() * this.ctbTurnRate();
+      this._ctbSpeed += this.ctbTurnFlat();
+      if (item) this.afterCTBEval(item);
+    };
+
+    Game_Battler.prototype.afterCTBEval = function (item) {
+      if (!item) return;
+      var a = this;
+      var user = this;
+      var skill = item;
+      var s = $gameSwitches._data;
+      var v = $gameVariables._data;
+      var speed = this._ctbSpeed;
+      var max = BattleManager.ctbTarget();
+      var code = item.ctbAfterEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, code, "AFTER CTB ERROR");
+      }
+      this.setCTBSpeed(speed);
+    };
+
+    Game_Battler.prototype.ctbStartFlat = function () {
+      var value = 0;
+      for (var i = 0; i < this.states().length; ++i) {
+        var state = this.states()[i];
+        if (state) value += state.ctbStartFlat;
+      }
+      return value;
+    };
+
+    Game_Battler.prototype.ctbStartRate = function () {
+      var value = 0;
+      for (var i = 0; i < this.states().length; ++i) {
+        var state = this.states()[i];
+        if (state) value += state.ctbStartRate;
+      }
+      return value;
+    };
+
+    Game_Battler.prototype.ctbTurnFlat = function () {
+      var value = 0;
+      for (var i = 0; i < this.states().length; ++i) {
+        var state = this.states()[i];
+        if (state) value += state.ctbTurnFlat;
+      }
+      return value;
+    };
+
+    Game_Battler.prototype.ctbTurnRate = function () {
+      var value = 0;
+      for (var i = 0; i < this.states().length; ++i) {
+        var state = this.states()[i];
+        if (state) value += state.ctbTurnRate;
+      }
+      return value;
+    };
+
+    MageStudios.CTB.Game_Battler_removeState =
+      Game_Battler.prototype.removeState;
+    Game_Battler.prototype.removeState = function (stateId) {
+      if (BattleManager.isCTB()) {
+        var confuseCondition = this.isConfused();
+      }
+      MageStudios.CTB.Game_Battler_removeState.call(this, stateId);
+      if (BattleManager.isCTB()) {
+        if (confuseCondition !== this.isConfused()) this.resetAllCTB();
+      }
+    };
+
+    Game_Battler.prototype.minorCTBOffset = function () {
+      var value = 0.00000000001;
+      if (this.isActor()) value *= $gameParty.members().length - this.index();
+      if (this.isEnemy()) value *= -1 * this.index();
+      return value;
+    };
+
+    Game_Battler.prototype.ctbTurnOrder = function () {
+      var index = BattleManager.ctbTurnOrder().indexOf(this);
+      return index;
+    };
+
+    Game_Battler.prototype.ctbAlterTurnOrder = function (value) {
+      var sign = value > 0 ? 1 : -1;
+      var max = BattleManager.ctbTurnOrder().length - 1;
+      var index = this.ctbTurnOrder();
+      index += value;
+      index = index.clamp(0, max);
+      var battler = BattleManager.ctbTurnOrder()[index];
+      if (!battler) battler = this;
+      var ticksTarget = battler.ctbTicksToReady();
+      var ticksCurrent = this.ctbTicksToReady();
+      var ticksChange = ticksTarget - ticksCurrent;
+      ticksChange += sign * Math.abs(this.minorCTBOffset());
+      this._ctbSpeed -= this.ctbSpeedTick() * ticksChange;
+    };
+
+    Game_Actor.prototype.ctbIcon = function () {
+      if (this.actor().ctbClassIcon) {
+        if (this.actor().ctbClassIcon[this._classId]) {
+          return this.actor().ctbClassIcon[this._classId];
+        }
+      }
+      return this.actor().ctbIcon;
+    };
+
+    Game_Actor.prototype.ctbBorderColor = function () {
+      return this.actor().ctbBorderColor;
+    };
+
+    Game_Actor.prototype.ctbBackgroundColor = function () {
+      return this.actor().ctbBackgroundColor;
+    };
+
+    Game_Actor.prototype.ctbStartFlat = function () {
+      var value = Game_Battler.prototype.ctbStartFlat.call(this);
+      value += this.actor().ctbStartFlat;
+      value += this.currentClass().ctbStartFlat;
+      for (var i = 0; i < this.equips().length; ++i) {
+        var equip = this.equips()[i];
+        if (equip && equip.ctbStartFlat) value += equip.ctbStartFlat;
+      }
+      return value;
+    };
+
+    Game_Actor.prototype.ctbStartRate = function () {
+      var value = Game_Battler.prototype.ctbStartRate.call(this);
+      value += this.actor().ctbStartRate;
+      value += this.currentClass().ctbStartRate;
+      for (var i = 0; i < this.equips().length; ++i) {
+        var equip = this.equips()[i];
+        if (equip && equip.ctbStartRate) value += equip.ctbStartRate;
+      }
+      return value;
+    };
+
+    Game_Actor.prototype.ctbTurnFlat = function () {
+      var value = Game_Battler.prototype.ctbTurnFlat.call(this);
+      value += this.actor().ctbTurnFlat;
+      value += this.currentClass().ctbTurnFlat;
+      for (var i = 0; i < this.equips().length; ++i) {
+        var equip = this.equips()[i];
+        if (equip && equip.ctbTurnFlat) value += equip.ctbTurnFlat;
+      }
+      return value;
+    };
+
+    Game_Actor.prototype.ctbTurnRate = function () {
+      var value = Game_Battler.prototype.ctbTurnRate.call(this);
+      value += this.actor().ctbTurnRate;
+      value += this.currentClass().ctbTurnRate;
+      for (var i = 0; i < this.equips().length; ++i) {
+        var equip = this.equips()[i];
+        if (equip && equip.ctbTurnRate) value += equip.ctbTurnRate;
+      }
+      return value;
+    };
+
+    MageStudios.CTB.Game_Actor_changeClass = Game_Actor.prototype.changeClass;
+    Game_Actor.prototype.changeClass = function (classId, keepExp) {
+      MageStudios.CTB.Game_Actor_changeClass.call(this, classId, keepExp);
+      this.ctbTransform();
+    };
+
+    MageStudios.CTB.Game_Actor_setCharacterImage =
+      Game_Actor.prototype.setCharacterImage;
+    Game_Actor.prototype.setCharacterImage = function (name, index) {
+      MageStudios.CTB.Game_Actor_setCharacterIMageStudios.call(
+        this,
+        name,
+        index
+      );
+      this.ctbTransform();
+    };
+
+    MageStudios.CTB.Game_Actor_setFaceImage = Game_Actor.prototype.setFaceImage;
+    Game_Actor.prototype.setFaceImage = function (faceName, faceIndex) {
+      MageStudios.CTB.Game_Actor_setFaceIMageStudios.call(
+        this,
+        faceName,
+        faceIndex
+      );
+      this.ctbTransform();
+    };
+
+    MageStudios.CTB.Game_Actor_setBattlerImage =
+      Game_Actor.prototype.setBattlerImage;
+    Game_Actor.prototype.setBattlerImage = function (battlerName) {
+      MageStudios.CTB.Game_Actor_setBattlerIMageStudios.call(this, battlerName);
+      this.ctbTransform();
+    };
+
+    Game_Actor.prototype.ctbTransform = function () {
+      if (!$gameParty.inBattle()) return;
+      if (!BattleManager.isCTB()) return;
+      this._ctbTransformed = true;
+    };
+
+    Game_Enemy.prototype.ctbIcon = function () {
+      return this.enemy().ctbIcon;
+    };
+
+    Game_Enemy.prototype.ctbBorderColor = function () {
+      return this.enemy().ctbBorderColor;
+    };
+
+    Game_Enemy.prototype.ctbBackgroundColor = function () {
+      return this.enemy().ctbBackgroundColor;
+    };
+
+    Game_Enemy.prototype.ctbStartFlat = function () {
+      var value = Game_Battler.prototype.ctbStartFlat.call(this);
+      value += this.enemy().ctbStartFlat;
+      return value;
+    };
+
+    Game_Enemy.prototype.ctbStartRate = function () {
+      var value = Game_Battler.prototype.ctbStartRate.call(this);
+      value += this.enemy().ctbStartRate;
+      return value;
+    };
+
+    Game_Enemy.prototype.ctbTurnFlat = function () {
+      var value = Game_Battler.prototype.ctbTurnFlat.call(this);
+      value += this.enemy().ctbTurnFlat;
+      return value;
+    };
+
+    Game_Enemy.prototype.ctbTurnRate = function () {
+      var value = Game_Battler.prototype.ctbTurnRate.call(this);
+      value += this.enemy().ctbTurnRate;
+      return value;
+    };
+
+    MageStudios.CTB.Game_Enemy_transform = Game_Enemy.prototype.transform;
+    Game_Enemy.prototype.transform = function (enemyId) {
+      MageStudios.CTB.Game_Enemy_transform.call(this, enemyId);
+      this._ctbTransformed = true;
+    };
+
+    Game_Unit.prototype.onCTBStart = function () {
+      if (!BattleManager.isCTB()) return;
+      for (var i = 0; i < this.members().length; ++i) {
+        var member = this.members()[i];
+        if (member) member.onCTBStart();
+      }
+    };
+
+    Game_Unit.prototype.increaseTurnTimeBasedCTB = function () {
+      for (var i = 0; i < this.members().length; ++i) {
+        var member = this.members()[i];
+        if (!member) continue;
+        if (member.isDead()) continue;
+        if (member.isHidden()) continue;
+        if (member.canMove()) continue;
+        member.onTurnEnd();
+      }
+    };
+
+    MageStudios.CTB.Game_Party_performEscape =
+      Game_Party.prototype.performEscape;
+    Game_Party.prototype.performEscape = function () {
+      if (BattleManager.isCTB()) return;
+      MageStudios.CTB.Game_Party_performEscape.call(this);
+    };
+
+    MageStudios.CTB.Game_Troop_increaseTurn = Game_Troop.prototype.increaseTurn;
+    Game_Troop.prototype.increaseTurn = function () {
+      MageStudios.CTB.Game_Troop_increaseTurn.call(this);
+      if (BattleManager.isCTB() && BattleManager.timeBasedStates()) {
+        $gameParty.increaseTurnTimeBasedCTB();
+        this.increaseTurnTimeBasedCTB();
+      }
+    };
+
+    MageStudios.CTB.Sprite_Battler_postSpriteInitialize =
+      Sprite_Battler.prototype.postSpriteInitialize;
+    Sprite_Battler.prototype.postSpriteInitialize = function () {
+      MageStudios.CTB.Sprite_Battler_postSpriteInitialize.call(this);
+      if (BattleManager.isCTB()) this.createCTBIcon();
+    };
+
+    Sprite_Battler.prototype.createCTBIcon = function () {
+      if (!MageStudios.Param.CTBTurnOrder) return;
+      this._ctbIcon = new Window_CTBIcon(this);
+    };
+
+    MageStudios.CTB.Sprite_Battler_update = Sprite_Battler.prototype.update;
+    Sprite_Battler.prototype.update = function () {
+      MageStudios.CTB.Sprite_Battler_update.call(this);
+      this.addCTBIcon();
+    };
+
+    Sprite_Battler.prototype.addCTBIcon = function () {
+      if (!this._ctbIcon) return;
+      if (this._addedCTBIcon) return;
+      if (!SceneManager._scene) return;
+      var scene = SceneManager._scene;
+      if (!scene._windowLayer) return;
+      this._addedCTBIcon = true;
+      this._ctbIcon.setWindowLayer(scene._windowLayer);
+      scene.addChild(this._ctbIcon);
+    };
+
+    MageStudios.CTB.Window_Help_setItem = Window_Help.prototype.setItem;
+    Window_Help.prototype.setItem = function (item) {
+      if (this.meetCTBConditions(item)) return this.setText(item.ctbHelp);
+      MageStudios.CTB.Window_Help_setItem.call(this, item);
+    };
+
+    Window_Help.prototype.meetCTBConditions = function (item) {
+      if (!item) return false;
+      if (!BattleManager.isCTB()) return false;
+      return item.ctbHelp !== undefined;
+    };
+
+    MageStudios.CTB.Window_Selectable_select =
+      Window_Selectable.prototype.select;
+    Window_Selectable.prototype.select = function (index) {
+      if ($gameParty.inBattle() && BattleManager.isCTB()) {
+        BattleManager.ctbTicksToReadyClear();
+      }
+      MageStudios.CTB.Window_Selectable_select.call(this, index);
+    };
+
+    function Window_CTBIcon() {
+      this.initialize.apply(this, arguments);
     }
-    this._redraw = true;
-};
 
-Window_CTBIcon.prototype.removeCTBIcon = function() {
-    this.contents.clear();
-    this.opacity = 0;
-    this.contentsOpacity =0;
-};
+    Window_CTBIcon.prototype = Object.create(Window_Base.prototype);
+    Window_CTBIcon.prototype.constructor = Window_CTBIcon;
 
-Window_CTBIcon.prototype.isUsingSVBattler = function() {
-    if (!Imported.MSEP_X_AnimatedSVEnemies) return false;
-    if (!this._battler.hasSVBattler()) return false;
-    return MageStudios.Param.CTBEnemySVBattler;
-};
+    Window_CTBIcon.prototype.initialize = function (mainSprite) {
+      this._mainSprite = mainSprite;
+      var width = this.iconWidth() + 8 + this.standardPadding() * 2;
+      var height = this.iconHeight() + 8 + this.standardPadding() * 2;
+      this._redraw = false;
+      this._position = MageStudios.Param.CTBTurnPosX.toLowerCase();
+      this._direction = MageStudios.Param.CTBTurnDirection.toLowerCase();
+      this._lowerWindows = eval(MageStudios.Param.BECLowerWindows);
+      Window_Base.prototype.initialize.call(this, 0, 0, width, height);
+      this.opacity = 0;
+      this.contentsOpacity = 0;
+    };
 
-Window_CTBIcon.prototype.updateIconIndex = function() {
-    if (!this._battler) return;
-    var changed = this._iconIndex !== this._battler.ctbIcon();
-    if (changed) {
+    Window_CTBIcon.prototype.iconWidth = function () {
+      return MageStudios.Param.CTBIconSize;
+    };
+
+    Window_CTBIcon.prototype.iconHeight = function () {
+      return MageStudios.Param.CTBIconSize;
+    };
+
+    Window_CTBIcon.prototype.setWindowLayer = function (windowLayer) {
+      this._windowLayer = windowLayer;
+    };
+
+    Window_CTBIcon.prototype.update = function () {
+      Window_Base.prototype.update.call(this);
+      this.updateBattler();
+      this.updateIconIndex();
+      this.updateRedraw();
+      this.updateDestinationX();
+      this.updateOpacity();
+      this.updatePositionX();
+      this.updatePositionY();
+    };
+
+    Window_CTBIcon.prototype.updateBattler = function () {
+      var changed = this._battler !== this._mainSprite._battler;
+      if (this._battler && this._battler._ctbTransformed) changed = true;
+      if (!changed) return;
+      this._battler = this._mainSprite._battler;
+      if (!this._battler) return this.removeCTBIcon();
+      this._battler._ctbTransformed = undefined;
+      this._iconIndex = this._battler.ctbIcon();
+      if (this._iconIndex > 0) {
+        this._image = ImageManager.loadSystem("IconSet");
+      } else if (this._battler.isEnemy()) {
+        if (this.isUsingSVBattler()) {
+          var name = this._battler.svBattlerName();
+          this._image = ImageManager.loadSvActor(name);
+        } else {
+          var battlerName = this._battler.battlerName();
+          var battlerHue = this._battler.battlerHue();
+          if ($gameSystem.isSideView()) {
+            this._image = ImageManager.loadSvEnemy(battlerName, battlerHue);
+          } else {
+            this._image = ImageManager.loadEnemy(battlerName, battlerHue);
+          }
+        }
+      } else if (this._battler.isActor()) {
+        var faceName = this._battler.faceName();
+        this._image = ImageManager.loadFace(faceName);
+      }
+      this._redraw = true;
+    };
+
+    Window_CTBIcon.prototype.removeCTBIcon = function () {
+      this.contents.clear();
+      this.opacity = 0;
+      this.contentsOpacity = 0;
+    };
+
+    Window_CTBIcon.prototype.isUsingSVBattler = function () {
+      if (!Imported.MSEP_X_AnimatedSVEnemies) return false;
+      if (!this._battler.hasSVBattler()) return false;
+      return MageStudios.Param.CTBEnemySVBattler;
+    };
+
+    Window_CTBIcon.prototype.updateIconIndex = function () {
+      if (!this._battler) return;
+      var changed = this._iconIndex !== this._battler.ctbIcon();
+      if (changed) {
         this._iconIndex = this._battler.ctbIcon();
         this._redraw = true;
-    }
-};
-
-Window_CTBIcon.prototype.forceRedraw = function() {
-    this._redraw = true;
-};
-
-Window_CTBIcon.prototype.updateRedraw = function() {
-    if (!this._redraw) return;
-    if (!this._image) return;
-    if (this._iMageStudios.width <= 0) return;
-    this._redraw = false;
-    this.contents.clear();
-    this.drawBorder();
-    if (this._iconIndex > 0) {
-        this.drawIcon(this._iconIndex, 4, 4);
-    } else if (this._battler.isActor()) {
-        this.redrawActorFace();
-    } else if (this._battler.isEnemy()) {
-        this.redrawEnemy();
-    }
-    this.redrawLetter();
-};
-
-Window_CTBIcon.prototype.drawIcon = function(iconIndex, x, y) {
-    var bitmap = ImageManager.loadSystem('IconSet');
-    var pw = Window_Base._iconWidth;
-    var ph = Window_Base._iconHeight;
-    var sx = iconIndex % 16 * pw;
-    var sy = Math.floor(iconIndex / 16) * ph;
-    var ww = this.iconWidth();
-    var wh = this.iconHeight();
-    this.contents.blt(bitmap, sx, sy, pw, ph, x, y, ww, wh);
-};
-
-Window_CTBIcon.prototype.drawBorder = function() {
-    var width = this.contents.width;
-    var height = this.contents.height;
-    this.contents.fillRect(0, 0, width, height, this.gaugeBackColor());
-    width -= 2;
-    height -= 2;
-    this.contents.fillRect(1, 1, width, height, this.ctbBorderColor());
-    width -= 4;
-    height -= 4;
-    this.contents.fillRect(3, 3, width, height, this.gaugeBackColor());
-    width -= 2;
-    height -= 2;
-    this.contents.fillRect(4, 4, width, height, this.ctbBackgroundColor());
-};
-
-Window_CTBIcon.prototype.ctbBorderColor = function() {
-    var colorId = this._battler.ctbBorderColor() || 0;
-    return this.textColor(colorId);
-};
-
-Window_CTBIcon.prototype.ctbBackgroundColor = function() {
-    var colorId = this._battler.ctbBackgroundColor() || 0;
-    return this.textColor(colorId);
-};
-
-Window_CTBIcon.prototype.redrawActorFace = function() {
-    var width = Window_Base._faceWidth;
-    var height = Window_Base._faceHeight;
-    var faceIndex = this._battler.faceIndex();
-    var bitmap = this._image;
-    var pw = Window_Base._faceWidth;
-    var ph = Window_Base._faceHeight;
-    var sw = Math.min(width, pw);
-    var sh = Math.min(height, ph);
-    var dx = Math.floor(Math.max(width - pw, 0) / 2);
-    var dy = Math.floor(Math.max(height - ph, 0) / 2);
-    var sx = faceIndex % 4 * pw + (pw - sw) / 2;
-    var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
-    var dw = this.contents.width - 8;
-    var dh = this.contents.height - 8;
-    this.contents.blt(bitmap, sx, sy, sw, sh, dx + 4, dy + 4, dw, dh);
-};
-
-Window_CTBIcon.prototype.redrawEnemy = function() {
-    if (this.isUsingSVBattler()) {
-      return this.redrawSVEnemy();
+      }
     };
-    var bitmap = this._image;
-    var sw = bitmap.width;
-    var sh = bitmap.height;
-    var dw = this.contents.width - 8;
-    var dh = this.contents.height - 8;
-    var dx = 0;
-    var dy = 0;
-    if (sw >= sh) {
-      var rate = sh / sw;
-      dh *= rate;
-      dy += this.contents.height - 8 - dh;
-    } else {
-      var rate = sw / sh;
-      dw *= rate;
-      dx += Math.floor((this.contents.width - 8 - dw) / 2);
-    }
-    this.contents.blt(bitmap, 0, 0, sw, sh, dx + 4, dy + 4, dw, dh);
-};
 
-Window_CTBIcon.prototype.redrawSVEnemy = function() {
-    var bitmap = this._image;
-    var sw = bitmap.width / 9;
-    var sh = bitmap.height / 6;
-    var dw = this.contents.width - 8;
-    var dh = this.contents.height - 8;
-    var dx = 0;
-    var dy = 0;
-    if (sw >= sh) {
-      var rate = sh / sw;
-      dh *= rate;
-      dy += this.contents.height - 8 - dh;
-    } else {
-      var rate = sw / sh;
-      dw *= rate;
-      dx += Math.floor((this.contents.width - 8 - dw) / 2);
-    }
-    this.contents.blt(bitmap, 0, 0, sw, sh, dx + 4, dy + 4, dw, dh);
-};
+    Window_CTBIcon.prototype.forceRedraw = function () {
+      this._redraw = true;
+    };
 
-Window_CTBIcon.prototype.redrawLetter = function() {
-    if (!this._battler.isEnemy()) return;
-    if (!this._battler._plural) return;
-    var letter = this._battler._letter;
-    var dy = this.contents.height - this.lineHeight();
-    this.drawText(letter, 0, dy, this.contents.width - 4, 'right');
-};
+    Window_CTBIcon.prototype.updateRedraw = function () {
+      if (!this._redraw) return;
+      if (!this._image) return;
+      if (this._iMageStudios.width <= 0) return;
+      this._redraw = false;
+      this.contents.clear();
+      this.drawBorder();
+      if (this._iconIndex > 0) {
+        this.drawIcon(this._iconIndex, 4, 4);
+      } else if (this._battler.isActor()) {
+        this.redrawActorFace();
+      } else if (this._battler.isEnemy()) {
+        this.redrawEnemy();
+      }
+      this.redrawLetter();
+    };
 
-Window_CTBIcon.prototype.destinationXConstant = function() {
-    return this.contents.width + 2;
-};
+    Window_CTBIcon.prototype.drawIcon = function (iconIndex, x, y) {
+      var bitmap = ImageManager.loadSystem("IconSet");
+      var pw = Window_Base._iconWidth;
+      var ph = Window_Base._iconHeight;
+      var sx = (iconIndex % 16) * pw;
+      var sy = Math.floor(iconIndex / 16) * ph;
+      var ww = this.iconWidth();
+      var wh = this.iconHeight();
+      this.contents.blt(bitmap, sx, sy, pw, ph, x, y, ww, wh);
+    };
 
-Window_CTBIcon.prototype.updateDestinationX = function() {
-    if (!this._battler) return;
-    if (this._battler.isDead()) return;
-    if (this._position === 'left') this.updateDestinationLeftAlign();
-    if (this._position === 'center') this.updateDestinationCenterAlign();
-    if (this._position === 'right') this.updateDestinationRightAlign();
-    if (this._direction === 'left') this.updateDestinationGoingLeft();
-    if (this._direction === 'right') this.updateDestinationGoingRight();
-};
+    Window_CTBIcon.prototype.drawBorder = function () {
+      var width = this.contents.width;
+      var height = this.contents.height;
+      this.contents.fillRect(0, 0, width, height, this.gaugeBackColor());
+      width -= 2;
+      height -= 2;
+      this.contents.fillRect(1, 1, width, height, this.ctbBorderColor());
+      width -= 4;
+      height -= 4;
+      this.contents.fillRect(3, 3, width, height, this.gaugeBackColor());
+      width -= 2;
+      height -= 2;
+      this.contents.fillRect(4, 4, width, height, this.ctbBackgroundColor());
+    };
 
-Window_CTBIcon.prototype.updateDestinationLeftAlign = function() {
-    this._destinationX = 0;
-};
+    Window_CTBIcon.prototype.ctbBorderColor = function () {
+      var colorId = this._battler.ctbBorderColor() || 0;
+      return this.textColor(colorId);
+    };
 
-Window_CTBIcon.prototype.updateDestinationCenterAlign = function() {
-    this._destinationX = 0;
-    var width = this.standardPadding() * 2;
-    var size = BattleManager.ctbTurnOrder().length;
-    var constant = this.destinationXConstant();
-    width += constant * size;
-    width += constant / 2 - 2;
-    this._destinationX = Math.floor((Graphics.boxWidth - width) / 2);
-};
+    Window_CTBIcon.prototype.ctbBackgroundColor = function () {
+      var colorId = this._battler.ctbBackgroundColor() || 0;
+      return this.textColor(colorId);
+    };
 
-Window_CTBIcon.prototype.updateDestinationRightAlign = function() {
-    this._destinationX = Graphics.boxWidth;
-    this._destinationX -= this.standardPadding() * 2;
-    var size = BattleManager.ctbTurnOrder().length;
-    var constant = this.destinationXConstant();
-    this._destinationX -= constant * size;
-    this._destinationX -= constant / 2;
-    this._destinationX += 2;
-};
+    Window_CTBIcon.prototype.redrawActorFace = function () {
+      var width = Window_Base._faceWidth;
+      var height = Window_Base._faceHeight;
+      var faceIndex = this._battler.faceIndex();
+      var bitmap = this._image;
+      var pw = Window_Base._faceWidth;
+      var ph = Window_Base._faceHeight;
+      var sw = Math.min(width, pw);
+      var sh = Math.min(height, ph);
+      var dx = Math.floor(Math.max(width - pw, 0) / 2);
+      var dy = Math.floor(Math.max(height - ph, 0) / 2);
+      var sx = (faceIndex % 4) * pw + (pw - sw) / 2;
+      var sy = Math.floor(faceIndex / 4) * ph + (ph - sh) / 2;
+      var dw = this.contents.width - 8;
+      var dh = this.contents.height - 8;
+      this.contents.blt(bitmap, sx, sy, sw, sh, dx + 4, dy + 4, dw, dh);
+    };
 
-Window_CTBIcon.prototype.updateDestinationGoingLeft = function(index) {
-    var index = BattleManager.ctbTurnOrder().indexOf(this._battler);
-    if (index < 0) index = BattleManager.ctbTurnOrder().length + 5;
-    var constant = this.destinationXConstant();
-    this._destinationX += index * constant;
-    if (index !== 0) {
-      this._destinationX += constant / 2;
-    }
-};
+    Window_CTBIcon.prototype.redrawEnemy = function () {
+      if (this.isUsingSVBattler()) {
+        return this.redrawSVEnemy();
+      }
+      var bitmap = this._image;
+      var sw = bitmap.width;
+      var sh = bitmap.height;
+      var dw = this.contents.width - 8;
+      var dh = this.contents.height - 8;
+      var dx = 0;
+      var dy = 0;
+      if (sw >= sh) {
+        var rate = sh / sw;
+        dh *= rate;
+        dy += this.contents.height - 8 - dh;
+      } else {
+        var rate = sw / sh;
+        dw *= rate;
+        dx += Math.floor((this.contents.width - 8 - dw) / 2);
+      }
+      this.contents.blt(bitmap, 0, 0, sw, sh, dx + 4, dy + 4, dw, dh);
+    };
 
-Window_CTBIcon.prototype.updateDestinationGoingRight = function(index) {
-    var index = BattleManager.ctbTurnOrder().reverse().indexOf(this._battler);
-    if (index < 0) index = -5;
-    var constant = this.destinationXConstant();
-    this._destinationX += index * constant;
-    if (index === BattleManager.ctbTurnOrder().length - 1) {
-      this._destinationX += constant / 2;
-    }
-};
+    Window_CTBIcon.prototype.redrawSVEnemy = function () {
+      var bitmap = this._image;
+      var sw = bitmap.width / 9;
+      var sh = bitmap.height / 6;
+      var dw = this.contents.width - 8;
+      var dh = this.contents.height - 8;
+      var dx = 0;
+      var dy = 0;
+      if (sw >= sh) {
+        var rate = sh / sw;
+        dh *= rate;
+        dy += this.contents.height - 8 - dh;
+      } else {
+        var rate = sw / sh;
+        dw *= rate;
+        dx += Math.floor((this.contents.width - 8 - dw) / 2);
+      }
+      this.contents.blt(bitmap, 0, 0, sw, sh, dx + 4, dy + 4, dw, dh);
+    };
 
-Window_CTBIcon.prototype.updatePositionX = function() {
-    if (this._destinationX === undefined) return;
-    if (BattleManager._escaped) return;
-    var desX = this._destinationX;
-    var moveAmount = Math.max(1, Math.abs(desX - this.x) / 4);
-    if (this.x > desX) this.x = Math.max(this.x - moveAmount, desX);
-    if (this.x < desX) this.x = Math.min(this.x + moveAmount, desX);
-};
+    Window_CTBIcon.prototype.redrawLetter = function () {
+      if (!this._battler.isEnemy()) return;
+      if (!this._battler._plural) return;
+      var letter = this._battler._letter;
+      var dy = this.contents.height - this.lineHeight();
+      this.drawText(letter, 0, dy, this.contents.width - 4, "right");
+    };
 
-Window_CTBIcon.prototype.destinationY = function() {
-    var value = MageStudios.Param.CTBTurnPosY - this.standardPadding();
-    var scene = SceneManager._scene;
-    if (scene && scene._helpWindow.visible) {
-        value = Math.max(value, scene._helpWindow.height);
-    }
-    if (!this._battler) return value;
-    if (this._battler.isSelected()) {
-        value -= this.contents.height / 4;
-    }
-    return value;
-};
+    Window_CTBIcon.prototype.destinationXConstant = function () {
+      return this.contents.width + 2;
+    };
 
-Window_CTBIcon.prototype.updatePositionY = function() {
-    if (BattleManager._escaped) return;
-    if (this._destinationX !== this.x) {
-      var desX = this._destinationX;
-      var cap1 = this.destinationY() - this.contents.height / 2;
-      var cap2 = this.destinationY() + this.contents.height / 2;
-      var moveAmount = Math.max(1, Math.abs(cap2 - this.y) / 4);
-      if (this.x > desX) this.y = Math.max(this.y - moveAmount, cap1);
-      if (this.x < desX) this.y = Math.min(this.y + moveAmount, cap2);
-    } else if (this.destinationY() !== this.y) {
-      var desY = this.destinationY();
-      var moveAmount = Math.max(1, Math.abs(desY - this.y) / 4);
-      if (this.y > desY) this.y = Math.max(this.y - moveAmount, desY);
-      if (this.y < desY) this.y = Math.min(this.y + moveAmount, desY);
-    }
-};
+    Window_CTBIcon.prototype.updateDestinationX = function () {
+      if (!this._battler) return;
+      if (this._battler.isDead()) return;
+      if (this._position === "left") this.updateDestinationLeftAlign();
+      if (this._position === "center") this.updateDestinationCenterAlign();
+      if (this._position === "right") this.updateDestinationRightAlign();
+      if (this._direction === "left") this.updateDestinationGoingLeft();
+      if (this._direction === "right") this.updateDestinationGoingRight();
+    };
 
-Window_CTBIcon.prototype.opacityFadeRate = function() {
-    return 8;
-};
+    Window_CTBIcon.prototype.updateDestinationLeftAlign = function () {
+      this._destinationX = 0;
+    };
 
-Window_CTBIcon.prototype.updateOpacity = function() {
-    var rate = this.opacityFadeRate();
-    if (this._foreverHidden) return this.reduceOpacity();
-    if (this.isReduceOpacity()) return this.reduceOpacity();
-    if (BattleManager._victoryPhase) {
-      this._foreverHidden = true;
-      return this.reduceOpacity();
-    }
-    if (BattleManager._escaped) {
-      this._foreverHidden = true;
-      return this.reduceOpacity();
-    }
-    if (this._battler) {
+    Window_CTBIcon.prototype.updateDestinationCenterAlign = function () {
+      this._destinationX = 0;
+      var width = this.standardPadding() * 2;
+      var size = BattleManager.ctbTurnOrder().length;
+      var constant = this.destinationXConstant();
+      width += constant * size;
+      width += constant / 2 - 2;
+      this._destinationX = Math.floor((Graphics.boxWidth - width) / 2);
+    };
+
+    Window_CTBIcon.prototype.updateDestinationRightAlign = function () {
+      this._destinationX = Graphics.boxWidth;
+      this._destinationX -= this.standardPadding() * 2;
+      var size = BattleManager.ctbTurnOrder().length;
+      var constant = this.destinationXConstant();
+      this._destinationX -= constant * size;
+      this._destinationX -= constant / 2;
+      this._destinationX += 2;
+    };
+
+    Window_CTBIcon.prototype.updateDestinationGoingLeft = function (index) {
+      var index = BattleManager.ctbTurnOrder().indexOf(this._battler);
+      if (index < 0) index = BattleManager.ctbTurnOrder().length + 5;
+      var constant = this.destinationXConstant();
+      this._destinationX += index * constant;
+      if (index !== 0) {
+        this._destinationX += constant / 2;
+      }
+    };
+
+    Window_CTBIcon.prototype.updateDestinationGoingRight = function (index) {
       var index = BattleManager.ctbTurnOrder().reverse().indexOf(this._battler);
-      if (index < 0) return this.reduceOpacity();
-    }
-    this.contentsOpacity += rate;
-};
-
-Window_CTBIcon.prototype.isReduceOpacity = function() {
-    if (!this._lowerWindows) {
-      if (this.isLargeWindowShowing()) return true;
-    }
-    return this._windowLayer && this._windowLayer.x !== 0;
-};
-
-Window_CTBIcon.prototype.isLargeWindowShowing = function() {
-    if (SceneManager._scene._itemWindow.visible) return true;
-    if (SceneManager._scene._skillWindow.visible) return true;
-    return false;
-};
-
-Window_CTBIcon.prototype.reduceOpacity = function() {
-    this.contentsOpacity -= this.opacityFadeRate();
-};
-
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.CTB.Scene_Battle_isStartActorCommand =
-    Scene_Battle.prototype.isStartActorCommand;
-Scene_Battle.prototype.isStartActorCommand = function() {
-    if (BattleManager.isCTB()) return true;
-    return MageStudios.CTB.Scene_Battle_isStartActorCommand.call(this);
-};
-
-MageStudios.CTB.Scene_Battle_commandFight = Scene_Battle.prototype.commandFight;
-Scene_Battle.prototype.commandFight = function() {
-    if (BattleManager.isCTB()) {
-      this.startActorCommandSelection();
-      BattleManager._phase = 'input';
-    } else {
-      MageStudios.CTB.Scene_Battle_commandFight.call(this);
-    }
-};
-
-MageStudios.CTB.Scene_Battle_startActorCommandSelection =
-    Scene_Battle.prototype.startActorCommandSelection;
-Scene_Battle.prototype.startActorCommandSelection = function() {
-    MageStudios.CTB.Scene_Battle_startActorCommandSelection.call(this);
-    if (BattleManager.isCTB()) {
-      BattleManager.actor().spriteStepForward();
-      BattleManager.actor().setActionState('undecided');
-      BattleManager.actor().requestMotionRefresh();
-      BattleManager.actor().makeActions();
-    }
-};
-
-MageStudios.CTB.Scene_Battle_updateWindowPositions =
-    Scene_Battle.prototype.updateWindowPositions;
-Scene_Battle.prototype.updateWindowPositions = function() {
-    if (BattleManager.isCTB()) return this.updateWindowPositionsCTB();
-    MageStudios.CTB.Scene_Battle_updateWindowPositions.call(this);
-};
-
-Scene_Battle.prototype.updateWindowPositionsCTB = function() {
-    if (this._ctbWindowPosCount === undefined) this._ctbWindowPosCount = 0;
-    if (this._partyCommandWindow.active) {
-      this._ctbWindowPosCount = 16;
-      var statusX = 0;
-      statusX = this._partyCommandWindow.width;
-      if (this._statusWindow.x < statusX) {
-        this._statusWindow.x += 16;
-        if (this._statusWindow.x > statusX) this._statusWindow.x = statusX;
+      if (index < 0) index = -5;
+      var constant = this.destinationXConstant();
+      this._destinationX += index * constant;
+      if (index === BattleManager.ctbTurnOrder().length - 1) {
+        this._destinationX += constant / 2;
       }
-      if (this._statusWindow.x > statusX) {
-        this._statusWindow.x -= 16;
-        if (this._statusWindow.x < statusX) this._statusWindow.x = statusX;
+    };
+
+    Window_CTBIcon.prototype.updatePositionX = function () {
+      if (this._destinationX === undefined) return;
+      if (BattleManager._escaped) return;
+      var desX = this._destinationX;
+      var moveAmount = Math.max(1, Math.abs(desX - this.x) / 4);
+      if (this.x > desX) this.x = Math.max(this.x - moveAmount, desX);
+      if (this.x < desX) this.x = Math.min(this.x + moveAmount, desX);
+    };
+
+    Window_CTBIcon.prototype.destinationY = function () {
+      var value = MageStudios.Param.CTBTurnPosY - this.standardPadding();
+      var scene = SceneManager._scene;
+      if (scene && scene._helpWindow.visible) {
+        value = Math.max(value, scene._helpWindow.height);
       }
-    } else if (this._actorCommandWindow.active) {
-      this._ctbWindowPosCount = 16;
+      if (!this._battler) return value;
+      if (this._battler.isSelected()) {
+        value -= this.contents.height / 4;
+      }
+      return value;
+    };
+
+    Window_CTBIcon.prototype.updatePositionY = function () {
+      if (BattleManager._escaped) return;
+      if (this._destinationX !== this.x) {
+        var desX = this._destinationX;
+        var cap1 = this.destinationY() - this.contents.height / 2;
+        var cap2 = this.destinationY() + this.contents.height / 2;
+        var moveAmount = Math.max(1, Math.abs(cap2 - this.y) / 4);
+        if (this.x > desX) this.y = Math.max(this.y - moveAmount, cap1);
+        if (this.x < desX) this.y = Math.min(this.y + moveAmount, cap2);
+      } else if (this.destinationY() !== this.y) {
+        var desY = this.destinationY();
+        var moveAmount = Math.max(1, Math.abs(desY - this.y) / 4);
+        if (this.y > desY) this.y = Math.max(this.y - moveAmount, desY);
+        if (this.y < desY) this.y = Math.min(this.y + moveAmount, desY);
+      }
+    };
+
+    Window_CTBIcon.prototype.opacityFadeRate = function () {
+      return 8;
+    };
+
+    Window_CTBIcon.prototype.updateOpacity = function () {
+      var rate = this.opacityFadeRate();
+      if (this._foreverHidden) return this.reduceOpacity();
+      if (this.isReduceOpacity()) return this.reduceOpacity();
+      if (BattleManager._victoryPhase) {
+        this._foreverHidden = true;
+        return this.reduceOpacity();
+      }
+      if (BattleManager._escaped) {
+        this._foreverHidden = true;
+        return this.reduceOpacity();
+      }
+      if (this._battler) {
+        var index = BattleManager.ctbTurnOrder()
+          .reverse()
+          .indexOf(this._battler);
+        if (index < 0) return this.reduceOpacity();
+      }
+      this.contentsOpacity += rate;
+    };
+
+    Window_CTBIcon.prototype.isReduceOpacity = function () {
+      if (!this._lowerWindows) {
+        if (this.isLargeWindowShowing()) return true;
+      }
+      return this._windowLayer && this._windowLayer.x !== 0;
+    };
+
+    Window_CTBIcon.prototype.isLargeWindowShowing = function () {
+      if (SceneManager._scene._itemWindow.visible) return true;
+      if (SceneManager._scene._skillWindow.visible) return true;
+      return false;
+    };
+
+    Window_CTBIcon.prototype.reduceOpacity = function () {
+      this.contentsOpacity -= this.opacityFadeRate();
+    };
+
+    MageStudios.CTB.Scene_Battle_isStartActorCommand =
+      Scene_Battle.prototype.isStartActorCommand;
+    Scene_Battle.prototype.isStartActorCommand = function () {
+      if (BattleManager.isCTB()) return true;
+      return MageStudios.CTB.Scene_Battle_isStartActorCommand.call(this);
+    };
+
+    MageStudios.CTB.Scene_Battle_commandFight =
+      Scene_Battle.prototype.commandFight;
+    Scene_Battle.prototype.commandFight = function () {
+      if (BattleManager.isCTB()) {
+        this.startActorCommandSelection();
+        BattleManager._phase = "input";
+      } else {
+        MageStudios.CTB.Scene_Battle_commandFight.call(this);
+      }
+    };
+
+    MageStudios.CTB.Scene_Battle_startActorCommandSelection =
+      Scene_Battle.prototype.startActorCommandSelection;
+    Scene_Battle.prototype.startActorCommandSelection = function () {
+      MageStudios.CTB.Scene_Battle_startActorCommandSelection.call(this);
+      if (BattleManager.isCTB()) {
+        BattleManager.actor().spriteStepForward();
+        BattleManager.actor().setActionState("undecided");
+        BattleManager.actor().requestMotionRefresh();
+        BattleManager.actor().makeActions();
+      }
+    };
+
+    MageStudios.CTB.Scene_Battle_updateWindowPositions =
+      Scene_Battle.prototype.updateWindowPositions;
+    Scene_Battle.prototype.updateWindowPositions = function () {
+      if (BattleManager.isCTB()) return this.updateWindowPositionsCTB();
       MageStudios.CTB.Scene_Battle_updateWindowPositions.call(this);
-    } else {
-      if (--this._ctbWindowPosCount > 0) return;
-      MageStudios.CTB.Scene_Battle_updateWindowPositions.call(this);
-    }
-};
+    };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+    Scene_Battle.prototype.updateWindowPositionsCTB = function () {
+      if (this._ctbWindowPosCount === undefined) this._ctbWindowPosCount = 0;
+      if (this._partyCommandWindow.active) {
+        this._ctbWindowPosCount = 16;
+        var statusX = 0;
+        statusX = this._partyCommandWindow.width;
+        if (this._statusWindow.x < statusX) {
+          this._statusWindow.x += 16;
+          if (this._statusWindow.x > statusX) this._statusWindow.x = statusX;
+        }
+        if (this._statusWindow.x > statusX) {
+          this._statusWindow.x -= 16;
+          if (this._statusWindow.x < statusX) this._statusWindow.x = statusX;
+        }
+      } else if (this._actorCommandWindow.active) {
+        this._ctbWindowPosCount = 16;
+        MageStudios.CTB.Scene_Battle_updateWindowPositions.call(this);
+      } else {
+        if (--this._ctbWindowPosCount > 0) return;
+        MageStudios.CTB.Scene_Battle_updateWindowPositions.call(this);
+      }
+    };
 
-MageStudios.Util = MageStudios.Util || {};
+    MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+    MageStudios.Util.displayError = function (e, code, message) {
+      console.log(message);
+      console.log(code || "NON-EXISTENT");
+      console.error(e);
+      if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+      if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+        if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+          require("nw.gui").Window.get().showDevTools();
+        }
+      }
+    };
+  } else {
+    var text =
+      "================================================================\n";
+    text +=
+      "MSEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ";
+    text +=
+      "latest version to run properly.\n\nPlease go to www.MageStudios.moe and ";
+    text +=
+      "update to the latest version for the MSEP_BattleEngineCore plugin.\n";
+    text +=
+      "================================================================\n";
+    console.log(text);
+    require("nw.gui").Window.get().showDevTools();
   }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-} else { // MageStudios.BEC.version
-
-var text = '================================================================\n';
-text += 'MSEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
-text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
-text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-} // MageStudios.BEC.version
-}; // MSEP_BattleEngineCore
+}

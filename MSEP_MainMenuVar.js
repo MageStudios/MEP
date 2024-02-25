@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Main Menu Variable Window
-// MSEP_MainMenuVar.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MainMenuVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MMVar = MageStudios.MMVar || {};
-MageStudios.MMVar.version = 1.00;
+MageStudios.MMVar.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Adds a new variable window to your main menu.
  * You can use it to display up to 10 different variables!
  * @author Mage Studios Engine Plugins + Tigress Collaboration
@@ -271,7 +265,7 @@ MageStudios.MMVar.version = 1.00;
  * Introduction
  * ============================================================================
  *
- * In RPG Maker MV, the main menu only shows the party's gold as the only 
+ * In RPG Maker MV, the main menu only shows the party's gold as the only
  * currency in the game. However, some games would prefer to display more than
  * just gold in the main menu, of which, may be possibly found in the form of
  * variables. You can do so using this plugin!
@@ -304,71 +298,73 @@ MageStudios.MMVar.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_MainMenuVar');
+MageStudios.Parameters = PluginManager.parameters("MSEP_MainMenuVar");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.MMVarWinX = String(MageStudios.Parameters['Window X']);
-MageStudios.Param.MMVarWinY = String(MageStudios.Parameters['Window Y']);
-MageStudios.Param.MMVarWinWidth = String(MageStudios.Parameters['Window Width']);
-MageStudios.Param.MMVarWinHeight = String(MageStudios.Parameters['Window Height']);
-MageStudios.Param.MMVarFontSize = Number(MageStudios.Parameters['Font Size']);
-MageStudios.Param.MMVarStandardPad = Number(MageStudios.Parameters['Standard Padding']);
-MageStudios.Param.MMVarTextPad = Number(MageStudios.Parameters['Text Padding']);
-MageStudios.Param.MMVarBackOpacity = Number(MageStudios.Parameters['Back Opacity']);
-MageStudios.Param.MMVarWinOpacity = Number(MageStudios.Parameters['Window Opacity']);
+MageStudios.Param.MMVarWinX = String(MageStudios.Parameters["Window X"]);
+MageStudios.Param.MMVarWinY = String(MageStudios.Parameters["Window Y"]);
+MageStudios.Param.MMVarWinWidth = String(
+  MageStudios.Parameters["Window Width"]
+);
+MageStudios.Param.MMVarWinHeight = String(
+  MageStudios.Parameters["Window Height"]
+);
+MageStudios.Param.MMVarFontSize = Number(MageStudios.Parameters["Font Size"]);
+MageStudios.Param.MMVarStandardPad = Number(
+  MageStudios.Parameters["Standard Padding"]
+);
+MageStudios.Param.MMVarTextPad = Number(MageStudios.Parameters["Text Padding"]);
+MageStudios.Param.MMVarBackOpacity = Number(
+  MageStudios.Parameters["Back Opacity"]
+);
+MageStudios.Param.MMVarWinOpacity = Number(
+  MageStudios.Parameters["Window Opacity"]
+);
 
-MageStudios.SetupParameters = function() {
+MageStudios.SetupParameters = function () {
   MageStudios.Param.MMVarId = {};
   MageStudios.Param.MMVarSwitch = {};
   for (var i = 1; i <= 10; i++) {
-    var key1 = 'Displayed Variable ' + i;
-    var key2 = 'Show Switch Variable ' + i;
+    var key1 = "Displayed Variable " + i;
+    var key2 = "Show Switch Variable " + i;
     MageStudios.Param.MMVarId[i] = Number(MageStudios.Parameters[key1]) || 0;
-    MageStudios.Param.MMVarSwitch[i] = Number(MageStudios.Parameters[key2]) || 0;
+    MageStudios.Param.MMVarSwitch[i] =
+      Number(MageStudios.Parameters[key2]) || 0;
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Window_MainMenuVariable
-//=============================================================================
-
 function Window_MainMenuVariable() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_MainMenuVariable.prototype = Object.create(Window_Base.prototype);
 Window_MainMenuVariable.prototype.constructor = Window_MainMenuVariable;
 
-Window_MainMenuVariable.prototype.initialize = function(x, y, w, h) {
+Window_MainMenuVariable.prototype.initialize = function (x, y, w, h) {
   Window_Base.prototype.initialize.call(this, x, y, w, h);
   this.opacity = MageStudios.Param.MMVarWinOpacity;
   this.refresh();
 };
 
-Window_MainMenuVariable.prototype.standardFontSize = function() {
+Window_MainMenuVariable.prototype.standardFontSize = function () {
   return MageStudios.Param.MMVarFontSize || 28;
 };
 
-Window_MainMenuVariable.prototype.standardPadding = function() {
+Window_MainMenuVariable.prototype.standardPadding = function () {
   return MageStudios.Param.MMVarStandardPad || 18;
 };
 
-Window_MainMenuVariable.prototype.textPadding = function() {
+Window_MainMenuVariable.prototype.textPadding = function () {
   return MageStudios.Param.MMVarTextPad || 6;
 };
 
-Window_MainMenuVariable.prototype.standardBackOpacity = function() {
+Window_MainMenuVariable.prototype.standardBackOpacity = function () {
   return MageStudios.Param.MMVarBackOpacity;
 };
 
-Window_MainMenuVariable.prototype.refresh = function() {
+Window_MainMenuVariable.prototype.refresh = function () {
   this.contents.clear();
   var x = this.textPadding();
   var y = 0;
@@ -380,11 +376,11 @@ Window_MainMenuVariable.prototype.refresh = function() {
   }
 };
 
-Window_MainMenuVariable.prototype.maxVariables = function() {
+Window_MainMenuVariable.prototype.maxVariables = function () {
   return 10;
 };
 
-Window_MainMenuVariable.prototype.showVariableData = function(i) {
+Window_MainMenuVariable.prototype.showVariableData = function (i) {
   if (MageStudios.Param.MMVarSwitch[i] <= 0) {
     return true;
   } else {
@@ -392,33 +388,29 @@ Window_MainMenuVariable.prototype.showVariableData = function(i) {
   }
 };
 
-Window_MainMenuVariable.prototype.drawVariableData = function(i, x, y) {
+Window_MainMenuVariable.prototype.drawVariableData = function (i, x, y) {
   if (MageStudios.Param.MMVarId[i] <= 0) {
     return y;
   }
   var varId = MageStudios.Param.MMVarId[i];
   var name = $dataSystem.variables[varId];
   if (Imported.MSEP_X_MoreCurrencies) {
-    name = name.replace(/<<(.*?)>>/gi, '');
+    name = name.replace(/<<(.*?)>>/gi, "");
   }
   this.drawTextEx(name, x, y);
   var value = MageStudios.Util.toGroup($gameVariables.value(varId));
   var width = this.contents.width - this.textPadding() * 2;
-  this.drawText(value, x, y, width, 'right');
+  this.drawText(value, x, y, width, "right");
   return y + this.lineHeight();
 };
 
-//=============================================================================
-// Scene_Menu
-//=============================================================================
-
 MageStudios.MMVar.Scene_Menu_create = Scene_Menu.prototype.create;
-Scene_Menu.prototype.create = function() {
+Scene_Menu.prototype.create = function () {
   MageStudios.MMVar.Scene_Menu_create.call(this);
   this.createVariableWindow();
 };
 
-Scene_Menu.prototype.createVariableWindow = function() {
+Scene_Menu.prototype.createVariableWindow = function () {
   var x = this.getVariableWindowX();
   var y = this.getVariableWindowY();
   var w = this.getVariableWindowWidth();
@@ -427,53 +419,44 @@ Scene_Menu.prototype.createVariableWindow = function() {
   this.addWindow(this._variableWindow);
 };
 
-Scene_Menu.prototype.getVariableWindowX = function() {
-  if (MageStudios.Param.MMVarWinX.toUpperCase() === 'AUTO') {
+Scene_Menu.prototype.getVariableWindowX = function () {
+  if (MageStudios.Param.MMVarWinX.toUpperCase() === "AUTO") {
     return this._commandWindow.x;
   } else {
     return eval(MageStudios.Param.MMVarWinX);
   }
 };
 
-Scene_Menu.prototype.getVariableWindowY = function() {
-  if (MageStudios.Param.MMVarWinY.toUpperCase() === 'AUTO') {
+Scene_Menu.prototype.getVariableWindowY = function () {
+  if (MageStudios.Param.MMVarWinY.toUpperCase() === "AUTO") {
     return this._commandWindow.y + this._commandWindow.height;
   } else {
     return eval(MageStudios.Param.MMVarWinY);
   }
 };
 
-Scene_Menu.prototype.getVariableWindowWidth = function() {
-  if (MageStudios.Param.MMVarWinWidth.toUpperCase() === 'AUTO') {
+Scene_Menu.prototype.getVariableWindowWidth = function () {
+  if (MageStudios.Param.MMVarWinWidth.toUpperCase() === "AUTO") {
     return this._commandWindow.width;
   } else {
     return eval(MageStudios.Param.MMVarWinWidth);
   }
 };
 
-Scene_Menu.prototype.getVariableWindowHeight = function() {
-  if (MageStudios.Param.MMVarWinHeight.toUpperCase() === 'AUTO') {
-    return Graphics.boxHeight - this._commandWindow.height -
-      this._goldWindow.height;
+Scene_Menu.prototype.getVariableWindowHeight = function () {
+  if (MageStudios.Param.MMVarWinHeight.toUpperCase() === "AUTO") {
+    return (
+      Graphics.boxHeight - this._commandWindow.height - this._goldWindow.height
+    );
   } else {
     return eval(MageStudios.Param.MMVarWinHeight);
   }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {}
+MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
 }
-
-}; // MageStudios.Util.toGroup
-
-//=============================================================================
-// End of File
-//=============================================================================

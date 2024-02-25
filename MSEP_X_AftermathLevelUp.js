@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Victory Aftermath Extension - Aftermath Level Up
-// MSEP_X_AftermathLevelUp.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_AftermathLevelUp = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ALU = MageStudios.ALU || {};
-MageStudios.ALU.version = 1.00
+MageStudios.ALU.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_VictoryAftermath.js) Adds a level up
  * portion to the Victory Aftermath sequences.
  * @author Mage Studios Engine Plugins
@@ -95,7 +89,7 @@ MageStudios.ALU.version = 1.00
  * portion of the Victory Aftermath will occur.
  *
  * Plugin Command:
- * 
+ *
  *   ShowVictoryLevelUp
  *   This will cause the level up segment of the Victory Aftermath to appear if
  *   there is an actor that leveled up in the current battle.
@@ -105,40 +99,40 @@ MageStudios.ALU.version = 1.00
  *   appear at all regardless of any actors leveling up in that battle.
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_VictoryAftermath) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_AftermathLevelUp");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.ALUTitleFmt = String(
+    MageStudios.Parameters["Level Up Title"]
+  );
+  MageStudios.Param.ALUEnable = eval(
+    String(MageStudios.Parameters["Enable Aftermath"])
+  );
+  MageStudios.Param.ALUFontSize = Number(MageStudios.Parameters["Font Size"]);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_AftermathLevelUp');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.ALUSkillSing = String(
+    MageStudios.Parameters["Skill Text Singular"]
+  );
+  MageStudios.Param.ALUSkillPlur = String(
+    MageStudios.Parameters["Skill Text Plural"]
+  );
+  MageStudios.Param.ALUSkillWidth = Number(
+    MageStudios.Parameters["Skill List Width"]
+  );
 
-MageStudios.Param.ALUTitleFmt = String(MageStudios.Parameters['Level Up Title']);
-MageStudios.Param.ALUEnable = eval(String(MageStudios.Parameters['Enable Aftermath']));
-MageStudios.Param.ALUFontSize = Number(MageStudios.Parameters['Font Size']);
+  MageStudios.Param.VAShowSkills = false;
 
-MageStudios.Param.ALUSkillSing = String(MageStudios.Parameters['Skill Text Singular']);
-MageStudios.Param.ALUSkillPlur = String(MageStudios.Parameters['Skill Text Plural']);
-MageStudios.Param.ALUSkillWidth = Number(MageStudios.Parameters['Skill List Width']);
-
-MageStudios.Param.VAShowSkills = false;
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.ALU.BattleManager_prepareVictoryInfo =
+  MageStudios.ALU.BattleManager_prepareVictoryInfo =
     BattleManager.prepareVictoryInfo;
-BattleManager.prepareVictoryInfo = function() {
+  BattleManager.prepareVictoryInfo = function () {
     this.prepareVictoryPreLevel();
     MageStudios.ALU.BattleManager_prepareVictoryInfo.call(this);
     this.prepareVictoryPostLevel();
-};
+  };
 
-BattleManager.prepareVictoryPreLevel = function() {
+  BattleManager.prepareVictoryPreLevel = function () {
     var length = $gameParty.allMembers().length;
     this._leveledActors = [];
     for (var i = 0; i < length; ++i) {
@@ -155,9 +149,9 @@ BattleManager.prepareVictoryPreLevel = function() {
       actor._preVictoryParams.push(actor.agi);
       actor._preVictoryParams.push(actor.luk);
     }
-};
+  };
 
-BattleManager.prepareVictoryPostLevel = function() {
+  BattleManager.prepareVictoryPostLevel = function () {
     var length = $gameParty.allMembers().length;
     for (var i = 0; i < length; ++i) {
       var actor = $gameParty.allMembers()[i];
@@ -174,120 +168,115 @@ BattleManager.prepareVictoryPostLevel = function() {
       actor._postVictoryParams.push(actor.agi);
       actor._postVictoryParams.push(actor.luk);
     }
-};
+  };
 
-BattleManager.aftermathLeveledActors = function() {
+  BattleManager.aftermathLeveledActors = function () {
     return this._leveledActors;
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.ALU.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.ALU.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.ALU.Game_System_initialize.call(this);
     this.initAftermathLevelUp();
-};
+  };
 
-Game_System.prototype.initAftermathLevelUp = function() {
+  Game_System.prototype.initAftermathLevelUp = function () {
     this._aftermathLevelUp = MageStudios.Param.ALUEnable;
-};
+  };
 
-Game_System.prototype.isShowAftermathLevelUp = function() {
+  Game_System.prototype.isShowAftermathLevelUp = function () {
     if (this._aftermathLevelUp === undefined) this.initAftermathLevelUp();
     return this._aftermathLevelUp;
-};
+  };
 
-Game_System.prototype.setShowAftermathLevelUp = function(value) {
+  Game_System.prototype.setShowAftermathLevelUp = function (value) {
     if (this._aftermathLevelUp === undefined) this.initAftermathLevelUp();
     this._aftermathLevelUp = value;
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.ALU.Game_Actor_clearVictoryData = Game_Actor.prototype.clearVictoryData;
-Game_Actor.prototype.clearVictoryData = function() {
+  MageStudios.ALU.Game_Actor_clearVictoryData =
+    Game_Actor.prototype.clearVictoryData;
+  Game_Actor.prototype.clearVictoryData = function () {
     MageStudios.ALU.Game_Actor_clearVictoryData.call(this);
     this._preVictoryParams = undefined;
     this._postVictoryParams = undefined;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.ALU.Game_Interpreter_pluginCommand =
+  MageStudios.ALU.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.ALU.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowVictoryLevelUp') {
-    $gameSystem.setShowAftermathLevelUp(true);
-  }
-  if (command === 'HideVictoryLevelUp') {
-    $gameSystem.setShowAftermathLevelUp(false);
-  }
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.ALU.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "ShowVictoryLevelUp") {
+      $gameSystem.setShowAftermathLevelUp(true);
+    }
+    if (command === "HideVictoryLevelUp") {
+      $gameSystem.setShowAftermathLevelUp(false);
+    }
+  };
 
-//=============================================================================
-// Window_VictoryLevelUp
-//=============================================================================
-
-function Window_VictoryLevelUp() {
+  function Window_VictoryLevelUp() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_VictoryLevelUp.prototype = Object.create(Window_Base.prototype);
-Window_VictoryLevelUp.prototype.constructor = Window_VictoryLevelUp;
+  Window_VictoryLevelUp.prototype = Object.create(Window_Base.prototype);
+  Window_VictoryLevelUp.prototype.constructor = Window_VictoryLevelUp;
 
-Window_VictoryLevelUp.prototype.initialize = function(actor) {
+  Window_VictoryLevelUp.prototype.initialize = function (actor) {
     var wy = this.fittingHeight(1);
     var ww = this.windowWidth();
     var wh = this.windowHeight();
     Window_Base.prototype.initialize.call(this, 0, wy, ww, wh);
     this.openness = 0;
     this.setActor(actor);
-};
+  };
 
-Window_VictoryLevelUp.prototype.windowWidth = function() {
+  Window_VictoryLevelUp.prototype.windowWidth = function () {
     return Graphics.boxWidth;
-};
+  };
 
-Window_VictoryLevelUp.prototype.windowHeight = function() {
+  Window_VictoryLevelUp.prototype.windowHeight = function () {
     return Graphics.boxHeight - this.fittingHeight(1);
-};
+  };
 
-Window_VictoryLevelUp.prototype.createPresets = function() {
-  var actor = this._actor;
-  this.contents.fontSize = MageStudios.Param.ALUFontSize;
-  this._paramNameWidth = this.textWidth(TextManager.level);
-  this._paramValueWidth = this.textWidth(MageStudios.Util.toGroup(actor.maxLevel()));
-  this._arrowWidth = this.textWidth('\u2192' + ' ');
-  var buffer = this.textWidth(' ');
-  for (var i = 0; i < 8; ++i) {
-    var value1 = this.textWidth(TextManager.param(i));
-    var value2 = this.textWidth(MageStudios.Util.toGroup(this._actor.paramMax(i)));
-    this._paramNameWidth = Math.max(value1, this._paramNameWidth);
-    this._paramValueWidth = Math.max(value2, this._paramValueWidth);
-  }
-  this._bonusValueWidth = this._paramValueWidth;
-  this._bonusValueWidth += this.textWidth('(+)') + buffer;
-  this._paramNameWidth += buffer;
-  this._paramValueWidth;
-  var validArea = this.itemRect(0).width;
-  if (this._paramNameWidth + this._paramValueWidth * 2 + this._arrowWidth +
-    this._bonusValueWidth > validArea) this._bonusValueWidth = 0;
-};
+  Window_VictoryLevelUp.prototype.createPresets = function () {
+    var actor = this._actor;
+    this.contents.fontSize = MageStudios.Param.ALUFontSize;
+    this._paramNameWidth = this.textWidth(TextManager.level);
+    this._paramValueWidth = this.textWidth(
+      MageStudios.Util.toGroup(actor.maxLevel())
+    );
+    this._arrowWidth = this.textWidth("\u2192" + " ");
+    var buffer = this.textWidth(" ");
+    for (var i = 0; i < 8; ++i) {
+      var value1 = this.textWidth(TextManager.param(i));
+      var value2 = this.textWidth(
+        MageStudios.Util.toGroup(this._actor.paramMax(i))
+      );
+      this._paramNameWidth = Math.max(value1, this._paramNameWidth);
+      this._paramValueWidth = Math.max(value2, this._paramValueWidth);
+    }
+    this._bonusValueWidth = this._paramValueWidth;
+    this._bonusValueWidth += this.textWidth("(+)") + buffer;
+    this._paramNameWidth += buffer;
+    this._paramValueWidth;
+    var validArea = this.itemRect(0).width;
+    if (
+      this._paramNameWidth +
+        this._paramValueWidth * 2 +
+        this._arrowWidth +
+        this._bonusValueWidth >
+      validArea
+    )
+      this._bonusValueWidth = 0;
+  };
 
-Window_VictoryLevelUp.prototype.setActor = function(actor) {
+  Window_VictoryLevelUp.prototype.setActor = function (actor) {
     this._actor = actor;
     this.createPresets();
     this.refresh();
-};
+  };
 
-Window_VictoryLevelUp.prototype.refresh = function() {
+  Window_VictoryLevelUp.prototype.refresh = function () {
     this.contents.clear();
     var bitmap = ImageManager.loadFace(this._actor.faceName());
     if (bitmap.width <= 0) return setTimeout(this.refresh.bind(this), 5);
@@ -297,17 +286,18 @@ Window_VictoryLevelUp.prototype.refresh = function() {
     this.drawDarkRects();
     this.drawStatChanges();
     this.drawLearnedSkillsTitle();
-};
+  };
 
-Window_VictoryLevelUp.prototype.widthArea = function() {
+  Window_VictoryLevelUp.prototype.widthArea = function () {
     if (this._widthArea) return this._widthArea;
-    var widthArea = MageStudios.Param.ALUSkillWidth + this.standardPadding() * 2;
+    var widthArea =
+      MageStudios.Param.ALUSkillWidth + this.standardPadding() * 2;
     var ww = Window_Base._faceWidth;
     this._widthArea = Math.max(ww, widthArea);
     return this._widthArea;
-};
+  };
 
-Window_VictoryLevelUp.prototype.drawActorAppearance = function() {
+  Window_VictoryLevelUp.prototype.drawActorAppearance = function () {
     var widthArea = this.widthArea();
     var ww = Window_Base._faceWidth;
     var wh = Window_Base._faceHeight;
@@ -315,38 +305,38 @@ Window_VictoryLevelUp.prototype.drawActorAppearance = function() {
     var wy = 0;
     this.drawActorFace(this._actor, wx, wy, ww, wh);
     var text = this._actor.name();
-    this.drawText(text, 0, wh, widthArea, 'center');
+    this.drawText(text, 0, wh, widthArea, "center");
     this.changeTextColor(this.powerUpColor());
-    var text = '+' + MageStudios.Util.toGroup(this._actor._expGained) + ' ';
+    var text = "+" + MageStudios.Util.toGroup(this._actor._expGained) + " ";
     text += TextManager.exp;
-    this.drawText(text, 0, wh + this.lineHeight(), widthArea, 'center');
-};
+    this.drawText(text, 0, wh + this.lineHeight(), widthArea, "center");
+  };
 
-Window_VictoryLevelUp.prototype.drawDarkRects = function() {
+  Window_VictoryLevelUp.prototype.drawDarkRects = function () {
     for (var i = 0; i < 9; ++i) {
       var rect = this.itemRect(i);
       this.drawDarkRect(rect.x, rect.y, rect.width, rect.height);
     }
-};
+  };
 
-Window_VictoryLevelUp.prototype.itemRect = function(index) {
-  var rect = new Rectangle();
-  rect.x = MageStudios.Param.ALUSkillWidth + this.standardPadding() * 2;
-  rect.y = index * this.lineHeight();
-  rect.width = this.contents.width;
-  rect.width -= this.widthArea() * 2;
-  rect.height = this.lineHeight();
-  return rect;
-};
+  Window_VictoryLevelUp.prototype.itemRect = function (index) {
+    var rect = new Rectangle();
+    rect.x = MageStudios.Param.ALUSkillWidth + this.standardPadding() * 2;
+    rect.y = index * this.lineHeight();
+    rect.width = this.contents.width;
+    rect.width -= this.widthArea() * 2;
+    rect.height = this.lineHeight();
+    return rect;
+  };
 
-Window_VictoryLevelUp.prototype.drawDarkRect = function(dx, dy, dw, dh) {
+  Window_VictoryLevelUp.prototype.drawDarkRect = function (dx, dy, dw, dh) {
     var color = this.gaugeBackColor();
     this.changePaintOpacity(false);
     this.contents.fillRect(dx + 1, dy + 1, dw - 2, dh - 2, color);
     this.changePaintOpacity(true);
-};
+  };
 
-Window_VictoryLevelUp.prototype.drawStatChanges = function() {
+  Window_VictoryLevelUp.prototype.drawStatChanges = function () {
     this.contents.fontSize = MageStudios.Param.ALUFontSize;
     for (var i = 0; i < 9; ++i) {
       var rect = this.itemRect(i);
@@ -356,9 +346,9 @@ Window_VictoryLevelUp.prototype.drawStatChanges = function() {
       this.drawNewParam(i, rect);
       this.drawParamDifference(i, rect);
     }
-};
+  };
 
-Window_VictoryLevelUp.prototype.drawParamName = function(index, rect) {
+  Window_VictoryLevelUp.prototype.drawParamName = function (index, rect) {
     var x = rect.x + this.textPadding();
     var y = rect.y;
     if (index === 0) {
@@ -368,18 +358,18 @@ Window_VictoryLevelUp.prototype.drawParamName = function(index, rect) {
     }
     this.changeTextColor(this.systemColor());
     this.drawText(text, x, y, this._paramNameWidth);
-};
+  };
 
-Window_VictoryLevelUp.prototype.drawRightArrow = function(rect) {
+  Window_VictoryLevelUp.prototype.drawRightArrow = function (rect) {
     var x = rect.width + this.textPadding() + rect.x;
     var y = rect.y;
     x -= this._paramValueWidth + this._arrowWidth + this._bonusValueWidth;
-    var dw = this.textWidth('\u2192' + ' ');
+    var dw = this.textWidth("\u2192" + " ");
     this.changeTextColor(this.systemColor());
-    this.drawText('\u2192', x, y, dw, 'center');
-};
+    this.drawText("\u2192", x, y, dw, "center");
+  };
 
-Window_VictoryLevelUp.prototype.drawCurrentParam = function(index, rect) {
+  Window_VictoryLevelUp.prototype.drawCurrentParam = function (index, rect) {
     var x = rect.width - this.textPadding() + rect.x;
     var y = rect.y;
     x -= this._paramValueWidth * 2 + this._arrowWidth + this._bonusValueWidth;
@@ -387,12 +377,14 @@ Window_VictoryLevelUp.prototype.drawCurrentParam = function(index, rect) {
     if (index === 0) {
       var text = MageStudios.Util.toGroup(this._actor._preVictoryLv);
     } else {
-      var text = MageStudios.Util.toGroup(this._actor._preVictoryParams[index - 1]);
+      var text = MageStudios.Util.toGroup(
+        this._actor._preVictoryParams[index - 1]
+      );
     }
-    this.drawText(text, x, y, this._paramValueWidth, 'right');
-};
+    this.drawText(text, x, y, this._paramValueWidth, "right");
+  };
 
-Window_VictoryLevelUp.prototype.drawNewParam = function(index, rect) {
+  Window_VictoryLevelUp.prototype.drawNewParam = function (index, rect) {
     var x = rect.width - this.textPadding() + rect.x;
     x -= this._paramValueWidth + this._bonusValueWidth;
     var y = rect.y;
@@ -405,10 +397,10 @@ Window_VictoryLevelUp.prototype.drawNewParam = function(index, rect) {
     }
     var text = MageStudios.Util.toGroup(newValue);
     this.changeTextColor(this.paramchangeTextColor(diffvalue));
-    this.drawText(text, x, y, this._paramValueWidth, 'right');
-};
+    this.drawText(text, x, y, this._paramValueWidth, "right");
+  };
 
-Window_VictoryLevelUp.prototype.drawParamDifference = function(index, rect) {
+  Window_VictoryLevelUp.prototype.drawParamDifference = function (index, rect) {
     if (this._bonusValueWidth <= 0) return;
     var x = rect.width - this.textPadding() + rect.x;
     x -= this._bonusValueWidth;
@@ -425,14 +417,14 @@ Window_VictoryLevelUp.prototype.drawParamDifference = function(index, rect) {
     this.changeTextColor(this.paramchangeTextColor(diffvalue));
     var text = MageStudios.Util.toGroup(diffvalue);
     if (diffvalue > 0) {
-      text = ' (+' + text + ')';
+      text = " (+" + text + ")";
     } else {
-      text = ' (' + text + ')';
+      text = " (" + text + ")";
     }
-    this.drawText(text, x, y, this._bonusValueWidth, 'left');
-};
+    this.drawText(text, x, y, this._bonusValueWidth, "left");
+  };
 
-Window_VictoryLevelUp.prototype.drawLearnedSkillsTitle = function() {
+  Window_VictoryLevelUp.prototype.drawLearnedSkillsTitle = function () {
     var total = this._actor._victorySkills.length;
     if (total <= 0) return;
     this.resetFontSettings();
@@ -446,21 +438,17 @@ Window_VictoryLevelUp.prototype.drawLearnedSkillsTitle = function() {
     var rect = this.itemRect(0);
     var wx = rect.x + rect.width;
     var wy = 0;
-    this.drawText(text, wx, wy, this.widthArea(), 'center');
-};
+    this.drawText(text, wx, wy, this.widthArea(), "center");
+  };
 
-//=============================================================================
-// Window_VictorySkills
-//=============================================================================
-
-function Window_VictorySkills() {
+  function Window_VictorySkills() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_VictorySkills.prototype = Object.create(Window_Selectable.prototype);
-Window_VictorySkills.prototype.constructor = Window_VictorySkills;
+  Window_VictorySkills.prototype = Object.create(Window_Selectable.prototype);
+  Window_VictorySkills.prototype.constructor = Window_VictorySkills;
 
-Window_VictorySkills.prototype.initialize = function(actor) {
+  Window_VictorySkills.prototype.initialize = function (actor) {
     var ww = this.windowWidth();
     var wx = Graphics.boxWidth - ww;
     var wh = this.windowHeight();
@@ -469,110 +457,110 @@ Window_VictorySkills.prototype.initialize = function(actor) {
     this.opacity = 0;
     this.openness = 0;
     this.setActor(actor);
-};
+  };
 
-Window_VictorySkills.prototype.windowWidth = function() {
+  Window_VictorySkills.prototype.windowWidth = function () {
     if (this._widthArea) return this._widthArea;
-    var widthArea = MageStudios.Param.ALUSkillWidth + this.standardPadding() * 3;
+    var widthArea =
+      MageStudios.Param.ALUSkillWidth + this.standardPadding() * 3;
     var ww = Window_Base._faceWidth;
     this._widthArea = Math.max(ww, widthArea);
     return this._widthArea;
-};
+  };
 
-Window_VictorySkills.prototype.windowHeight = function() {
+  Window_VictorySkills.prototype.windowHeight = function () {
     var value = Graphics.boxHeight;
     value -= this.fittingHeight(1);
     value -= this.lineHeight();
     return value;
-};
+  };
 
-Window_VictorySkills.prototype.setActor = function(actor) {
+  Window_VictorySkills.prototype.setActor = function (actor) {
     this._actor = actor;
     this.select(0);
     if (this._actor._victorySkills.length <= 0) this.select(-1);
     this.activate();
     this.refresh();
-};
+  };
 
-Window_VictorySkills.prototype.maxItems = function() {
+  Window_VictorySkills.prototype.maxItems = function () {
     return this._data ? this._data.length : 1;
-};
+  };
 
-Window_VictorySkills.prototype.refresh = function() {
+  Window_VictorySkills.prototype.refresh = function () {
     this.makeItemList();
     this.createContents();
     this.drawAllItems();
-};
+  };
 
-Window_VictorySkills.prototype.makeItemList = function() {
+  Window_VictorySkills.prototype.makeItemList = function () {
     this._data = this._actor._victorySkills.slice();
-};
+  };
 
-Window_VictorySkills.prototype.drawItem = function(index) {
+  Window_VictorySkills.prototype.drawItem = function (index) {
     var item = $dataSkills[this._data[index]];
     if (!item) return;
     var rect = this.itemRect(index);
     this.drawItemName(item, rect.x, rect.y, rect.width);
-};
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.ALU.Scene_Battle_addCustomVictorySteps =
+  MageStudios.ALU.Scene_Battle_addCustomVictorySteps =
     Scene_Battle.prototype.addCustomVictorySteps;
-Scene_Battle.prototype.addCustomVictorySteps = function(array) {
-    array = MageStudios.ALU.Scene_Battle_addCustomVictorySteps.call(this, array);
-    if (!array.contains('LEVEL')) array.push('LEVEL');
+  Scene_Battle.prototype.addCustomVictorySteps = function (array) {
+    array = MageStudios.ALU.Scene_Battle_addCustomVictorySteps.call(
+      this,
+      array
+    );
+    if (!array.contains("LEVEL")) array.push("LEVEL");
     return array;
-};
+  };
 
-MageStudios.ALU.Scene_Battle_updateVictorySteps =
+  MageStudios.ALU.Scene_Battle_updateVictorySteps =
     Scene_Battle.prototype.updateVictorySteps;
-Scene_Battle.prototype.updateVictorySteps = function() {
+  Scene_Battle.prototype.updateVictorySteps = function () {
     MageStudios.ALU.Scene_Battle_updateVictorySteps.call(this);
-    if (this.isVictoryStep('LEVEL')) this.updateVictoryLevelUp();
-};
+    if (this.isVictoryStep("LEVEL")) this.updateVictoryLevelUp();
+  };
 
-Scene_Battle.prototype.updateVictoryLevelUp = function() {
+  Scene_Battle.prototype.updateVictoryLevelUp = function () {
     if (!this._victoryLevelWindow) {
       this.createVictoryLevelUp();
     } else if (this.victoryTriggerContinue()) {
       this.continueVictoryLevelUp();
     }
-};
+  };
 
-Scene_Battle.prototype.createVictoryLevelUp = function() {
+  Scene_Battle.prototype.createVictoryLevelUp = function () {
     if (this.meetVictoryLevelUpConditions()) {
       this.setupNextAftermathLevelUpActor();
     } else {
       this.processNextVictoryStep();
     }
-};
+  };
 
-Scene_Battle.prototype.meetVictoryLevelUpConditions = function() {
+  Scene_Battle.prototype.meetVictoryLevelUpConditions = function () {
     if (!$gameSystem.isShowAftermathLevelUp()) return false;
     return BattleManager.aftermathLeveledActors().length > 0;
-};
+  };
 
-Scene_Battle.prototype.continueVictoryLevelUp = function() {
+  Scene_Battle.prototype.continueVictoryLevelUp = function () {
     if (this.meetVictoryLevelUpConditions()) {
       SoundManager.playOk();
       this.setupNextAftermathLevelUpActor();
     } else {
       this.finishVictoryLevelUp();
     }
-};
+  };
 
-Scene_Battle.prototype.finishVictoryLevelUp = function() {
+  Scene_Battle.prototype.finishVictoryLevelUp = function () {
     SoundManager.playOk();
     this._victoryLevelWindow.close();
     this._victorySkillWindow.close();
     this._victorySkillWindow.deactivate();
     this.processNextVictoryStep();
-};
+  };
 
-Scene_Battle.prototype.setupNextAftermathLevelUpActor = function() {
+  Scene_Battle.prototype.setupNextAftermathLevelUpActor = function () {
     this._levelUpActor = BattleManager.aftermathLeveledActors().shift();
     var fmt = MageStudios.Param.ALUTitleFmt;
     var text = fmt.format(this._levelUpActor.name(), this._levelUpActor.level);
@@ -588,21 +576,13 @@ Scene_Battle.prototype.setupNextAftermathLevelUpActor = function() {
       this._victoryLevelWindow.setActor(this._levelUpActor);
       this._victorySkillWindow.setActor(this._levelUpActor);
     }
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_VictoryAftermath
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
+  }
+}

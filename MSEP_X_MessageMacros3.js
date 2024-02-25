@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Message Core Extension - Message Macros 3
-// MSEP_X_MessageMacros3.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MessageMacros3 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MsgMacro = MageStudios.MsgMacro || {};
-MageStudios.MsgMacro.version = 1.00;
+MageStudios.MsgMacro.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_MessageCore.js) Adds macros 201 to 300
  * for your game's message system.
  * @author Mage Studios Engine Plugins
@@ -1450,31 +1444,32 @@ MageStudios.MsgMacro.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_MessageCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MessageMacros3");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageMacros3');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.MacroMax = 300;
-for (MageStudios.i = 201; MageStudios.i < MageStudios.Param.MacroMax + 1; ++MageStudios.i) {
-  MageStudios.tx = 'Macro ' + MageStudios.i + ' Text';
-  MageStudios.MsgMacro[MageStudios.i] = String(MageStudios.Parameters[MageStudios.tx]);
-  MageStudios.MsgMacro[MageStudios.i] = MageStudios.MsgMacro[MageStudios.i].replace(/\\/g, '\x1b');
-  MageStudios.tx = 'Macro ' + MageStudios.i + ' Name';
-  MageStudios.tx = String(MageStudios.Parameters[MageStudios.tx]);
-  if (!MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()]) {
-    MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()] = MageStudios.i;
+  MageStudios.Param.MacroMax = 300;
+  for (
+    MageStudios.i = 201;
+    MageStudios.i < MageStudios.Param.MacroMax + 1;
+    ++MageStudios.i
+  ) {
+    MageStudios.tx = "Macro " + MageStudios.i + " Text";
+    MageStudios.MsgMacro[MageStudios.i] = String(
+      MageStudios.Parameters[MageStudios.tx]
+    );
+    MageStudios.MsgMacro[MageStudios.i] = MageStudios.MsgMacro[
+      MageStudios.i
+    ].replace(/\\/g, "\x1b");
+    MageStudios.tx = "Macro " + MageStudios.i + " Name";
+    MageStudios.tx = String(MageStudios.Parameters[MageStudios.tx]);
+    if (!MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()]) {
+      MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()] = MageStudios.i;
+    }
+    MageStudios.MsgMacroArr[MageStudios.i] = new RegExp(
+      "\x1b" + MageStudios.tx,
+      "gi"
+    );
   }
-  MageStudios.MsgMacroArr[MageStudios.i] = new RegExp('\x1b' + MageStudios.tx, 'gi');
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+}

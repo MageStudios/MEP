@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Improved Battlebacks
-// MSEP_ImprovedBattlebacks.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ImprovedBattlebacks = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IBB = MageStudios.IBB || {};
-MageStudios.IBB.version = 1.00;
+MageStudios.IBB.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Changes how RPG Maker MV handles battlebacks.
  * Battlebacks are now more flexible with what they can do.
  * @author Mage Studios Engine Plugins
@@ -235,23 +229,18 @@ MageStudios.IBB.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ImprovedBattlebacks');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ImprovedBattlebacks");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.IBBScale = eval(String(MageStudios.Parameters['Scale Battlebacks']));
-MageStudios.Param.IBBMargin = Number(MageStudios.Parameters['Battleback Margin']);
+MageStudios.Param.IBBScale = eval(
+  String(MageStudios.Parameters["Scale Battlebacks"])
+);
+MageStudios.Param.IBBMargin = Number(
+  MageStudios.Parameters["Battleback Margin"]
+);
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-BattleManager.alterBattleback = function(line) {
+BattleManager.alterBattleback = function (line) {
   if (line.match(/(?:BATTLEBACK|BATTLE BACK)[ ](\d+)/i)) {
     var id = Math.max(1, parseInt(RegExp.$1));
     var spriteset = SceneManager._scene._spriteset;
@@ -259,24 +248,22 @@ BattleManager.alterBattleback = function(line) {
   } else {
     return;
   }
-  // TESTING
+
   if (line.match(/TESTING/i)) {
-    console.log('Test Passed');
-  // CHANGE TO
+    console.log("Test Passed");
   } else if (line.match(/CHANGE TO/i)) {
     if (line.match(/:[ ](.*),[ ](.*),[ ](\d+)/i)) {
-      var folder = 'img/' + String(RegExp.$1) + '/';
+      var folder = "img/" + String(RegExp.$1) + "/";
       var filename = String(RegExp.$2);
       var hue = Number(RegExp.$3).clamp(0, 360);
     } else if (line.match(/:[ ](.*),[ ](.*)/i)) {
-      var folder = 'img/' + String(RegExp.$1) + '/';
+      var folder = "img/" + String(RegExp.$1) + "/";
       var filename = String(RegExp.$2);
       var hue = 0;
     } else {
       return;
     }
     spriteset.changeBattlebackTo(id, folder, filename, hue);
-  // FADE IN
   } else if (line.match(/FADE IN/i)) {
     if (line.match(/:[ ](\d+)/i)) {
       var duration = parseInt(RegExp.$1);
@@ -284,7 +271,6 @@ BattleManager.alterBattleback = function(line) {
       var duration = 20;
     }
     spriteset.battlebackFadeIn(id, duration);
-  // FADE OUT
   } else if (line.match(/FADE OUT/i)) {
     if (line.match(/:[ ](\d+)/i)) {
       var duration = parseInt(RegExp.$1);
@@ -292,7 +278,6 @@ BattleManager.alterBattleback = function(line) {
       var duration = 20;
     }
     spriteset.battlebackFadeOut(id, duration);
-  // OPACITY
   } else if (line.match(/OPACITY/i)) {
     if (line.match(/:[ ](\d+)([%％])/i)) {
       var rate = parseFloat(RegExp.$1) * 0.01;
@@ -303,25 +288,21 @@ BattleManager.alterBattleback = function(line) {
       return;
     }
     spriteset.battlebackOpacity(id, value);
-  // RESET SCROLL SPEED
   } else if (line.match(/RESET SCROLL SPEED/i)) {
     spriteset.resetScrollSpeeds(id);
-  // SCROLL SPEED X
   } else if (line.match(/SCROLL SPEED X:[ ]([\+\-]\d+)/i)) {
     var speed = parseInt(RegExp.$1);
     spriteset.setBattlebackScrollSpeedX(id, speed);
-  // SCROLL SPEED Y
   } else if (line.match(/SCROLL SPEED Y:[ ]([\+\-]\d+)/i)) {
     var speed = parseInt(RegExp.$1);
     spriteset.setBattlebackScrollSpeedY(id, speed);
-  // ADD
   } else if (line.match(/ADD/i)) {
     if (line.match(/:[ ](.*),[ ](.*),[ ](\d+)/i)) {
-      var folder = 'img/' + String(RegExp.$1) + '/';
+      var folder = "img/" + String(RegExp.$1) + "/";
       var filename = String(RegExp.$2);
       var hue = Number(RegExp.$3).clamp(0, 360);
     } else if (line.match(/:[ ](.*),[ ](.*)/i)) {
-      var folder = 'img/' + String(RegExp.$1) + '/';
+      var folder = "img/" + String(RegExp.$1) + "/";
       var filename = String(RegExp.$2);
       var hue = 0;
     } else {
@@ -331,49 +312,42 @@ BattleManager.alterBattleback = function(line) {
     var opacity = 0;
     var duration = 20;
     spriteset.addNewBattleback(id, bitmap, opacity, duration);
-  // REMOVE
   } else if (line.match(/REMOVE/i)) {
     spriteset.removeBattleback(id);
   }
 };
 
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.IBB.BattleManager_pAS = BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  if (actionName.match(/(?:BATTLEBACK|BATTLE BACK)[ ](\d+)/i)) {
-    var line = actionName + ': ';
-    var str = '';
-    var length = actionArgs.length;
-    for (var i = 0; i < length; ++i) {
-      str += actionArgs[i];
-      if (i !== length - 1) str += ', ';
+  MageStudios.IBB.BattleManager_pAS = BattleManager.processActionSequence;
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (actionName.match(/(?:BATTLEBACK|BATTLE BACK)[ ](\d+)/i)) {
+      var line = actionName + ": ";
+      var str = "";
+      var length = actionArgs.length;
+      for (var i = 0; i < length; ++i) {
+        str += actionArgs[i];
+        if (i !== length - 1) str += ", ";
+      }
+      line += str.trim();
+      this.alterBattleback(line);
+      return false;
+    } else {
+      return MageStudios.IBB.BattleManager_pAS.call(
+        this,
+        actionName,
+        actionArgs
+      );
     }
-    line += str.trim();
-    this.alterBattleback(line);
-    return false;
-  } else {
-    return MageStudios.IBB.BattleManager_pAS.call(this, actionName, actionArgs);
-  }
-};
-
-}; // Imported.MSEP_BattleEngineCore
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
+  };
+}
 
 MageStudios.IBB.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.IBB.Game_Interpreter_pluginCommand.call(this, command, args);
   if (!$gameParty.inBattle()) return;
   BattleManager.alterBattleback(this._params[0]);
 };
-
-//=============================================================================
-// Sprite_ImprovedBattleback
-//=============================================================================
 
 function Sprite_ImprovedBattleback() {
   this.initialize.apply(this, arguments);
@@ -382,14 +356,14 @@ function Sprite_ImprovedBattleback() {
 Sprite_ImprovedBattleback.prototype = Object.create(TilingSprite.prototype);
 Sprite_ImprovedBattleback.prototype.constructor = Sprite_ImprovedBattleback;
 
-Sprite_ImprovedBattleback.prototype.initialize = function(bitmap, type) {
+Sprite_ImprovedBattleback.prototype.initialize = function (bitmap, type) {
   this._type = type || 1;
   TilingSprite.prototype.initialize.call(this, bitmap);
   this.resetScrollSpeeds();
   this.resetFadeSettings();
 };
 
-Sprite_ImprovedBattleback.prototype.setup = function(bf, sp1) {
+Sprite_ImprovedBattleback.prototype.setup = function (bf, sp1) {
   this._initialLocationSetup = false;
   this._battleField = bf;
   this._sprite1 = sp1;
@@ -402,7 +376,7 @@ Sprite_ImprovedBattleback.prototype.setup = function(bf, sp1) {
   if (this._sprite1 !== this) this._sprite1.setup(bf, sp1);
 };
 
-Sprite_ImprovedBattleback.prototype.update = function() {
+Sprite_ImprovedBattleback.prototype.update = function () {
   TilingSprite.prototype.update.call(this);
   this.updateInitialLocation();
   if (!this._initialLocationSetup) return;
@@ -411,7 +385,7 @@ Sprite_ImprovedBattleback.prototype.update = function() {
   this.updateFadeIn();
 };
 
-Sprite_ImprovedBattleback.prototype.updateInitialLocation = function() {
+Sprite_ImprovedBattleback.prototype.updateInitialLocation = function () {
   if (this._initialLocationSetup) return;
   if (!this._battleField) return;
   if (!this._sprite1) return;
@@ -428,7 +402,7 @@ Sprite_ImprovedBattleback.prototype.updateInitialLocation = function() {
   }
 };
 
-Sprite_ImprovedBattleback.prototype.setupScaling = function() {
+Sprite_ImprovedBattleback.prototype.setupScaling = function () {
   var ratioX = Graphics.boxWidth / this.bitmap.width;
   var ratioY = Graphics.boxHeight / this.bitmap.height;
   if (ratioX > 1.0) {
@@ -445,14 +419,14 @@ Sprite_ImprovedBattleback.prototype.setupScaling = function() {
   }
 };
 
-Sprite_ImprovedBattleback.prototype.setupLocationX = function() {
+Sprite_ImprovedBattleback.prototype.setupLocationX = function () {
   var width = this._battleField.width;
   var height = this._battleField.height;
   var sprite1 = this._sprite1;
   this.origin.x = sprite1.x + (this.bitmap.width - width) / 2;
 };
 
-Sprite_ImprovedBattleback.prototype.setupLocationY = function() {
+Sprite_ImprovedBattleback.prototype.setupLocationY = function () {
   if (!$gameSystem.isSideView()) return;
   var width = this._battleField.width;
   var height = this._battleField.height;
@@ -460,74 +434,76 @@ Sprite_ImprovedBattleback.prototype.setupLocationY = function() {
   this.origin.y = sprite1.y + this.bitmap.height - height;
 };
 
-Sprite_ImprovedBattleback.prototype.updateScroll = function() {
+Sprite_ImprovedBattleback.prototype.updateScroll = function () {
   this.origin.x += this._scrollSpeedX;
   this.origin.y += this._scrollSpeedY;
 };
 
-Sprite_ImprovedBattleback.prototype.resetScrollSpeeds = function() {
+Sprite_ImprovedBattleback.prototype.resetScrollSpeeds = function () {
   this._scrollSpeedX = 0;
   this._scrollSpeedY = 0;
 };
 
-Sprite_ImprovedBattleback.prototype.setScrollSpeedX = function(value) {
+Sprite_ImprovedBattleback.prototype.setScrollSpeedX = function (value) {
   this._scrollSpeedX = value;
 };
 
-Sprite_ImprovedBattleback.prototype.setScrollSpeedY = function(value) {
+Sprite_ImprovedBattleback.prototype.setScrollSpeedY = function (value) {
   this._scrollSpeedY = value;
 };
 
-Sprite_ImprovedBattleback.prototype.changeBitmap = function(bitmap) {
+Sprite_ImprovedBattleback.prototype.changeBitmap = function (bitmap) {
   if (!bitmap) return;
   if (bitmap.width <= 0) return;
   this.bitmap = bitmap;
   this._initialLocationSetup = false;
 };
 
-Sprite_ImprovedBattleback.prototype.resetFadeSettings = function() {
+Sprite_ImprovedBattleback.prototype.resetFadeSettings = function () {
   this._fadeOutDuration = 0;
   this._fadeInDuration = 0;
 };
 
-Sprite_ImprovedBattleback.prototype.setFadeOut = function(duration) {
+Sprite_ImprovedBattleback.prototype.setFadeOut = function (duration) {
   this._fadeOutDuration = Math.round(duration);
 };
 
-Sprite_ImprovedBattleback.prototype.updateFadeOut = function() {
+Sprite_ImprovedBattleback.prototype.updateFadeOut = function () {
   if (this._fadeOutDuration <= 0) return;
   var d = this._fadeOutDuration;
   this.opacity = (this.opacity * (d - 1)) / d;
   --this._fadeOutDuration;
 };
 
-Sprite_ImprovedBattleback.prototype.setFadeIn = function(duration) {
+Sprite_ImprovedBattleback.prototype.setFadeIn = function (duration) {
   this._fadeInDuration = Math.round(duration);
 };
 
-Sprite_ImprovedBattleback.prototype.updateFadeIn = function() {
+Sprite_ImprovedBattleback.prototype.updateFadeIn = function () {
   if (this._fadeInDuration <= 0) return;
   var d = this._fadeInDuration;
   this.opacity = (this.opacity * (d - 1) + 255) / d;
   --this._fadeInDuration;
 };
 
-Sprite_ImprovedBattleback.prototype.setOpacity = function(value) {
+Sprite_ImprovedBattleback.prototype.setOpacity = function (value) {
   this.resetFadeSettings();
   this.opacity = Math.round(value);
 };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-Spriteset_Battle.prototype.createBattleback = function() {
+Spriteset_Battle.prototype.createBattleback = function () {
   this._loadingImages = [null];
   this._battlebackSprites = [null];
   this._battlebackToRemove = [];
-  this._back1Sprite = new Sprite_ImprovedBattleback(this.battleback1Bitmap(),1);
+  this._back1Sprite = new Sprite_ImprovedBattleback(
+    this.battleback1Bitmap(),
+    1
+  );
   this._battlebackSprites.push(this._back1Sprite);
-  this._back2Sprite = new Sprite_ImprovedBattleback(this.battleback2Bitmap(),2);
+  this._back2Sprite = new Sprite_ImprovedBattleback(
+    this.battleback2Bitmap(),
+    2
+  );
   this._battlebackSprites.push(this._back2Sprite);
   this._back1Sprite.setup(this._battleField, this._back1Sprite);
   this._back2Sprite.setup(this._battleField, this._back1Sprite);
@@ -537,22 +513,21 @@ Spriteset_Battle.prototype.createBattleback = function() {
 
 MageStudios.IBB.Spriteset_Battle_updateBattleback =
   Spriteset_Battle.prototype.updateBattleback;
-Spriteset_Battle.prototype.updateBattleback = function() {
+Spriteset_Battle.prototype.updateBattleback = function () {
   MageStudios.IBB.Spriteset_Battle_updateBattleback.call(this);
   if (!Imported.MSEP_BattleEngineCore) this.updateBattlebackZCoordinates();
   this.updateBattlebackChangeTo();
   this.updateBattlebackRemoval();
 };
 
-Spriteset_Battle.prototype.locateBattleback = function() {
-};
+Spriteset_Battle.prototype.locateBattleback = function () {};
 
-Spriteset_Battle.prototype.updateBattlebackZCoordinates = function() {
+Spriteset_Battle.prototype.updateBattlebackZCoordinates = function () {
   this.updateBattlebackGroupRemove();
   this.updateBattlebackGroupAdd();
 };
 
-Spriteset_Battle.prototype.updateBattlebackGroupRemove = function() {
+Spriteset_Battle.prototype.updateBattlebackGroupRemove = function () {
   if (!this._battlebackSprites) return;
   var length = this._battlebackSprites.length;
   for (var i = 0; i < length; ++i) {
@@ -561,7 +536,7 @@ Spriteset_Battle.prototype.updateBattlebackGroupRemove = function() {
   }
 };
 
-Spriteset_Battle.prototype.updateBattlebackGroupAdd = function() {
+Spriteset_Battle.prototype.updateBattlebackGroupAdd = function () {
   if (!this._battlebackSprites) return;
   var length = this._battlebackSprites.length;
   for (var i = length; i > 0; --i) {
@@ -570,32 +545,36 @@ Spriteset_Battle.prototype.updateBattlebackGroupAdd = function() {
   }
 };
 
-Spriteset_Battle.prototype.setBattlebackScrollSpeedX = function(index, value) {
+Spriteset_Battle.prototype.setBattlebackScrollSpeedX = function (index, value) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].setScrollSpeedX(value);
 };
 
-Spriteset_Battle.prototype.setBattlebackScrollSpeedY = function(index, value) {
+Spriteset_Battle.prototype.setBattlebackScrollSpeedY = function (index, value) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].setScrollSpeedY(value);
 };
 
-Spriteset_Battle.prototype.resetScrollSpeeds = function(index) {
+Spriteset_Battle.prototype.resetScrollSpeeds = function (index) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].resetScrollSpeeds();
 };
 
-Spriteset_Battle.prototype.changeBattlebackTo = 
-function(index, folder, file, h) {
+Spriteset_Battle.prototype.changeBattlebackTo = function (
+  index,
+  folder,
+  file,
+  h
+) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._loadingImages[index] = ImageManager.loadBitmap(folder, file, h, true);
 };
 
-Spriteset_Battle.prototype.updateBattlebackChangeTo = function() {
+Spriteset_Battle.prototype.updateBattlebackChangeTo = function () {
   var length = this._battlebackSprites.length;
   var pass = true;
   for (var i = 0; i < length; ++i) {
@@ -617,26 +596,30 @@ Spriteset_Battle.prototype.updateBattlebackChangeTo = function() {
   }
 };
 
-Spriteset_Battle.prototype.battlebackFadeOut = function(index, duration) {
+Spriteset_Battle.prototype.battlebackFadeOut = function (index, duration) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].setFadeOut(duration);
 };
 
-Spriteset_Battle.prototype.battlebackFadeIn = function(index, duration) {
+Spriteset_Battle.prototype.battlebackFadeIn = function (index, duration) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].setFadeIn(duration);
 };
 
-Spriteset_Battle.prototype.battlebackOpacity = function(index, value) {
+Spriteset_Battle.prototype.battlebackOpacity = function (index, value) {
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
   this._battlebackSprites[index].setOpacity(value);
 };
 
-Spriteset_Battle.prototype.addNewBattleback = 
-function(index, bitmap, opacity, duration) {
+Spriteset_Battle.prototype.addNewBattleback = function (
+  index,
+  bitmap,
+  opacity,
+  duration
+) {
   if (index <= 2) return;
   if (!this._battlebackSprites) return;
   if (this._battlebackSprites[index]) return;
@@ -650,7 +633,7 @@ function(index, bitmap, opacity, duration) {
   this.updateBattlebackZCoordinates();
 };
 
-Spriteset_Battle.prototype.removeBattleback = function(index, duration) {
+Spriteset_Battle.prototype.removeBattleback = function (index, duration) {
   if (index <= 2) return;
   if (!this._battlebackSprites) return;
   if (!this._battlebackSprites[index]) return;
@@ -659,7 +642,7 @@ Spriteset_Battle.prototype.removeBattleback = function(index, duration) {
   this._battlebackToRemove.push(index);
 };
 
-Spriteset_Battle.prototype.updateBattlebackRemoval = function() {
+Spriteset_Battle.prototype.updateBattlebackRemoval = function () {
   var length = this._battlebackToRemove.length;
   var toRemove = [];
   for (var i = 0; i < length; ++i) {
@@ -678,7 +661,3 @@ Spriteset_Battle.prototype.updateBattlebackRemoval = function() {
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

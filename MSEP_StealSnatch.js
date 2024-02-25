@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Steal & Snatch
-// MSEP_StealSnatch.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_StealSnatch = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Steal = MageStudios.Steal || {};
-MageStudios.Steal.version = 1.00;
+MageStudios.Steal.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows your actors to be able to steal and snatch
  * items from enemies.
  * @author Mage Studios Engine Plugins
@@ -184,7 +178,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 120
- * 
+ *
  * @param Failure Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -208,7 +202,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 120
- * 
+ *
  * @param Empty Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -232,7 +226,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 120
- * 
+ *
  * @param Item Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -256,7 +250,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 120
- * 
+ *
  * @param Weapon Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -280,7 +274,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 150
- * 
+ *
  * @param Armor Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -304,7 +298,7 @@ MageStudios.Steal.version = 1.00;
  * @parent ---Sound Effects---
  * @desc Pitch for this sound effect.
  * @default 120
- * 
+ *
  * @param Gold Pan
  * @parent ---Sound Effects---
  * @desc Pan for this sound effect.
@@ -564,80 +558,91 @@ MageStudios.Steal.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_StealSnatch');
+MageStudios.Parameters = PluginManager.parameters("MSEP_StealSnatch");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.StealBonusFormula = String(MageStudios.Parameters['Bonus Formula']);
+MageStudios.Param.StealBonusFormula = String(
+  MageStudios.Parameters["Bonus Formula"]
+);
 
-MageStudios.Param.StealGold = eval(String(MageStudios.Parameters['Gold Drop']));
-MageStudios.Param.StealGoldRate = Number(MageStudios.Parameters['Gold Rate']);
-MageStudios.Param.StealGoldRemove = eval(String(MageStudios.Parameters['Gold Removal']));
-MageStudios.Param.StealDrops = eval(String(MageStudios.Parameters['Drop Items']));
-MageStudios.Param.StealDropRate = Number(MageStudios.Parameters['Drop Rates']);
-MageStudios.Param.StealDropRemove = eval(String(MageStudios.Parameters['Drop Removal']));
-MageStudios.Param.StealAutoEff = eval(String(MageStudios.Parameters['Automatic Debuff']));
+MageStudios.Param.StealGold = eval(String(MageStudios.Parameters["Gold Drop"]));
+MageStudios.Param.StealGoldRate = Number(MageStudios.Parameters["Gold Rate"]);
+MageStudios.Param.StealGoldRemove = eval(
+  String(MageStudios.Parameters["Gold Removal"])
+);
+MageStudios.Param.StealDrops = eval(
+  String(MageStudios.Parameters["Drop Items"])
+);
+MageStudios.Param.StealDropRate = Number(MageStudios.Parameters["Drop Rates"]);
+MageStudios.Param.StealDropRemove = eval(
+  String(MageStudios.Parameters["Drop Removal"])
+);
+MageStudios.Param.StealAutoEff = eval(
+  String(MageStudios.Parameters["Automatic Debuff"])
+);
 
-MageStudios.Param.StealCenter = eval(String(MageStudios.Parameters['Center Text']));
-MageStudios.Param.StealFail = String(MageStudios.Parameters['Fail Text']);
-MageStudios.Param.StealSuccess = String(MageStudios.Parameters['Success Text']);
-MageStudios.Param.StealEmpty = String(MageStudios.Parameters['Steal Empty']);
-MageStudios.Param.StealGoldFmt = String(MageStudios.Parameters['Gold Format']);
-MageStudios.Param.StealWait = Number(MageStudios.Parameters['Steal Wait']);
+MageStudios.Param.StealCenter = eval(
+  String(MageStudios.Parameters["Center Text"])
+);
+MageStudios.Param.StealFail = String(MageStudios.Parameters["Fail Text"]);
+MageStudios.Param.StealSuccess = String(MageStudios.Parameters["Success Text"]);
+MageStudios.Param.StealEmpty = String(MageStudios.Parameters["Steal Empty"]);
+MageStudios.Param.StealGoldFmt = String(MageStudios.Parameters["Gold Format"]);
+MageStudios.Param.StealWait = Number(MageStudios.Parameters["Steal Wait"]);
 
-MageStudios.Param.SnatchHelpText = String(MageStudios.Parameters['Gold Help Text']);
-MageStudios.Param.SnatchFontSize = Number(MageStudios.Parameters['Success Font Size']);
-MageStudios.Param.SnatchDecimal = Number(MageStudios.Parameters['Decimal Places']);
-MageStudios.Param.SnatchStolen = String(MageStudios.Parameters['Already Stolen']);
+MageStudios.Param.SnatchHelpText = String(
+  MageStudios.Parameters["Gold Help Text"]
+);
+MageStudios.Param.SnatchFontSize = Number(
+  MageStudios.Parameters["Success Font Size"]
+);
+MageStudios.Param.SnatchDecimal = Number(
+  MageStudios.Parameters["Decimal Places"]
+);
+MageStudios.Param.SnatchStolen = String(
+  MageStudios.Parameters["Already Stolen"]
+);
 
 MageStudios.Param.StealSEFail = {
-  name:   String(MageStudios.Parameters['Failure Sound']),
-  volume: Number(MageStudios.Parameters['Failure Volume']),
-  pitch:  Number(MageStudios.Parameters['Failure Pitch']),
-  pan:    Number(MageStudios.Parameters['Failure Pan'])
+  name: String(MageStudios.Parameters["Failure Sound"]),
+  volume: Number(MageStudios.Parameters["Failure Volume"]),
+  pitch: Number(MageStudios.Parameters["Failure Pitch"]),
+  pan: Number(MageStudios.Parameters["Failure Pan"]),
 };
 MageStudios.Param.StealSEEmpty = {
-  name:   String(MageStudios.Parameters['Empty Sound']),
-  volume: Number(MageStudios.Parameters['Empty Volume']),
-  pitch:  Number(MageStudios.Parameters['Empty Pitch']),
-  pan:    Number(MageStudios.Parameters['Empty Pan'])
+  name: String(MageStudios.Parameters["Empty Sound"]),
+  volume: Number(MageStudios.Parameters["Empty Volume"]),
+  pitch: Number(MageStudios.Parameters["Empty Pitch"]),
+  pan: Number(MageStudios.Parameters["Empty Pan"]),
 };
 MageStudios.Param.StealSEItem = {
-  name:   String(MageStudios.Parameters['Item Sound']),
-  volume: Number(MageStudios.Parameters['Item Volume']),
-  pitch:  Number(MageStudios.Parameters['Item Pitch']),
-  pan:    Number(MageStudios.Parameters['Item Pan'])
+  name: String(MageStudios.Parameters["Item Sound"]),
+  volume: Number(MageStudios.Parameters["Item Volume"]),
+  pitch: Number(MageStudios.Parameters["Item Pitch"]),
+  pan: Number(MageStudios.Parameters["Item Pan"]),
 };
 MageStudios.Param.StealSEWeapon = {
-  name:   String(MageStudios.Parameters['Weapon Sound']),
-  volume: Number(MageStudios.Parameters['Weapon Volume']),
-  pitch:  Number(MageStudios.Parameters['Weapon Pitch']),
-  pan:    Number(MageStudios.Parameters['Weapon Pan'])
+  name: String(MageStudios.Parameters["Weapon Sound"]),
+  volume: Number(MageStudios.Parameters["Weapon Volume"]),
+  pitch: Number(MageStudios.Parameters["Weapon Pitch"]),
+  pan: Number(MageStudios.Parameters["Weapon Pan"]),
 };
 MageStudios.Param.StealSEArmor = {
-  name:   String(MageStudios.Parameters['Armor Sound']),
-  volume: Number(MageStudios.Parameters['Armor Volume']),
-  pitch:  Number(MageStudios.Parameters['Armor Pitch']),
-  pan:    Number(MageStudios.Parameters['Armor Pan'])
+  name: String(MageStudios.Parameters["Armor Sound"]),
+  volume: Number(MageStudios.Parameters["Armor Volume"]),
+  pitch: Number(MageStudios.Parameters["Armor Pitch"]),
+  pan: Number(MageStudios.Parameters["Armor Pan"]),
 };
 MageStudios.Param.StealSEGold = {
-  name:   String(MageStudios.Parameters['Gold Sound']),
-  volume: Number(MageStudios.Parameters['Gold Volume']),
-  pitch:  Number(MageStudios.Parameters['Gold Pitch']),
-  pan:    Number(MageStudios.Parameters['Gold Pan'])
+  name: String(MageStudios.Parameters["Gold Sound"]),
+  volume: Number(MageStudios.Parameters["Gold Volume"]),
+  pitch: Number(MageStudios.Parameters["Gold Pitch"]),
+  pan: Number(MageStudios.Parameters["Gold Pan"]),
 };
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.Steal.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.Steal.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_StealSnatch) {
     this.processStealNotetagsI($dataItems);
@@ -659,7 +664,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processStealNotetagsI = function(group) {
+DataManager.processStealNotetagsI = function (group) {
   if (MageStudios.ItemIdRef) return;
   MageStudios.ItemIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -669,7 +674,7 @@ DataManager.processStealNotetagsI = function(group) {
   }
 };
 
-DataManager.processStealNotetagsW = function(group) {
+DataManager.processStealNotetagsW = function (group) {
   if (MageStudios.WeaponIdRef) return;
   MageStudios.WeaponIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -679,7 +684,7 @@ DataManager.processStealNotetagsW = function(group) {
   }
 };
 
-DataManager.processStealNotetagsA = function(group) {
+DataManager.processStealNotetagsA = function (group) {
   if (MageStudios.ArmorIdRef) return;
   MageStudios.ArmorIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -689,7 +694,7 @@ DataManager.processStealNotetagsA = function(group) {
   }
 };
 
-DataManager.processStealNotetags1 = function(group) {
+DataManager.processStealNotetags1 = function (group) {
   var note1i = /<(?:STEAL I|STEAL ITEM)[ ](\d+):[ ](\d+)([%％])>/i;
   var note1w = /<(?:STEAL W|STEAL WEAPON)[ ](\d+):[ ](\d+)([%％])>/i;
   var note1a = /<(?:STEAL A|STEAL ARMOR)[ ](\d+):[ ](\d+)([%％])>/i;
@@ -705,25 +710,25 @@ DataManager.processStealNotetags1 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(note1i)) {
-        var type = 'item';
+        var type = "item";
         var id = parseInt(RegExp.$1);
         var rate = parseFloat(RegExp.$2);
         var entry = this.processCreateStealItem(type, id, rate);
         obj.stealableItems.push(entry);
       } else if (line.match(note1w)) {
-        var type = 'weapon';
+        var type = "weapon";
         var id = parseInt(RegExp.$1);
         var rate = parseFloat(RegExp.$2);
         var entry = this.processCreateStealItem(type, id, rate);
         obj.stealableItems.push(entry);
       } else if (line.match(note1a)) {
-        var type = 'armor';
+        var type = "armor";
         var id = parseInt(RegExp.$1);
         var rate = parseFloat(RegExp.$2);
         var entry = this.processCreateStealItem(type, id, rate);
         obj.stealableItems.push(entry);
       } else if (line.match(note1g)) {
-        var type = 'gold';
+        var type = "gold";
         var id = parseInt(RegExp.$1);
         var rate = parseFloat(RegExp.$2);
         var entry = this.processCreateStealItem(type, id, rate);
@@ -732,13 +737,13 @@ DataManager.processStealNotetags1 = function(group) {
         var name = String(RegExp.$1).toUpperCase();
         var rate = parseFloat(RegExp.$2);
         if (MageStudios.ItemIdRef[name]) {
-          var type = 'item';
+          var type = "item";
           var id = MageStudios.ItemIdRef[name];
         } else if (MageStudios.WeaponIdRef[name]) {
-          var type = 'weapon';
+          var type = "weapon";
           var id = MageStudios.WeaponIdRef[name];
         } else if (MageStudios.ArmorIdRef[name]) {
-          var type = 'armor';
+          var type = "armor";
           var id = MageStudios.ArmorIdRef[name];
         } else {
           continue;
@@ -752,187 +757,187 @@ DataManager.processStealNotetags1 = function(group) {
   }
 };
 
-DataManager.processAutoSetupSteal = function(obj) {
-    obj.stealableItems = [];
-    if (MageStudios.Param.StealGold && obj.gold > 0) {
-      var rate = MageStudios.Param.StealGoldRate * 100;
-      var entry = this.processCreateStealItem('gold', obj.gold, rate, true)
-      obj.stealableItems.push(entry);
+DataManager.processAutoSetupSteal = function (obj) {
+  obj.stealableItems = [];
+  if (MageStudios.Param.StealGold && obj.gold > 0) {
+    var rate = MageStudios.Param.StealGoldRate * 100;
+    var entry = this.processCreateStealItem("gold", obj.gold, rate, true);
+    obj.stealableItems.push(entry);
+  }
+  if (MageStudios.Param.StealDrops) {
+    var max = obj.dropItems.length;
+    for (var i = 0; i < max; ++i) {
+      var drop = obj.dropItems[i];
+      this.processConvertDropStealable(obj, drop);
     }
-    if (MageStudios.Param.StealDrops) {
-      var max = obj.dropItems.length;
-      for (var i = 0; i < max; ++i) {
-        var drop = obj.dropItems[i];
-        this.processConvertDropStealable(obj, drop);
-      }
-    }
+  }
 };
 
-DataManager.processConvertDropStealable = function(obj, drop) {
-    if (!drop) return;
-    if (drop.kind <= 0) return;
-    switch (drop.kind) {
+DataManager.processConvertDropStealable = function (obj, drop) {
+  if (!drop) return;
+  if (drop.kind <= 0) return;
+  switch (drop.kind) {
     case 1:
-      var type = 'item';
+      var type = "item";
       break;
     case 2:
-      var type = 'weapon';
+      var type = "weapon";
       break;
     case 3:
-      var type = 'armor';
+      var type = "armor";
       break;
-    }
-    var id = drop.dataId;
-    var rate = 1 / drop.denominator || 1;
-    rate *= MageStudios.Param.StealDropRate;
-    rate *= 100;
-    var entry = this.processCreateStealItem(type, id, rate, true);
-    obj.stealableItems.push(entry);
+  }
+  var id = drop.dataId;
+  var rate = 1 / drop.denominator || 1;
+  rate *= MageStudios.Param.StealDropRate;
+  rate *= 100;
+  var entry = this.processCreateStealItem(type, id, rate, true);
+  obj.stealableItems.push(entry);
 };
 
-DataManager.processCreateStealItem = function(type, id, rate, drop) {
-    drop = drop || false;
-    var obj = {
-      type: String(type).toLowerCase(),
-      id: parseInt(id),
-      rate: parseFloat(rate) * 0.01,
-      isStolen: false,
-      isDrop: drop
-    }
-    return obj;
+DataManager.processCreateStealItem = function (type, id, rate, drop) {
+  drop = drop || false;
+  var obj = {
+    type: String(type).toLowerCase(),
+    id: parseInt(id),
+    rate: parseFloat(rate) * 0.01,
+    isStolen: false,
+    isDrop: drop,
+  };
+  return obj;
 };
 
-DataManager.processStealNotetags2 = function(group) {
+DataManager.processStealNotetags2 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.steal = 'none';
+    obj.steal = "none";
     obj.stealRate = {
       all: 0,
       item: 0,
       weapon: 0,
       armor: 0,
-      gold: 0
+      gold: 0,
     };
     obj.stealType = [];
-    var evalMode = 'none';
-    obj.stealRateEval = '';
-    obj.stealSuccessEval = '';
+    var evalMode = "none";
+    obj.stealRateEval = "";
+    obj.stealSuccessEval = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:STEAL)>/i)) {
-        obj.steal = 'steal';
-        obj.stealType = ['all'];
+        obj.steal = "steal";
+        obj.stealType = ["all"];
       } else if (line.match(/<(?:STEAL):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'steal';
-        obj.stealType = ['all'];
-        obj.stealRate['all'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "steal";
+        obj.stealType = ["all"];
+        obj.stealRate["all"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:STEAL ITEM)>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('item');
+        obj.steal = "steal";
+        obj.stealType.push("item");
       } else if (line.match(/<(?:STEAL ITEM):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('item');
-        obj.stealRate['item'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "steal";
+        obj.stealType.push("item");
+        obj.stealRate["item"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:STEAL WEAPON)>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('weapon');
+        obj.steal = "steal";
+        obj.stealType.push("weapon");
       } else if (line.match(/<(?:STEAL WEAPON):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('weapon');
-        obj.stealRate['weapon'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "steal";
+        obj.stealType.push("weapon");
+        obj.stealRate["weapon"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:STEAL ARMOR)>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('armor');
+        obj.steal = "steal";
+        obj.stealType.push("armor");
       } else if (line.match(/<(?:STEAL ARMOR):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('armor');
-        obj.stealRate['armor'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "steal";
+        obj.stealType.push("armor");
+        obj.stealRate["armor"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:STEAL GOLD)>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('gold');
+        obj.steal = "steal";
+        obj.stealType.push("gold");
       } else if (line.match(/<(?:STEAL GOLD):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'steal';
-        obj.stealType.push('gold');
-        obj.stealRate['gold'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "steal";
+        obj.stealType.push("gold");
+        obj.stealRate["gold"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:SNATCH)>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType = ['all'];
+        obj.steal = "snatch";
+        obj.stealType = ["all"];
       } else if (line.match(/<(?:SNATCH):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType = ['all'];
-        obj.stealRate['all'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "snatch";
+        obj.stealType = ["all"];
+        obj.stealRate["all"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:SNATCH ITEM)>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('item');
+        obj.steal = "snatch";
+        obj.stealType.push("item");
       } else if (line.match(/<(?:SNATCH ITEM):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('item');
-        obj.stealRate['item'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "snatch";
+        obj.stealType.push("item");
+        obj.stealRate["item"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:SNATCH WEAPON)>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('weapon');
+        obj.steal = "snatch";
+        obj.stealType.push("weapon");
       } else if (line.match(/<(?:SNATCH WEAPON):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('weapon');
-        obj.stealRate['weapon'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "snatch";
+        obj.stealType.push("weapon");
+        obj.stealRate["weapon"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:SNATCH ARMOR)>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('armor');
+        obj.steal = "snatch";
+        obj.stealType.push("armor");
       } else if (line.match(/<(?:SNATCH ARMOR):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('armor');
-        obj.stealRate['armor'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "snatch";
+        obj.stealType.push("armor");
+        obj.stealRate["armor"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:SNATCH GOLD)>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('gold');
+        obj.steal = "snatch";
+        obj.stealType.push("gold");
       } else if (line.match(/<(?:SNATCH GOLD):[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.steal = 'snatch';
-        obj.stealType.push('gold');
-        obj.stealRate['gold'] = parseFloat(RegExp.$1) * 0.01;
+        obj.steal = "snatch";
+        obj.stealType.push("gold");
+        obj.stealRate["gold"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<(?:CUSTOM STEAL RATE)>/i)) {
-        evalMode = 'custom steal rate';
+        evalMode = "custom steal rate";
       } else if (line.match(/<\/(?:CUSTOM STEAL RATE)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom steal rate') {
-        obj.stealRateEval = obj.stealRateEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom steal rate") {
+        obj.stealRateEval = obj.stealRateEval + line + "\n";
       } else if (line.match(/<(?:CUSTOM STEAL SUCCESS EFFECT)>/i)) {
-        evalMode = 'custom steal success effect';
+        evalMode = "custom steal success effect";
       } else if (line.match(/<\/(?:CUSTOM STEAL SUCCESS EFFECT)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom steal success effect') {
-        obj.stealSuccessEval = obj.stealSuccessEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom steal success effect") {
+        obj.stealSuccessEval = obj.stealSuccessEval + line + "\n";
       }
     }
   }
 };
 
-DataManager.processStealNotetags3 = function(group) {
+DataManager.processStealNotetags3 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     this.createStealSound(obj);
     obj.autoDebuff = MageStudios.Param.StealAutoEff;
-    obj.afterStealEval = '';
-    var evalMode = 'none';
+    obj.afterStealEval = "";
+    var evalMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:STEAL SOUND NAME):[ ](.*)>/i)) {
         var value = String(RegExp.$1);
-        obj.stealSound['name'] = value;
+        obj.stealSound["name"] = value;
       } else if (line.match(/<(?:STEAL SOUND VOLUME):[ ](\d+)>/i)) {
         var value = parseInt(RegExp.$1);
-        obj.stealSound['volume'] = value;
+        obj.stealSound["volume"] = value;
       } else if (line.match(/<(?:STEAL SOUND PITCH):[ ](\d+)>/i)) {
         var value = parseInt(RegExp.$1);
-        obj.stealSound['pitch'] = value;
+        obj.stealSound["pitch"] = value;
       } else if (line.match(/<(?:STEAL SOUND PAN):[ ](\d+)>/i)) {
         var value = parseInt(RegExp.$1);
-        obj.stealSound['pan'] = value;
+        obj.stealSound["pan"] = value;
       } else if (line.match(/<(?:ENABLE AUTOMATIC DEBUFF)>/i)) {
         obj.autoDebuff = true;
       } else if (line.match(/<(?:DISABLE AUTOMATIC DEBUFF)>/i)) {
@@ -943,35 +948,35 @@ DataManager.processStealNotetags3 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:AFTER STEAL EFFECT)>/i)) {
-        evalMode = 'after steal effect';
+        evalMode = "after steal effect";
       } else if (line.match(/<\/(?:AFTER STEAL EFFECT)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'after steal effect') {
-        obj.afterStealEval = obj.afterStealEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "after steal effect") {
+        obj.afterStealEval = obj.afterStealEval + line + "\n";
       }
     }
   }
 };
 
-DataManager.processAutomaticStealDebuff = function(obj) {
-    if (this.isItem(obj)) return;
-    for (var i = 0; i < 8; ++i) {
-      var line = 'target._paramPlus[' + i + '] -= item.params[' + i + ']';
-      obj.afterStealEval = obj.afterStealEval + line + '\n';
-    }
+DataManager.processAutomaticStealDebuff = function (obj) {
+  if (this.isItem(obj)) return;
+  for (var i = 0; i < 8; ++i) {
+    var line = "target._paramPlus[" + i + "] -= item.params[" + i + "]";
+    obj.afterStealEval = obj.afterStealEval + line + "\n";
+  }
 };
 
-DataManager.createStealSound = function(obj) {
-    if (this.isWeapon(obj)) {
-      obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEWeapon);
-    } else if (this.isArmor(obj)) {
-      obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEArmor);
-    } else {
-      obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEItem);
-    }
+DataManager.createStealSound = function (obj) {
+  if (this.isWeapon(obj)) {
+    obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEWeapon);
+  } else if (this.isArmor(obj)) {
+    obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEArmor);
+  } else {
+    obj.stealSound = JsonEx.makeDeepCopy(MageStudios.Param.StealSEItem);
+  }
 };
 
-DataManager.processStealNotetags4 = function(group) {
+DataManager.processStealNotetags4 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -1002,159 +1007,145 @@ DataManager.processStealNotetags4 = function(group) {
   }
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.stealableItems = function() {
-    return [];
+Game_Battler.prototype.stealableItems = function () {
+  return [];
 };
 
-Game_Battler.prototype.allItemsStolen = function(skill) {
-    return false;
+Game_Battler.prototype.allItemsStolen = function (skill) {
+  return false;
 };
 
-Game_Battler.prototype.stealRateBonus = function(type) {
-    var rate = 0;
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (!state) continue;
-      rate += state.stealRateBonus[type];
-    }
-    return rate;
+Game_Battler.prototype.stealRateBonus = function (type) {
+  var rate = 0;
+  for (var i = 0; i < this.states().length; ++i) {
+    var state = this.states()[i];
+    if (!state) continue;
+    rate += state.stealRateBonus[type];
+  }
+  return rate;
 };
 
-Game_Battler.prototype.stealRateBonusType = function(type) {
-    var arr = ['all', 'item', 'weapon', 'armor', 'gold'];
-    var index = arr.indexOf(type);
-    return this.stealRateBonus(index);
+Game_Battler.prototype.stealRateBonusType = function (type) {
+  var arr = ["all", "item", "weapon", "armor", "gold"];
+  var index = arr.indexOf(type);
+  return this.stealRateBonus(index);
 };
 
-Game_Battler.prototype.afterStealEval = function(target, skill, item) {
-    if (item.afterStealEval === '') return;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = item.afterStealEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'AFTER STEAL CUSTOM EFFECT ERROR');
-    }
-    user.refresh();
-    target.refresh();
+Game_Battler.prototype.afterStealEval = function (target, skill, item) {
+  if (item.afterStealEval === "") return;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = item.afterStealEval;
+  try {
+    eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "AFTER STEAL CUSTOM EFFECT ERROR");
+  }
+  user.refresh();
+  target.refresh();
 };
 
-Game_Battler.prototype.afterStealSuccessEval = function(target, skill, item) {
-    if (skill.stealSuccessEval === '') return;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = skill.stealSuccessEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'AFTER STEAL SUCCESS EFFECT ERROR');
-    }
-    user.refresh();
-    target.refresh();
+Game_Battler.prototype.afterStealSuccessEval = function (target, skill, item) {
+  if (skill.stealSuccessEval === "") return;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = skill.stealSuccessEval;
+  try {
+    eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "AFTER STEAL SUCCESS EFFECT ERROR");
+  }
+  user.refresh();
+  target.refresh();
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.stealRateBonus = function(type) {
-    var rate = Game_Battler.prototype.stealRateBonus.call(this, type);
-    rate += this.actor().stealRateBonus[type];
-    rate += this.currentClass().stealRateBonus[type];
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (!equip) continue;
-      if (!equip.stealRateBonus) continue;
-      rate += equip.stealRateBonus[type];
-    }
-    return rate;
+Game_Actor.prototype.stealRateBonus = function (type) {
+  var rate = Game_Battler.prototype.stealRateBonus.call(this, type);
+  rate += this.actor().stealRateBonus[type];
+  rate += this.currentClass().stealRateBonus[type];
+  for (var i = 0; i < this.equips().length; ++i) {
+    var equip = this.equips()[i];
+    if (!equip) continue;
+    if (!equip.stealRateBonus) continue;
+    rate += equip.stealRateBonus[type];
+  }
+  return rate;
 };
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
 
 MageStudios.Steal.Game_Enemy_setup = Game_Enemy.prototype.setup;
-Game_Enemy.prototype.setup = function(enemyId, x, y) {
-    MageStudios.Steal.Game_Enemy_setup.call(this, enemyId, x, y);
-    this.createStealableItems();
+Game_Enemy.prototype.setup = function (enemyId, x, y) {
+  MageStudios.Steal.Game_Enemy_setup.call(this, enemyId, x, y);
+  this.createStealableItems();
 };
 
-Game_Enemy.prototype.createStealableItems = function() {
-    this._stealableItems = JsonEx.makeDeepCopy(this.enemy().stealableItems);
+Game_Enemy.prototype.createStealableItems = function () {
+  this._stealableItems = JsonEx.makeDeepCopy(this.enemy().stealableItems);
 };
 
-Game_Enemy.prototype.stealableItems = function() {
-    if (this._stealableItems === undefined) this.createStealableItems();
-    return this._stealableItems;
+Game_Enemy.prototype.stealableItems = function () {
+  if (this._stealableItems === undefined) this.createStealableItems();
+  return this._stealableItems;
 };
 
-Game_Enemy.prototype.allItemsStolen = function(skill) {
-    if (this.stealableItems().length <= 0) return true;
-    var max = this.stealableItems().length;
-    for (var i = 0; i < max; ++i) {
-      var stealable = this.stealableItems()[i];
-      if (!skill.stealType.contains('all')) {
-        if (!skill.stealType.contains(stealable.type)) continue;
-      }
-      if (!stealable.isStolen) return false;
+Game_Enemy.prototype.allItemsStolen = function (skill) {
+  if (this.stealableItems().length <= 0) return true;
+  var max = this.stealableItems().length;
+  for (var i = 0; i < max; ++i) {
+    var stealable = this.stealableItems()[i];
+    if (!skill.stealType.contains("all")) {
+      if (!skill.stealType.contains(stealable.type)) continue;
     }
-    return true;
+    if (!stealable.isStolen) return false;
+  }
+  return true;
 };
 
-Game_Enemy.prototype.stealResist = function() {
-    var value = this.enemy().stealResist;
-    return value;
+Game_Enemy.prototype.stealResist = function () {
+  var value = this.enemy().stealResist;
+  return value;
 };
 
 if (MageStudios.Param.StealGoldRemove) {
-
-MageStudios.Steal.Game_Enemy_gold = Game_Enemy.prototype.gold;
-Game_Enemy.prototype.gold = function() {
+  MageStudios.Steal.Game_Enemy_gold = Game_Enemy.prototype.gold;
+  Game_Enemy.prototype.gold = function () {
     var gold = MageStudios.Steal.Game_Enemy_gold.call(this);
     var max = this.stealableItems().length;
     for (var i = 0; i < max; ++i) {
       var stealable = this.stealableItems()[i];
-      if (stealable.type !== 'gold') continue;
+      if (stealable.type !== "gold") continue;
       if (!stealable.isStolen) continue;
       if (!stealable.isDrop) continue;
       stealable.isDrop = false;
       gold = 0;
     }
     return gold;
-};
-
-} // MageStudios.Param.StealGoldRemove
+  };
+}
 
 if (MageStudios.Param.StealDropRemove) {
-
-MageStudios.Steal.Game_Enemy_makeDropItems = Game_Enemy.prototype.makeDropItems;
-Game_Enemy.prototype.makeDropItems = function() {
+  MageStudios.Steal.Game_Enemy_makeDropItems =
+    Game_Enemy.prototype.makeDropItems;
+  Game_Enemy.prototype.makeDropItems = function () {
     var drops = MageStudios.Steal.Game_Enemy_makeDropItems.call(this);
     var max = this.stealableItems().length;
     for (var i = 0; i < max; ++i) {
       var stealable = this.stealableItems()[i];
-      if (stealable.type === 'gold') continue;
+      if (stealable.type === "gold") continue;
       if (!stealable.isStolen) continue;
       if (!stealable.isDrop) continue;
       stealable.isDrop = false;
       var id = stealable.id;
-      if (stealable.type === 'item') {
+      if (stealable.type === "item") {
         var item = $dataItems[id];
-      } else if (stealable.type === 'weapons') {
+      } else if (stealable.type === "weapons") {
         var item = $dataWeapons[id];
       } else {
         var item = $dataArmors[id];
@@ -1163,470 +1154,455 @@ Game_Enemy.prototype.makeDropItems = function() {
       drops.splice(index, 1);
     }
     return drops;
-};
-
-} // MageStudios.Param.StealDropRemove
-
-//=============================================================================
-// Game_Action
-//=============================================================================
+  };
+}
 
 MageStudios.Steal.Game_Action_applyItemUserEffect =
-    Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
-    MageStudios.Steal.Game_Action_applyItemUserEffect.call(this, target);
-    this.applyItemStealEffect(target);
-    this.applyItemSnatchEffect(target);
+  Game_Action.prototype.applyItemUserEffect;
+Game_Action.prototype.applyItemUserEffect = function (target) {
+  MageStudios.Steal.Game_Action_applyItemUserEffect.call(this, target);
+  this.applyItemStealEffect(target);
+  this.applyItemSnatchEffect(target);
 };
 
-Game_Action.prototype.applyItemStealEffect = function(target) {
-    if (!this.canProcessSteal(target)) return;
-    if (target.allItemsStolen(this.item())) {
-      return this.displayStealEmpty(target);
+Game_Action.prototype.applyItemStealEffect = function (target) {
+  if (!this.canProcessSteal(target)) return;
+  if (target.allItemsStolen(this.item())) {
+    return this.displayStealEmpty(target);
+  }
+  for (var i = 0; i < target.stealableItems().length; ++i) {
+    var stealable = target.stealableItems()[i];
+    if (!this.matchStealType(target, stealable)) continue;
+    var rate = this.getStealableRate(target, stealable);
+    var result = this.makeStealRandom(target, stealable) < rate;
+    if (result) {
+      this.getStealableItem(target, stealable);
+      return;
     }
-    for (var i = 0; i < target.stealableItems().length; ++i) {
-      var stealable = target.stealableItems()[i];
-      if (!this.matchStealType(target, stealable)) continue;
-      var rate = this.getStealableRate(target, stealable);
-      var result = this.makeStealRandom(target, stealable) < rate;
-      if (result) {
-        this.getStealableItem(target, stealable);
-        return;
-      }
+  }
+  this.displayStealFailure(target);
+};
+
+Game_Action.prototype.applyItemSnatchEffect = function (target) {
+  if (!this.canProcessSnatch(target)) return;
+  var index = this._snatchTargetIndex || 0;
+  var stealable = target.stealableItems()[index];
+  if (this.matchStealType(target, stealable)) {
+    var rate = this.getStealableRate(target, stealable);
+    var result = this.makeStealRandom(target, stealable) < rate;
+    if (result) {
+      this.getStealableItem(target, stealable);
+      return;
     }
-    this.displayStealFailure(target);
+  }
+  this.displayStealFailure(target);
 };
 
-Game_Action.prototype.applyItemSnatchEffect = function(target) {
-    if (!this.canProcessSnatch(target)) return;
-    var index = this._snatchTargetIndex || 0;
-    var stealable = target.stealableItems()[index];
-    if (this.matchStealType(target, stealable)) {
-      var rate = this.getStealableRate(target, stealable);
-      var result = this.makeStealRandom(target, stealable) < rate;
-      if (result) {
-        this.getStealableItem(target, stealable);
-        return;
-      }
-    }
-    this.displayStealFailure(target);
+Game_Action.prototype.canProcessSteal = function (target) {
+  if (!this.item()) return false;
+  if (!this.subject().isActor()) return false;
+  if (!target.isEnemy()) return false;
+  return this.isStealAction();
 };
 
-Game_Action.prototype.canProcessSteal = function(target) {
-    if (!this.item()) return false;
-    if (!this.subject().isActor()) return false;
-    if (!target.isEnemy()) return false;
-    return this.isStealAction();
+Game_Action.prototype.isStealAction = function () {
+  return this.item().steal === "steal";
 };
 
-Game_Action.prototype.isStealAction = function() {
-    return this.item().steal === 'steal';
+Game_Action.prototype.canProcessSnatch = function (target) {
+  if (!this.item()) return false;
+  if (!this.subject().isActor()) return false;
+  if (!target.isEnemy()) return false;
+  return this.isSnatchAction();
 };
 
-Game_Action.prototype.canProcessSnatch = function(target) {
-    if (!this.item()) return false;
-    if (!this.subject().isActor()) return false;
-    if (!target.isEnemy()) return false;
-    return this.isSnatchAction();
+Game_Action.prototype.isSnatchAction = function () {
+  if (!this.needsSelection()) return false;
+  return this.item().steal === "snatch";
 };
 
-Game_Action.prototype.isSnatchAction = function() {
-    if (!this.needsSelection()) return false;
-    return this.item().steal === 'snatch';
+Game_Action.prototype.matchStealType = function (target, stealable) {
+  if (stealable.isStolen) return false;
+  var skill = this.item();
+  if (skill.stealType.contains("all")) return true;
+  return skill.stealType.contains(stealable.type);
 };
 
-Game_Action.prototype.matchStealType = function(target, stealable) {
-    if (stealable.isStolen) return false;
-    var skill = this.item();
-    if (skill.stealType.contains('all')) return true;
-    return skill.stealType.contains(stealable.type);
+Game_Action.prototype.getStealableRate = function (target, stealable) {
+  var rate = parseFloat(stealable.rate);
+  rate += this.item().stealRate["all"];
+  rate += this.item().stealRate[stealable.type];
+  rate += this.subject().stealRateBonusType(stealable.type);
+  rate += this.stealBonusFormula(target);
+  rate -= target.stealResist();
+  rate = this.customStealRateEval(target, stealable, rate);
+  return rate;
 };
 
-Game_Action.prototype.getStealableRate = function(target, stealable) {
-    var rate = parseFloat(stealable.rate);
-    rate += this.item().stealRate['all'];
-    rate += this.item().stealRate[stealable.type];
-    rate += this.subject().stealRateBonusType(stealable.type);
-    rate += this.stealBonusFormula(target);
-    rate -= target.stealResist();
-    rate = this.customStealRateEval(target, stealable, rate);
-    return rate;
+Game_Action.prototype.stealBonusFormula = function (target) {
+  var rate = 0;
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.StealBonusFormula;
+  try {
+    rate = eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "STEAL BONUS FORMULA ERROR");
+  }
+  return rate;
 };
 
-Game_Action.prototype.stealBonusFormula = function(target) {
-    var rate = 0;
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.StealBonusFormula;
-    try {
-      rate = eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'STEAL BONUS FORMULA ERROR');
-    }
-    return rate;
+Game_Action.prototype.customStealRateEval = function (target, stealable, rate) {
+  if (this.item().stealRateEval === "") return rate;
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = skill.stealRateEval;
+  try {
+    eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "STEAL RATE FORMULA ERROR");
+  }
+  return rate;
 };
 
-Game_Action.prototype.customStealRateEval = function(target, stealable, rate) {
-    if (this.item().stealRateEval === '') return rate;
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = skill.stealRateEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'STEAL RATE FORMULA ERROR');
-    }
-    return rate;
+Game_Action.prototype.makeStealRandom = function (target, stealable) {
+  var rate = Math.random();
+  return rate;
 };
 
-Game_Action.prototype.makeStealRandom = function(target, stealable) {
-    var rate = Math.random();
-    return rate;
-};
-
-Game_Action.prototype.getStealableItem = function(target, stealable) {
-    stealable.isStolen = true;
-    var id = stealable.id;
-    var name = '';
-    var icon = '';
-    switch (stealable.type) {
-    case 'item':
+Game_Action.prototype.getStealableItem = function (target, stealable) {
+  stealable.isStolen = true;
+  var id = stealable.id;
+  var name = "";
+  var icon = "";
+  switch (stealable.type) {
+    case "item":
       var item = $dataItems[id];
       this.playStealSound(item.stealSound);
       $gameParty.gainItem(item, 1);
       var name = item.name;
-      var icon = '\\i[' + item.iconIndex + ']';
+      var icon = "\\i[" + item.iconIndex + "]";
       this.afterStealEffect(target, item);
       break;
-    case 'weapon':
+    case "weapon":
       var item = $dataWeapons[id];
       this.playStealSound(item.stealSound);
       $gameParty.gainItem(item, 1);
       var name = item.name;
-      var icon = '\\i[' + item.iconIndex + ']';
+      var icon = "\\i[" + item.iconIndex + "]";
       this.afterStealEffect(target, item);
       break;
-    case 'armor':
+    case "armor":
       var item = $dataArmors[id];
       this.playStealSound(item.stealSound);
       $gameParty.gainItem(item, 1);
       var name = item.name;
-      var icon = '\\i[' + item.iconIndex + ']';
+      var icon = "\\i[" + item.iconIndex + "]";
       this.afterStealEffect(target, item);
       break;
-    case 'gold':
+    case "gold":
       $gameParty.gainGold(id);
       this.playStealSound(MageStudios.Param.StealSEGold);
       var fmt = MageStudios.Param.StealGoldFmt;
-      var name = fmt.format(MageStudios.Util.toGroup(id), TextManager.currencyUnit);
+      var name = fmt.format(
+        MageStudios.Util.toGroup(id),
+        TextManager.currencyUnit
+      );
       if (Imported.MSEP_CoreEngine && MageStudios.Icon.Gold > 0) {
-        var icon = '\\i[' + MageStudios.Icon.Gold + ']';
+        var icon = "\\i[" + MageStudios.Icon.Gold + "]";
       }
       this.subject().afterStealSuccessEval(target, this.item(), null);
       break;
-    }
-    this.makeBattleEngineCoreStealWait();
-    var fmt = MageStudios.Param.StealSuccess;
-    if (fmt === '') return;
-    var text = fmt.format(this.subject().name(), target.name(), name, icon);
-    this.displayStealText(text);
+  }
+  this.makeBattleEngineCoreStealWait();
+  var fmt = MageStudios.Param.StealSuccess;
+  if (fmt === "") return;
+  var text = fmt.format(this.subject().name(), target.name(), name, icon);
+  this.displayStealText(text);
 };
 
-Game_Action.prototype.afterStealEffect = function(target, item) {
-    this.subject().afterStealSuccessEval(target, this.item(), item);
-    this.subject().afterStealEval(target, this.item(), item);
+Game_Action.prototype.afterStealEffect = function (target, item) {
+  this.subject().afterStealSuccessEval(target, this.item(), item);
+  this.subject().afterStealEval(target, this.item(), item);
 };
 
-Game_Action.prototype.makeBattleEngineCoreStealWait = function() {
-    if (!Imported.MSEP_BattleEngineCore) return;
-    var frames = MageStudios.Param.StealWait;
-    if (frames > 0) BattleManager._actionList.push(['WAIT', [frames]]);
+Game_Action.prototype.makeBattleEngineCoreStealWait = function () {
+  if (!Imported.MSEP_BattleEngineCore) return;
+  var frames = MageStudios.Param.StealWait;
+  if (frames > 0) BattleManager._actionList.push(["WAIT", [frames]]);
 };
 
-Game_Action.prototype.displayStealText = function(text) {
-    if (!$gameParty.inBattle()) return;
-    var scene = SceneManager._scene;
-    if (text === '') return;
-    if (!scene._logWindow) return;
-    if (MageStudios.Param.StealCenter) text = '<CENTER>' + text;
-    var win = scene._logWindow;
-    win._lines.push(text);
-    win.refresh();
+Game_Action.prototype.displayStealText = function (text) {
+  if (!$gameParty.inBattle()) return;
+  var scene = SceneManager._scene;
+  if (text === "") return;
+  if (!scene._logWindow) return;
+  if (MageStudios.Param.StealCenter) text = "<CENTER>" + text;
+  var win = scene._logWindow;
+  win._lines.push(text);
+  win.refresh();
 };
 
-Game_Action.prototype.playStealSound = function(sound) {
-    if (!sound) return;
-    if (sound.name && sound.name !== '') AudioManager.playSe(sound);
+Game_Action.prototype.playStealSound = function (sound) {
+  if (!sound) return;
+  if (sound.name && sound.name !== "") AudioManager.playSe(sound);
 };
 
-Game_Action.prototype.displayStealFailure = function(target) {
-    this.playStealSound(MageStudios.Param.StealSEFail);
-    var fmt = MageStudios.Param.StealFail;
-    if (fmt === '') return;
-    var text = fmt.format(this.subject().name(), target.name());
-    this.displayStealText(text);
-    this.makeBattleEngineCoreStealWait();
+Game_Action.prototype.displayStealFailure = function (target) {
+  this.playStealSound(MageStudios.Param.StealSEFail);
+  var fmt = MageStudios.Param.StealFail;
+  if (fmt === "") return;
+  var text = fmt.format(this.subject().name(), target.name());
+  this.displayStealText(text);
+  this.makeBattleEngineCoreStealWait();
 };
 
-Game_Action.prototype.displayStealEmpty = function(target) {
-    this.playStealSound(MageStudios.Param.StealSEEmpty);
-    var fmt = MageStudios.Param.StealEmpty;
-    if (fmt === '') return;
-    var text = fmt.format(target.name());
-    this.displayStealText(text);
-    this.makeBattleEngineCoreStealWait();
+Game_Action.prototype.displayStealEmpty = function (target) {
+  this.playStealSound(MageStudios.Param.StealSEEmpty);
+  var fmt = MageStudios.Param.StealEmpty;
+  if (fmt === "") return;
+  var text = fmt.format(target.name());
+  this.displayStealText(text);
+  this.makeBattleEngineCoreStealWait();
 };
 
-Game_Action.prototype.setSnatchTarget = function(index) {
-    this._snatchTargetIndex = index;
+Game_Action.prototype.setSnatchTarget = function (index) {
+  this._snatchTargetIndex = index;
 };
-
-//=============================================================================
-// Window_SnatchItem
-//=============================================================================
 
 function Window_SnatchItem() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_SnatchItem.prototype = Object.create(Window_ItemList.prototype);
 Window_SnatchItem.prototype.constructor = Window_BattleItem;
 
-Window_SnatchItem.prototype.initialize = function(itemWindow) {
-    var wx = itemWindow.x;
-    var wy = itemWindow.y;
-    var ww = itemWindow.width;
-    var wh = itemWindow.height;
-    this._wordWrap = false;
-    if (Imported.MSEP_MessageCore && eval(MageStudios.Param.MSGDescWrap)) {
-      this._wordWrap = true;
-    }
-    Window_ItemList.prototype.initialize.call(this, wx, wy, ww, wh);
-    this.hide();
-    this._enemy = null;
-    this._action = null;
+Window_SnatchItem.prototype.initialize = function (itemWindow) {
+  var wx = itemWindow.x;
+  var wy = itemWindow.y;
+  var ww = itemWindow.width;
+  var wh = itemWindow.height;
+  this._wordWrap = false;
+  if (Imported.MSEP_MessageCore && eval(MageStudios.Param.MSGDescWrap)) {
+    this._wordWrap = true;
+  }
+  Window_ItemList.prototype.initialize.call(this, wx, wy, ww, wh);
+  this.hide();
+  this._enemy = null;
+  this._action = null;
 };
 
-Window_SnatchItem.prototype.show = function() {
-    this.select(0);
-    this.showHelpWindow();
-    Window_ItemList.prototype.show.call(this);
-    this.activate();
+Window_SnatchItem.prototype.show = function () {
+  this.select(0);
+  this.showHelpWindow();
+  Window_ItemList.prototype.show.call(this);
+  this.activate();
 };
 
-Window_SnatchItem.prototype.hide = function() {
-    this.hideHelpWindow();
-    Window_ItemList.prototype.hide.call(this);
+Window_SnatchItem.prototype.hide = function () {
+  this.hideHelpWindow();
+  Window_ItemList.prototype.hide.call(this);
 };
 
-Window_SnatchItem.prototype.setDetails = function(enemy, action) {
-    this._enemy = enemy;
-    this._action = action;
-    this.refresh();
-    this.show();
+Window_SnatchItem.prototype.setDetails = function (enemy, action) {
+  this._enemy = enemy;
+  this._action = action;
+  this.refresh();
+  this.show();
 };
 
-Window_SnatchItem.prototype.isEnabled = function(stealable) {
-    if (!stealable) return false;
-    if (!this._action) return false;
-    if (!this._action.item()) return false;
-    if (stealable.isStolen) return false;
-    if (this._action.item().stealType.contains('all')) return true;
-    return this._action.item().stealType.contains(stealable.type);
+Window_SnatchItem.prototype.isEnabled = function (stealable) {
+  if (!stealable) return false;
+  if (!this._action) return false;
+  if (!this._action.item()) return false;
+  if (stealable.isStolen) return false;
+  if (this._action.item().stealType.contains("all")) return true;
+  return this._action.item().stealType.contains(stealable.type);
 };
 
-Window_SnatchItem.prototype.makeItemList = function() {
-    this._data = [];
-    if (!this._enemy) return;
-    this._data = this._enemy.stealableItems().clone();
+Window_SnatchItem.prototype.makeItemList = function () {
+  this._data = [];
+  if (!this._enemy) return;
+  this._data = this._enemy.stealableItems().clone();
 };
 
-Window_SnatchItem.prototype.drawItem = function(index) {
-    var stealable = this._data[index];
-    if (!stealable) return;
-    var rect = this.itemRect(index);
-    rect.width -= this.textPadding();
-    this.resetFontSettings();
-    this.drawStealable(stealable, rect.x, rect.y, rect.width);
-    this.drawStealRate(stealable, rect.x, rect.y, rect.width);
+Window_SnatchItem.prototype.drawItem = function (index) {
+  var stealable = this._data[index];
+  if (!stealable) return;
+  var rect = this.itemRect(index);
+  rect.width -= this.textPadding();
+  this.resetFontSettings();
+  this.drawStealable(stealable, rect.x, rect.y, rect.width);
+  this.drawStealRate(stealable, rect.x, rect.y, rect.width);
 };
 
-Window_SnatchItem.prototype.drawStealable = function(stealable, wx, wy, ww) {
-    var id = stealable.id;
-    switch (stealable.type) {
-    case 'item':
+Window_SnatchItem.prototype.drawStealable = function (stealable, wx, wy, ww) {
+  var id = stealable.id;
+  switch (stealable.type) {
+    case "item":
       var item = $dataItems[id];
       break;
-    case 'weapon':
+    case "weapon":
       var item = $dataWeapons[id];
       break;
-    case 'armor':
+    case "armor":
       var item = $dataArmors[id];
       break;
-    case 'gold':
-      this.drawStealGold(stealable, wx, wy, ww)
+    case "gold":
+      this.drawStealGold(stealable, wx, wy, ww);
       return;
       break;
-    }
-    this.changePaintOpacity(this.isEnabled(stealable));
-    this.drawItemName(item, wx, wy, ww);
+  }
+  this.changePaintOpacity(this.isEnabled(stealable));
+  this.drawItemName(item, wx, wy, ww);
 };
 
-Window_SnatchItem.prototype.drawStealGold = function(stealable, wx, wy, ww) {
-    var icon = (Imported.MSEP_CoreEngine) ? MageStudios.Icon.Gold : 0;
-    var iconBoxWidth = Window_Base._iconWidth + 4;
-    this.resetTextColor();
-    this.changePaintOpacity(this.isEnabled(stealable));
-    this.drawIcon(icon, wx + 2, wy + 2);
-    var fmt = MageStudios.Param.StealGoldFmt;
-    var id = stealable.id;
-    var text = fmt.format(MageStudios.Util.toGroup(id), TextManager.currencyUnit);
-    this.drawText(text, wx + iconBoxWidth, wy, ww - iconBoxWidth);
+Window_SnatchItem.prototype.drawStealGold = function (stealable, wx, wy, ww) {
+  var icon = Imported.MSEP_CoreEngine ? MageStudios.Icon.Gold : 0;
+  var iconBoxWidth = Window_Base._iconWidth + 4;
+  this.resetTextColor();
+  this.changePaintOpacity(this.isEnabled(stealable));
+  this.drawIcon(icon, wx + 2, wy + 2);
+  var fmt = MageStudios.Param.StealGoldFmt;
+  var id = stealable.id;
+  var text = fmt.format(MageStudios.Util.toGroup(id), TextManager.currencyUnit);
+  this.drawText(text, wx + iconBoxWidth, wy, ww - iconBoxWidth);
 };
 
-Window_SnatchItem.prototype.drawStealRate = function(stealable, wx, wy, ww) {
-    var decimals = MageStudios.Param.SnatchDecimal;
-    if (stealable.isStolen) {
-      var text = MageStudios.Param.SnatchStolen;
-    } else {
-      var rate = this._action.getStealableRate(this._enemy, stealable);
-      rate = (rate * 100).clamp(0, 100);
-      var text = rate.toFixed(decimals) + '%';
-    }
-    this.contents.fontSize = MageStudios.Param.SnatchFontSize;
-    this.changePaintOpacity(this.isEnabled(stealable));
-    this.drawText(text, wx, wy, ww, 'right');
+Window_SnatchItem.prototype.drawStealRate = function (stealable, wx, wy, ww) {
+  var decimals = MageStudios.Param.SnatchDecimal;
+  if (stealable.isStolen) {
+    var text = MageStudios.Param.SnatchStolen;
+  } else {
+    var rate = this._action.getStealableRate(this._enemy, stealable);
+    rate = (rate * 100).clamp(0, 100);
+    var text = rate.toFixed(decimals) + "%";
+  }
+  this.contents.fontSize = MageStudios.Param.SnatchFontSize;
+  this.changePaintOpacity(this.isEnabled(stealable));
+  this.drawText(text, wx, wy, ww, "right");
 };
 
-Window_SnatchItem.prototype.updateHelp = function() {
-    var stealable = this.item();
-    if (!stealable) {
-      this._helpWindow.setItem(null);
-    } else {
-      var text = this.getHelpText(stealable);
-      this._helpWindow.setText(text);
-    }
+Window_SnatchItem.prototype.updateHelp = function () {
+  var stealable = this.item();
+  if (!stealable) {
+    this._helpWindow.setItem(null);
+  } else {
+    var text = this.getHelpText(stealable);
+    this._helpWindow.setText(text);
+  }
 };
 
-Window_SnatchItem.prototype.getHelpText = function(stealable) {
-    var id = stealable.id;
-    switch (stealable.type) {
-    case 'item':
+Window_SnatchItem.prototype.getHelpText = function (stealable) {
+  var id = stealable.id;
+  switch (stealable.type) {
+    case "item":
       var item = $dataItems[id];
       break;
-    case 'weapon':
+    case "weapon":
       var item = $dataWeapons[id];
       break;
-    case 'armor':
+    case "armor":
       var item = $dataArmors[id];
       break;
-    case 'gold':
+    case "gold":
       var fmt = MageStudios.Param.SnatchHelpText;
-      var text = fmt.format(MageStudios.Util.toGroup(id), TextManager.currencyUnit);
-      if (this._wordWrap) text = '<WordWrap>' + text;
+      var text = fmt.format(
+        MageStudios.Util.toGroup(id),
+        TextManager.currencyUnit
+      );
+      if (this._wordWrap) text = "<WordWrap>" + text;
       return text;
       break;
-    }
-    var text = item.description;
-    if (this._wordWrap) text = '<WordWrap>' + text;
-    return text;
+  }
+  var text = item.description;
+  if (this._wordWrap) text = "<WordWrap>" + text;
+  return text;
 };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
 MageStudios.Steal.Scene_Battle_createDisplayObjects =
-    Scene_Battle.prototype.createDisplayObjects;
-Scene_Battle.prototype.createDisplayObjects = function() {
-    MageStudios.Steal.Scene_Battle_createDisplayObjects.call(this);
-    this.createSnatchWindow();
+  Scene_Battle.prototype.createDisplayObjects;
+Scene_Battle.prototype.createDisplayObjects = function () {
+  MageStudios.Steal.Scene_Battle_createDisplayObjects.call(this);
+  this.createSnatchWindow();
 };
 
 MageStudios.Steal.Scene_Battle_isAnyInputWindowActive =
-    Scene_Battle.prototype.isAnyInputWindowActive;
-Scene_Battle.prototype.isAnyInputWindowActive = function() {
-    if (this._snatchWindow && this._snatchWindow.active) return true;
-    return MageStudios.Steal.Scene_Battle_isAnyInputWindowActive.call(this);
+  Scene_Battle.prototype.isAnyInputWindowActive;
+Scene_Battle.prototype.isAnyInputWindowActive = function () {
+  if (this._snatchWindow && this._snatchWindow.active) return true;
+  return MageStudios.Steal.Scene_Battle_isAnyInputWindowActive.call(this);
 };
 
-Scene_Battle.prototype.createSnatchWindow = function() {
-    this._snatchWindow = new Window_SnatchItem(this._itemWindow);
-    this._snatchWindow.setHelpWindow(this._helpWindow);
-    this._snatchWindow.setHandler('ok',     this.onSnatchOk.bind(this));
-    this._snatchWindow.setHandler('cancel', this.onSnatchCancel.bind(this));
-    this.addWindow(this._snatchWindow);
+Scene_Battle.prototype.createSnatchWindow = function () {
+  this._snatchWindow = new Window_SnatchItem(this._itemWindow);
+  this._snatchWindow.setHelpWindow(this._helpWindow);
+  this._snatchWindow.setHandler("ok", this.onSnatchOk.bind(this));
+  this._snatchWindow.setHandler("cancel", this.onSnatchCancel.bind(this));
+  this.addWindow(this._snatchWindow);
 };
 
 MageStudios.Steal.Scene_Battle_onEnemyOk = Scene_Battle.prototype.onEnemyOk;
-Scene_Battle.prototype.onEnemyOk = function() {
-    if (this.isShowSnatchWindow()) {
-      this.activateSnatchWindow();
-    } else {
-      MageStudios.Steal.Scene_Battle_onEnemyOk.call(this);
-    }
-};
-
-Scene_Battle.prototype.isShowSnatchWindow = function() {
-    var action = BattleManager.inputtingAction();
-    return action.isSnatchAction();
-};
-
-Scene_Battle.prototype.activateSnatchWindow = function() {
-    var enemy = this._enemyWindow.enemy();
-    var action = BattleManager.inputtingAction();
-    this._snatchWindow.setDetails(enemy, action);
-};
-
-Scene_Battle.prototype.onSnatchOk = function() {
-    var index = this._snatchWindow.index();
-    var action = BattleManager.inputtingAction();
-    action.setSnatchTarget(index);
-    this._snatchWindow.hide();
+Scene_Battle.prototype.onEnemyOk = function () {
+  if (this.isShowSnatchWindow()) {
+    this.activateSnatchWindow();
+  } else {
     MageStudios.Steal.Scene_Battle_onEnemyOk.call(this);
+  }
 };
 
-Scene_Battle.prototype.onSnatchCancel = function() {
-    this._snatchWindow.hide();
-    this.selectEnemySelection();
+Scene_Battle.prototype.isShowSnatchWindow = function () {
+  var action = BattleManager.inputtingAction();
+  return action.isSnatchAction();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+Scene_Battle.prototype.activateSnatchWindow = function () {
+  var enemy = this._enemyWindow.enemy();
+  var action = BattleManager.inputtingAction();
+  this._snatchWindow.setDetails(enemy, action);
+};
+
+Scene_Battle.prototype.onSnatchOk = function () {
+  var index = this._snatchWindow.index();
+  var action = BattleManager.inputtingAction();
+  action.setSnatchTarget(index);
+  this._snatchWindow.hide();
+  MageStudios.Steal.Scene_Battle_onEnemyOk.call(this);
+};
+
+Scene_Battle.prototype.onSnatchCancel = function () {
+  this._snatchWindow.hide();
+  this.selectEnemySelection();
+};
 
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

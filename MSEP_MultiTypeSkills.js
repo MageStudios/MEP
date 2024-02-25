@@ -1,18 +1,12 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Multi-Type Skills
-// MSEP_MultiTypeSkills.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MultiTypeSkills = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MTS = MageStudios.MTS || {};
-MageStudios.MTS.version = 1.00;
+MageStudios.MTS.version = 1.0;
 
-//=============================================================================
- /*:
- * @plugindesc Allow skills to have multiple types to make them 
+/*:
+ * @plugindesc Allow skills to have multiple types to make them
  * appear in different skill type schools instead of just one.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *
@@ -56,27 +50,20 @@ MageStudios.MTS.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
-
-//=============================================================================
-// DataManager
-// ----------------------------------------------------------------------------
-// Notetags added by Mage
-//=============================================================================
 
 MageStudios.MTS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.MTS.DataManager_isDatabaseLoaded.call(this)) return false;
 
   if (!MageStudios._loaded_MSEP_MultiTypeSkills) {
     this.processMTSNotetags1($dataSkills);
     MageStudios._loaded_MSEP_MultiTypeSkills = true;
   }
-  
+
   return true;
 };
 
-DataManager.processMTSNotetags1 = function(group) {
+DataManager.processMTSNotetags1 = function (group) {
   var note1 = /<SKILL[ ](?:TYPE|TYPES):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var note2 = /<SKILL[ ](?:TYPE|TYPES):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -88,24 +75,22 @@ DataManager.processMTSNotetags1 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(note1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.skillTypes = obj.skillTypes.concat(array);
       } else if (line.match(note2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.skillTypes = obj.skillTypes.concat(range);
       }
     }
   }
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
 MageStudios.MTS.Game_BattlerBase_msC =
   Game_BattlerBase.prototype.meetsSkillConditions;
-Game_BattlerBase.prototype.meetsSkillConditions = function(skill) {
+Game_BattlerBase.prototype.meetsSkillConditions = function (skill) {
   var value = MageStudios.MTS.Game_BattlerBase_msC.call(this, skill);
   if (!value) return false;
   if (skill && skill.skillTypes) {
@@ -119,11 +104,7 @@ Game_BattlerBase.prototype.meetsSkillConditions = function(skill) {
   return true;
 };
 
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-Window_SkillList.prototype.matchSkillType = function(item) {
+Window_SkillList.prototype.matchSkillType = function (item) {
   if (item) {
     if (item.stypeId === this._stypeId) {
       return true;
@@ -135,36 +116,22 @@ Window_SkillList.prototype.matchSkillType = function(item) {
 };
 
 if (Imported.MSEP_SkillCore) {
-
-Window_SkillList.prototype.includes = function(item) {
-  if (this._actor) {
-    if (!this._actor.noHiddenSkillConditionsMet(item)) return false;
-  }
-  return this.matchSkillType(item);
-};
-
-} else { // No YEP Skill Core
-
-Window_SkillList.prototype.includes = function(item) {
-  return item && this.matchSkillType(item);
-};
-
-} // Imported.MSEP_SkillCore
-
-//=============================================================================
-// Utilities
-// ----------------------------------------------------------------------------
-// Provided by Mage
-//=============================================================================
+  Window_SkillList.prototype.includes = function (item) {
+    if (this._actor) {
+      if (!this._actor.noHiddenSkillConditionsMet(item)) return false;
+    }
+    return this.matchSkillType(item);
+  };
+} else {
+  Window_SkillList.prototype.includes = function (item) {
+    return item && this.matchSkillType(item);
+  };
+}
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.getRange = function(n, m) {
+MageStudios.Util.getRange = function (n, m) {
   var result = [];
   for (var i = n; i <= m; ++i) result.push(i);
   return result;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

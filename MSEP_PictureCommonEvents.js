@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Picture Common Events
-// MSEP_PictureCommonEvents.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_PictureCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PCE = MageStudios.PCE || {};
-MageStudios.PCE.version = 1.00;
+MageStudios.PCE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Causes common events to run when certain pictures
  * are clicked while on the map.
  * @author Mage Studios Engine Plugins
@@ -3185,7 +3179,7 @@ MageStudios.PCE.version = 1.00;
  * common event value listed is above 0, then this will trigger upon release.
  *
  * ---
- * 
+ *
  * Note that there are some behavioral changes in regards to pictures bound to
  * that of common events. Any picture that's bound to a common event will be
  * separate from the map's spriteset, and instead, bound to the scene. This is
@@ -3208,7 +3202,7 @@ MageStudios.PCE.version = 1.00;
  *   DisableTouchMove
  *   - Allows the player to press a destination on the screen and move there or
  *   disables the player from using touch movement.
- *   
+ *
  *   HidePictureCommonEvents
  *   ShowPictureCommonEvents
  *   - Manually hide all pictures bound to common events or show them. If shown
@@ -3267,245 +3261,228 @@ MageStudios.PCE.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.makePictureCommonEventSettings = function(a, b) {
-    MageStudios.PCE.Trigger = [null];
-    MageStudios.PCE.Repeated = [null];
-    MageStudios.PCE.Pressed = [null];
-    MageStudios.PCE.Released = [null];
-    for (var i = a; i < b + 1; ++i) {
-      var param = 'Picture ' + i + ' Click';
-      var value = Number(MageStudios.Parameters[param]);
-      MageStudios.PCE.Trigger.push(value);
-      var param = 'Picture ' + i + ' Repeat';
-      var value = Number(MageStudios.Parameters[param]);
-      MageStudios.PCE.Repeated.push(value);
-      var param = 'Picture ' + i + ' Hold';
-      var value = Number(MageStudios.Parameters[param]);
-      MageStudios.PCE.Pressed.push(value);
-      var param = 'Picture ' + i + ' Release';
-      var value = Number(MageStudios.Parameters[param]);
-      MageStudios.PCE.Released.push(value);
-    }
+MageStudios.makePictureCommonEventSettings = function (a, b) {
+  MageStudios.PCE.Trigger = [null];
+  MageStudios.PCE.Repeated = [null];
+  MageStudios.PCE.Pressed = [null];
+  MageStudios.PCE.Released = [null];
+  for (var i = a; i < b + 1; ++i) {
+    var param = "Picture " + i + " Click";
+    var value = Number(MageStudios.Parameters[param]);
+    MageStudios.PCE.Trigger.push(value);
+    var param = "Picture " + i + " Repeat";
+    var value = Number(MageStudios.Parameters[param]);
+    MageStudios.PCE.Repeated.push(value);
+    var param = "Picture " + i + " Hold";
+    var value = Number(MageStudios.Parameters[param]);
+    MageStudios.PCE.Pressed.push(value);
+    var param = "Picture " + i + " Release";
+    var value = Number(MageStudios.Parameters[param]);
+    MageStudios.PCE.Released.push(value);
+  }
 };
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_PictureCommonEvents');
+MageStudios.Parameters = PluginManager.parameters("MSEP_PictureCommonEvents");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.PCEMove = eval(String(MageStudios.Parameters['Enable Touch Move']));
-MageStudios.Param.PCEHideMsg = eval(String(MageStudios.Parameters['Hide Message']));
+MageStudios.Param.PCEMove = eval(
+  String(MageStudios.Parameters["Enable Touch Move"])
+);
+MageStudios.Param.PCEHideMsg = eval(
+  String(MageStudios.Parameters["Hide Message"])
+);
 
 MageStudios.makePictureCommonEventSettings(1, 100);
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.PCE.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.PCE.Game_System_initialize.call(this);
-    this.initPCESettings();
+Game_System.prototype.initialize = function () {
+  MageStudios.PCE.Game_System_initialize.call(this);
+  this.initPCESettings();
 };
 
-Game_System.prototype.initPCESettings = function() {
-    this._touchMovement = MageStudios.Param.PCEMove;
-    this._hidePceMsg = MageStudios.Param.PCEHideMsg;
-    this._hidePceAll = false;
+Game_System.prototype.initPCESettings = function () {
+  this._touchMovement = MageStudios.Param.PCEMove;
+  this._hidePceMsg = MageStudios.Param.PCEHideMsg;
+  this._hidePceAll = false;
 };
 
-Game_System.prototype.isTouchMoveEnabled = function() {
-    if (this._touchMovement === undefined) this.initPCESettings();
-    return this._touchMovement;
+Game_System.prototype.isTouchMoveEnabled = function () {
+  if (this._touchMovement === undefined) this.initPCESettings();
+  return this._touchMovement;
 };
 
-Game_System.prototype.setTouchMoveEnabled = function(value) {
-    if (this._touchMovement === undefined) this.initPCESettings();
-    this._touchMovement = value;
+Game_System.prototype.setTouchMoveEnabled = function (value) {
+  if (this._touchMovement === undefined) this.initPCESettings();
+  this._touchMovement = value;
 };
 
-Game_System.prototype.isPictureHiddenDuringMessage = function() {
-    if (this._hidePceMsg === undefined) this.initPCESettings();
-    return this._hidePceMsg;
+Game_System.prototype.isPictureHiddenDuringMessage = function () {
+  if (this._hidePceMsg === undefined) this.initPCESettings();
+  return this._hidePceMsg;
 };
 
-Game_System.prototype.setPictureHiddenDuringMessage = function(value) {
-    if (this._hidePceMsg === undefined) this.initPCESettings();
-    this._hidePceMsg = value;
+Game_System.prototype.setPictureHiddenDuringMessage = function (value) {
+  if (this._hidePceMsg === undefined) this.initPCESettings();
+  this._hidePceMsg = value;
 };
 
-Game_System.prototype.isPictureHidden = function() {
-    if (this._hidePceAll === undefined) this.initPCESettings();
-    return this._hidePceAll;
+Game_System.prototype.isPictureHidden = function () {
+  if (this._hidePceAll === undefined) this.initPCESettings();
+  return this._hidePceAll;
 };
 
-Game_System.prototype.setPictureHidden = function(value) {
-    if (this._hidePceAll === undefined) this.initPCESettings();
-    this._hidePceAll = value;
+Game_System.prototype.setPictureHidden = function (value) {
+  if (this._hidePceAll === undefined) this.initPCESettings();
+  this._hidePceAll = value;
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.PCE.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    MageStudios.PCE.Game_Interpreter_pluginCommand.call(this, command, args);
-    if (command === 'EnableTouchMove') {
-      $gameSystem.setTouchMoveEnabled(true);
-    } else if (command === 'DisableTouchMove') {
-      $gameSystem.setTouchMoveEnabled(false);
-    } else if (command === 'MovePlayer') {
-      this.pictureCommonEventsMove(args);
-    } else if (command === 'HidePictureCommonEvents') {
-      $gameSystem.setPictureHidden(true);
-    } else if (command === 'ShowPictureCommonEvents') {
-      $gameSystem.setPictureHidden(false);
-    } else if (command === 'TriggerButton') {
-      this.triggerButton(args)
-    }
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.PCE.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "EnableTouchMove") {
+    $gameSystem.setTouchMoveEnabled(true);
+  } else if (command === "DisableTouchMove") {
+    $gameSystem.setTouchMoveEnabled(false);
+  } else if (command === "MovePlayer") {
+    this.pictureCommonEventsMove(args);
+  } else if (command === "HidePictureCommonEvents") {
+    $gameSystem.setPictureHidden(true);
+  } else if (command === "ShowPictureCommonEvents") {
+    $gameSystem.setPictureHidden(false);
+  } else if (command === "TriggerButton") {
+    this.triggerButton(args);
+  }
 };
 
-Game_Interpreter.prototype.pictureCommonEventsMove = function(args) {
-    var dir = args[0];
-    if (dir.match(/down/i)) {
-      $gamePlayer.moveByPictureCommonEvent(2);
-    } else if (dir.match(/left/i)) {
-      $gamePlayer.moveByPictureCommonEvent(4);
-    } else if (dir.match(/right/i)) {
-      $gamePlayer.moveByPictureCommonEvent(6);
-    } else if (dir.match(/up/i)) {
-      $gamePlayer.moveByPictureCommonEvent(8);
-    }
+Game_Interpreter.prototype.pictureCommonEventsMove = function (args) {
+  var dir = args[0];
+  if (dir.match(/down/i)) {
+    $gamePlayer.moveByPictureCommonEvent(2);
+  } else if (dir.match(/left/i)) {
+    $gamePlayer.moveByPictureCommonEvent(4);
+  } else if (dir.match(/right/i)) {
+    $gamePlayer.moveByPictureCommonEvent(6);
+  } else if (dir.match(/up/i)) {
+    $gamePlayer.moveByPictureCommonEvent(8);
+  }
 };
 
-Game_Interpreter.prototype.triggerButton = function(args) {
+Game_Interpreter.prototype.triggerButton = function (args) {
   if (!args) return;
   var button = args[0].toLowerCase();
-  if (button === 'cancel') button = 'escape';
-  if (button === 'dash') button = 'shift';
+  if (button === "cancel") button = "escape";
+  if (button === "dash") button = "shift";
   Input._latestButton = button;
   Input._pressedTime = 0;
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-Game_Player.prototype.moveByPictureCommonEvent = function(direction) {
-    if (!this.isMoving() && this.canMove() && direction > 0) {
-      Input._dir4 = direction;
-    }
+Game_Player.prototype.moveByPictureCommonEvent = function (direction) {
+  if (!this.isMoving() && this.canMove() && direction > 0) {
+    Input._dir4 = direction;
+  }
 };
 
 MageStudios.PCE.Game_Player_canMove = Game_Player.prototype.canMove;
-Game_Player.prototype.canMove = function() {
-    if ($gameMap.isEventRunning() && $gameMap.moveAfterCommonEvent()) {
-      return true;
-    }
-    return MageStudios.PCE.Game_Player_canMove.call(this);
+Game_Player.prototype.canMove = function () {
+  if ($gameMap.isEventRunning() && $gameMap.moveAfterCommonEvent()) {
+    return true;
+  }
+  return MageStudios.PCE.Game_Player_canMove.call(this);
 };
-
-//=============================================================================
-// Game_Map
-//=============================================================================
 
 MageStudios.PCE.Game_Map_isEventRunning = Game_Map.prototype.isEventRunning;
-Game_Map.prototype.isEventRunning = function() {
-    if ($gameTemp._commonEventId > 0) return true;
-    return MageStudios.PCE.Game_Map_isEventRunning.call(this);
+Game_Map.prototype.isEventRunning = function () {
+  if ($gameTemp._commonEventId > 0) return true;
+  return MageStudios.PCE.Game_Map_isEventRunning.call(this);
 };
 
-Game_Map.prototype.moveAfterCommonEvent = function() {
-    var interpreter = $gameMap._interpreter;
-    if (!interpreter._list) return false;
-    if (interpreter.eventId() > 0) return false;
-    var list = interpreter._list;
-    if ($gameTemp.destinationX() === $gamePlayer.x &&
-      $gameTemp.destinationY() === $gamePlayer.y) {
-        $gameTemp.clearDestination();
-    }
-    for (var i = 0; i < list.length; ++i) {
-      var code = list[i].code;
-      var exceptionCodes = [];
-      exceptionCodes.push(101, 102, 103, 104, 105);
-      exceptionCodes.push(201, 205, 230, 232, 261);
-      exceptionCodes.push(301);
-      if (exceptionCodes.contains(code)) return false;
-    }
-    return true;
+Game_Map.prototype.moveAfterCommonEvent = function () {
+  var interpreter = $gameMap._interpreter;
+  if (!interpreter._list) return false;
+  if (interpreter.eventId() > 0) return false;
+  var list = interpreter._list;
+  if (
+    $gameTemp.destinationX() === $gamePlayer.x &&
+    $gameTemp.destinationY() === $gamePlayer.y
+  ) {
+    $gameTemp.clearDestination();
+  }
+  for (var i = 0; i < list.length; ++i) {
+    var code = list[i].code;
+    var exceptionCodes = [];
+    exceptionCodes.push(101, 102, 103, 104, 105);
+    exceptionCodes.push(201, 205, 230, 232, 261);
+    exceptionCodes.push(301);
+    if (exceptionCodes.contains(code)) return false;
+  }
+  return true;
 };
 
-//=============================================================================
-// Game_Picture
-//=============================================================================
-
-Game_Picture.prototype.isTriggered = function() {
-    if (!SceneManager._scene instanceof Scene_Map) return false;
-    if (this.opacity() <= 0) return false;
-    var sp = SceneManager._scene.getPictureSprite(this);
-    if (!sp) return false;
-    var mx = this.getLocalTouchInputX();
-    var my = this.getLocalTouchInputY();
-    //console.log('click: ' + mx + ', ' + my);
-    var rect = this.getSpriteRect(sp);
-    return mx >= rect.x &&
-           my >= rect.y &&
-           mx < (rect.x + rect.width) &&
-           my < (rect.y + rect.height);
+Game_Picture.prototype.isTriggered = function () {
+  if (!SceneManager._scene instanceof Scene_Map) return false;
+  if (this.opacity() <= 0) return false;
+  var sp = SceneManager._scene.getPictureSprite(this);
+  if (!sp) return false;
+  var mx = this.getLocalTouchInputX();
+  var my = this.getLocalTouchInputY();
+  //console.log('click: ' + mx + ', ' + my);
+  var rect = this.getSpriteRect(sp);
+  return (
+    mx >= rect.x &&
+    my >= rect.y &&
+    mx < rect.x + rect.width &&
+    my < rect.y + rect.height
+  );
 };
 
-Game_Picture.prototype.pictureId = function() {
-    return $gameScreen._pictures.indexOf(this);
+Game_Picture.prototype.pictureId = function () {
+  return $gameScreen._pictures.indexOf(this);
 };
 
-Game_Picture.prototype.getLocalTouchInputX = function() {
-    value = TouchInput.x;
-    return value;
+Game_Picture.prototype.getLocalTouchInputX = function () {
+  value = TouchInput.x;
+  return value;
 };
 
-Game_Picture.prototype.getLocalTouchInputY = function() {
-    value = TouchInput.y;
-    return value;
+Game_Picture.prototype.getLocalTouchInputY = function () {
+  value = TouchInput.y;
+  return value;
 };
 
-Game_Picture.prototype.getSpriteRect = function(sp) {
-    var width = sp.width * Math.abs(sp.scale.x);
-    var height = sp.height * Math.abs(sp.scale.y);
-    var x = sp.x - (sp.anchor.x * width);
-    var y = sp.y - (sp.anchor.y * height);
-    if (sp.anchor.x === 0 && sp.scale.x < 0) x += sp.width * sp.scale.x;
-    if (sp.anchor.y === 0 && sp.scale.y < 0) y += sp.height * sp.scale.y;
-    //console.log('rect: ' + x + ', ' + y + ', ' + width + ', ' + height);
-    return new Rectangle(x, y, width, height);
+Game_Picture.prototype.getSpriteRect = function (sp) {
+  var width = sp.width * Math.abs(sp.scale.x);
+  var height = sp.height * Math.abs(sp.scale.y);
+  var x = sp.x - sp.anchor.x * width;
+  var y = sp.y - sp.anchor.y * height;
+  if (sp.anchor.x === 0 && sp.scale.x < 0) x += sp.width * sp.scale.x;
+  if (sp.anchor.y === 0 && sp.scale.y < 0) y += sp.height * sp.scale.y;
+  //console.log('rect: ' + x + ', ' + y + ', ' + width + ', ' + height);
+  return new Rectangle(x, y, width, height);
 };
 
-Game_Picture.prototype.isRelatedPictureCommonEvent = function() {
-    $gameTemp._pictureCommonEvents = $gameTemp._pictureCommonEvents || [];
-    if ($gameTemp._pictureCommonEvents[this.pictureId()]) {
-      return $gameTemp._pictureCommonEvents[this.pictureId()];
-    }
-    if (MageStudios.PCE.Trigger[this.pictureId()]) {
-      $gameTemp._pictureCommonEvents[this.pictureId()] = true;
-    } else if (MageStudios.PCE.Repeated[this.pictureId()]) {
-      $gameTemp._pictureCommonEvents[this.pictureId()] = true;
-    } else if (MageStudios.PCE.Pressed[this.pictureId()]) {
-      $gameTemp._pictureCommonEvents[this.pictureId()] = true;
-    } else if (MageStudios.PCE.Released[this.pictureId()]) {
-      $gameTemp._pictureCommonEvents[this.pictureId()] = true;
-    } else {
-      $gameTemp._pictureCommonEvents[this.pictureId()] = false;
-    }
+Game_Picture.prototype.isRelatedPictureCommonEvent = function () {
+  $gameTemp._pictureCommonEvents = $gameTemp._pictureCommonEvents || [];
+  if ($gameTemp._pictureCommonEvents[this.pictureId()]) {
     return $gameTemp._pictureCommonEvents[this.pictureId()];
+  }
+  if (MageStudios.PCE.Trigger[this.pictureId()]) {
+    $gameTemp._pictureCommonEvents[this.pictureId()] = true;
+  } else if (MageStudios.PCE.Repeated[this.pictureId()]) {
+    $gameTemp._pictureCommonEvents[this.pictureId()] = true;
+  } else if (MageStudios.PCE.Pressed[this.pictureId()]) {
+    $gameTemp._pictureCommonEvents[this.pictureId()] = true;
+  } else if (MageStudios.PCE.Released[this.pictureId()]) {
+    $gameTemp._pictureCommonEvents[this.pictureId()] = true;
+  } else {
+    $gameTemp._pictureCommonEvents[this.pictureId()] = false;
+  }
+  return $gameTemp._pictureCommonEvents[this.pictureId()];
 };
 
 MageStudios.PCE.Game_Picture_opacity = Game_Picture.prototype.opacity;
-Game_Picture.prototype.opacity = function() {
+Game_Picture.prototype.opacity = function () {
   if (this.isRelatedPictureCommonEvent()) {
     if ($gameSystem.isPictureHidden()) return 0;
     if ($gameMessage.isBusy() && $gameSystem.isPictureHiddenDuringMessage()) {
@@ -3515,159 +3492,138 @@ Game_Picture.prototype.opacity = function() {
   return MageStudios.PCE.Game_Picture_opacity.call(this);
 };
 
-//=============================================================================
-// Spriteset_Base
-//=============================================================================
-
 MageStudios.PCE.Spriteset_Base_createPictures =
-    Spriteset_Base.prototype.createPictures;
-Spriteset_Base.prototype.createPictures = function() {
-    var scene = SceneManager._scene;
-    if (scene instanceof Scene_Map) {
-      this.createSceneMapPictures();
+  Spriteset_Base.prototype.createPictures;
+Spriteset_Base.prototype.createPictures = function () {
+  var scene = SceneManager._scene;
+  if (scene instanceof Scene_Map) {
+    this.createSceneMapPictures();
+  } else {
+    MageStudios.PCE.Spriteset_Base_createPictures.call(this);
+  }
+};
+
+Spriteset_Base.prototype.createSceneMapPictures = function () {
+  var width = Graphics.boxWidth;
+  var height = Graphics.boxHeight;
+  var x = (Graphics.width - width) / 2;
+  var y = (Graphics.height - height) / 2;
+  this._pictureContainer = new Sprite();
+  this._pictureContainer.setFrame(x, y, width, height);
+  for (var i = 1; i <= $gameScreen.maxPictures(); i++) {
+    var picture = new Sprite_Picture(i);
+    if (picture.isRelatedPictureCommonEvent()) {
+      SceneManager._scene.addPictureCommonEvent(picture);
     } else {
-      MageStudios.PCE.Spriteset_Base_createPictures.call(this);
+      this._pictureContainer.addChild(picture);
     }
+  }
+  this.addChild(this._pictureContainer);
 };
-
-Spriteset_Base.prototype.createSceneMapPictures = function() {
-    var width = Graphics.boxWidth;
-    var height = Graphics.boxHeight;
-    var x = (Graphics.width - width) / 2;
-    var y = (Graphics.height - height) / 2;
-    this._pictureContainer = new Sprite();
-    this._pictureContainer.setFrame(x, y, width, height);
-    for (var i = 1; i <= $gameScreen.maxPictures(); i++) {
-      var picture = new Sprite_Picture(i);
-      if (picture.isRelatedPictureCommonEvent()) {
-        SceneManager._scene.addPictureCommonEvent(picture);
-      } else {
-        this._pictureContainer.addChild(picture);
-      }
-    }
-    this.addChild(this._pictureContainer);
-};
-
-//=============================================================================
-// Sprite_Picture
-//=============================================================================
 
 MageStudios.PCE.Sprite_Picture_loadBitmap = Sprite_Picture.prototype.loadBitmap;
-Sprite_Picture.prototype.loadBitmap = function() {
-    MageStudios.PCE.Sprite_Picture_loadBitmap.call(this);
-    SceneManager._scene.bindPictureSprite(this._pictureId, this);
+Sprite_Picture.prototype.loadBitmap = function () {
+  MageStudios.PCE.Sprite_Picture_loadBitmap.call(this);
+  SceneManager._scene.bindPictureSprite(this._pictureId, this);
 };
 
-Sprite_Picture.prototype.isRelatedPictureCommonEvent = function() {
-    if (MageStudios.PCE.Trigger[this._pictureId]) return true;
-    if (MageStudios.PCE.Repeated[this._pictureId]) return true;
-    if (MageStudios.PCE.Pressed[this._pictureId]) return true;
-    if (MageStudios.PCE.Released[this._pictureId]) return true;
-    return false;
+Sprite_Picture.prototype.isRelatedPictureCommonEvent = function () {
+  if (MageStudios.PCE.Trigger[this._pictureId]) return true;
+  if (MageStudios.PCE.Repeated[this._pictureId]) return true;
+  if (MageStudios.PCE.Pressed[this._pictureId]) return true;
+  if (MageStudios.PCE.Released[this._pictureId]) return true;
+  return false;
 };
 
-//=============================================================================
-// Scene_Base
-//=============================================================================
-
-Scene_Base.prototype.bindPictureSprite = function(picture, sprite) {
-};
-
-//=============================================================================
-// Scene_Map
-//=============================================================================
+Scene_Base.prototype.bindPictureSprite = function (picture, sprite) {};
 
 MageStudios.PCE.Scene_Map_createSpriteset = Scene_Map.prototype.createSpriteset;
-Scene_Map.prototype.createSpriteset = function() {
-    this._pictureCommonEvents = [];
-    MageStudios.PCE.Scene_Map_createSpriteset.call(this);
-    this.addPictureCommonEventChildren();
+Scene_Map.prototype.createSpriteset = function () {
+  this._pictureCommonEvents = [];
+  MageStudios.PCE.Scene_Map_createSpriteset.call(this);
+  this.addPictureCommonEventChildren();
 };
 
-Scene_Map.prototype.addPictureCommonEvent = function(picture) {
-    this._pictureCommonEvents.push(picture);
+Scene_Map.prototype.addPictureCommonEvent = function (picture) {
+  this._pictureCommonEvents.push(picture);
 };
 
-Scene_Map.prototype.addPictureCommonEventChildren = function() {
-    var length = this._pictureCommonEvents.length;
-    for (var i = 0; i < length; ++i) {
-      var picture = this._pictureCommonEvents[i];
-      this.addChild(picture);
-    }
+Scene_Map.prototype.addPictureCommonEventChildren = function () {
+  var length = this._pictureCommonEvents.length;
+  for (var i = 0; i < length; ++i) {
+    var picture = this._pictureCommonEvents[i];
+    this.addChild(picture);
+  }
 };
 
-Scene_Map.prototype.bindPictureSprite = function(picture, sprite) {
-    this._pictureCommonEventsBind = this._pictureCommonEventsBind || {};
-    this._pictureCommonEventsBind[picture] = sprite;
+Scene_Map.prototype.bindPictureSprite = function (picture, sprite) {
+  this._pictureCommonEventsBind = this._pictureCommonEventsBind || {};
+  this._pictureCommonEventsBind[picture] = sprite;
 };
 
-Scene_Map.prototype.getPictureSprite = function(picture) {
-    this._pictureCommonEventsBind = this._pictureCommonEventsBind || {};
-    return this._pictureCommonEventsBind[picture.pictureId()];
+Scene_Map.prototype.getPictureSprite = function (picture) {
+  this._pictureCommonEventsBind = this._pictureCommonEventsBind || {};
+  return this._pictureCommonEventsBind[picture.pictureId()];
 };
 
 MageStudios.PCE.Scene_Map_processMapTouch = Scene_Map.prototype.processMapTouch;
-Scene_Map.prototype.processMapTouch = function() {
-    this.updatePictureEvents();
-    if (this.allowProcessMapTouch()) {
-      MageStudios.PCE.Scene_Map_processMapTouch.call(this);
-    }
+Scene_Map.prototype.processMapTouch = function () {
+  this.updatePictureEvents();
+  if (this.allowProcessMapTouch()) {
+    MageStudios.PCE.Scene_Map_processMapTouch.call(this);
+  }
 };
 
-Scene_Map.prototype.allowProcessMapTouch = function() {
-    if (SceneManager.isSceneChanging()) return false;
-    if ($gameMap.isEventRunning()) return false;
-    if ($gameTemp.isCommonEventReserved()) return false;
-    return $gameSystem.isTouchMoveEnabled();
+Scene_Map.prototype.allowProcessMapTouch = function () {
+  if (SceneManager.isSceneChanging()) return false;
+  if ($gameMap.isEventRunning()) return false;
+  if ($gameTemp.isCommonEventReserved()) return false;
+  return $gameSystem.isTouchMoveEnabled();
 };
 
-Scene_Map.prototype.updatePictureEvents = function() {
-    if (TouchInput.isTriggered()) {
-      this.updatePictureEventCheck(MageStudios.PCE.Trigger);
-    }
-    if (TouchInput.isRepeated()) {
-      this.updatePictureEventCheck(MageStudios.PCE.Repeated);
-    }
-    if (TouchInput.isPressed()) {
-      this.updatePictureEventCheck(MageStudios.PCE.Pressed);
-    }
-    if (TouchInput.isReleased()) {
-      this.updatePictureEventCheck(MageStudios.PCE.Released);
-    }
+Scene_Map.prototype.updatePictureEvents = function () {
+  if (TouchInput.isTriggered()) {
+    this.updatePictureEventCheck(MageStudios.PCE.Trigger);
+  }
+  if (TouchInput.isRepeated()) {
+    this.updatePictureEventCheck(MageStudios.PCE.Repeated);
+  }
+  if (TouchInput.isPressed()) {
+    this.updatePictureEventCheck(MageStudios.PCE.Pressed);
+  }
+  if (TouchInput.isReleased()) {
+    this.updatePictureEventCheck(MageStudios.PCE.Released);
+  }
 };
 
-Scene_Map.prototype.updatePictureEventCheck = function(check) {
-    if (SceneManager.isSceneChanging()) return;
-    if ($gameMap.isEventRunning()) return;
-    var picture = this.getTriggeredPictureCommonEvent(check);
-    if (!picture) return;
-    $gameTemp.reserveCommonEvent(check[picture.pictureId()]);
-    $gameTemp.clearDestination();
+Scene_Map.prototype.updatePictureEventCheck = function (check) {
+  if (SceneManager.isSceneChanging()) return;
+  if ($gameMap.isEventRunning()) return;
+  var picture = this.getTriggeredPictureCommonEvent(check);
+  if (!picture) return;
+  $gameTemp.reserveCommonEvent(check[picture.pictureId()]);
+  $gameTemp.clearDestination();
 };
 
-Scene_Map.prototype.getTriggeredPictureCommonEvent = function(check) {
-    var length = check.length;
-    var lastpicture = null;
-    for (var i = 1; i < length; ++i) {
-      var picture = $gameScreen.picture(i);
-      if (!check[i]) continue;
-      if (!picture) continue;
-      var rect = picture.getSpriteRect(this.getPictureSprite(picture));
-      lastpicture = picture;
-      if (picture.isTriggered()) return picture;
-    }
-    return null;
+Scene_Map.prototype.getTriggeredPictureCommonEvent = function (check) {
+  var length = check.length;
+  var lastpicture = null;
+  for (var i = 1; i < length; ++i) {
+    var picture = $gameScreen.picture(i);
+    if (!check[i]) continue;
+    if (!picture) continue;
+    var rect = picture.getSpriteRect(this.getPictureSprite(picture));
+    lastpicture = picture;
+    if (picture.isTriggered()) return picture;
+  }
+  return null;
 };
 
 MageStudios.PCE.Scene_Map_isMenuCalled = Scene_Map.prototype.isMenuCalled;
-Scene_Map.prototype.isMenuCalled = function() {
-    if ($gameSystem.isTouchMoveEnabled()) {
-      return MageStudios.PCE.Scene_Map_isMenuCalled.call(this);
-    } else {
-      return Input.isTriggered('menu');
-    }
+Scene_Map.prototype.isMenuCalled = function () {
+  if ($gameSystem.isTouchMoveEnabled()) {
+    return MageStudios.PCE.Scene_Map_isMenuCalled.call(this);
+  } else {
+    return Input.isTriggered("menu");
+  }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

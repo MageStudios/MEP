@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Party System
-// MSEP_PartySystem.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_PartySystem = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Party = MageStudios.Party || {};
-MageStudios.Party.version = 1.00;
+MageStudios.Party.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Replaces the default 'Formation' command with a new
  * menu for players to easily change party formations.
  * @author Mage Studios Engine Plugins
@@ -324,7 +318,7 @@ MageStudios.Party.version = 1.00;
  *
  * Version 1.06:
  * - Fixed a bug with certain actors not drawing properly.
- * 
+ *
  * Version 1.05:
  * - Added 'Maximum Followers' parameter. This number should be the maximum
  * number you have in your game if you ever increase the maximum party size
@@ -352,84 +346,115 @@ MageStudios.Party.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_PartySystem');
+MageStudios.Parameters = PluginManager.parameters("MSEP_PartySystem");
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 
-MageStudios.Param.MaxBattleMembers = Number(MageStudios.Parameters['Max Battle Members']);
-MageStudios.Param.PartyShowBattle = String(MageStudios.Parameters['Show Battle Command']);
+MageStudios.Param.MaxBattleMembers = Number(
+  MageStudios.Parameters["Max Battle Members"]
+);
+MageStudios.Param.PartyShowBattle = String(
+  MageStudios.Parameters["Show Battle Command"]
+);
 MageStudios.Param.PartyShowBattle = eval(MageStudios.Param.PartyShowBattle);
-MageStudios.Param.PartyEnBattle = String(MageStudios.Parameters['Enable Battle Command']);
+MageStudios.Param.PartyEnBattle = String(
+  MageStudios.Parameters["Enable Battle Command"]
+);
 MageStudios.Param.PartyEnBattle = eval(MageStudios.Param.PartyEnBattle);
-MageStudios.Param.PartyCooldown = Number(MageStudios.Parameters['Battle Cooldown']);
-MageStudios.Param.PartyMaxFollower = Number(MageStudios.Parameters['Maximum Followers']);
-MageStudios.Param.ParamExpDis = eval(String(MageStudios.Parameters['EXP Distribution']));
+MageStudios.Param.PartyCooldown = Number(
+  MageStudios.Parameters["Battle Cooldown"]
+);
+MageStudios.Param.PartyMaxFollower = Number(
+  MageStudios.Parameters["Maximum Followers"]
+);
+MageStudios.Param.ParamExpDis = eval(
+  String(MageStudios.Parameters["EXP Distribution"])
+);
 
-MageStudios.Param.PartyHelpWindow = String(MageStudios.Parameters['Help Window']);
+MageStudios.Param.PartyHelpWindow = String(
+  MageStudios.Parameters["Help Window"]
+);
 MageStudios.Param.PartyHelpWindow = eval(MageStudios.Param.PartyHelpWindow);
-MageStudios.Param.PartyTextAlign = String(MageStudios.Parameters['Text Alignment']);
-MageStudios.Param.PartyCommand1 = String(MageStudios.Parameters['Change Command']);
-MageStudios.Param.PartyCommand2 = String(MageStudios.Parameters['Remove Command']);
-MageStudios.Param.PartyCommand3 = String(MageStudios.Parameters['Revert Command']);
-MageStudios.Param.PartyCommand4 = String(MageStudios.Parameters['Finish Command']);
+MageStudios.Param.PartyTextAlign = String(
+  MageStudios.Parameters["Text Alignment"]
+);
+MageStudios.Param.PartyCommand1 = String(
+  MageStudios.Parameters["Change Command"]
+);
+MageStudios.Param.PartyCommand2 = String(
+  MageStudios.Parameters["Remove Command"]
+);
+MageStudios.Param.PartyCommand3 = String(
+  MageStudios.Parameters["Revert Command"]
+);
+MageStudios.Param.PartyCommand4 = String(
+  MageStudios.Parameters["Finish Command"]
+);
 
-MageStudios.Param.PartyEmptyText = String(MageStudios.Parameters['Empty Text']);
-MageStudios.Param.PartyShowFace = String(MageStudios.Parameters['Actor Face']);
+MageStudios.Param.PartyEmptyText = String(MageStudios.Parameters["Empty Text"]);
+MageStudios.Param.PartyShowFace = String(MageStudios.Parameters["Actor Face"]);
 MageStudios.Param.PartyShowFace = eval(MageStudios.Param.PartyShowFace);
-MageStudios.Param.PartyShowCharacter = String(MageStudios.Parameters['Actor Sprite']);
-MageStudios.Param.PartyShowCharacter = eval(MageStudios.Param.PartyShowCharacter);
+MageStudios.Param.PartyShowCharacter = String(
+  MageStudios.Parameters["Actor Sprite"]
+);
+MageStudios.Param.PartyShowCharacter = eval(
+  MageStudios.Param.PartyShowCharacter
+);
 
-MageStudios.Icon.PartyRemove = Number(MageStudios.Parameters['Remove Icon']);
-MageStudios.Param.PartyShowListSprite = String(MageStudios.Parameters['Show Sprite']);
-MageStudios.Param.PartyShowListSprite = eval(MageStudios.Param.PartyShowListSprite);
-MageStudios.Param.PartySpriteBufferY = Number(MageStudios.Parameters['Sprite Y Buffer']);
-MageStudios.Param.ColorInParty = Number(MageStudios.Parameters['In Party Text Color']);
+MageStudios.Icon.PartyRemove = Number(MageStudios.Parameters["Remove Icon"]);
+MageStudios.Param.PartyShowListSprite = String(
+  MageStudios.Parameters["Show Sprite"]
+);
+MageStudios.Param.PartyShowListSprite = eval(
+  MageStudios.Param.PartyShowListSprite
+);
+MageStudios.Param.PartySpriteBufferY = Number(
+  MageStudios.Parameters["Sprite Y Buffer"]
+);
+MageStudios.Param.ColorInParty = Number(
+  MageStudios.Parameters["In Party Text Color"]
+);
 
-MageStudios.Param.PartyLockFirst = String(MageStudios.Parameters['Lock First Actor']);
+MageStudios.Param.PartyLockFirst = String(
+  MageStudios.Parameters["Lock First Actor"]
+);
 MageStudios.Param.PartyLockFirst = eval(MageStudios.Param.PartyLockFirst);
-MageStudios.Icon.PartyLocked = Number(MageStudios.Parameters['Locked Icon']);
-MageStudios.Icon.PartyRequired = Number(MageStudios.Parameters['Required Icon']);
+MageStudios.Icon.PartyLocked = Number(MageStudios.Parameters["Locked Icon"]);
+MageStudios.Icon.PartyRequired = Number(
+  MageStudios.Parameters["Required Icon"]
+);
 
-MageStudios.Param.PartyDetailWin = String(MageStudios.Parameters['Enable Detail Window']);
+MageStudios.Param.PartyDetailWin = String(
+  MageStudios.Parameters["Enable Detail Window"]
+);
 MageStudios.Param.PartyDetailWin = eval(MageStudios.Param.PartyDetailWin);
-MageStudios.Param.PartyListWidth = Number(MageStudios.Parameters['List Width']);
-MageStudios.Param.PartyDetailParam = String(MageStudios.Parameters['Actor Parameters']);
-MageStudios.Param.PartyDetailEquip = String(MageStudios.Parameters['Actor Equipment']);
-
-//=============================================================================
-// BattleManager
-//=============================================================================
+MageStudios.Param.PartyListWidth = Number(MageStudios.Parameters["List Width"]);
+MageStudios.Param.PartyDetailParam = String(
+  MageStudios.Parameters["Actor Parameters"]
+);
+MageStudios.Param.PartyDetailEquip = String(
+  MageStudios.Parameters["Actor Equipment"]
+);
 
 if (MageStudios.Param.ParamExpDis) {
+  MageStudios.Party.BattleManager_gainExp = BattleManager.gainExp;
+  BattleManager.gainExp = function () {
+    var alive = $gameParty.aliveMembers().length;
+    this._rewards.exp = Math.ceil(this._rewards.exp / alive);
+    MageStudios.Party.BattleManager_gainExp.call(this);
+  };
+}
 
-MageStudios.Party.BattleManager_gainExp = BattleManager.gainExp;
-BattleManager.gainExp = function() {
-  var alive = $gameParty.aliveMembers().length;
-  this._rewards.exp = Math.ceil(this._rewards.exp / alive);
-  MageStudios.Party.BattleManager_gainExp.call(this);
-};
-
-}; // MageStudios.Param.ParamExpDis
-
-//=============================================================================
-// Game_Temp
-//=============================================================================
-
-Game_Temp.prototype.hasStoredBattleSpriteset = function() {
+Game_Temp.prototype.hasStoredBattleSpriteset = function () {
   return this._battleSpriteset;
 };
 
-Game_Temp.prototype.storeBattleSpriteset = function() {
+Game_Temp.prototype.storeBattleSpriteset = function () {
   this._battleSpriteset = SceneManager._scene._spriteset;
 };
 
-Game_Temp.prototype.restoreBattleSpriteset = function() {
+Game_Temp.prototype.restoreBattleSpriteset = function () {
   if (this._battleSpriteset) {
     SceneManager._scene._spriteset = this._battleSpriteset;
     SceneManager._scene.addChild(SceneManager._scene._spriteset);
@@ -437,1046 +462,1021 @@ Game_Temp.prototype.restoreBattleSpriteset = function() {
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.Party.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.Party.Game_System_initialize.call(this);
-    this.initPartySettings();
+Game_System.prototype.initialize = function () {
+  MageStudios.Party.Game_System_initialize.call(this);
+  this.initPartySettings();
 };
 
-Game_System.prototype.initPartySettings = function() {
-    this._showBattleFormation = MageStudios.Param.PartyShowBattle;
-    this._battleFormationEnabled = MageStudios.Param.PartyEnBattle;
+Game_System.prototype.initPartySettings = function () {
+  this._showBattleFormation = MageStudios.Param.PartyShowBattle;
+  this._battleFormationEnabled = MageStudios.Param.PartyEnBattle;
 };
 
-Game_System.prototype.isShowBattleFormation = function() {
-    if (this._showBattleFormation === undefined) this.initPartySettings();
-    return this._showBattleFormation;
+Game_System.prototype.isShowBattleFormation = function () {
+  if (this._showBattleFormation === undefined) this.initPartySettings();
+  return this._showBattleFormation;
 };
 
-Game_System.prototype.setShowBattleFormation = function(value) {
-    if (this._showBattleFormation === undefined) this.initPartySettings();
-    this._showBattleFormation = value;
+Game_System.prototype.setShowBattleFormation = function (value) {
+  if (this._showBattleFormation === undefined) this.initPartySettings();
+  this._showBattleFormation = value;
 };
 
-Game_System.prototype.isBattleFormationEnabled = function() {
-    if (this._battleFormationEnabled === undefined) this.initPartySettings();
-    if (this._battleFormationCooldown === undefined) {
-      this.resetBattleFormationCooldown();
-    }
-    if (this._battleFormationCooldown > 0) return false;
-    return this._battleFormationEnabled;
+Game_System.prototype.isBattleFormationEnabled = function () {
+  if (this._battleFormationEnabled === undefined) this.initPartySettings();
+  if (this._battleFormationCooldown === undefined) {
+    this.resetBattleFormationCooldown();
+  }
+  if (this._battleFormationCooldown > 0) return false;
+  return this._battleFormationEnabled;
 };
 
-Game_System.prototype.setBattleFormationEnabled = function(value) {
-    if (this._battleFormationEnabled === undefined) this.initPartySettings();
-    this._battleFormationEnabled = value;
+Game_System.prototype.setBattleFormationEnabled = function (value) {
+  if (this._battleFormationEnabled === undefined) this.initPartySettings();
+  this._battleFormationEnabled = value;
 };
 
-Game_System.prototype.resetBattleFormationCooldown = function() {
-    this._battleFormationCooldown = 0;
+Game_System.prototype.resetBattleFormationCooldown = function () {
+  this._battleFormationCooldown = 0;
 };
 
-Game_System.prototype.updateBattleFormationCooldown = function() {
-    if (this._battleFormationCooldown === undefined) {
-      this.resetBattleFormationCooldown();
-    }
-    this._battleFormationCooldown--;
+Game_System.prototype.updateBattleFormationCooldown = function () {
+  if (this._battleFormationCooldown === undefined) {
+    this.resetBattleFormationCooldown();
+  }
+  this._battleFormationCooldown--;
 };
 
-Game_System.prototype.setBattleFormationCooldown = function() {
-    this._battleFormationCooldown = MageStudios.Param.PartyCooldown;
+Game_System.prototype.setBattleFormationCooldown = function () {
+  this._battleFormationCooldown = MageStudios.Param.PartyCooldown;
 };
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
 
 MageStudios.Party.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.Party.Game_Actor_setup.call(this, actorId);
-    this.initLocked();
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.Party.Game_Actor_setup.call(this, actorId);
+  this.initLocked();
 };
 
-Game_Actor.prototype.initLocked = function() {
-    this._locked = false;
-    this._required = false;
+Game_Actor.prototype.initLocked = function () {
+  this._locked = false;
+  this._required = false;
 };
 
 MageStudios.Party.Game_Actor_isFormationChangeOk =
-    Game_Actor.prototype.isFormationChangeOk;
-Game_Actor.prototype.isFormationChangeOk = function() {
-    if (this._locked) return false;
-    return MageStudios.Party.Game_Actor_isFormationChangeOk.call(this);
+  Game_Actor.prototype.isFormationChangeOk;
+Game_Actor.prototype.isFormationChangeOk = function () {
+  if (this._locked) return false;
+  return MageStudios.Party.Game_Actor_isFormationChangeOk.call(this);
 };
 
 MageStudios.Party.Game_Actor_index = Game_Actor.prototype.index;
-Game_Actor.prototype.index = function() {
-    if ($gameParty.inBattle()) {
-      return $gameParty.battleMembers().indexOf(this);
-    } else {
-      return MageStudios.Party.Game_Actor_index.call(this);
-    }
-    return $gameParty.members().indexOf(this);
+Game_Actor.prototype.index = function () {
+  if ($gameParty.inBattle()) {
+    return $gameParty.battleMembers().indexOf(this);
+  } else {
+    return MageStudios.Party.Game_Actor_index.call(this);
+  }
+  return $gameParty.members().indexOf(this);
 };
-
-//=============================================================================
-// Game_Party
-//=============================================================================
 
 MageStudios.Party.Game_Party_initialize = Game_Party.prototype.initialize;
-Game_Party.prototype.initialize = function() {
-    MageStudios.Party.Game_Party_initialize.call(this);
-    this.initBattleMaxSize();
-    this.initializeBattleMembers();
+Game_Party.prototype.initialize = function () {
+  MageStudios.Party.Game_Party_initialize.call(this);
+  this.initBattleMaxSize();
+  this.initializeBattleMembers();
 };
 
-Game_Party.prototype.initBattleMaxSize = function() {
-    this._BattleMaxSize = MageStudios.Param.MaxBattleMembers;
-    this.initializeBattleMembers();
+Game_Party.prototype.initBattleMaxSize = function () {
+  this._BattleMaxSize = MageStudios.Param.MaxBattleMembers;
+  this.initializeBattleMembers();
 };
 
-Game_Party.prototype.changeBattleMax = function(value) {
-    this._BattleMaxSize = value;
-    this.initializeBattleMembers();
+Game_Party.prototype.changeBattleMax = function (value) {
+  this._BattleMaxSize = value;
+  this.initializeBattleMembers();
 };
 
-Game_Party.prototype.loadActorImages = function() {
-    for (var i = 0; i < this.members().length; ++i) {
-      var actor = this.members()[i];
-      if (!actor) continue;
-      ImageManager.loadFace(actor.faceName());
-      ImageManager.loadCharacter(actor.characterName());
-    }
+Game_Party.prototype.loadActorImages = function () {
+  for (var i = 0; i < this.members().length; ++i) {
+    var actor = this.members()[i];
+    if (!actor) continue;
+    ImageManager.loadFace(actor.faceName());
+    ImageManager.loadCharacter(actor.characterName());
+  }
 };
 
-Game_Party.prototype.battleMembers = function() {
-    if (this.toInitializeBattleMembers()) this.initializeBattleMembers();
-    var battleParty = [];
-    for (var i = 0; i < this._battleMembers.length; ++i) {
-      var actorId = this._battleMembers[i];
-      if (battleParty.length > this.maxBattleMembers()) break;
-      if (actorId === null) continue;
-      if (!$gameActors.actor(actorId)) continue;
-      if (!$gameActors.actor(actorId).isAppeared()) continue;
-      battleParty.push($gameActors.actor(actorId));
-    }
-    return battleParty;
+Game_Party.prototype.battleMembers = function () {
+  if (this.toInitializeBattleMembers()) this.initializeBattleMembers();
+  var battleParty = [];
+  for (var i = 0; i < this._battleMembers.length; ++i) {
+    var actorId = this._battleMembers[i];
+    if (battleParty.length > this.maxBattleMembers()) break;
+    if (actorId === null) continue;
+    if (!$gameActors.actor(actorId)) continue;
+    if (!$gameActors.actor(actorId).isAppeared()) continue;
+    battleParty.push($gameActors.actor(actorId));
+  }
+  return battleParty;
 };
 
-Game_Party.prototype.maxBattleMembers = function() {
-    if (this._BattleMaxSize === undefined) this.initBattleMaxSize();
-    return Math.max(this._BattleMaxSize, 1);
+Game_Party.prototype.maxBattleMembers = function () {
+  if (this._BattleMaxSize === undefined) this.initBattleMaxSize();
+  return Math.max(this._BattleMaxSize, 1);
 };
 
 MageStudios.Party.Game_Party_setupStartingMembers =
-    Game_Party.prototype.setupStartingMembers;
-Game_Party.prototype.setupStartingMembers = function() {
-    MageStudios.Party.Game_Party_setupStartingMembers.call(this);
-    this.initializeBattleMembers();
-    if (MageStudios.Param.PartyLockFirst) this.lockActor(this._actors[0]);
+  Game_Party.prototype.setupStartingMembers;
+Game_Party.prototype.setupStartingMembers = function () {
+  MageStudios.Party.Game_Party_setupStartingMembers.call(this);
+  this.initializeBattleMembers();
+  if (MageStudios.Param.PartyLockFirst) this.lockActor(this._actors[0]);
 };
 
-Game_Party.prototype.toInitializeBattleMembers = function() {
-    if (this._battleMembers === null) return true;
-    if (!this._battleMembers) this.initializeBattleMembers();
-    return (this._battleMembers.length !== this.maxBattleMembers());
+Game_Party.prototype.toInitializeBattleMembers = function () {
+  if (this._battleMembers === null) return true;
+  if (!this._battleMembers) this.initializeBattleMembers();
+  return this._battleMembers.length !== this.maxBattleMembers();
 };
 
 MageStudios.Party.Game_Party_setupBattleTestMembers =
-    Game_Party.prototype.setupBattleTestMembers;
-Game_Party.prototype.setupBattleTestMembers = function() {
-    MageStudios.Party.Game_Party_setupBattleTestMembers.call(this);
-    if (MageStudios.Param.PartyLockFirst) this.lockActor(this._actors[0]);
-    for (var i = 0; i < $dataActors.length; ++i) {
-      var actor = $dataActors[i];
-      if (!actor) continue;
-      if (this._battleMembers.contains(actor.id)) continue;
-      this._actors.push(actor.id);
-    }
-    this.loadActorImages();
+  Game_Party.prototype.setupBattleTestMembers;
+Game_Party.prototype.setupBattleTestMembers = function () {
+  MageStudios.Party.Game_Party_setupBattleTestMembers.call(this);
+  if (MageStudios.Param.PartyLockFirst) this.lockActor(this._actors[0]);
+  for (var i = 0; i < $dataActors.length; ++i) {
+    var actor = $dataActors[i];
+    if (!actor) continue;
+    if (this._battleMembers.contains(actor.id)) continue;
+    this._actors.push(actor.id);
+  }
+  this.loadActorImages();
 };
 
-Game_Party.prototype.initializeBattleMembers = function() {
-    this._battleMembers = [];
-    for (var i = 0; i < this.maxBattleMembers(); ++i) {
-      if (this._actors[i]) {
-        this._battleMembers.push(this._actors[i]);
-      } else {
-        this._battleMembers.push(0);
-      }
+Game_Party.prototype.initializeBattleMembers = function () {
+  this._battleMembers = [];
+  for (var i = 0; i < this.maxBattleMembers(); ++i) {
+    if (this._actors[i]) {
+      this._battleMembers.push(this._actors[i]);
+    } else {
+      this._battleMembers.push(0);
     }
-    if ($gamePlayer) $gamePlayer.refresh();
+  }
+  if ($gamePlayer) $gamePlayer.refresh();
 };
 
 MageStudios.Party.Game_Party_addActor = Game_Party.prototype.addActor;
-Game_Party.prototype.addActor = function(actorId) {
-    MageStudios.Party.Game_Party_addActor.call(this, actorId);
-    if (this._battleMembers.contains(actorId)) return;
-    if (!this._battleMembers.contains(0)) return;
-    var index = this._battleMembers.indexOf(0);
-    this._battleMembers[index] = actorId;
-    $gamePlayer.refresh();
-    $gameMap.requestRefresh();
-    this.rearrangeActors();
+Game_Party.prototype.addActor = function (actorId) {
+  MageStudios.Party.Game_Party_addActor.call(this, actorId);
+  if (this._battleMembers.contains(actorId)) return;
+  if (!this._battleMembers.contains(0)) return;
+  var index = this._battleMembers.indexOf(0);
+  this._battleMembers[index] = actorId;
+  $gamePlayer.refresh();
+  $gameMap.requestRefresh();
+  this.rearrangeActors();
 };
 
 MageStudios.Party.Game_Party_removeActor = Game_Party.prototype.removeActor;
-Game_Party.prototype.removeActor = function(actorId) {
-    MageStudios.Party.Game_Party_removeActor.call(this, actorId);
-    if (!this._battleMembers.contains(actorId)) return;
-    var index = this._battleMembers.indexOf(actorId);
-    this._battleMembers[index] = 0;
-    $gamePlayer.refresh();
-    $gameMap.requestRefresh();
-    this.rearrangeActors();
+Game_Party.prototype.removeActor = function (actorId) {
+  MageStudios.Party.Game_Party_removeActor.call(this, actorId);
+  if (!this._battleMembers.contains(actorId)) return;
+  var index = this._battleMembers.indexOf(actorId);
+  this._battleMembers[index] = 0;
+  $gamePlayer.refresh();
+  $gameMap.requestRefresh();
+  this.rearrangeActors();
 };
 
-Game_Party.prototype.rearrangeActors = function() {
-    if (this._battleMembers === null) this.initializeBattleMembers();
-    var battleArray = [];
-    for (var i = 0; i < this._battleMembers.length; ++i) {
-      var actorId = this._battleMembers[i];
-      if (actorId === null) continue;
-      if ($gameActors.actor(actorId)) battleArray.push(actorId);
-    }
-    var reserveArray = [];
-    for (var i = 0; i < this._actors.length; ++i) {
-      var actorId = this._actors[i];
-      if (battleArray.contains(actorId)) continue;
-      if ($gameActors.actor(actorId) === null) continue;
-      reserveArray.push(actorId);
-    }
-    reserveArray = this.sortReserveParty(reserveArray);
-    this._actors = battleArray.concat(reserveArray);
+Game_Party.prototype.rearrangeActors = function () {
+  if (this._battleMembers === null) this.initializeBattleMembers();
+  var battleArray = [];
+  for (var i = 0; i < this._battleMembers.length; ++i) {
+    var actorId = this._battleMembers[i];
+    if (actorId === null) continue;
+    if ($gameActors.actor(actorId)) battleArray.push(actorId);
+  }
+  var reserveArray = [];
+  for (var i = 0; i < this._actors.length; ++i) {
+    var actorId = this._actors[i];
+    if (battleArray.contains(actorId)) continue;
+    if ($gameActors.actor(actorId) === null) continue;
+    reserveArray.push(actorId);
+  }
+  reserveArray = this.sortReserveParty(reserveArray);
+  this._actors = battleArray.concat(reserveArray);
 };
 
-Game_Party.prototype.sortReserveParty = function(party) {
-    party.sort(function(a, b) { return a - b; });
-    return party;
+Game_Party.prototype.sortReserveParty = function (party) {
+  party.sort(function (a, b) {
+    return a - b;
+  });
+  return party;
 };
 
-Game_Party.prototype.lockActor = function(actorId) {
-    var actor = $gameActors.actor(actorId);
-    if (actor) actor._locked = true;
+Game_Party.prototype.lockActor = function (actorId) {
+  var actor = $gameActors.actor(actorId);
+  if (actor) actor._locked = true;
 };
 
-Game_Party.prototype.reconstructActions = function(actorId) {
-    for (var i = 0; i < this.members().length; ++i) {
-      var member = this.members()[i];
-      if (!member) continue;
-      if (member.currentAction() && member.currentAction().item()) continue;
-      member.makeActions();
-    }
+Game_Party.prototype.reconstructActions = function (actorId) {
+  for (var i = 0; i < this.members().length; ++i) {
+    var member = this.members()[i];
+    if (!member) continue;
+    if (member.currentAction() && member.currentAction().item()) continue;
+    member.makeActions();
+  }
 };
 
 MageStudios.Party.Game_Party_swapOrder = Game_Party.prototype.swapOrder;
-Game_Party.prototype.swapOrder = function(index1, index2) {
-    this.swapOrderBattleMembers(index1, index2);
-    MageStudios.Party.Game_Party_swapOrder.call(this, index1, index2);
-    this.rearrangeActors();
-    $gamePlayer.refresh();
+Game_Party.prototype.swapOrder = function (index1, index2) {
+  this.swapOrderBattleMembers(index1, index2);
+  MageStudios.Party.Game_Party_swapOrder.call(this, index1, index2);
+  this.rearrangeActors();
+  $gamePlayer.refresh();
 };
 
-Game_Party.prototype.swapOrderBattleMembers = function(index1, index2) {
-    var bm = this._battleMembers;
-    if (bm.length > index1 && bm.length > index2) {
-      var actorId1 = this._battleMembers[index1];
-      var actorId2 = this._battleMembers[index2];
-    } else if (bm.length > index1) {
-      var actorId1 = this._battleMembers[index1];
-      var actorId2 = this._actors[index2];
-    } else if (bm.length > index2) {
-      var actorId1 = this._actors[index1];
-      var actorId2 = this._battleMembers[index2];
-    }
-    if (bm.length > index1) this._battleMembers[index1] = actorId2;
-    if (bm.length > index2) this._battleMembers[index2] = actorId1;
+Game_Party.prototype.swapOrderBattleMembers = function (index1, index2) {
+  var bm = this._battleMembers;
+  if (bm.length > index1 && bm.length > index2) {
+    var actorId1 = this._battleMembers[index1];
+    var actorId2 = this._battleMembers[index2];
+  } else if (bm.length > index1) {
+    var actorId1 = this._battleMembers[index1];
+    var actorId2 = this._actors[index2];
+  } else if (bm.length > index2) {
+    var actorId1 = this._actors[index1];
+    var actorId2 = this._battleMembers[index2];
+  }
+  if (bm.length > index1) this._battleMembers[index1] = actorId2;
+  if (bm.length > index2) this._battleMembers[index2] = actorId1;
 };
-
-//=============================================================================
-// Game_Troop
-//=============================================================================
 
 MageStudios.Party.Game_Troop_increaseTurn = Game_Troop.prototype.increaseTurn;
-Game_Troop.prototype.increaseTurn = function() {
-    MageStudios.Party.Game_Troop_increaseTurn.call(this);
-    $gameSystem.updateBattleFormationCooldown();
+Game_Troop.prototype.increaseTurn = function () {
+  MageStudios.Party.Game_Troop_increaseTurn.call(this);
+  $gameSystem.updateBattleFormationCooldown();
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-Game_Followers.prototype.initialize = function() {
-    this._visible = $dataSystem.optFollowers;
-    this._gathering = false;
-    this._data = [];
-    var max = MageStudios.Param.PartyMaxFollower || $gameParty.maxBattleMembers();
-    for (var i = 1; i < max; i++) {
-        this._data.push(new Game_Follower(i));
-    }
+Game_Followers.prototype.initialize = function () {
+  this._visible = $dataSystem.optFollowers;
+  this._gathering = false;
+  this._data = [];
+  var max = MageStudios.Param.PartyMaxFollower || $gameParty.maxBattleMembers();
+  for (var i = 1; i < max; i++) {
+    this._data.push(new Game_Follower(i));
+  }
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.Party.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    MageStudios.Party.Game_Interpreter_pluginCommand.call(this, command, args)
-    if (command === 'OpenPartyMenu') this.gotoSceneParty();
-    if (command === 'ChangePartyMax') $gameParty.changeBattleMax(args[0]);
-    if (command === 'LockActor') this.lockActor(args, true);
-    if (command === 'UnlockActor') this.lockActor(args, false);
-    if (command === 'RequireActor') this.requireActor(args, true);
-    if (command === 'UnrequireActor') this.requireActor(args, false);
-    if (command === 'ShowBattleFormation') {
-      $gameSystem.setShowBattleFormation(true);
-    }
-    if (command === 'HideBattleFormation') {
-      $gameSystem.setShowBattleFormation(false);
-    }
-    if (command === 'EnableBattleFormation') {
-      $gameSystem.setBattleFormationEnabled(true);
-    }
-    if (command === 'DisableBattleFormation') {
-      $gameSystem.setBattleFormationEnabled(false);
-    }
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.Party.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "OpenPartyMenu") this.gotoSceneParty();
+  if (command === "ChangePartyMax") $gameParty.changeBattleMax(args[0]);
+  if (command === "LockActor") this.lockActor(args, true);
+  if (command === "UnlockActor") this.lockActor(args, false);
+  if (command === "RequireActor") this.requireActor(args, true);
+  if (command === "UnrequireActor") this.requireActor(args, false);
+  if (command === "ShowBattleFormation") {
+    $gameSystem.setShowBattleFormation(true);
+  }
+  if (command === "HideBattleFormation") {
+    $gameSystem.setShowBattleFormation(false);
+  }
+  if (command === "EnableBattleFormation") {
+    $gameSystem.setBattleFormationEnabled(true);
+  }
+  if (command === "DisableBattleFormation") {
+    $gameSystem.setBattleFormationEnabled(false);
+  }
 };
 
-Game_Interpreter.prototype.gotoSceneParty = function() {
-    if ($gameParty.inBattle()) return;
-    $gameParty.loadActorImages();
-    SceneManager.push(Scene_Party);
+Game_Interpreter.prototype.gotoSceneParty = function () {
+  if ($gameParty.inBattle()) return;
+  $gameParty.loadActorImages();
+  SceneManager.push(Scene_Party);
 };
 
-Game_Interpreter.prototype.lockActor = function(args, value) {
-    for (i = 0; i < args.length; i++) {
-      var actorId = Number(args[i]);
-      if ($gameActors.actor(actorId)) {
-        $gameActors.actor(actorId)._locked = value;
-      }
+Game_Interpreter.prototype.lockActor = function (args, value) {
+  for (i = 0; i < args.length; i++) {
+    var actorId = Number(args[i]);
+    if ($gameActors.actor(actorId)) {
+      $gameActors.actor(actorId)._locked = value;
     }
+  }
 };
 
-Game_Interpreter.prototype.requireActor = function(args, value) {
-    for (i = 0; i < args.length; i++) {
-      var actorId = Number(args[i]);
-      if ($gameActors.actor(actorId)) {
-        $gameActors.actor(actorId)._required = value;
-      }
+Game_Interpreter.prototype.requireActor = function (args, value) {
+  for (i = 0; i < args.length; i++) {
+    var actorId = Number(args[i]);
+    if ($gameActors.actor(actorId)) {
+      $gameActors.actor(actorId)._required = value;
     }
+  }
 };
-
-//=============================================================================
-// Window_PartyMenuCommand
-//=============================================================================
 
 function Window_PartyMenuCommand() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_PartyMenuCommand.prototype = Object.create(Window_Command.prototype);
 Window_PartyMenuCommand.prototype.constructor = Window_PartyMenuCommand;
 
-Window_PartyMenuCommand.prototype.initialize = function(x, y) {
-    Window_Command.prototype.initialize.call(this, x, y);
+Window_PartyMenuCommand.prototype.initialize = function (x, y) {
+  Window_Command.prototype.initialize.call(this, x, y);
 };
 
-Window_PartyMenuCommand.prototype.windowWidth = function() {
-    var ww = $gameParty.maxBattleMembers() * Window_Base._faceWidth;
-    ww += this.standardPadding() * 2;
-    return (Graphics.boxWidth - ww).clamp(Graphics.boxWidth / 4, 240);
+Window_PartyMenuCommand.prototype.windowWidth = function () {
+  var ww = $gameParty.maxBattleMembers() * Window_Base._faceWidth;
+  ww += this.standardPadding() * 2;
+  return (Graphics.boxWidth - ww).clamp(Graphics.boxWidth / 4, 240);
 };
 
-Window_PartyMenuCommand.prototype.numVisibleRows = function() {
-    return 4;
+Window_PartyMenuCommand.prototype.numVisibleRows = function () {
+  return 4;
 };
 
-Window_PartyMenuCommand.prototype.itemTextAlign = function() {
-    return MageStudios.Param.PartyTextAlign;
+Window_PartyMenuCommand.prototype.itemTextAlign = function () {
+  return MageStudios.Param.PartyTextAlign;
 };
 
-Window_PartyMenuCommand.prototype.makeCommandList = function() {
-    this.addChangeCommand();
-    this.addRemoveCommand();
-    this.addRevertCommand();
-    this.addCustomCommand();
-    this.addCancelCommand();
+Window_PartyMenuCommand.prototype.makeCommandList = function () {
+  this.addChangeCommand();
+  this.addRemoveCommand();
+  this.addRevertCommand();
+  this.addCustomCommand();
+  this.addCancelCommand();
 };
 
-Window_PartyMenuCommand.prototype.addChangeCommand = function() {
-    if (MageStudios.Param.PartyCommand1 === '') return;
-    this.addCommand(MageStudios.Param.PartyCommand1, 'change');
+Window_PartyMenuCommand.prototype.addChangeCommand = function () {
+  if (MageStudios.Param.PartyCommand1 === "") return;
+  this.addCommand(MageStudios.Param.PartyCommand1, "change");
 };
 
-Window_PartyMenuCommand.prototype.addRemoveCommand = function() {
-    if (MageStudios.Param.PartyCommand2 === '') return;
-    this.addCommand(MageStudios.Param.PartyCommand2, 'remove');
+Window_PartyMenuCommand.prototype.addRemoveCommand = function () {
+  if (MageStudios.Param.PartyCommand2 === "") return;
+  this.addCommand(MageStudios.Param.PartyCommand2, "remove");
 };
 
-Window_PartyMenuCommand.prototype.addRevertCommand = function() {
-    if (MageStudios.Param.PartyCommand3 === '') return;
-    this.addCommand(MageStudios.Param.PartyCommand3, 'revert');
+Window_PartyMenuCommand.prototype.addRevertCommand = function () {
+  if (MageStudios.Param.PartyCommand3 === "") return;
+  this.addCommand(MageStudios.Param.PartyCommand3, "revert");
 };
 
-Window_PartyMenuCommand.prototype.addCustomCommand = function() {
+Window_PartyMenuCommand.prototype.addCustomCommand = function () {};
+
+Window_PartyMenuCommand.prototype.addCancelCommand = function () {
+  var enabled = this.isCancelEnabled();
+  if (MageStudios.Param.PartyCommand4 === "") return;
+  this.addCommand(MageStudios.Param.PartyCommand4, "cancel", enabled);
 };
 
-Window_PartyMenuCommand.prototype.addCancelCommand = function() {
-    var enabled = this.isCancelEnabled();
-    if (MageStudios.Param.PartyCommand4 === '') return;
-    this.addCommand(MageStudios.Param.PartyCommand4, 'cancel', enabled);
+Window_PartyMenuCommand.prototype.inParty = function (actor) {
+  return $gameParty.battleMembers().contains(actor);
 };
 
-Window_PartyMenuCommand.prototype.inParty = function(actor) {
-    return ($gameParty.battleMembers().contains(actor));
+Window_PartyMenuCommand.prototype.isCancelEnabled = function () {
+  if ($gameParty.aliveMembers().length <= 0) return false;
+  if ($gameParty.battleMembers().length <= 0) return false;
+  for (var i = 0; i < $gameParty._actors.length; ++i) {
+    var actorId = $gameParty._actors[i];
+    if (this.refuseCancel(actorId)) return false;
+  }
+  return true;
 };
 
-Window_PartyMenuCommand.prototype.isCancelEnabled = function() {
-    if ($gameParty.aliveMembers().length <= 0) return false;
-    if ($gameParty.battleMembers().length <= 0) return false;
-    for (var i = 0; i < $gameParty._actors.length; ++i) {
-      var actorId = $gameParty._actors[i];
-      if (this.refuseCancel(actorId)) return false;
-    }
-    return true
+Window_PartyMenuCommand.prototype.refuseCancel = function (actorId) {
+  if ($gameParty._battleMembers.contains(actorId)) return false;
+  if ($gameActors.actor(actorId)._required) return true;
+  return false;
 };
-
-Window_PartyMenuCommand.prototype.refuseCancel = function(actorId) {
-    if ($gameParty._battleMembers.contains(actorId)) return false;
-    if ($gameActors.actor(actorId)._required) return true;
-    return false;
-};
-
-//=============================================================================
-// Window_PartySelect
-//=============================================================================
 
 function Window_PartySelect() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_PartySelect.prototype = Object.create(Window_Selectable.prototype);
 Window_PartySelect.prototype.constructor = Window_PartySelect;
 
-Window_PartySelect.prototype.initialize = function(commandWindow) {
-    var wx = commandWindow.width;
-    var wy = commandWindow.y;
-    var ww = Graphics.boxWidth - commandWindow.width;
-    var wh = commandWindow.height;
-    Window_Selectable.prototype.initialize.call(this, wx, wy, ww, wh);
-    this.select(-1);
-    this.deactivate();
-    this.refresh();
+Window_PartySelect.prototype.initialize = function (commandWindow) {
+  var wx = commandWindow.width;
+  var wy = commandWindow.y;
+  var ww = Graphics.boxWidth - commandWindow.width;
+  var wh = commandWindow.height;
+  Window_Selectable.prototype.initialize.call(this, wx, wy, ww, wh);
+  this.select(-1);
+  this.deactivate();
+  this.refresh();
 };
 
-Window_PartySelect.prototype.maxCols = function() {
-    return $gameParty.maxBattleMembers();
+Window_PartySelect.prototype.maxCols = function () {
+  return $gameParty.maxBattleMembers();
 };
 
-Window_PartySelect.prototype.maxItems = function() {
-    return $gameParty.maxBattleMembers();
+Window_PartySelect.prototype.maxItems = function () {
+  return $gameParty.maxBattleMembers();
 };
 
-Window_PartySelect.prototype.itemRect = function(index) {
-    var rect = new Rectangle();
-    rect.width = this.contents.width / this.maxItems();
-    rect.height = this.contents.height;
-    rect.x = index * rect.width;
-    rect.y = 0;
-    return rect;
+Window_PartySelect.prototype.itemRect = function (index) {
+  var rect = new Rectangle();
+  rect.width = this.contents.width / this.maxItems();
+  rect.height = this.contents.height;
+  rect.x = index * rect.width;
+  rect.y = 0;
+  return rect;
 };
 
-Window_PartySelect.prototype.refresh = function() {
-    this.makeItemList();
-    this.createContents();
-    this.drawAllItems();
+Window_PartySelect.prototype.refresh = function () {
+  this.makeItemList();
+  this.createContents();
+  this.drawAllItems();
 };
 
-Window_PartySelect.prototype.makeItemList = function() {
-    this._data = $gameParty._battleMembers.slice(0);
+Window_PartySelect.prototype.makeItemList = function () {
+  this._data = $gameParty._battleMembers.slice(0);
 };
 
-Window_PartySelect.prototype.drawItem = function(index) {
-    var actor = $gameActors.actor(this._data[index]);
-    var rect = this.itemRect(index);
-    rect.x += this.textPadding() / 2;
-    rect.y += this.textPadding() / 2;
-    rect.width -= this.textPadding();
-    rect.height -= this.textPadding();
-    if (actor) {
-      this.drawActor(rect, actor);
-    } else {
-      this.drawEmpty(rect);
-    }
+Window_PartySelect.prototype.drawItem = function (index) {
+  var actor = $gameActors.actor(this._data[index]);
+  var rect = this.itemRect(index);
+  rect.x += this.textPadding() / 2;
+  rect.y += this.textPadding() / 2;
+  rect.width -= this.textPadding();
+  rect.height -= this.textPadding();
+  if (actor) {
+    this.drawActor(rect, actor);
+  } else {
+    this.drawEmpty(rect);
+  }
 };
 
-Window_PartySelect.prototype.drawEmpty = function(rect) {
-    var color = this.gaugeBackColor();
-    this.changePaintOpacity(false);
-    this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, color);
-    this.changePaintOpacity(true);
-    this.resetFontSettings();
-    var text = MageStudios.Param.PartyEmptyText
-    this.contents.drawText(text, rect.x, rect.y, rect.width,
-        rect.height, 'center');
+Window_PartySelect.prototype.drawEmpty = function (rect) {
+  var color = this.gaugeBackColor();
+  this.changePaintOpacity(false);
+  this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, color);
+  this.changePaintOpacity(true);
+  this.resetFontSettings();
+  var text = MageStudios.Param.PartyEmptyText;
+  this.contents.drawText(
+    text,
+    rect.x,
+    rect.y,
+    rect.width,
+    rect.height,
+    "center"
+  );
 };
 
-Window_PartySelect.prototype.drawActor = function(rect, actor) {
-    if (MageStudios.Param.PartyShowFace) {
-      this.drawActorFace(actor, rect.x, rect.y, rect.width, rect.height);
-    }
-    if (MageStudios.Param.PartyShowCharacter) {
-      var ry = rect.height * 19/20;
-      this.drawActorCharacter(actor, rect.x + rect.width / 2, ry);
-    }
-    this.drawActorName(actor, rect.x, rect.y, rect.width);
-    this.drawLockedIcon(actor, rect);
-    this.drawRequiredIcon(actor, rect);
+Window_PartySelect.prototype.drawActor = function (rect, actor) {
+  if (MageStudios.Param.PartyShowFace) {
+    this.drawActorFace(actor, rect.x, rect.y, rect.width, rect.height);
+  }
+  if (MageStudios.Param.PartyShowCharacter) {
+    var ry = (rect.height * 19) / 20;
+    this.drawActorCharacter(actor, rect.x + rect.width / 2, ry);
+  }
+  this.drawActorName(actor, rect.x, rect.y, rect.width);
+  this.drawLockedIcon(actor, rect);
+  this.drawRequiredIcon(actor, rect);
 };
 
-Window_PartySelect.prototype.drawLockedIcon = function(actor, rect) {
-    if (!actor._locked) return;
-    var ix = rect.x + rect.width - Window_Base._iconWidth - 2;
-    var iy = rect.y + rect.height - Window_Base._iconHeight - 2;
-    this.drawIcon(MageStudios.Icon.PartyLocked, ix, iy)
+Window_PartySelect.prototype.drawLockedIcon = function (actor, rect) {
+  if (!actor._locked) return;
+  var ix = rect.x + rect.width - Window_Base._iconWidth - 2;
+  var iy = rect.y + rect.height - Window_Base._iconHeight - 2;
+  this.drawIcon(MageStudios.Icon.PartyLocked, ix, iy);
 };
 
-Window_PartySelect.prototype.drawRequiredIcon = function(actor, rect) {
-    if (!actor._required) return;
-    var ix = rect.x + 2;
-    var iy = rect.y + rect.height - Window_Base._iconHeight - 2;
-    this.drawIcon(MageStudios.Icon.PartyRequired, ix, iy)
+Window_PartySelect.prototype.drawRequiredIcon = function (actor, rect) {
+  if (!actor._required) return;
+  var ix = rect.x + 2;
+  var iy = rect.y + rect.height - Window_Base._iconHeight - 2;
+  this.drawIcon(MageStudios.Icon.PartyRequired, ix, iy);
 };
 
-Window_PartySelect.prototype.curActor = function() {
-    if (!this._data) return null;
-    var actorId = this._data[this._index];
-    return $gameActors.actor(actorId);
+Window_PartySelect.prototype.curActor = function () {
+  if (!this._data) return null;
+  var actorId = this._data[this._index];
+  return $gameActors.actor(actorId);
 };
 
-Window_PartySelect.prototype.prevActor = function() {
-    var id = this._index === 0 ? this._data.length - 1 : this._index - 1;
-    var actorId = this._data[id];
-    return $gameActors.actor(actorId);
+Window_PartySelect.prototype.prevActor = function () {
+  var id = this._index === 0 ? this._data.length - 1 : this._index - 1;
+  var actorId = this._data[id];
+  return $gameActors.actor(actorId);
 };
 
-Window_PartySelect.prototype.nextActor = function() {
-    var id = this._index === this._data.length - 1 ? 0 : this._index + 1;
-    var actorId = this._data[id];
-    return $gameActors.actor(actorId);
+Window_PartySelect.prototype.nextActor = function () {
+  var id = this._index === this._data.length - 1 ? 0 : this._index + 1;
+  var actorId = this._data[id];
+  return $gameActors.actor(actorId);
 };
 
-Window_PartySelect.prototype.processActor = function(value) {
-    return true;
+Window_PartySelect.prototype.processActor = function (value) {
+  return true;
 };
 
-Window_PartySelect.prototype.isCurrentItemEnabled = function() {
-    if (this.curActor()) return this.curActor().isFormationChangeOk();
-    return true;
+Window_PartySelect.prototype.isCurrentItemEnabled = function () {
+  if (this.curActor()) return this.curActor().isFormationChangeOk();
+  return true;
 };
 
-Window_PartySelect.prototype.processPageup = function() {
-    if (this.curActor() && this.curActor()._locked) {
-      this.playBuzzerSound();
-    } else if (this.prevActor() && this.prevActor()._locked) {
-      this.playBuzzerSound();
-    } else if (this.processActor('prevActor')) {
-      Window_Selectable.prototype.processPageup.call(this);
-      this.activate();
-      this.select(this._index === 0 ? this._data.length - 1 : this._index - 1)
-    } else {
-      this.playBuzzerSound();
-    }
+Window_PartySelect.prototype.processPageup = function () {
+  if (this.curActor() && this.curActor()._locked) {
+    this.playBuzzerSound();
+  } else if (this.prevActor() && this.prevActor()._locked) {
+    this.playBuzzerSound();
+  } else if (this.processActor("prevActor")) {
+    Window_Selectable.prototype.processPageup.call(this);
+    this.activate();
+    this.select(this._index === 0 ? this._data.length - 1 : this._index - 1);
+  } else {
+    this.playBuzzerSound();
+  }
 };
 
-Window_PartySelect.prototype.processPagedown = function() {
-    if (this.curActor() && this.curActor()._locked) {
-      this.playBuzzerSound();
-    } else if (this.nextActor() && this.nextActor()._locked) {
-      this.playBuzzerSound();
-    } else if (this.processActor('nextActor')) {
-      Window_Selectable.prototype.processPagedown.call(this);
-      this.activate();
-      this.select(this._index === this._data.length - 1 ? 0 : this._index + 1)
-    } else {
-      this.playBuzzerSound();
-    }
+Window_PartySelect.prototype.processPagedown = function () {
+  if (this.curActor() && this.curActor()._locked) {
+    this.playBuzzerSound();
+  } else if (this.nextActor() && this.nextActor()._locked) {
+    this.playBuzzerSound();
+  } else if (this.processActor("nextActor")) {
+    Window_Selectable.prototype.processPagedown.call(this);
+    this.activate();
+    this.select(this._index === this._data.length - 1 ? 0 : this._index + 1);
+  } else {
+    this.playBuzzerSound();
+  }
 };
 
-Window_PartySelect.prototype.setDetailWindow = function(win) {
-    this._detailWindow = win;
-    this.callUpdateHelp();
+Window_PartySelect.prototype.setDetailWindow = function (win) {
+  this._detailWindow = win;
+  this.callUpdateHelp();
 };
 
-Window_PartySelect.prototype.callUpdateHelp = function() {
-    this.setHelpWindowItem(this.curActor());
-    this.setDetailWindowItem(this.curActor());
+Window_PartySelect.prototype.callUpdateHelp = function () {
+  this.setHelpWindowItem(this.curActor());
+  this.setDetailWindowItem(this.curActor());
 };
 
-Window_PartySelect.prototype.setHelpWindowItem = function(actor) {
-    if (this._helpWindow && actor) {
-      this._helpWindow.setText(actor.profile());
-    } else if (this._helpWindow) {
-      this._helpWindow.clear();
-    }
+Window_PartySelect.prototype.setHelpWindowItem = function (actor) {
+  if (this._helpWindow && actor) {
+    this._helpWindow.setText(actor.profile());
+  } else if (this._helpWindow) {
+    this._helpWindow.clear();
+  }
 };
 
-Window_PartySelect.prototype.setDetailWindowItem = function(actor) {
-    if (this._detailWindow) this._detailWindow.setActor(actor);
+Window_PartySelect.prototype.setDetailWindowItem = function (actor) {
+  if (this._detailWindow) this._detailWindow.setActor(actor);
 };
 
-Window_PartySelect.prototype.item = function() {
-    var index = this.index();
-    return this._data && index >= 0 ? this._data[index] : null;
+Window_PartySelect.prototype.item = function () {
+  var index = this.index();
+  return this._data && index >= 0 ? this._data[index] : null;
 };
-
-//=============================================================================
-// Window_PartyList
-//=============================================================================
 
 function Window_PartyList() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_PartyList.prototype = Object.create(Window_Selectable.prototype);
 Window_PartyList.prototype.constructor = Window_PartyList;
 
-Window_PartyList.prototype.initialize = function(partyWindow) {;
-    var wy = partyWindow.y + partyWindow.height;
-    this._detailedWindow = MageStudios.Param.PartyDetailWin;
-    var ww = this.windowWidth();
-    var wh = Graphics.boxHeight - wy;
-    Window_Selectable.prototype.initialize.call(this, 0, wy, ww, wh);
-    this.select(1);
-    this.deactivate();
-    this.refresh();
+Window_PartyList.prototype.initialize = function (partyWindow) {
+  var wy = partyWindow.y + partyWindow.height;
+  this._detailedWindow = MageStudios.Param.PartyDetailWin;
+  var ww = this.windowWidth();
+  var wh = Graphics.boxHeight - wy;
+  Window_Selectable.prototype.initialize.call(this, 0, wy, ww, wh);
+  this.select(1);
+  this.deactivate();
+  this.refresh();
 };
 
-Window_PartyList.prototype.windowWidth = function() {
-    if (this._detailedWindow) {
-      return MageStudios.Param.PartyListWidth;
-    } else {
-      return Graphics.boxWidth;
+Window_PartyList.prototype.windowWidth = function () {
+  if (this._detailedWindow) {
+    return MageStudios.Param.PartyListWidth;
+  } else {
+    return Graphics.boxWidth;
+  }
+};
+
+Window_PartyList.prototype.maxItems = function () {
+  return this._data ? this._data.length : 1;
+};
+
+Window_PartyList.prototype.refresh = function () {
+  this.makeItemList();
+  this.createContents();
+  this.drawAllItems();
+};
+
+Window_PartyList.prototype.makeItemList = function () {
+  this._data = [0];
+  this.createActorOrder();
+  this._data.push(0);
+};
+
+Window_PartyList.prototype.createActorOrder = function () {
+  for (var i = 0; i < $gameParty._actors.length; ++i) {
+    var actorId = $gameParty._actors[i];
+    if ($gameActors.actor(actorId)) this._data.push(actorId);
+  }
+};
+
+Window_PartyList.prototype.drawAllItems = function () {
+  var topIndex = this.topIndex();
+  for (var i = 0; i < this.maxPageItems(); i++) {
+    var index = topIndex + i;
+    if (index < this.maxItems()) {
+      this.drawItem(index);
+      this.clearItem(index + 1);
     }
+  }
 };
 
-Window_PartyList.prototype.maxItems = function() {
-    return this._data ? this._data.length : 1;
-};
-
-Window_PartyList.prototype.refresh = function() {
-    this.makeItemList();
-    this.createContents();
-    this.drawAllItems();
-};
-
-Window_PartyList.prototype.makeItemList = function() {
-    this._data = [0];
-    this.createActorOrder();
-    this._data.push(0);
-};
-
-Window_PartyList.prototype.createActorOrder = function() {
-    for (var i = 0; i < $gameParty._actors.length; ++i) {
-      var actorId = $gameParty._actors[i];
-      if ($gameActors.actor(actorId)) this._data.push(actorId);
+Window_PartyList.prototype.drawItem = function (index) {
+  var actor = $gameActors.actor(this._data[index]);
+  if (actor) {
+    var bitmap = ImageManager.loadCharacter(actor.characterName());
+    if (bitmap.width <= 0) {
+      return setTimeout(this.drawItem.bind(this, index), 5);
     }
+  }
+  this.clearItem(index);
+  var rect = this.itemRect(index);
+  if (this._data[index] === 0) {
+    this.drawRemove(rect);
+    return;
+  }
+  this.drawActor(actor, rect);
 };
 
-Window_PartyList.prototype.drawAllItems = function() {
-    var topIndex = this.topIndex();
-    for (var i = 0; i < this.maxPageItems(); i++) {
-        var index = topIndex + i;
-        if (index < this.maxItems()) {
-            this.drawItem(index);
-            this.clearItem(index + 1);
-        }
-    }
+Window_PartyList.prototype.drawRemove = function (rect) {
+  var ibw = Window_Base._iconWidth + 4;
+  if (MageStudios.Icon.PartyRemove <= 0) ibw = this.textPadding();
+  rect.width -= this.textPadding();
+  this.drawIcon(MageStudios.Icon.PartyRemove, rect.x + 2, rect.y + 2);
+  this.drawText(
+    MageStudios.Param.PartyCommand2,
+    rect.x + ibw,
+    rect.y,
+    rect.width - ibw
+  );
 };
 
-Window_PartyList.prototype.drawItem = function(index) {
-    var actor = $gameActors.actor(this._data[index]);
-    if (actor) {
-      var bitmap = ImageManager.loadCharacter(actor.characterName());
-      if (bitmap.width <= 0) {
-        return setTimeout(this.drawItem.bind(this, index), 5);
-      }
-    }
-    this.clearItem(index);
-    var rect = this.itemRect(index);
-    if (this._data[index] === 0) {
-      this.drawRemove(rect);
-      return;
-    }
-    this.drawActor(actor, rect);
+Window_PartyList.prototype.drawActor = function (actor, rect) {
+  this.drawBasic(actor, rect);
+  if (this._detailedWindow) return;
+  this.drawExtra(actor, rect);
 };
 
-Window_PartyList.prototype.drawRemove = function(rect) {
-    var ibw = Window_Base._iconWidth + 4;
-    if (MageStudios.Icon.PartyRemove <= 0) ibw = this.textPadding();
-    rect.width -= this.textPadding();
-    this.drawIcon(MageStudios.Icon.PartyRemove, rect.x + 2, rect.y + 2);
-    this.drawText(MageStudios.Param.PartyCommand2, rect.x + ibw, rect.y,
-      rect.width - ibw);
+Window_PartyList.prototype.drawBasic = function (actor, rect) {
+  var wx = Window_Base._iconWidth / 2 + this.textPadding() / 2;
+  var wy = rect.y + rect.height + MageStudios.Param.PartySpriteBufferY;
+  if (MageStudios.Param.PartyShowListSprite) {
+    this.drawActorCharacter(actor, wx, wy);
+  }
+  this.changeTextColor(this.listColor(actor));
+  this.changePaintOpacity(this.actorIsEnabled(actor));
+  var ibw = Window_Base._iconWidth + 4;
+  if (!MageStudios.Param.PartyShowListSprite) ibw = this.textPadding();
+  this.drawText(actor.name(), rect.x + ibw, rect.y, rect.width - ibw);
+  this.changePaintOpacity(true);
+  this.drawRestrictions(actor, rect);
+  this.resetFontSettings();
 };
 
-Window_PartyList.prototype.drawActor = function(actor, rect) {
-    this.drawBasic(actor, rect);
-    if (this._detailedWindow) return;
-    this.drawExtra(actor, rect);
+Window_PartyList.prototype.drawExtra = function (actor, rect) {
+  var section = this.itemSection();
+  this.drawActorLevel(actor, section * 2, rect.y);
+  this.drawActorHp(actor, section * 3, rect.y, section - 6);
+  this.drawActorMp(actor, section * 4, rect.y, section - 6);
+  if ($dataSystem.optDisplayTp) {
+    this.drawActorTp(actor, section * 5, rect.y, section - 6);
+  }
+  this.drawRestrictions(actor, rect);
 };
 
-Window_PartyList.prototype.drawBasic = function(actor, rect) {
-    var wx = Window_Base._iconWidth / 2 + this.textPadding() / 2;
-    var wy = rect.y + rect.height + MageStudios.Param.PartySpriteBufferY
-    if (MageStudios.Param.PartyShowListSprite) {
-      this.drawActorCharacter(actor, wx, wy);
-    }
-    this.changeTextColor(this.listColor(actor));
-    this.changePaintOpacity(this.actorIsEnabled(actor));
-    var ibw = Window_Base._iconWidth + 4;
-    if (!MageStudios.Param.PartyShowListSprite) ibw = this.textPadding();
-    this.drawText(actor.name(), rect.x + ibw, rect.y, rect.width - ibw);
-    this.changePaintOpacity(true);
-    this.drawRestrictions(actor, rect);
-    this.resetFontSettings();
-};
-
-Window_PartyList.prototype.drawExtra = function(actor, rect) {
+Window_PartyList.prototype.drawRestrictions = function (actor, rect) {
+  if (this._detailedWindow) {
+    var wx = this.contents.width - Window_Base._iconWidth - 2;
+  } else {
     var section = this.itemSection();
-    this.drawActorLevel(actor, section * 2, rect.y);
-    this.drawActorHp(actor, section * 3, rect.y, section - 6);
-    this.drawActorMp(actor, section * 4, rect.y, section - 6);
-    if ($dataSystem.optDisplayTp) {
-      this.drawActorTp(actor, section * 5, rect.y, section - 6);
-    }
-    this.drawRestrictions(actor, rect);
+    var wx = section * 2 - Window_Base._iconWidth - 2;
+  }
+  if (actor._locked) {
+    this.drawIcon(MageStudios.Icon.PartyLocked, wx, rect.y);
+    wx -= Window_Base._iconWidth;
+  }
+  if (actor._required) {
+    this.drawIcon(MageStudios.Icon.PartyRequired, wx, rect.y);
+  }
 };
 
-Window_PartyList.prototype.drawRestrictions = function(actor, rect) {
-    if (this._detailedWindow) {
-      var wx = this.contents.width - Window_Base._iconWidth - 2;
-    } else {
-      var section = this.itemSection();
-      var wx = section * 2 - Window_Base._iconWidth - 2;
-    }
-    if (actor._locked) {
-      this.drawIcon(MageStudios.Icon.PartyLocked, wx, rect.y);
-      wx -= Window_Base._iconWidth;
-    }
-    if (actor._required) {
-      this.drawIcon(MageStudios.Icon.PartyRequired, wx, rect.y);
-    }
+Window_PartyList.prototype.itemSection = function () {
+  var sections = 5;
+  if ($dataSystem.optDisplayTp) sections += 1;
+  return this.contents.width / sections;
 };
 
-Window_PartyList.prototype.itemSection = function() {
-    var sections = 5;
-    if ($dataSystem.optDisplayTp) sections += 1;
-    return this.contents.width / sections;
+Window_PartyList.prototype.drawCurrentAndMax = function (
+  current,
+  max,
+  x,
+  y,
+  width,
+  color1,
+  color2
+) {
+  var labelWidth = this.textWidth("HP");
+  var valueWidth = this.textWidth(MageStudios.Util.toGroup(max));
+  var slashWidth = this.textWidth("/");
+  var x1 = x + width - valueWidth;
+  this.changeTextColor(color1);
+  this.drawText(MageStudios.Util.toGroup(current), x1, y, valueWidth, "right");
 };
 
-Window_PartyList.prototype.drawCurrentAndMax = function(current, max, x, y,
-                                                   width, color1, color2) {
-    var labelWidth = this.textWidth('HP');
-    var valueWidth = this.textWidth(MageStudios.Util.toGroup(max));
-    var slashWidth = this.textWidth('/');
-    var x1 = x + width - valueWidth;
-    this.changeTextColor(color1);
-    this.drawText(MageStudios.Util.toGroup(current), x1, y, valueWidth, 'right');
+Window_PartyList.prototype.listColor = function (actor) {
+  if (actor.isBattleMember()) {
+    return this.textColor(MageStudios.Param.ColorInParty);
+  }
+  return this.normalColor();
 };
 
-Window_PartyList.prototype.listColor = function(actor) {
-    if (actor.isBattleMember()) {
-      return this.textColor(MageStudios.Param.ColorInParty);
-    }
-    return this.normalColor()
+Window_PartyList.prototype.curActor = function () {
+  var actorId = this._data[this._index];
+  return $gameActors.actor(actorId);
 };
 
-Window_PartyList.prototype.curActor = function() {
-    var actorId = this._data[this._index];
-    return $gameActors.actor(actorId);
+Window_PartyList.prototype.isCurrentItemEnabled = function () {
+  if (this.curActor()) return this.curActor().isFormationChangeOk();
+  return true;
 };
 
-Window_PartyList.prototype.isCurrentItemEnabled = function() {
-    if (this.curActor()) return this.curActor().isFormationChangeOk();
-    return true;
+Window_PartyList.prototype.actorIsEnabled = function (actor) {
+  return actor.isAppeared();
 };
 
-Window_PartyList.prototype.actorIsEnabled = function(actor) {
-    return actor.isAppeared();
+Window_PartyList.prototype.setDetailWindow = function (win) {
+  this._detailWindow = win;
+  this.callUpdateHelp();
 };
 
-Window_PartyList.prototype.setDetailWindow = function(win) {
-    this._detailWindow = win;
-    this.callUpdateHelp();
+Window_PartyList.prototype.callUpdateHelp = function () {
+  this.setHelpWindowItem($gameActors.actor(this.item()));
+  this.setDetailWindowItem($gameActors.actor(this.item()));
 };
 
-Window_PartyList.prototype.callUpdateHelp = function() {
-    this.setHelpWindowItem($gameActors.actor(this.item()));
-    this.setDetailWindowItem($gameActors.actor(this.item()));
+Window_PartyList.prototype.setHelpWindowItem = function (actor) {
+  if (this._helpWindow && actor) {
+    this._helpWindow.setText(actor.profile());
+  } else if (this._helpWindow) {
+    this._helpWindow.clear();
+  }
 };
 
-Window_PartyList.prototype.setHelpWindowItem = function(actor) {
-    if (this._helpWindow && actor) {
-        this._helpWindow.setText(actor.profile());
-    } else if (this._helpWindow) {
-        this._helpWindow.clear();
-    }
+Window_PartyList.prototype.setDetailWindowItem = function (actor) {
+  if (this._detailWindow) this._detailWindow.setActor(actor);
 };
 
-Window_PartyList.prototype.setDetailWindowItem = function(actor) {
-    if (this._detailWindow) this._detailWindow.setActor(actor);
+Window_PartyList.prototype.item = function () {
+  var index = this.index();
+  return this._data && index >= 0 ? this._data[index] : null;
 };
-
-Window_PartyList.prototype.item = function() {
-    var index = this.index();
-    return this._data && index >= 0 ? this._data[index] : null;
-};
-
-//=============================================================================
-// Window_PartyDetail
-//=============================================================================
 
 function Window_PartyDetail() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_PartyDetail.prototype = Object.create(Window_Base.prototype);
 Window_PartyDetail.prototype.constructor = Window_PartyDetail;
 
-Window_PartyDetail.prototype.initialize = function(x, y, width, height) {
-    Window_Base.prototype.initialize.call(this, x, y, width, height);
-    this._actor = null;
+Window_PartyDetail.prototype.initialize = function (x, y, width, height) {
+  Window_Base.prototype.initialize.call(this, x, y, width, height);
+  this._actor = null;
 };
 
-Window_PartyDetail.prototype.setActor = function(actor) {
-    if (this._actor === actor) return;
-    this._actor = actor;
-    this.refresh();
+Window_PartyDetail.prototype.setActor = function (actor) {
+  if (this._actor === actor) return;
+  this._actor = actor;
+  this.refresh();
 };
 
-Window_PartyDetail.prototype.clear = function() {
-    this.contents.clear();
-    this.drawDarkRect(0, 0, this.contents.width, this.contents.height);
-    this.changeTextColor(this.systemColor());
-    var text = MageStudios.Param.PartyEmptyText
-    this.contents.drawText(text, 0, 0, this.contents.width,
-        this.contents.height, 'center');
+Window_PartyDetail.prototype.clear = function () {
+  this.contents.clear();
+  this.drawDarkRect(0, 0, this.contents.width, this.contents.height);
+  this.changeTextColor(this.systemColor());
+  var text = MageStudios.Param.PartyEmptyText;
+  this.contents.drawText(
+    text,
+    0,
+    0,
+    this.contents.width,
+    this.contents.height,
+    "center"
+  );
 };
 
-Window_PartyDetail.prototype.refresh = function() {
-    if (!this._actor) return this.clear();
-    this.contents.clear();
-    this.drawActorBasicInfo();
-    this.calculateAvailableLines();
-    this.drawDarkRectangles();
-    this.drawActorParams();
-    this.drawActorEquips();
+Window_PartyDetail.prototype.refresh = function () {
+  if (!this._actor) return this.clear();
+  this.contents.clear();
+  this.drawActorBasicInfo();
+  this.calculateAvailableLines();
+  this.drawDarkRectangles();
+  this.drawActorParams();
+  this.drawActorEquips();
 };
 
-Window_PartyDetail.prototype.drawDarkRectangles = function() {
-    var ww = this.contents.width / 2;
-    var wy = this.lineHeight() * 4;
-    if (this._linesAvailable >= 7) wy += this.lineHeight();
-    if (this._linesAvailable === 4) wy += this.lineHeight();
-    var max = this._linesAvailable;
-    max = Math.min(this._linesAvailable, this._actor.equipSlots().length);
-    for (var i = 0; i < max; ++i) {
-      if (wy + this.lineHeight() > this.contents.height) break;
-      this.drawDarkRect(ww, wy, ww, this.lineHeight());
-      wy += this.lineHeight();
-    }
-    var wy = this.lineHeight() * 4;
-    if (this._linesAvailable >= 7) wy += this.lineHeight();
-    if (this._linesAvailable === 4) wy += this.lineHeight();
-    for (var i = 0; i < 6; ++i) {
-      var rect = this.paramRect(i);
-      this.drawDarkRect(rect.x, rect.y, rect.width, rect.height);
-    }
+Window_PartyDetail.prototype.drawDarkRectangles = function () {
+  var ww = this.contents.width / 2;
+  var wy = this.lineHeight() * 4;
+  if (this._linesAvailable >= 7) wy += this.lineHeight();
+  if (this._linesAvailable === 4) wy += this.lineHeight();
+  var max = this._linesAvailable;
+  max = Math.min(this._linesAvailable, this._actor.equipSlots().length);
+  for (var i = 0; i < max; ++i) {
+    if (wy + this.lineHeight() > this.contents.height) break;
+    this.drawDarkRect(ww, wy, ww, this.lineHeight());
+    wy += this.lineHeight();
+  }
+  var wy = this.lineHeight() * 4;
+  if (this._linesAvailable >= 7) wy += this.lineHeight();
+  if (this._linesAvailable === 4) wy += this.lineHeight();
+  for (var i = 0; i < 6; ++i) {
+    var rect = this.paramRect(i);
+    this.drawDarkRect(rect.x, rect.y, rect.width, rect.height);
+  }
 };
 
-Window_PartyDetail.prototype.drawDarkRect = function(dx, dy, dw, dh) {
-    var color = this.gaugeBackColor();
-    this.changePaintOpacity(false);
-    this.contents.fillRect(dx + 1, dy + 1, dw - 2, dh - 2, color);
-    this.changePaintOpacity(true);
+Window_PartyDetail.prototype.drawDarkRect = function (dx, dy, dw, dh) {
+  var color = this.gaugeBackColor();
+  this.changePaintOpacity(false);
+  this.contents.fillRect(dx + 1, dy + 1, dw - 2, dh - 2, color);
+  this.changePaintOpacity(true);
 };
 
-Window_PartyDetail.prototype.paramRect = function(index) {
-    var rect = new Rectangle();
-    rect.x = 0;
-    rect.y = this.lineHeight() * 4;
-    rect.height = this.lineHeight();
-    rect.width = this.contents.width / 2
-    if (this._linesAvailable >= 7) rect.y += this.lineHeight();
-    if (this._linesAvailable === 4) rect.y += this.lineHeight();
-    if (this._linesAvailable >= 6) {
-      rect.y += this.lineHeight() * index;
+Window_PartyDetail.prototype.paramRect = function (index) {
+  var rect = new Rectangle();
+  rect.x = 0;
+  rect.y = this.lineHeight() * 4;
+  rect.height = this.lineHeight();
+  rect.width = this.contents.width / 2;
+  if (this._linesAvailable >= 7) rect.y += this.lineHeight();
+  if (this._linesAvailable === 4) rect.y += this.lineHeight();
+  if (this._linesAvailable >= 6) {
+    rect.y += this.lineHeight() * index;
+  } else {
+    rect.width /= 2;
+    rect.x = index % 2 === 0 ? 0 : rect.width;
+    rect.y += this.lineHeight() * Math.floor(index / 2);
+  }
+  return rect;
+};
+
+Window_PartyDetail.prototype.drawActorBasicInfo = function () {
+  var w = this.width - this.padding * 2;
+  var h = this.height - this.padding * 2;
+  var y = 0;
+  var padding = 0;
+  var xpad = padding + Window_Base._faceWidth;
+  var width = w - 162 - this.textPadding();
+  h = Window_Base._faceHeight;
+  this.drawActorFace(this._actor, 0, 0, Window_Base._faceWidth, h);
+  this.drawActorSimpleStatus(this._actor, xpad, y, width);
+};
+
+Window_PartyDetail.prototype.calculateAvailableLines = function () {
+  if (this._linesAvailable) return;
+  this._linesAvailable = this.contents.height - this.lineHeight() * 4;
+  this._linesAvailable /= this.lineHeight();
+  this._linesAvailable = Math.floor(this._linesAvailable);
+};
+
+Window_PartyDetail.prototype.drawActorParams = function () {
+  this.drawActorParamsTitle();
+  for (var i = 0; i < 6; ++i) {
+    var rect = this.paramRect(i);
+    if (this._linesAvailable > 4) {
+      rect.x += 8;
+      rect.width -= 16;
     } else {
-      rect.width /= 2;
-      rect.x = index % 2 === 0 ? 0 : rect.width;
-      rect.y += this.lineHeight() * Math.floor(index / 2);
+      rect.x += 4;
+      rect.width -= 8;
     }
-    return rect;
+    var paramId = i + 2;
+    var text = TextManager.param(paramId);
+    this.changeTextColor(this.systemColor());
+    this.drawText(text, rect.x, rect.y, rect.width);
+    var paramValue = MageStudios.Util.toGroup(this._actor.param(paramId));
+    this.changeTextColor(this.normalColor());
+    this.drawText(paramValue, rect.x, rect.y, rect.width, "right");
+  }
 };
 
-Window_PartyDetail.prototype.drawActorBasicInfo = function() {
-    var w = this.width - this.padding * 2;
-    var h = this.height - this.padding * 2;
-    var y = 0;
-    var padding = 0;
-    var xpad = padding + Window_Base._faceWidth;
-    var width = w - 162 - this.textPadding();
-    h = Window_Base._faceHeight;
-    this.drawActorFace(this._actor, 0, 0, Window_Base._faceWidth, h);
-    this.drawActorSimpleStatus(this._actor, xpad, y, width);
+Window_PartyDetail.prototype.drawActorParamsTitle = function () {
+  var wy = this.lineHeight() * 4;
+  var ww = this.contents.width / 2;
+  if (this._linesAvailable >= 7) {
+    var text = MageStudios.Param.PartyDetailParam;
+    this.changeTextColor(this.systemColor());
+    this.drawText(text, 0, wy, ww, "center");
+  } else if (this._linesAvailable === 4) {
+    var text = MageStudios.Param.PartyDetailParam;
+    this.changeTextColor(this.systemColor());
+    this.drawText(text, 0, wy, ww, "center");
+  }
 };
 
-Window_PartyDetail.prototype.calculateAvailableLines = function() {
-    if (this._linesAvailable) return;
-    this._linesAvailable = this.contents.height - this.lineHeight() * 4;
-    this._linesAvailable /= this.lineHeight();
-    this._linesAvailable = Math.floor(this._linesAvailable);
+Window_PartyDetail.prototype.drawActorEquips = function () {
+  this.drawActorEquipsTitle();
+  var equips = this.getActorEquips();
+  this.drawActorEquipsList(equips);
 };
 
-Window_PartyDetail.prototype.drawActorParams = function() {
-    this.drawActorParamsTitle();
-    for (var i = 0; i < 6; ++i) {
-      var rect = this.paramRect(i);
-      if (this._linesAvailable > 4) {
-        rect.x += 8;
-        rect.width -= 16;
-      } else {
-        rect.x += 4;
-        rect.width -= 8;
-      }
-      var paramId = i + 2;
-      var text = TextManager.param(paramId);
-      this.changeTextColor(this.systemColor());
-      this.drawText(text, rect.x, rect.y, rect.width);
-      var paramValue = MageStudios.Util.toGroup(this._actor.param(paramId));
-      this.changeTextColor(this.normalColor());
-      this.drawText(paramValue, rect.x, rect.y, rect.width, 'right');
+Window_PartyDetail.prototype.drawActorEquipsTitle = function () {
+  var wy = this.lineHeight() * 4;
+  var ww = this.contents.width / 2;
+  if (this._linesAvailable >= 7) {
+    var text = MageStudios.Param.PartyDetailEquip;
+    this.changeTextColor(this.systemColor());
+    this.drawText(text, ww, wy, ww, "center");
+  } else if (this._linesAvailable === 4) {
+    var text = MageStudios.Param.PartyDetailEquip;
+    this.changeTextColor(this.systemColor());
+    this.drawText(text, ww, wy, ww, "center");
+  }
+};
+
+Window_PartyDetail.prototype.getActorEquips = function () {
+  var equips = [];
+  for (var i = 0; i < this._actor.equips().length; ++i) {
+    var equip = this._actor.equips()[i];
+    if (equip) equips.push(equip);
+  }
+  return equips;
+};
+
+Window_PartyDetail.prototype.drawActorEquipsList = function (equips) {
+  this._lastSlot = false;
+  var max = this._linesAvailable;
+  var ww = this.contents.width / 2;
+  var wh = this.lineHeight();
+  var wy = this.lineHeight() * 4;
+  var wx = ww + 6;
+  ww -= 12;
+  if (this._linesAvailable >= 7) {
+    max -= 1;
+    wy += this.lineHeight();
+  }
+  if (this._linesAvailable === 4) {
+    max -= 1;
+    wy += this.lineHeight();
+  }
+  for (var i = 0; i < equips.length; ++i) {
+    var equip = equips[i];
+    if (!equip) break;
+    if (i >= max - 1 && i < equips.length - 1) this._lastSlot = true;
+    if (this._lastSlot) {
+      var iconIndex = equip.iconIndex;
+      this.drawIcon(iconIndex, wx + 2, wy + 2);
+      wx += Window_Base._iconWidth;
+      continue;
+    } else if (this._lastSlot && i === equips.length - 1) {
+      var iconIndex = equip.iconIndex;
+      this.drawIcon(iconIndex, wx + 2, wy + 2);
+      wx += Window_Base._iconWidth;
+    } else {
+      this.drawItemName(equip, wx, wy, ww);
     }
+    wy += this.lineHeight();
+  }
 };
-
-Window_PartyDetail.prototype.drawActorParamsTitle = function() {
-    var wy = this.lineHeight() * 4;
-    var ww = this.contents.width / 2;
-    if (this._linesAvailable >= 7) {
-      var text = MageStudios.Param.PartyDetailParam;
-      this.changeTextColor(this.systemColor());
-      this.drawText(text, 0, wy, ww, 'center');
-    } else if (this._linesAvailable === 4) {
-      var text = MageStudios.Param.PartyDetailParam;
-      this.changeTextColor(this.systemColor());
-      this.drawText(text, 0, wy, ww, 'center');
-    }
-};
-
-Window_PartyDetail.prototype.drawActorEquips = function() {
-    this.drawActorEquipsTitle();
-    var equips = this.getActorEquips();
-    this.drawActorEquipsList(equips);
-};
-
-Window_PartyDetail.prototype.drawActorEquipsTitle = function() {
-    var wy = this.lineHeight() * 4;
-    var ww = this.contents.width / 2;
-    if (this._linesAvailable >= 7) {
-      var text = MageStudios.Param.PartyDetailEquip;
-      this.changeTextColor(this.systemColor());
-      this.drawText(text, ww, wy, ww, 'center');
-    } else if (this._linesAvailable === 4) {
-      var text = MageStudios.Param.PartyDetailEquip;
-      this.changeTextColor(this.systemColor());
-      this.drawText(text, ww, wy, ww, 'center');
-    }
-};
-
-Window_PartyDetail.prototype.getActorEquips = function() {
-    var equips = [];
-    for (var i = 0; i < this._actor.equips().length; ++i) {
-      var equip = this._actor.equips()[i];
-      if (equip) equips.push(equip);
-    }
-    return equips;
-};
-
-Window_PartyDetail.prototype.drawActorEquipsList = function(equips) {
-    this._lastSlot = false;
-    var max = this._linesAvailable;
-    var ww = this.contents.width / 2;
-    var wh = this.lineHeight();
-    var wy = this.lineHeight() * 4;
-    var wx = ww + 6;
-    ww -= 12;
-    if (this._linesAvailable >= 7) {
-      max -= 1;
-      wy += this.lineHeight();
-    }
-    if (this._linesAvailable === 4) {
-      max -= 1;
-      wy += this.lineHeight();
-    }
-    for (var i = 0; i < equips.length; ++i) {
-      var equip = equips[i];
-      if (!equip) break;
-      if (i >= max - 1 && i < equips.length - 1) this._lastSlot = true;
-      if (this._lastSlot) {
-        var iconIndex = equip.iconIndex;
-        this.drawIcon(iconIndex, wx + 2, wy + 2);
-        wx += Window_Base._iconWidth;
-        continue;
-      } else if (this._lastSlot && i === equips.length - 1) {
-        var iconIndex = equip.iconIndex;
-        this.drawIcon(iconIndex, wx + 2, wy + 2);
-        wx += Window_Base._iconWidth;
-      } else {
-        this.drawItemName(equip, wx, wy, ww);
-      }
-      wy += this.lineHeight();
-    }
-};
-
-//=============================================================================
-// Battle Engine Core Implementation
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.Party.BattleManager_startBattle = BattleManager.startBattle;
-BattleManager.startBattle = function() {
+  MageStudios.Party.BattleManager_startBattle = BattleManager.startBattle;
+  BattleManager.startBattle = function () {
     if (!$gameTemp._partyBattle) {
       MageStudios.Party.BattleManager_startBattle.call(this);
     }
     $gameTemp._partyBattle = false;
     this._bypassMoveToStartLocation = false;
     BattleManager.refreshAllBattlers();
-};
+  };
 
-BattleManager.refreshAllBattlers = function() {
-  var members = $gameParty.members().concat($gameTroop.members());
-  var length = members.length;
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) member.refresh();
-  }
-};
+  BattleManager.refreshAllBattlers = function () {
+    var members = $gameParty.members().concat($gameTroop.members());
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) member.refresh();
+    }
+  };
 
-MageStudios.Party.BattleManager_playBattleBgm = BattleManager.playBattleBgm;
-BattleManager.playBattleBgm = function() {
+  MageStudios.Party.BattleManager_playBattleBgm = BattleManager.playBattleBgm;
+  BattleManager.playBattleBgm = function () {
     var restartBgm = true;
     if (MageStudios.Party.SavedBattleBgm) {
       AudioManager.playBgm(MageStudios.Party.SavedBattleBgm);
@@ -1489,121 +1489,99 @@ BattleManager.playBattleBgm = function() {
       restartBgm = false;
     }
     if (restartBgm) MageStudios.Party.BattleManager_playBattleBgm.call(this);
-};
+  };
 
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-MageStudios.Party.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
-Game_Unit.prototype.onBattleStart = function() {
+  MageStudios.Party.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
+  Game_Unit.prototype.onBattleStart = function () {
     if ($gameTemp._partyBattle) return;
     MageStudios.Party.Game_Unit_onBattleStart.call(this);
     $gameSystem.resetBattleFormationCooldown();
-};
+  };
 
-MageStudios.Party.Game_Unit_onBattleEnd = Game_Unit.prototype.onBattleEnd;
-Game_Unit.prototype.onBattleEnd = function() {
+  MageStudios.Party.Game_Unit_onBattleEnd = Game_Unit.prototype.onBattleEnd;
+  Game_Unit.prototype.onBattleEnd = function () {
     if ($gameTemp._partyBattle) return;
     MageStudios.Party.Game_Unit_onBattleEnd.call(this);
     $gameSystem.resetBattleFormationCooldown();
-};
+  };
 
-//=============================================================================
-// Window_Command
-//=============================================================================
-
-Window_Command.prototype.addCommandAt = function(index, name, symbol, en, ext) {
+  Window_Command.prototype.addCommandAt = function (
+    index,
+    name,
+    symbol,
+    en,
+    ext
+  ) {
     if (en === undefined) enabled = true;
     if (ext === undefined) ext = null;
-    var obj = { name: name, symbol: symbol, enabled: en, ext: ext};
+    var obj = { name: name, symbol: symbol, enabled: en, ext: ext };
     this._list.splice(index, 0, obj);
-};
+  };
 
-//=============================================================================
-// Window_PartyCommand
-//=============================================================================
-
-MageStudios.Party.Window_PartyCommand_makeCommandList =
+  MageStudios.Party.Window_PartyCommand_makeCommandList =
     Window_PartyCommand.prototype.makeCommandList;
-Window_PartyCommand.prototype.makeCommandList = function() {
+  Window_PartyCommand.prototype.makeCommandList = function () {
     MageStudios.Party.Window_PartyCommand_makeCommandList.call(this);
     this.addFormationCommand();
-};
+  };
 
-Window_PartyCommand.prototype.addFormationCommand = function() {
+  Window_PartyCommand.prototype.addFormationCommand = function () {
     if (!$gameSystem.isShowBattleFormation()) return;
-    var index = this.findSymbol('escape');
+    var index = this.findSymbol("escape");
     var enabled = $gameSystem.isBattleFormationEnabled();
-    this.addCommandAt(index, TextManager.formation, 'formation', enabled);
-};
+    this.addCommandAt(index, TextManager.formation, "formation", enabled);
+  };
 
-//=============================================================================
-// Sprite_Actor
-//=============================================================================
-
-MageStudios.Party.Sprite_Actor_moveToStartPosition =
+  MageStudios.Party.Sprite_Actor_moveToStartPosition =
     Sprite_Actor.prototype.moveToStartPosition;
-Sprite_Actor.prototype.moveToStartPosition = function() {
+  Sprite_Actor.prototype.moveToStartPosition = function () {
     if (BattleManager._bypassMoveToStartLocation) return;
     MageStudios.Party.Sprite_Actor_moveToStartPosition.call(this);
-};
+  };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-MageStudios.Party.Spriteset_Battle_createBackground =
+  MageStudios.Party.Spriteset_Battle_createBackground =
     Spriteset_Battle.prototype.createBackground;
-Spriteset_Battle.prototype.createBackground = function() {
+  Spriteset_Battle.prototype.createBackground = function () {
     MageStudios.Party.Spriteset_Battle_createBackground.call(this);
     if (MageStudios.Party.SavedBackgroundBitmap) {
       var spr = this._backgroundSprite;
       spr.bitmap = MageStudios.Party.SavedBackgroundBitmap;
       MageStudios.Party.SavedBackgroundBitmap = undefined;
     }
-};
+  };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.Party.Scene_Map_create = Scene_Map.prototype.create;
-Scene_Map.prototype.create = function() {
+  MageStudios.Party.Scene_Map_create = Scene_Map.prototype.create;
+  Scene_Map.prototype.create = function () {
     MageStudios.Party.Scene_Map_create.call(this);
     $gameParty.loadActorImages();
-};
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.Party.Scene_Battle_createDisplayObjects =
+  MageStudios.Party.Scene_Battle_createDisplayObjects =
     Scene_Battle.prototype.createDisplayObjects;
-Scene_Battle.prototype.createDisplayObjects = function() {
+  Scene_Battle.prototype.createDisplayObjects = function () {
     MageStudios.Party.Scene_Battle_createDisplayObjects.call(this);
     $gameParty.loadActorImages();
-};
+  };
 
-MageStudios.Party.Scene_Battle_createSpriteset =
+  MageStudios.Party.Scene_Battle_createSpriteset =
     Scene_Battle.prototype.createSpriteset;
-Scene_Battle.prototype.createSpriteset = function() {
-  if ($gameTemp.hasStoredBattleSpriteset()) {
-    $gameTemp.restoreBattleSpriteset();
-  } else {
-    MageStudios.Party.Scene_Battle_createSpriteset.call(this);
-  }
-};
+  Scene_Battle.prototype.createSpriteset = function () {
+    if ($gameTemp.hasStoredBattleSpriteset()) {
+      $gameTemp.restoreBattleSpriteset();
+    } else {
+      MageStudios.Party.Scene_Battle_createSpriteset.call(this);
+    }
+  };
 
-MageStudios.Party.Scene_Battle_createPartyCommandWindow =
+  MageStudios.Party.Scene_Battle_createPartyCommandWindow =
     Scene_Battle.prototype.createPartyCommandWindow;
-Scene_Battle.prototype.createPartyCommandWindow = function() {
+  Scene_Battle.prototype.createPartyCommandWindow = function () {
     MageStudios.Party.Scene_Battle_createPartyCommandWindow.call(this);
     var win = this._partyCommandWindow;
-    win.setHandler('formation', this.partyCommandFormation.bind(this));
-};
+    win.setHandler("formation", this.partyCommandFormation.bind(this));
+  };
 
-Scene_Battle.prototype.partyCommandFormation = function() {
+  Scene_Battle.prototype.partyCommandFormation = function () {
     BattleManager._bypassMoveToStartLocation = true;
     $gameParty.loadActorImages();
     this.prepareBackground();
@@ -1613,221 +1591,204 @@ Scene_Battle.prototype.partyCommandFormation = function() {
     MageStudios.Party.SavedBattleBgs = AudioManager.saveBgs();
     $gameTemp.storeBattleSpriteset();
     SceneManager.push(Scene_Party);
-    BattleManager._phase = 'input';
+    BattleManager._phase = "input";
     $gameTemp._partyBattle = true;
-};
+  };
 
-Scene_Battle.prototype.prepareBackground = function() {
+  Scene_Battle.prototype.prepareBackground = function () {
     MageStudios.Party.SavedBackgroundBitmap = SceneManager._backgroundBitmap;
     this._prevWindowLayer = this._windowLayer.y;
     this._windowLayer.y = Graphics.boxHeight * 495;
     SceneManager.snapForBackground();
     this._windowLayer.y = this._prevWindowLayer;
+  };
+}
+
+Scene_Menu.prototype.commandFormation = function () {
+  $gameParty.loadActorImages();
+  SceneManager.push(Scene_Party);
 };
-
-}; // Imported.MSEP_BattleEngineCore
-
-//=============================================================================
-// Scene_Menu
-//=============================================================================
-
-Scene_Menu.prototype.commandFormation = function() {
-    $gameParty.loadActorImages();
-    SceneManager.push(Scene_Party);
-};
-
-//=============================================================================
-// Scene_Party
-//=============================================================================
 
 function Scene_Party() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Scene_Party.prototype = Object.create(Scene_MenuBase.prototype);
 Scene_Party.prototype.constructor = Scene_Party;
 
-Scene_Party.prototype.initialize = function() {
-    Scene_MenuBase.prototype.initialize.call(this);
-    this._formerParty = $gameParty._battleMembers.slice(0);
+Scene_Party.prototype.initialize = function () {
+  Scene_MenuBase.prototype.initialize.call(this);
+  this._formerParty = $gameParty._battleMembers.slice(0);
 };
 
-Scene_Party.prototype.create = function() {
-    Scene_MenuBase.prototype.create.call(this);
-    if (MageStudios.Param.PartyHelpWindow) this.createHelpWindow();
-    this.createCommandWindow();
-    this.createPartyWindow();
-    this.createListWindow();
-    this.createDetailWindow();
+Scene_Party.prototype.create = function () {
+  Scene_MenuBase.prototype.create.call(this);
+  if (MageStudios.Param.PartyHelpWindow) this.createHelpWindow();
+  this.createCommandWindow();
+  this.createPartyWindow();
+  this.createListWindow();
+  this.createDetailWindow();
 };
 
-Scene_Party.prototype.createCommandWindow = function() {
-    this._commandWindow = new Window_PartyMenuCommand(0, 0);
-    if (this._helpWindow) this._commandWindow.y = this._helpWindow.height;
-    this._commandWindow.setHandler('change', this.commandAdjust.bind(this));
-    this._commandWindow.setHandler('remove', this.commandAdjust.bind(this));
-    this._commandWindow.setHandler('revert', this.commandRevert.bind(this));
-    this._commandWindow.setHandler('cancel', this.commandFinish.bind(this));
-    this.addWindow(this._commandWindow);
+Scene_Party.prototype.createCommandWindow = function () {
+  this._commandWindow = new Window_PartyMenuCommand(0, 0);
+  if (this._helpWindow) this._commandWindow.y = this._helpWindow.height;
+  this._commandWindow.setHandler("change", this.commandAdjust.bind(this));
+  this._commandWindow.setHandler("remove", this.commandAdjust.bind(this));
+  this._commandWindow.setHandler("revert", this.commandRevert.bind(this));
+  this._commandWindow.setHandler("cancel", this.commandFinish.bind(this));
+  this.addWindow(this._commandWindow);
 };
 
-Scene_Party.prototype.createPartyWindow = function() {
-    this._partyWindow = new Window_PartySelect(this._commandWindow);
-    if (this._helpWindow) this._partyWindow.setHelpWindow(this._helpWindow);
-    this._partyWindow.setHandler('ok',       this.onPartyOk.bind(this));
-    this._partyWindow.setHandler('cancel',   this.onPartyCancel.bind(this));
-    this._partyWindow.setHandler('pageup',   this.onPartyPageUp.bind(this));
-    this._partyWindow.setHandler('pagedown', this.onPartyPageDown.bind(this));
-    this.addWindow(this._partyWindow);
+Scene_Party.prototype.createPartyWindow = function () {
+  this._partyWindow = new Window_PartySelect(this._commandWindow);
+  if (this._helpWindow) this._partyWindow.setHelpWindow(this._helpWindow);
+  this._partyWindow.setHandler("ok", this.onPartyOk.bind(this));
+  this._partyWindow.setHandler("cancel", this.onPartyCancel.bind(this));
+  this._partyWindow.setHandler("pageup", this.onPartyPageUp.bind(this));
+  this._partyWindow.setHandler("pagedown", this.onPartyPageDown.bind(this));
+  this.addWindow(this._partyWindow);
 };
 
-Scene_Party.prototype.createListWindow = function() {
-    this._listWindow = new Window_PartyList(this._partyWindow);
-    if (this._helpWindow) this._listWindow.setHelpWindow(this._helpWindow);
-    this._listWindow.setHandler('ok',     this.onListOk.bind(this));
-    this._listWindow.setHandler('cancel', this.onListCancel.bind(this));
-    this.addWindow(this._listWindow);
+Scene_Party.prototype.createListWindow = function () {
+  this._listWindow = new Window_PartyList(this._partyWindow);
+  if (this._helpWindow) this._listWindow.setHelpWindow(this._helpWindow);
+  this._listWindow.setHandler("ok", this.onListOk.bind(this));
+  this._listWindow.setHandler("cancel", this.onListCancel.bind(this));
+  this.addWindow(this._listWindow);
 };
 
-Scene_Party.prototype.createDetailWindow = function() {
-    if (!MageStudios.Param.PartyDetailWin) return;
-    var wx = this._listWindow.width;
-    var wy = this._listWindow.y;
-    var ww = Graphics.boxWidth - wx;
-    var wh = Graphics.boxHeight - wy;
-    this._detailWindow = new Window_PartyDetail(wx, wy, ww, wh);
-    this.addWindow(this._detailWindow);
-    this._partyWindow.setDetailWindow(this._detailWindow);
-    this._listWindow.setDetailWindow(this._detailWindow);
-    this._detailWindow.clear();
+Scene_Party.prototype.createDetailWindow = function () {
+  if (!MageStudios.Param.PartyDetailWin) return;
+  var wx = this._listWindow.width;
+  var wy = this._listWindow.y;
+  var ww = Graphics.boxWidth - wx;
+  var wh = Graphics.boxHeight - wy;
+  this._detailWindow = new Window_PartyDetail(wx, wy, ww, wh);
+  this.addWindow(this._detailWindow);
+  this._partyWindow.setDetailWindow(this._detailWindow);
+  this._listWindow.setDetailWindow(this._detailWindow);
+  this._detailWindow.clear();
 };
 
-Scene_Party.prototype.refreshWindows = function() {
-    $gameParty.rearrangeActors();
-    this._commandWindow.refresh();
-    this._partyWindow.refresh();
-    this._listWindow.refresh();
-    $gamePlayer.refresh();
-    $gameMap.requestRefresh();
+Scene_Party.prototype.refreshWindows = function () {
+  $gameParty.rearrangeActors();
+  this._commandWindow.refresh();
+  this._partyWindow.refresh();
+  this._listWindow.refresh();
+  $gamePlayer.refresh();
+  $gameMap.requestRefresh();
 };
 
-Scene_Party.prototype.commandAdjust = function() {
-    this._partyWindow.activate();
-    this._partyWindow.select(0);
+Scene_Party.prototype.commandAdjust = function () {
+  this._partyWindow.activate();
+  this._partyWindow.select(0);
 };
 
-Scene_Party.prototype.commandRevert = function() {
-    this._commandWindow.activate();
-    $gameParty._battleMembers = this._formerParty.slice(0);
-    this.refreshWindows();
+Scene_Party.prototype.commandRevert = function () {
+  this._commandWindow.activate();
+  $gameParty._battleMembers = this._formerParty.slice(0);
+  this.refreshWindows();
 };
 
-Scene_Party.prototype.commandFinish = function() {
-    if ($gameParty.inBattle()) {
-      $gameParty.reconstructActions();
-      if (BattleManager._savedActor) {
-        BattleManager._actorIndex = BattleManager._savedActor.index();
-      }
+Scene_Party.prototype.commandFinish = function () {
+  if ($gameParty.inBattle()) {
+    $gameParty.reconstructActions();
+    if (BattleManager._savedActor) {
+      BattleManager._actorIndex = BattleManager._savedActor.index();
     }
-    this.popScene();
+  }
+  this.popScene();
 };
 
-Scene_Party.prototype.onPartyOk = function() {
-    var symbol = this._commandWindow.currentSymbol();
-    if (symbol === 'change') {
-      this._listWindow.activate()
-    } else if (symbol === 'remove') {
-      SoundManager.playEquip();
-      var index = this._partyWindow._index;
-      var actor = $gameActors.actor($gameParty._battleMembers[index]);
-      $gameParty._battleMembers[index] = 0
-      this.refreshWindows();
-      this._partyWindow.activate();
-    }
-};
-
-Scene_Party.prototype.onPartyCancel = function() {
-    this._partyWindow.select(-1);
-    this._commandWindow.activate();
-    if (this._helpWindow) this._helpWindow.setItem(null);
-};
-
-Scene_Party.prototype.onPartyPageUp = function() {
+Scene_Party.prototype.onPartyOk = function () {
+  var symbol = this._commandWindow.currentSymbol();
+  if (symbol === "change") {
+    this._listWindow.activate();
+  } else if (symbol === "remove") {
     SoundManager.playEquip();
-    var actorId1 = this._partyWindow.item();
-    if (!this._partyWindow.prevActor()) {
-      var actorId2 = 0;
-    } else {
-      var actorId2 = this._partyWindow.prevActor().actorId();
-    }
-    var max = this._partyWindow.maxItems() - 1;
-    var index1 = this._partyWindow._index;
-    var index2 = this._partyWindow._index === 0 ? max : index1 - 1;
-    $gameParty._battleMembers[index1] = actorId2;
-    $gameParty._battleMembers[index2] = actorId1;
-    this.refreshWindows();
-};
-
-Scene_Party.prototype.onPartyPageDown = function() {
-    SoundManager.playEquip();
-    var actorId1 = this._partyWindow.item();
-    if (!this._partyWindow.nextActor()) {
-      var actorId2 = 0;
-    } else {
-      var actorId2 = this._partyWindow.nextActor().actorId();
-    }
-    var max = this._partyWindow.maxItems() - 1;
-    var index1 = this._partyWindow._index;
-    var index2 = this._partyWindow._index === max ? 0 : index1 + 1;
-    $gameParty._battleMembers[index1] = actorId2;
-    $gameParty._battleMembers[index2] = actorId1;
-    this.refreshWindows();
-};
-
-Scene_Party.prototype.onListCancel = function() {
-    this._partyWindow.activate();
-};
-
-Scene_Party.prototype.onListOk = function() {
-    SoundManager.playEquip();
-    if (this._listWindow.item() <= 0) {
-      this.otherAction();
-    } else {
-      this.switchActors();
-    }
+    var index = this._partyWindow._index;
+    var actor = $gameActors.actor($gameParty._battleMembers[index]);
+    $gameParty._battleMembers[index] = 0;
     this.refreshWindows();
     this._partyWindow.activate();
+  }
 };
 
-Scene_Party.prototype.otherAction = function() {
-    if (this._listWindow.item() === 0) {
-      $gameParty._battleMembers[this._partyWindow._index] = 0;
-    }
+Scene_Party.prototype.onPartyCancel = function () {
+  this._partyWindow.select(-1);
+  this._commandWindow.activate();
+  if (this._helpWindow) this._helpWindow.setItem(null);
 };
 
-Scene_Party.prototype.switchActors = function() {
-    var targetId = this._listWindow.item();
-    var targetIndex = this._partyWindow._index;
-    if ($gameParty._battleMembers.contains(targetId)) {
-      var switchId = this._partyWindow.item();
-      var switchIndex = $gameParty._battleMembers.indexOf(targetId);
-      $gameParty._battleMembers[switchIndex] = switchId;
-    };
-    $gameParty._battleMembers[targetIndex] = targetId;
+Scene_Party.prototype.onPartyPageUp = function () {
+  SoundManager.playEquip();
+  var actorId1 = this._partyWindow.item();
+  if (!this._partyWindow.prevActor()) {
+    var actorId2 = 0;
+  } else {
+    var actorId2 = this._partyWindow.prevActor().actorId();
+  }
+  var max = this._partyWindow.maxItems() - 1;
+  var index1 = this._partyWindow._index;
+  var index2 = this._partyWindow._index === 0 ? max : index1 - 1;
+  $gameParty._battleMembers[index1] = actorId2;
+  $gameParty._battleMembers[index2] = actorId1;
+  this.refreshWindows();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+Scene_Party.prototype.onPartyPageDown = function () {
+  SoundManager.playEquip();
+  var actorId1 = this._partyWindow.item();
+  if (!this._partyWindow.nextActor()) {
+    var actorId2 = 0;
+  } else {
+    var actorId2 = this._partyWindow.nextActor().actorId();
+  }
+  var max = this._partyWindow.maxItems() - 1;
+  var index1 = this._partyWindow._index;
+  var index2 = this._partyWindow._index === max ? 0 : index1 + 1;
+  $gameParty._battleMembers[index1] = actorId2;
+  $gameParty._battleMembers[index2] = actorId1;
+  this.refreshWindows();
+};
+
+Scene_Party.prototype.onListCancel = function () {
+  this._partyWindow.activate();
+};
+
+Scene_Party.prototype.onListOk = function () {
+  SoundManager.playEquip();
+  if (this._listWindow.item() <= 0) {
+    this.otherAction();
+  } else {
+    this.switchActors();
+  }
+  this.refreshWindows();
+  this._partyWindow.activate();
+};
+
+Scene_Party.prototype.otherAction = function () {
+  if (this._listWindow.item() === 0) {
+    $gameParty._battleMembers[this._partyWindow._index] = 0;
+  }
+};
+
+Scene_Party.prototype.switchActors = function () {
+  var targetId = this._listWindow.item();
+  var targetIndex = this._partyWindow._index;
+  if ($gameParty._battleMembers.contains(targetId)) {
+    var switchId = this._partyWindow.item();
+    var switchIndex = $gameParty._battleMembers.indexOf(targetId);
+    $gameParty._battleMembers[switchIndex] = switchId;
+  }
+  $gameParty._battleMembers[targetIndex] = targetId;
+};
 
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}

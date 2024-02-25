@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Lunatic Pack - Passive Condition Cases
-// MSEP_Z_PassiveCases.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_Z_PassiveCases = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunPasCas = MageStudios.LunPasCas || {};
-MageStudios.LunPasCas.version = 1.00;
+MageStudios.LunPasCas.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Lunatic Pack) Create conditional cases for your passive
  * states through an easy and elaborate method!
  * @author Mage Studios Engine Plugins
@@ -239,22 +233,22 @@ MageStudios.LunPasCas.version = 1.00;
  *
  * ---
  *
- * // -------------
- * // Switch On/Off
- * // -------------
+ *
+ *
+ *
  * if (data.match(/SWITCH[ ](\d+)[ ]ON/i)) {
  *   var switchId = parseInt(RegExp.$1);
  *   condition = $gameSwitches.value(switchId);
- * 
+ *
  * } else if (data.match(/SWITCH[ ](\d+)[ ]OFF/i)) {
  *   var switchId = parseInt(RegExp.$1);
  *   condition = !$gameSwitches.value(switchId);
  *
  * ...
  *
- * // -------------------------------
- * // Add new effects above this line
- * // -------------------------------
+ *
+ *
+ *
  * } else {
  *   skip = true;
  * }
@@ -304,429 +298,335 @@ MageStudios.LunPasCas.version = 1.00;
  * @param Effect Code
  * @type note
  * @desc This is the code used for each of the notetag effects.
- * @default "// -------------\n// Switch On/Off\n// -------------\nif (data.match(/SWITCH[ ](\\d+)[ ]ON/i)) {\n  var switchId = parseInt(RegExp.$1);\n  condition = $gameSwitches.value(switchId);\n\n} else if (data.match(/SWITCH[ ](\\d+)[ ]OFF/i)) {\n  var switchId = parseInt(RegExp.$1);\n  condition = !$gameSwitches.value(switchId);\n\n// -------------\n// Has/Not State\n// -------------\n} else if (data.match(/HAS[ ]STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  condition = user.isStateAffected(stateId);\n\n} else if (data.match(/NOT[ ]STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  condition = !user.isStateAffected(stateId);\n\n// -------------------\n// Has/Not Buff/Debuff\n// -------------------\n} else if (data.match(/HAS[ ](.*)[ ]BUFF/i)) {\n  var str = String(RegExp.$1);\n  var paramId = DataManager.getParamId(str);\n  condition = user.isBuffAffected(paramId);\n\n} else if (data.match(/HAS[ ](.*)[ ]DEBUFF/i)) {\n  var str = String(RegExp.$1);\n  var paramId = DataManager.getParamId(str);\n  condition = user.isDebuffAffected(paramId);\n\n// --------------------\n// Has/Not Weapon/Armor\n// --------------------\n} else if (data.match(/HAS[ ]WEAPON[ ](\\d+)/i)) {\n  if (user.isActor()) {\n    var id = parseInt(RegExp.$1);\n    var item = $dataWeapons[id];\n    condition = user.hasWeapon(item);\n  } else {\n    condition = false;\n  }\n\n} else if (data.match(/NOT[ ]WEAPON[ ](\\d+)/i)) {\n  if (user.isActor()) {\n    var id = parseInt(RegExp.$1);\n    var item = $dataWeapons[id];\n    condition = !user.hasWeapon(item);\n  } else {\n    condition = false;\n  }\n\n} else if (data.match(/HAS[ ]ARMOR[ ](\\d+)/i)) {\n  if (user.isActor()) {\n    var id = parseInt(RegExp.$1);\n    var item = $dataArmors[id];\n    condition = user.hasArmor(item);\n  } else {\n    condition = false;\n  }\n\n} else if (data.match(/NOT[ ]ARMOR[ ](\\d+)/i)) {\n  if (user.isActor()) {\n    var id = parseInt(RegExp.$1);\n    var item = $dataArmors[id];\n    condition = !user.hasArmor(item);\n  } else {\n    condition = false;\n  }\n\n// ----------------------\n// Param Above/Below Stat\n// ----------------------\n} else if (data.match(/(.*)[ ](?:>|<|>=|<=|=|!=)[ ](.*)/i)) {\n  var check1 = String(RegExp.$1);\n  var check2 = String(RegExp.$2);\n  var value1 = DataManager.numberParameterCheck(check1, user);\n  var value2 = DataManager.numberParameterCheck(check2, user);\n  if (value1 !== null && value2 !== null) {\n    if (data.match(/>=/i)) {\n      condition = value1 >= value2;\n    } else if (data.match(/</i)) {\n      condition = value1 <= value2;\n    } else if (data.match(/>/i)) {\n      condition = value1 > value2;\n    } else if (data.match(/</i)) {\n      condition = value1 < value2;\n    } else if (data.match(/!=/i)) {\n      condition = value1 !== value2;\n    } else if (data.match(/=/i)) {\n      condition = value1 === value2;\n    } else {\n      skip = true;\n    }\n  } else {\n    condition = false;\n  }\n\n// -------------------------------\n// Add new effects above this line\n// -------------------------------\n} else {\n  skip = true;\n}"
+ * @default "
  *
  */
-//=============================================================================
 
-MageStudios.PluginRequirements = function() {
+MageStudios.PluginRequirements = function () {
   return Imported.MSEP_AutoPassiveStates;
 };
 
 if (MageStudios.PluginRequirements()) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_Z_PassiveCases");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.LunPasCasEffect = JSON.parse(
+    MageStudios.Parameters["Effect Code"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_Z_PassiveCases');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.LunPasCas.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.LunPasCas.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.LunPasCasEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
+    if (!MageStudios._loaded_MSEP_Z_PassiveCases) {
+      this.processLunPasCasNotetags1($dataStates);
+      MageStudios._loaded_MSEP_Z_PassiveCases = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.LunPasCas.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.LunPasCas.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processLunPasCasNotetags1 = function (group) {
+    var note1 = /<(?:PASSIVE CONDITION CASE|PASSIVE CONDITION CASES)>/i;
+    var note2 = /<\/(?:PASSIVE CONDITION CASE|PASSIVE CONDITION CASES)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_Z_PassiveCases) {
-    this.processLunPasCasNotetags1($dataStates);
-    MageStudios._loaded_MSEP_Z_PassiveCases = true;
-  }
-  
-  return true;
-};
+      obj.passiveCondition = obj.passiveCondition || "";
+      obj.passiveConditionCases = [];
+      var evalMode = "none";
 
-DataManager.processLunPasCasNotetags1 = function(group) {
-  var note1 = /<(?:PASSIVE CONDITION CASE|PASSIVE CONDITION CASES)>/i;
-  var note2 = /<\/(?:PASSIVE CONDITION CASE|PASSIVE CONDITION CASES)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.passiveCondition = obj.passiveCondition || '';
-    obj.passiveConditionCases = [];
-    var evalMode = 'none';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        evalMode = 'passive condition case';
-      } else if (line.match(note2)) {
-        evalMode = 'none';
-        obj.passiveCondition = obj.passiveCondition || '\n\n';
-      } else if (evalMode === 'passive condition case') {
-        obj.passiveConditionCases.push(line);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          evalMode = "passive condition case";
+        } else if (line.match(note2)) {
+          evalMode = "none";
+          obj.passiveCondition = obj.passiveCondition || "\n\n";
+        } else if (evalMode === "passive condition case") {
+          obj.passiveConditionCases.push(line);
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.getParamId = function(str) {
-  switch (str.toUpperCase()) {
-  case 'HP':
-  case 'MAXHP':
-  case 'MAX HP':
-    return 0;
-    break;
-  case 'MP':
-  case 'MAXMP':
-  case 'MAX MP':
-  case 'SP':
-  case 'MAXSP':
-  case 'MAX SP':
-    return 1;
-    break;
-  case 'ATK':
-  case 'STR':
-    return 2;
-    break;
-  case 'DEF':
-    return 3;
-    break;
-  case 'MAT':
-  case 'INT':
-  case 'SPI':
-    return 4;
-    break;
-  case 'MDF':
-  case 'RES':
-    return 5;
-    break;
-  case 'AGI':
-  case 'SPD':
-    return 6;
-    break;
-  case 'LUK':
-    return 7;
-    break;
-  default:
-    return -1;
-    break;
-  }
-};
-
-DataManager.numberParameterCheck = function(check, user) {
-  // --------
-  // HP/MP/TP
-  // --------
-  if (check.toUpperCase() === 'HP') {
-    return user.hp;
-
-  } else if (check.toUpperCase() === 'MP') {
-    return user.mp;
-
-  } else if (check.toUpperCase() === 'TP') {
-    return user.tp;
-
-  // -----------
-  // HP%/MP%/TP%
-  // -----------
-  } else if (check.toUpperCase() === 'HP%') {
-    return user.hpRate() * 100;
-
-  } else if (check.toUpperCase() === 'MP%') {
-    return user.mpRate() * 100;
-
-  } else if (check.toUpperCase() === 'TP%') {
-    return user.tpRate() * 100;
-
-  // ------------
-  // Battle Turns
-  // ------------
-  } else if (check.toUpperCase().match(/BATTLE TURN/i)) {
-    return $gameTroop.turnCount();
-
-  // -------------------
-  // Total Buffs/Debuffs
-  // -------------------
-  } else if (check.toUpperCase().match(/TOTAL BUFF/i)) {
-    return user.totalBuffs();
-
-  } else if (check.toUpperCase().match(/TOTAL DEBUFF/i)) {
-    return user.totalDebuffs();
-
-  // --------------------------------
-  // Alive Actors/Enemies/Allies/Foes
-  // --------------------------------
-  } else if (check.toUpperCase().match(/ALIVE ACTORS/i)) {
-    return $gameParty.aliveMembers();
-
-  } else if (check.toUpperCase().match(/ALIVE ENEMIES/i)) {
-    return $gameTroop.aliveMembers();
-
-  } else if (check.toUpperCase().match(/ALIVE ALLIES/i)) {
-    var unit = user.friendsUnit();
-    return unit.aliveMembers();
-
-  } else if (check.toUpperCase().match(/ALIVE FOES/i)) {
-    var unit = user.opponentsUnit();
-    return unit.aliveMembers();
-
-  // -------------------------------
-  // Dead Actors/Enemies/Allies/Foes
-  // -------------------------------
-  } else if (check.toUpperCase().match(/DEAD ACTORS/i)) {
-    return $gameParty.deadMembers();
-
-  } else if (check.toUpperCase().match(/DEAD ENEMIES/i)) {
-    return $gameTroop.deadMembers();
-
-  } else if (check.toUpperCase().match(/DEAD ALLIES/i)) {
-    var unit = user.friendsUnit();
-    return unit.deadMembers();
-
-  } else if (check.toUpperCase().match(/DEAD FOES/i)) {
-    var unit = user.opponentsUnit();
-    return unit.deadMembers();
-
-  // --------
-  // Variable
-  // --------
-  } else if (check.match(/(?:VAR|VARIABLE)[ ](\d+)/i)) {
-    return $gameVariables.value(parseInt(RegExp.$1));
-
-  // -----------------
-  // Percentage/Number
-  // -----------------
-  } else if (check.match(/(\d+)([%％])/i)) {
-    return parseFloat(RegExp.$1);
-
-  } else if (check.match(/(\d+)/i)) {
-    return parseInt(RegExp.$1);
-
-  // ---------------
-  // Everything Else
-  // ---------------
-  } else {
-    var paramId = DataManager.getParamId(check);
-    if (param >= 0) {
-      return user.param(paramId);
+  DataManager.getParamId = function (str) {
+    switch (str.toUpperCase()) {
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
+        return 0;
+        break;
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
+        return 1;
+        break;
+      case "ATK":
+      case "STR":
+        return 2;
+        break;
+      case "DEF":
+        return 3;
+        break;
+      case "MAT":
+      case "INT":
+      case "SPI":
+        return 4;
+        break;
+      case "MDF":
+      case "RES":
+        return 5;
+        break;
+      case "AGI":
+      case "SPD":
+        return 6;
+        break;
+      case "LUK":
+        return 7;
+        break;
+      default:
+        return -1;
+        break;
     }
-  }
-  return null;
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-Game_BattlerBase.prototype.totalBuffs = function() {
-  var value = 0;
-  for (var i = 0; i < 8; ++i) {
-    if (this.isBuffAffected(i)) value += 1;
-  }
-  return value;
-};
-
-Game_BattlerBase.prototype.totalDebuffs = function() {
-  var value = 0;
-  for (var i = 0; i < 8; ++i) {
-    if (this.isDebuffAffected(i)) value += 1;
-  }
-  return value;
-};
-
-MageStudios.LunPasCas.Game_BattlerBase_psc =
-  Game_BattlerBase.prototype.passiveStateConditions;
-Game_BattlerBase.prototype.passiveStateConditions = function(state) {
-  var condition = MageStudios.LunPasCas.Game_BattlerBase_psc.call(this, state);
-  if (!condition) return false;
-
-  this._checkPassiveStateCondition = this._checkPassiveStateCondition || [];
-  this._checkPassiveStateCondition.push(state.id);
-
-  var cases = state.passiveConditionCases || [];
-  var length = cases.length;
-  for (var i = 0; i < length; ++i) {
-    var data = cases[i];
-    if (!this.passiveConditionCaseEval(state, data)) {
-      var index = this._checkPassiveStateCondition.indexOf(state.id);
-      this._checkPassiveStateCondition.splice(index, 1);
-      return false;
+  DataManager.numberParameterCheck = function (check, user) {
+    if (check.toUpperCase() === "HP") {
+      return user.hp;
+    } else if (check.toUpperCase() === "MP") {
+      return user.mp;
+    } else if (check.toUpperCase() === "TP") {
+      return user.tp;
+    } else if (check.toUpperCase() === "HP%") {
+      return user.hpRate() * 100;
+    } else if (check.toUpperCase() === "MP%") {
+      return user.mpRate() * 100;
+    } else if (check.toUpperCase() === "TP%") {
+      return user.tpRate() * 100;
+    } else if (check.toUpperCase().match(/BATTLE TURN/i)) {
+      return $gameTroop.turnCount();
+    } else if (check.toUpperCase().match(/TOTAL BUFF/i)) {
+      return user.totalBuffs();
+    } else if (check.toUpperCase().match(/TOTAL DEBUFF/i)) {
+      return user.totalDebuffs();
+    } else if (check.toUpperCase().match(/ALIVE ACTORS/i)) {
+      return $gameParty.aliveMembers();
+    } else if (check.toUpperCase().match(/ALIVE ENEMIES/i)) {
+      return $gameTroop.aliveMembers();
+    } else if (check.toUpperCase().match(/ALIVE ALLIES/i)) {
+      var unit = user.friendsUnit();
+      return unit.aliveMembers();
+    } else if (check.toUpperCase().match(/ALIVE FOES/i)) {
+      var unit = user.opponentsUnit();
+      return unit.aliveMembers();
+    } else if (check.toUpperCase().match(/DEAD ACTORS/i)) {
+      return $gameParty.deadMembers();
+    } else if (check.toUpperCase().match(/DEAD ENEMIES/i)) {
+      return $gameTroop.deadMembers();
+    } else if (check.toUpperCase().match(/DEAD ALLIES/i)) {
+      var unit = user.friendsUnit();
+      return unit.deadMembers();
+    } else if (check.toUpperCase().match(/DEAD FOES/i)) {
+      var unit = user.opponentsUnit();
+      return unit.deadMembers();
+    } else if (check.match(/(?:VAR|VARIABLE)[ ](\d+)/i)) {
+      return $gameVariables.value(parseInt(RegExp.$1));
+    } else if (check.match(/(\d+)([%％])/i)) {
+      return parseFloat(RegExp.$1);
+    } else if (check.match(/(\d+)/i)) {
+      return parseInt(RegExp.$1);
+    } else {
+      var paramId = DataManager.getParamId(check);
+      if (param >= 0) {
+        return user.param(paramId);
+      }
     }
-  }
+    return null;
+  };
 
-  var index = this._checkPassiveStateCondition.indexOf(state.id);
-  this._checkPassiveStateCondition.splice(index, 1);
-
-  return true;
-};
-
-Game_BattlerBase.prototype.passiveConditionCaseEval = function(state, data) {
-  var condition = true;
-  var stateId = state.id;
-  var a = this;
-  var user = this;
-  var subject = this;
-  var b = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-
-  var skip = false;
-  var value = 0;
-  var rate = 1;
-
-  var code = MageStudios.Param.LunPasCasEffect;
-  try {
-    eval(code);
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'PASSIVE CONDITION CASES EFFECT ERROR');
-  }
-  if (skip) return true;
-  return condition;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  Game_BattlerBase.prototype.totalBuffs = function () {
+    var value = 0;
+    for (var i = 0; i < 8; ++i) {
+      if (this.isBuffAffected(i)) value += 1;
     }
-  }
-};
+    return value;
+  };
 
-//=============================================================================
-// Default Effect Code
-//=============================================================================
+  Game_BattlerBase.prototype.totalDebuffs = function () {
+    var value = 0;
+    for (var i = 0; i < 8; ++i) {
+      if (this.isDebuffAffected(i)) value += 1;
+    }
+    return value;
+  };
 
-if (false) {
+  MageStudios.LunPasCas.Game_BattlerBase_psc =
+    Game_BattlerBase.prototype.passiveStateConditions;
+  Game_BattlerBase.prototype.passiveStateConditions = function (state) {
+    var condition = MageStudios.LunPasCas.Game_BattlerBase_psc.call(
+      this,
+      state
+    );
+    if (!condition) return false;
 
-// -------------
-// Switch On/Off
-// -------------
-if (data.match(/SWITCH[ ](\d+)[ ]ON/i)) {
-  var switchId = parseInt(RegExp.$1);
-  condition = $gameSwitches.value(switchId);
+    this._checkPassiveStateCondition = this._checkPassiveStateCondition || [];
+    this._checkPassiveStateCondition.push(state.id);
 
-} else if (data.match(/SWITCH[ ](\d+)[ ]OFF/i)) {
-  var switchId = parseInt(RegExp.$1);
-  condition = !$gameSwitches.value(switchId);
+    var cases = state.passiveConditionCases || [];
+    var length = cases.length;
+    for (var i = 0; i < length; ++i) {
+      var data = cases[i];
+      if (!this.passiveConditionCaseEval(state, data)) {
+        var index = this._checkPassiveStateCondition.indexOf(state.id);
+        this._checkPassiveStateCondition.splice(index, 1);
+        return false;
+      }
+    }
 
-// -------------
-// Has/Not State
-// -------------
-} else if (data.match(/HAS[ ]STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  condition = user.isStateAffected(stateId);
+    var index = this._checkPassiveStateCondition.indexOf(state.id);
+    this._checkPassiveStateCondition.splice(index, 1);
 
-} else if (data.match(/NOT[ ]STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  condition = !user.isStateAffected(stateId);
+    return true;
+  };
 
-// -------------------
-// Has/Not Buff/Debuff
-// -------------------
-} else if (data.match(/HAS[ ](.*)[ ]BUFF/i)) {
-  var str = String(RegExp.$1);
-  var paramId = DataManager.getParamId(str);
-  condition = user.isBuffAffected(paramId);
+  Game_BattlerBase.prototype.passiveConditionCaseEval = function (state, data) {
+    var condition = true;
+    var stateId = state.id;
+    var a = this;
+    var user = this;
+    var subject = this;
+    var b = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
 
-} else if (data.match(/HAS[ ](.*)[ ]DEBUFF/i)) {
-  var str = String(RegExp.$1);
-  var paramId = DataManager.getParamId(str);
-  condition = user.isDebuffAffected(paramId);
+    var skip = false;
+    var value = 0;
+    var rate = 1;
 
-// --------------------
-// Has/Not Weapon/Armor
-// --------------------
-} else if (data.match(/HAS[ ]WEAPON[ ](\d+)/i)) {
-  if (user.isActor()) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataWeapons[id];
-    condition = user.hasWeapon(item);
-  } else {
-    condition = false;
-  }
+    var code = MageStudios.Param.LunPasCasEffect;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "PASSIVE CONDITION CASES EFFECT ERROR"
+      );
+    }
+    if (skip) return true;
+    return condition;
+  };
 
-} else if (data.match(/NOT[ ]WEAPON[ ](\d+)/i)) {
-  if (user.isActor()) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataWeapons[id];
-    condition = !user.hasWeapon(item);
-  } else {
-    condition = false;
-  }
+  MageStudios.Util = MageStudios.Util || {};
 
-} else if (data.match(/HAS[ ]ARMOR[ ](\d+)/i)) {
-  if (user.isActor()) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataArmors[id];
-    condition = user.hasArmor(item);
-  } else {
-    condition = false;
-  }
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
 
-} else if (data.match(/NOT[ ]ARMOR[ ](\d+)/i)) {
-  if (user.isActor()) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataArmors[id];
-    condition = !user.hasArmor(item);
-  } else {
-    condition = false;
-  }
-
-// ----------------------
-// Param Above/Below Stat
-// ----------------------
-} else if (data.match(/(.*)[ ](?:>|<|>=|<=|=|!=)[ ](.*)/i)) {
-  var check1 = String(RegExp.$1);
-  var check2 = String(RegExp.$2);
-  var value1 = DataManager.numberParameterCheck(check1, user);
-  var value2 = DataManager.numberParameterCheck(check2, user);
-  if (value1 !== null && value2 !== null) {
-    if (data.match(/>=/i)) {
-      condition = value1 >= value2;
-    } else if (data.match(/</i)) {
-      condition = value1 <= value2;
-    } else if (data.match(/>/i)) {
-      condition = value1 > value2;
-    } else if (data.match(/</i)) {
-      condition = value1 < value2;
-    } else if (data.match(/!=/i)) {
-      condition = value1 !== value2;
-    } else if (data.match(/=/i)) {
-      condition = value1 === value2;
+  if (false) {
+    if (data.match(/SWITCH[ ](\d+)[ ]ON/i)) {
+      var switchId = parseInt(RegExp.$1);
+      condition = $gameSwitches.value(switchId);
+    } else if (data.match(/SWITCH[ ](\d+)[ ]OFF/i)) {
+      var switchId = parseInt(RegExp.$1);
+      condition = !$gameSwitches.value(switchId);
+    } else if (data.match(/HAS[ ]STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      condition = user.isStateAffected(stateId);
+    } else if (data.match(/NOT[ ]STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      condition = !user.isStateAffected(stateId);
+    } else if (data.match(/HAS[ ](.*)[ ]BUFF/i)) {
+      var str = String(RegExp.$1);
+      var paramId = DataManager.getParamId(str);
+      condition = user.isBuffAffected(paramId);
+    } else if (data.match(/HAS[ ](.*)[ ]DEBUFF/i)) {
+      var str = String(RegExp.$1);
+      var paramId = DataManager.getParamId(str);
+      condition = user.isDebuffAffected(paramId);
+    } else if (data.match(/HAS[ ]WEAPON[ ](\d+)/i)) {
+      if (user.isActor()) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataWeapons[id];
+        condition = user.hasWeapon(item);
+      } else {
+        condition = false;
+      }
+    } else if (data.match(/NOT[ ]WEAPON[ ](\d+)/i)) {
+      if (user.isActor()) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataWeapons[id];
+        condition = !user.hasWeapon(item);
+      } else {
+        condition = false;
+      }
+    } else if (data.match(/HAS[ ]ARMOR[ ](\d+)/i)) {
+      if (user.isActor()) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataArmors[id];
+        condition = user.hasArmor(item);
+      } else {
+        condition = false;
+      }
+    } else if (data.match(/NOT[ ]ARMOR[ ](\d+)/i)) {
+      if (user.isActor()) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataArmors[id];
+        condition = !user.hasArmor(item);
+      } else {
+        condition = false;
+      }
+    } else if (data.match(/(.*)[ ](?:>|<|>=|<=|=|!=)[ ](.*)/i)) {
+      var check1 = String(RegExp.$1);
+      var check2 = String(RegExp.$2);
+      var value1 = DataManager.numberParameterCheck(check1, user);
+      var value2 = DataManager.numberParameterCheck(check2, user);
+      if (value1 !== null && value2 !== null) {
+        if (data.match(/>=/i)) {
+          condition = value1 >= value2;
+        } else if (data.match(/</i)) {
+          condition = value1 <= value2;
+        } else if (data.match(/>/i)) {
+          condition = value1 > value2;
+        } else if (data.match(/</i)) {
+          condition = value1 < value2;
+        } else if (data.match(/!=/i)) {
+          condition = value1 !== value2;
+        } else if (data.match(/=/i)) {
+          condition = value1 === value2;
+        } else {
+          skip = true;
+        }
+      } else {
+        condition = false;
+      }
     } else {
       skip = true;
     }
-  } else {
-    condition = false;
   }
-
-// -------------------------------
-// Add new effects above this line
-// -------------------------------
 } else {
-  skip = true;
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_Z_PassiveCases without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-
-}; // Default Effect Code
-
-//=============================================================================
-// End of File
-//=============================================================================
-} else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_Z_PassiveCases without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // MageStudios.PluginRequirements

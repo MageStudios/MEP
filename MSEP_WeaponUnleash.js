@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Weapon Unleash
-// MSEP_WeaponUnleash.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_WeaponUnleash = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WUL = MageStudios.WUL || {};
-MageStudios.WUL.version = 1.00;
+MageStudios.WUL.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Replace the Attack command or give it the option of
  * have a skill randomly occur when using it!
  * @author Mage Studios Engine Plugins
@@ -138,7 +132,7 @@ MageStudios.WUL.version = 1.00;
  *   the highest ID.
  *
  * Skill Notetags:
- * 
+ *
  *   <Command Text: x>
  *   <Attack Text: x>
  *   <Guard Text: x>
@@ -275,21 +269,12 @@ MageStudios.WUL.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_WeaponUnleash');
+MageStudios.Parameters = PluginManager.parameters("MSEP_WeaponUnleash");
 MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.WUL.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.WUL.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_WeaponUnleash) {
     this.processWULNotetagsS($dataSkills);
@@ -305,7 +290,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processWULNotetagsS = function(group) {
+DataManager.processWULNotetagsS = function (group) {
   if (MageStudios.SkillIdRef) return;
   MageStudios.SkillIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -315,21 +300,21 @@ DataManager.processWULNotetagsS = function(group) {
   }
 };
 
-DataManager.processWULNotetags1 = function(group) {
+DataManager.processWULNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.attackReplace = 0;
-    obj.attackReplaceEval = '';
+    obj.attackReplaceEval = "";
     obj.guardReplace = 0;
-    obj.guardReplaceEval = '';
+    obj.guardReplaceEval = "";
     obj.weaponUnleash = [];
     obj.guardUnleash = [];
     obj.weaponUnleashRate = { all: 0 };
     obj.guardUnleashRate = { all: 0 };
-    var evalMode = 'none';
-    var evalLine = '';
+    var evalMode = "none";
+    var evalLine = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -363,7 +348,7 @@ DataManager.processWULNotetags1 = function(group) {
         } else {
           continue;
         }
-        var arr = [id, rate, ''];
+        var arr = [id, rate, ""];
         obj.weaponUnleash.push(arr);
       } else if (line.match(/<GUARD UNLEASH[ ](\d+)([%％]):[ ](.*)>/i)) {
         var rate = parseFloat(RegExp.$1) * 0.01;
@@ -375,12 +360,12 @@ DataManager.processWULNotetags1 = function(group) {
         } else {
           continue;
         }
-        var arr = [id, rate, ''];
+        var arr = [id, rate, ""];
         obj.guardUnleash.push(arr);
       } else if (line.match(/<WEAPON UNLEASH:[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.weaponUnleashRate['all'] = parseFloat(RegExp.$1) * 0.01;
+        obj.weaponUnleashRate["all"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<GUARD UNLEASH:[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.guardUnleashRate['all'] = parseFloat(RegExp.$1) * 0.01;
+        obj.guardUnleashRate["all"] = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<WEAPON UNLEASH[ ](.*):[ ]([\+\-]\d+)([%％])>/i)) {
         var name = String(RegExp.$1).toUpperCase();
         var rate = parseFloat(RegExp.$2) * 0.01;
@@ -404,20 +389,20 @@ DataManager.processWULNotetags1 = function(group) {
         }
         obj.guardUnleashRate[id] = rate;
       } else if (line.match(/<(?:CUSTOM REPLACE ATTACK)>/i)) {
-        evalMode = 'replaceAttack';
+        evalMode = "replaceAttack";
       } else if (line.match(/<\/(?:CUSTOM REPLACE ATTACK)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'replaceAttack') {
-        obj.attackReplaceEval = obj.attackReplaceEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "replaceAttack") {
+        obj.attackReplaceEval = obj.attackReplaceEval + line + "\n";
       } else if (line.match(/<(?:CUSTOM REPLACE GUARD)>/i)) {
-        evalMode = 'replaceGuard';
+        evalMode = "replaceGuard";
       } else if (line.match(/<\/(?:CUSTOM REPLACE GUARD)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'replaceGuard') {
-        obj.guardReplaceEval = obj.guardReplaceEval + line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "replaceGuard") {
+        obj.guardReplaceEval = obj.guardReplaceEval + line + "\n";
       } else if (line.match(/<(?:CUSTOM WEAPON UNLEASH):[ ](.*)>/i)) {
-        evalMode = 'weaponUnleash';
-        evalLine = '';
+        evalMode = "weaponUnleash";
+        evalLine = "";
       } else if (line.match(/<\/(?:CUSTOM WEAPON UNLEASH):[ ](.*)>/i)) {
         var rate = 0;
         var name = String(RegExp.$1).toUpperCase();
@@ -430,13 +415,13 @@ DataManager.processWULNotetags1 = function(group) {
         }
         var arr = [id, rate, evalLine];
         obj.weaponUnleash.push(arr);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'weaponUnleash') {
-        evalLine = evalLine + line + '\n';
+        evalMode = "none";
+        evalLine = "";
+      } else if (evalMode === "weaponUnleash") {
+        evalLine = evalLine + line + "\n";
       } else if (line.match(/<(?:CUSTOM GUARD UNLEASH):[ ](.*)>/i)) {
-        evalMode = 'guardUnleash';
-        evalLine = '';
+        evalMode = "guardUnleash";
+        evalLine = "";
       } else if (line.match(/<\/(?:CUSTOM GUARD UNLEASH):[ ](.*)>/i)) {
         var rate = 0;
         var name = String(RegExp.$1).toUpperCase();
@@ -449,16 +434,16 @@ DataManager.processWULNotetags1 = function(group) {
         }
         var arr = [id, rate, evalLine];
         obj.guardUnleash.push(arr);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'guardUnleash') {
-        evalLine = evalLine + line + '\n';
+        evalMode = "none";
+        evalLine = "";
+      } else if (evalMode === "guardUnleash") {
+        evalLine = evalLine + line + "\n";
       }
     }
   }
 };
 
-DataManager.processWULNotetags2 = function(group) {
+DataManager.processWULNotetags2 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -483,54 +468,42 @@ DataManager.processWULNotetags2 = function(group) {
   }
 };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
 MageStudios.WUL.BattleManager_startAction = BattleManager.startAction;
-BattleManager.startAction = function() {
-    var subject = this._subject;
-    if (subject) var action = subject.currentAction();
-    if (action) action.processUnleash();
-    MageStudios.WUL.BattleManager_startAction.call(this);
+BattleManager.startAction = function () {
+  var subject = this._subject;
+  if (subject) var action = subject.currentAction();
+  if (action) action.processUnleash();
+  MageStudios.WUL.BattleManager_startAction.call(this);
 };
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
 
 MageStudios.WUL.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    this.clearReplaceAttackGuard();
-    MageStudios.WUL.Game_BattlerBase_refresh.call(this);
+Game_BattlerBase.prototype.refresh = function () {
+  this.clearReplaceAttackGuard();
+  MageStudios.WUL.Game_BattlerBase_refresh.call(this);
 };
 
-Game_BattlerBase.prototype.clearReplaceAttackGuard = function() {
-    this._replaceAttackSkillId = undefined;
-    this._replaceGuardSkillId = undefined;
+Game_BattlerBase.prototype.clearReplaceAttackGuard = function () {
+  this._replaceAttackSkillId = undefined;
+  this._replaceGuardSkillId = undefined;
 };
 
-MageStudios.WUL.Game_BattlerBase_attackSkillId = 
-    Game_BattlerBase.prototype.attackSkillId;
-Game_BattlerBase.prototype.attackSkillId = function() {
-    if (this._replaceAttackSkillId) return this._replaceAttackSkillId;
-    if (this.replaceAttackSkillId() > 0) return this.replaceAttackSkillId();
-    return MageStudios.WUL.Game_BattlerBase_attackSkillId.call(this);
+MageStudios.WUL.Game_BattlerBase_attackSkillId =
+  Game_BattlerBase.prototype.attackSkillId;
+Game_BattlerBase.prototype.attackSkillId = function () {
+  if (this._replaceAttackSkillId) return this._replaceAttackSkillId;
+  if (this.replaceAttackSkillId() > 0) return this.replaceAttackSkillId();
+  return MageStudios.WUL.Game_BattlerBase_attackSkillId.call(this);
 };
 
 MageStudios.WUL.Game_BattlerBase_guardSkillId =
-    Game_BattlerBase.prototype.guardSkillId;
-Game_BattlerBase.prototype.guardSkillId = function() {
-    if (this._replaceGuardSkillId) return this._replaceGuardSkillId;
-    if (this.replaceGuardSkillId() > 0) return this.replaceGuardSkillId();
-    return MageStudios.WUL.Game_BattlerBase_guardSkillId.call(this);
+  Game_BattlerBase.prototype.guardSkillId;
+Game_BattlerBase.prototype.guardSkillId = function () {
+  if (this._replaceGuardSkillId) return this._replaceGuardSkillId;
+  if (this.replaceGuardSkillId() > 0) return this.replaceGuardSkillId();
+  return MageStudios.WUL.Game_BattlerBase_guardSkillId.call(this);
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.isReplaceAttackSkillId = function(obj) {
+Game_Battler.prototype.isReplaceAttackSkillId = function (obj) {
   if (!obj) return false;
   if (obj.attackReplace === undefined) return false;
   if (obj.attackReplaceEval === undefined) return false;
@@ -539,19 +512,19 @@ Game_Battler.prototype.isReplaceAttackSkillId = function(obj) {
   var user = this;
   var s = $gameSwitches._data;
   var v = $gameVariables._data;
-  if (obj.attackReplaceEval !== '') {
+  if (obj.attackReplaceEval !== "") {
     var code = obj.attackReplaceEval;
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'REPLACE ATTACK SKILL ID ERROR');
+      MageStudios.Util.displayError(e, code, "REPLACE ATTACK SKILL ID ERROR");
     }
   }
   if (id !== 0) this._replaceAttackSkillId = id;
   return this._replaceAttackSkillId > 0;
 };
 
-Game_Battler.prototype.isReplaceGuardSkillId = function(obj) {
+Game_Battler.prototype.isReplaceGuardSkillId = function (obj) {
   if (!obj) return false;
   if (obj.guardReplace === undefined) return false;
   if (obj.guardReplaceEval === undefined) return false;
@@ -560,19 +533,19 @@ Game_Battler.prototype.isReplaceGuardSkillId = function(obj) {
   var user = this;
   var s = $gameSwitches._data;
   var v = $gameVariables._data;
-  if (obj.guardReplaceEval !== '') {
+  if (obj.guardReplaceEval !== "") {
     var code = obj.guardReplaceEval;
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'REPLACE GUARD SKILL ID ERROR');
+      MageStudios.Util.displayError(e, code, "REPLACE GUARD SKILL ID ERROR");
     }
   }
   if (id !== 0) this._replaceGuardSkillId = id;
   return this._replaceGuardSkillId > 0;
 };
 
-Game_Battler.prototype.replaceAttackSkillId = function() {
+Game_Battler.prototype.replaceAttackSkillId = function () {
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
     var obj = this.states()[i];
@@ -581,7 +554,7 @@ Game_Battler.prototype.replaceAttackSkillId = function() {
   return 0;
 };
 
-Game_Battler.prototype.replaceGuardSkillId = function() {
+Game_Battler.prototype.replaceGuardSkillId = function () {
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
     var obj = this.states()[i];
@@ -590,57 +563,57 @@ Game_Battler.prototype.replaceGuardSkillId = function() {
   return 0;
 };
 
-Game_Battler.prototype.weaponUnleashes = function() {
-    var arr = [];
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.weaponUnleash && obj.weaponUnleash.length > 0) {
-        arr = arr.concat(obj.weaponUnleash);
-      }
+Game_Battler.prototype.weaponUnleashes = function () {
+  var arr = [];
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.weaponUnleash && obj.weaponUnleash.length > 0) {
+      arr = arr.concat(obj.weaponUnleash);
     }
-    return arr;
+  }
+  return arr;
 };
 
-Game_Battler.prototype.guardUnleashes = function() {
-    var arr = [];
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.guardUnleash && obj.guardUnleash.length > 0) {
-        arr = arr.concat(obj.guardUnleash);
-      }
+Game_Battler.prototype.guardUnleashes = function () {
+  var arr = [];
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.guardUnleash && obj.guardUnleash.length > 0) {
+      arr = arr.concat(obj.guardUnleash);
     }
-    return arr;
+  }
+  return arr;
 };
 
-Game_Battler.prototype.weaponUnleashBonusRate = function(skillId) {
-    var rate = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.weaponUnleashRate) {
-        rate += obj.weaponUnleashRate['all'];
-        rate += obj.weaponUnleashRate[skillId] || 0;
-      }
+Game_Battler.prototype.weaponUnleashBonusRate = function (skillId) {
+  var rate = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.weaponUnleashRate) {
+      rate += obj.weaponUnleashRate["all"];
+      rate += obj.weaponUnleashRate[skillId] || 0;
     }
-    return rate;
+  }
+  return rate;
 };
 
-Game_Battler.prototype.guardUnleashBonusRate = function(skillId) {
-    var rate = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.guardUnleashRate) {
-        rate += obj.guardUnleashRate['all'] || 0;
-        rate += obj.guardUnleashRate[skillId] || 0;
-      }
+Game_Battler.prototype.guardUnleashBonusRate = function (skillId) {
+  var rate = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.guardUnleashRate) {
+      rate += obj.guardUnleashRate["all"] || 0;
+      rate += obj.guardUnleashRate[skillId] || 0;
     }
-    return rate;
+  }
+  return rate;
 };
 
-Game_Battler.prototype.getWeaponUnleashRate = function(unleash) {
+Game_Battler.prototype.getWeaponUnleashRate = function (unleash) {
   var skillId = unleash[0];
   var skill = $dataSkills[skillId];
   var item = $dataSkills[skillId];
@@ -651,17 +624,17 @@ Game_Battler.prototype.getWeaponUnleashRate = function(unleash) {
   var s = $gameSwitches._data;
   var v = $gameVariables._data;
   rate += this.weaponUnleashBonusRate(skillId);
-  if (evalLine !== '') {
+  if (evalLine !== "") {
     try {
       eval(evalLine);
     } catch (e) {
-      MageStudios.Util.displayError(e, evalLine, 'WEAPON UNLEASH RATE ERROR');
+      MageStudios.Util.displayError(e, evalLine, "WEAPON UNLEASH RATE ERROR");
     }
   }
   return rate;
 };
 
-Game_Battler.prototype.getGuardUnleashRate = function(unleash) {
+Game_Battler.prototype.getGuardUnleashRate = function (unleash) {
   var skillId = unleash[0];
   var skill = $dataSkills[skillId];
   var item = $dataSkills[skillId];
@@ -671,22 +644,18 @@ Game_Battler.prototype.getGuardUnleashRate = function(unleash) {
   var user = this;
   var s = $gameSwitches._data;
   var v = $gameVariables._data;
-  rate += this.guardUnleashBonusRate(skillId)
-  if (evalLine !== '') {
+  rate += this.guardUnleashBonusRate(skillId);
+  if (evalLine !== "") {
     try {
       eval(evalLine);
     } catch (e) {
-      MageStudios.Util.displayError(e, evalLine, 'GUARD UNLEASH RATE ERROR');
+      MageStudios.Util.displayError(e, evalLine, "GUARD UNLEASH RATE ERROR");
     }
   }
   return rate;
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.replaceAttackSkillId = function() {
+Game_Actor.prototype.replaceAttackSkillId = function () {
   var id = Game_Battler.prototype.replaceAttackSkillId.call(this);
   if (id > 0) return id;
   var length = this.equips().length;
@@ -700,10 +669,10 @@ Game_Actor.prototype.replaceAttackSkillId = function() {
   if (this.isReplaceAttackSkillId(this.actor())) {
     return this._replaceAttackSkillId;
   }
-  return this._replaceAttackSkillId = 0;
+  return (this._replaceAttackSkillId = 0);
 };
 
-Game_Actor.prototype.replaceGuardSkillId = function() {
+Game_Actor.prototype.replaceGuardSkillId = function () {
   var id = Game_Battler.prototype.replaceGuardSkillId.call(this);
   if (id > 0) return id;
   var length = this.equips().length;
@@ -717,173 +686,165 @@ Game_Actor.prototype.replaceGuardSkillId = function() {
   if (this.isReplaceGuardSkillId(this.actor())) {
     return this._replaceGuardSkillId;
   }
-  return this._replaceGuardSkillId = 0;
+  return (this._replaceGuardSkillId = 0);
 };
 
-Game_Actor.prototype.weaponUnleashes = function() {
-    var arr = Game_Battler.prototype.weaponUnleashes.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.weaponUnleash && obj.weaponUnleash.length > 0) {
-        arr = arr.concat(obj.weaponUnleash);
-      }
+Game_Actor.prototype.weaponUnleashes = function () {
+  var arr = Game_Battler.prototype.weaponUnleashes.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.weaponUnleash && obj.weaponUnleash.length > 0) {
+      arr = arr.concat(obj.weaponUnleash);
     }
-    if (this.currentClass().weaponUnleash.length > 0) {
-      arr = arr.concat(this.currentClass().weaponUnleash);
-    }
-    if (this.actor().weaponUnleash.length > 0) {
-      arr = arr.concat(this.actor().weaponUnleash);
-    }
-    return arr;
+  }
+  if (this.currentClass().weaponUnleash.length > 0) {
+    arr = arr.concat(this.currentClass().weaponUnleash);
+  }
+  if (this.actor().weaponUnleash.length > 0) {
+    arr = arr.concat(this.actor().weaponUnleash);
+  }
+  return arr;
 };
 
-Game_Actor.prototype.guardUnleashes = function() {
-    var arr = Game_Battler.prototype.guardUnleashes.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.guardUnleash && obj.guardUnleash.length > 0) {
-        arr = arr.concat(obj.guardUnleash);
-      }
+Game_Actor.prototype.guardUnleashes = function () {
+  var arr = Game_Battler.prototype.guardUnleashes.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.guardUnleash && obj.guardUnleash.length > 0) {
+      arr = arr.concat(obj.guardUnleash);
     }
-    if (this.currentClass().guardUnleash.length > 0) {
-      arr = arr.concat(this.currentClass().guardUnleash);
-    }
-    if (this.actor().guardUnleash.length > 0) {
-      arr = arr.concat(this.actor().guardUnleash);
-    }
-    return arr;
+  }
+  if (this.currentClass().guardUnleash.length > 0) {
+    arr = arr.concat(this.currentClass().guardUnleash);
+  }
+  if (this.actor().guardUnleash.length > 0) {
+    arr = arr.concat(this.actor().guardUnleash);
+  }
+  return arr;
 };
 
-Game_Actor.prototype.weaponUnleashBonusRate = function(skillId) {
+Game_Actor.prototype.weaponUnleashBonusRate = function (skillId) {
   var rate = Game_Battler.prototype.weaponUnleashBonusRate.call(this, skillId);
   if (this.actor().weaponUnleashRate) {
-    rate += this.actor().weaponUnleashRate['all'] || 0;
+    rate += this.actor().weaponUnleashRate["all"] || 0;
     rate += this.actor().weaponUnleashRate[skillId] || 0;
   }
   if (this.currentClass().weaponUnleashRate) {
-    rate += this.currentClass().weaponUnleashRate['all'] || 0;
+    rate += this.currentClass().weaponUnleashRate["all"] || 0;
     rate += this.currentClass().weaponUnleashRate[skillId] || 0;
   }
   var length = this.equips().length;
   for (var i = 0; i < length; ++i) {
     var obj = this.equips()[i];
     if (obj && obj.weaponUnleashRate) {
-      rate += obj.weaponUnleashRate['all'] || 0;
+      rate += obj.weaponUnleashRate["all"] || 0;
       rate += obj.weaponUnleashRate[skillId] || 0;
     }
   }
   return rate;
 };
 
-Game_Actor.prototype.guardUnleashBonusRate = function(skillId) {
+Game_Actor.prototype.guardUnleashBonusRate = function (skillId) {
   var rate = Game_Battler.prototype.guardUnleashBonusRate.call(this, skillId);
   if (this.actor().guardUnleashRate) {
-    rate += this.actor().guardUnleashRate['all'] || 0;
+    rate += this.actor().guardUnleashRate["all"] || 0;
     rate += this.actor().guardUnleashRate[skillId] || 0;
   }
   if (this.currentClass().guardUnleashRate) {
-    rate += this.currentClass().guardUnleashRate['all'] || 0;
+    rate += this.currentClass().guardUnleashRate["all"] || 0;
     rate += this.currentClass().guardUnleashRate[skillId] || 0;
   }
   var length = this.equips().length;
   for (var i = 0; i < length; ++i) {
     var obj = this.equips()[i];
     if (obj && obj.guardUnleashRate) {
-      rate += obj.guardUnleashRate['all'] || 0;
+      rate += obj.guardUnleashRate["all"] || 0;
       rate += obj.guardUnleashRate[skillId] || 0;
     }
   }
   return rate;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
+Game_Enemy.prototype.replaceAttackSkillId = function () {
+  var id = Game_Battler.prototype.replaceAttackSkillId.call(this);
+  if (id > 0) return id;
+  if (this.isReplaceAttackSkillId(this.enemy())) {
+    return this._replaceAttackSkillId;
+  }
+  return (this._replaceAttackSkillId = 0);
+};
 
-Game_Enemy.prototype.replaceAttackSkillId = function() {
-    var id = Game_Battler.prototype.replaceAttackSkillId.call(this);
-    if (id > 0) return id;
-    if (this.isReplaceAttackSkillId(this.enemy())) {
-      return this._replaceAttackSkillId;
+Game_Enemy.prototype.replaceGuardSkillId = function () {
+  var id = Game_Battler.prototype.replaceGuardSkillId.call(this);
+  if (id > 0) return id;
+  if (this.isReplaceGuardSkillId(this.enemy())) {
+    return this._replaceGuardSkillId;
+  }
+  return (this._replaceGuardSkillId = 0);
+};
+
+Game_Enemy.prototype.weaponUnleashes = function () {
+  var arr = Game_Battler.prototype.weaponUnleashes.call(this);
+  if (this.enemy().weaponUnleash.length > 0) {
+    arr = arr.concat(this.enemy().weaponUnleash);
+  }
+  return arr;
+};
+
+Game_Enemy.prototype.guardUnleashes = function () {
+  var arr = Game_Battler.prototype.guardUnleashes.call(this);
+  if (this.enemy().guardUnleash.length > 0) {
+    arr = arr.concat(this.enemy().guardUnleash);
+  }
+  return arr;
+};
+
+Game_Action.prototype.processUnleash = function () {
+  if (!this.subject()) return;
+  if (!this.item()) return;
+  if (!this.isSkill()) return this.subject().clearReplaceAttackGuard();
+  var id = this.item().id;
+  if (id === this.subject().attackSkillId()) this.processWeaponUnleash();
+  if (id === this.subject().guardSkillId()) this.processGuardUnleash();
+  this.subject().clearReplaceAttackGuard();
+};
+
+Game_Action.prototype.processWeaponUnleash = function () {
+  var unleashes = this.subject().weaponUnleashes();
+  if (unleashes.length <= 0) return;
+  this.switchUnleashSkill(unleashes, true);
+};
+
+Game_Action.prototype.processGuardUnleash = function () {
+  var unleashes = this.subject().guardUnleashes();
+  if (unleashes.length <= 0) return;
+  this.switchUnleashSkill(unleashes, false);
+};
+
+Game_Action.prototype.switchUnleashSkill = function (unleashes, isWeapon) {
+  var length = unleashes.length;
+  for (var i = 0; i < length; ++i) {
+    var unleash = unleashes[i];
+    if (unleash.length < 3) continue;
+    var skillId = unleash[0];
+    var skill = $dataSkills[skillId];
+    if (!skill) continue;
+    if (!this.subject().canUse(skill)) continue;
+    if (isWeapon) {
+      var rate = this.subject().getWeaponUnleashRate(unleash);
+    } else {
+      var rate = this.subject().getGuardUnleashRate(unleash);
     }
-    return this._replaceAttackSkillId = 0;
-};
-
-Game_Enemy.prototype.replaceGuardSkillId = function() {
-    var id = Game_Battler.prototype.replaceGuardSkillId.call(this);
-    if (id > 0) return id;
-    if (this.isReplaceGuardSkillId(this.enemy())) {
-      return this._replaceGuardSkillId;
-    }
-    return this._replaceGuardSkillId = 0;
-};
-
-Game_Enemy.prototype.weaponUnleashes = function() {
-    var arr = Game_Battler.prototype.weaponUnleashes.call(this);
-    if (this.enemy().weaponUnleash.length > 0) {
-      arr = arr.concat(this.enemy().weaponUnleash);
-    }
-    return arr;
-};
-
-Game_Enemy.prototype.guardUnleashes = function() {
-    var arr = Game_Battler.prototype.guardUnleashes.call(this);
-    if (this.enemy().guardUnleash.length > 0) {
-      arr = arr.concat(this.enemy().guardUnleash);
-    }
-    return arr;
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.processUnleash = function() {
-    if (!this.subject()) return;
-    if (!this.item()) return;
-    if (!this.isSkill()) return this.subject().clearReplaceAttackGuard();;
-    var id = this.item().id;
-    if (id === this.subject().attackSkillId()) this.processWeaponUnleash();
-    if (id === this.subject().guardSkillId()) this.processGuardUnleash();
-    this.subject().clearReplaceAttackGuard();
-};
-
-Game_Action.prototype.processWeaponUnleash = function() {
-    var unleashes = this.subject().weaponUnleashes();
-    if (unleashes.length <= 0) return;
-    this.switchUnleashSkill(unleashes, true);
-};
-
-Game_Action.prototype.processGuardUnleash = function() {
-    var unleashes = this.subject().guardUnleashes();
-    if (unleashes.length <= 0) return;
-    this.switchUnleashSkill(unleashes, false);
-};
-
-Game_Action.prototype.switchUnleashSkill = function(unleashes, isWeapon) {
-    var length = unleashes.length;
-    for (var i = 0; i < length; ++i) {
-      var unleash = unleashes[i];
-      if (unleash.length < 3) continue;
-      var skillId = unleash[0];
-      var skill = $dataSkills[skillId];
-      if (!skill) continue;
-      if (!this.subject().canUse(skill)) continue;
-      if (isWeapon) {
-        var rate = this.subject().getWeaponUnleashRate(unleash);
-      } else {
-        var rate = this.subject().getGuardUnleashRate(unleash);
-      }
-      if (Math.random() > rate) continue;
-      this.setSkill(skillId);
-      return;
-    }
+    if (Math.random() > rate) continue;
+    this.setSkill(skillId);
+    return;
+  }
 };
 
 MageStudios.WUL.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
-Game_Action.prototype.makeTargets = function() {
+Game_Action.prototype.makeTargets = function () {
   if (!this._forcing && this.subject().isConfused()) {
     return this.makeConfusionTargets();
   } else {
@@ -891,124 +852,111 @@ Game_Action.prototype.makeTargets = function() {
   }
 };
 
-Game_Action.prototype.makeConfusionTargets = function() {
+Game_Action.prototype.makeConfusionTargets = function () {
   if (this.isForOne()) return [this.confusionTarget()];
   switch (this.subject().confusionLevel()) {
-  case 1:
-    if (this.isForAll()) {
-      return this.opponentsUnit().aliveMembers();
-    } else {
-      return this.opponentsUnit().randomTarget();
-    }
-  case 2:
-    if (this.isForAll()) {
-      if (Math.randomInt(2) === 0) return this.opponentsUnit().aliveMembers();
-      return this.friendsUnit().aliveMembers();
-    } else {
-      if (Math.randomInt(2) === 0) return this.opponentsUnit().randomTarget();
-      return this.friendsUnit().randomTarget();
-    }
-  default:
-    if (this.isForAll()) {
-      return this.friendsUnit().aliveMembers();
-    } else {
-      return this.friendsUnit().randomTarget();
-    }
+    case 1:
+      if (this.isForAll()) {
+        return this.opponentsUnit().aliveMembers();
+      } else {
+        return this.opponentsUnit().randomTarget();
+      }
+    case 2:
+      if (this.isForAll()) {
+        if (Math.randomInt(2) === 0) return this.opponentsUnit().aliveMembers();
+        return this.friendsUnit().aliveMembers();
+      } else {
+        if (Math.randomInt(2) === 0) return this.opponentsUnit().randomTarget();
+        return this.friendsUnit().randomTarget();
+      }
+    default:
+      if (this.isForAll()) {
+        return this.friendsUnit().aliveMembers();
+      } else {
+        return this.friendsUnit().randomTarget();
+      }
   }
 };
 
-//=============================================================================
-// Window_ActorCommand
-//=============================================================================
-
 MageStudios.WUL.Window_ActorCommand_addAttackCommand =
-    Window_ActorCommand.prototype.addAttackCommand;
-Window_ActorCommand.prototype.addAttackCommand = function() {
-    MageStudios.WUL.Window_ActorCommand_addAttackCommand.call(this);
-    var index = this.findSymbol('attack');
-    if (index < 0) return;
-    var name = $dataSkills[this._actor.attackSkillId()].commandAttackText;
-    this._list[index].name = name;
+  Window_ActorCommand.prototype.addAttackCommand;
+Window_ActorCommand.prototype.addAttackCommand = function () {
+  MageStudios.WUL.Window_ActorCommand_addAttackCommand.call(this);
+  var index = this.findSymbol("attack");
+  if (index < 0) return;
+  var name = $dataSkills[this._actor.attackSkillId()].commandAttackText;
+  this._list[index].name = name;
 };
 
 MageStudios.WUL.Window_ActorCommand_addGuardCommand =
-    Window_ActorCommand.prototype.addGuardCommand;
-Window_ActorCommand.prototype.addGuardCommand = function() {
-    MageStudios.WUL.Window_ActorCommand_addGuardCommand.call(this);
-    var index = this.findSymbol('guard');
-    if (index < 0) return;
-    var name = $dataSkills[this._actor.guardSkillId()].commandGuardText;
-    this._list[index].name = name;
+  Window_ActorCommand.prototype.addGuardCommand;
+Window_ActorCommand.prototype.addGuardCommand = function () {
+  MageStudios.WUL.Window_ActorCommand_addGuardCommand.call(this);
+  var index = this.findSymbol("guard");
+  if (index < 0) return;
+  var name = $dataSkills[this._actor.guardSkillId()].commandGuardText;
+  this._list[index].name = name;
 };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.WUL.Scene_Battle_commandAttack = Scene_Battle.prototype.commandAttack;
-Scene_Battle.prototype.commandAttack = function() {
-    var skill = $dataSkills[BattleManager.actor().attackSkillId()];
-    var action = BattleManager.inputtingAction();
-    action.setSkill(skill.id);
-    if (action.needsSelection()) {
-      BattleManager.actor().setLastBattleSkill(skill);
-      this.onSelectAction();
-    } else {
-      BattleManager.actor().setLastBattleSkill(skill);
-      this.selectNextCommand();
-    }
+MageStudios.WUL.Scene_Battle_commandAttack =
+  Scene_Battle.prototype.commandAttack;
+Scene_Battle.prototype.commandAttack = function () {
+  var skill = $dataSkills[BattleManager.actor().attackSkillId()];
+  var action = BattleManager.inputtingAction();
+  action.setSkill(skill.id);
+  if (action.needsSelection()) {
+    BattleManager.actor().setLastBattleSkill(skill);
+    this.onSelectAction();
+  } else {
+    BattleManager.actor().setLastBattleSkill(skill);
+    this.selectNextCommand();
+  }
 };
 
 MageStudios.WUL.Scene_Battle_commandGuard = Scene_Battle.prototype.commandGuard;
-Scene_Battle.prototype.commandGuard = function() {
-    var skill = $dataSkills[BattleManager.actor().guardSkillId()];
-    var action = BattleManager.inputtingAction();
-    action.setSkill(skill.id);
-    if (action.needsSelection()) {
-      BattleManager.actor().setLastBattleSkill(skill);
-      this.onSelectAction();
-    } else {
-      BattleManager.actor().setLastBattleSkill(skill);
-      this.selectNextCommand();
-    }
+Scene_Battle.prototype.commandGuard = function () {
+  var skill = $dataSkills[BattleManager.actor().guardSkillId()];
+  var action = BattleManager.inputtingAction();
+  action.setSkill(skill.id);
+  if (action.needsSelection()) {
+    BattleManager.actor().setLastBattleSkill(skill);
+    this.onSelectAction();
+  } else {
+    BattleManager.actor().setLastBattleSkill(skill);
+    this.selectNextCommand();
+  }
 };
 
-MageStudios.WUL.Scene_Battle_onActorCancel = Scene_Battle.prototype.onActorCancel;
-Scene_Battle.prototype.onActorCancel = function() {
+MageStudios.WUL.Scene_Battle_onActorCancel =
+  Scene_Battle.prototype.onActorCancel;
+Scene_Battle.prototype.onActorCancel = function () {
   MageStudios.WUL.Scene_Battle_onActorCancel.call(this);
   if (this.isAnyInputWindowActive()) return;
-  if (['attack', 'guard'].contains(this._actorCommandWindow.currentSymbol())) {
+  if (["attack", "guard"].contains(this._actorCommandWindow.currentSymbol())) {
     this._actorCommandWindow.activate();
   }
 };
 
-MageStudios.WUL.Scene_Battle_onEnemyCancel = Scene_Battle.prototype.onEnemyCancel;
-Scene_Battle.prototype.onEnemyCancel = function() {
+MageStudios.WUL.Scene_Battle_onEnemyCancel =
+  Scene_Battle.prototype.onEnemyCancel;
+Scene_Battle.prototype.onEnemyCancel = function () {
   MageStudios.WUL.Scene_Battle_onEnemyCancel.call(this);
   if (this.isAnyInputWindowActive()) return;
-  if (['attack', 'guard'].contains(this._actorCommandWindow.currentSymbol())) {
+  if (["attack", "guard"].contains(this._actorCommandWindow.currentSymbol())) {
     this._actorCommandWindow.activate();
   }
 };
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

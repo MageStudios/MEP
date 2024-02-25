@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Call Event
-// MSEP_CallEvent.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_CallEvent = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CallEvent = MageStudios.CallEvent || {};
-MageStudios.CallEvent.version = 1.00;
+MageStudios.CallEvent.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc A lost utility command from RPG Maker 2000 and
  * RPG Maker 2003 has been remade for RPG Maker MV!
  * @author Mage Studios Engine Plugins
@@ -64,18 +58,13 @@ MageStudios.CallEvent.version = 1.00;
  * happened. Be cautious about how you call these call events.
  *
  */
-//=============================================================================
-
-//=============================================================================
-// DataManager
-//=============================================================================
 
 var $callEventMap;
 
-DataManager.loadCallMapData = function(mapId) {
+DataManager.loadCallMapData = function (mapId) {
   if (mapId > 0) {
-    var filename = 'Map%1.json'.format(mapId.padZero(3));
-    this.loadDataFile('$callEventMap', filename);
+    var filename = "Map%1.json".format(mapId.padZero(3));
+    this.loadDataFile("$callEventMap", filename);
   } else {
     $callEventMap = {};
     $callEventMap.data = [];
@@ -86,27 +75,27 @@ DataManager.loadCallMapData = function(mapId) {
   }
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.CallEvent.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.CallEvent.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'CallEvent') this.callEvent(this.argsToString(args));
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.CallEvent.Game_Interpreter_pluginCommand.call(
+    this,
+    command,
+    args
+  );
+  if (command === "CallEvent") this.callEvent(this.argsToString(args));
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-    var str = '';
-    var length = args.length;
-    for (var i = 0; i < length; ++i) {
-      str += args[i] + ' ';
-    }
-    return str.trim();
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
+  var length = args.length;
+  for (var i = 0; i < length; ++i) {
+    str += args[i] + " ";
+  }
+  return str.trim();
 };
 
-Game_Interpreter.prototype.callEvent = function(line) {
+Game_Interpreter.prototype.callEvent = function (line) {
   if (this._callEvent_Running) return this.processCallEvent();
   if (line.match(/(\d+),[ ](.*)/i)) {
     var eventId = parseInt(RegExp.$1);
@@ -135,7 +124,7 @@ Game_Interpreter.prototype.callEvent = function(line) {
   this.processCallEvent();
 };
 
-Game_Interpreter.prototype.processCallEvent = function() {
+Game_Interpreter.prototype.processCallEvent = function () {
   if ($callEventMap) {
     this.insertCallEventData(this._callEvent_EventId, this._callEvent_PageId);
   } else {
@@ -144,7 +133,7 @@ Game_Interpreter.prototype.processCallEvent = function() {
   }
 };
 
-Game_Interpreter.prototype.insertCallEventData = function(eventId, pageId) {
+Game_Interpreter.prototype.insertCallEventData = function (eventId, pageId) {
   this._callEvent_Running = false;
   var ev = $callEventMap.events[eventId];
   if (!ev) return;
@@ -153,7 +142,3 @@ Game_Interpreter.prototype.insertCallEventData = function(eventId, pageId) {
   var list = page.list;
   this.setupChild(list, this.eventId());
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

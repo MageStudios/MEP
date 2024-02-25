@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Element Core
-// MSEP_ElementCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ElementCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Ele = MageStudios.Ele || {};
-MageStudios.Ele.version = 1.00;
+MageStudios.Ele.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Manage the way elements work in this game from
  * absorbing elements, reflecting elements, and more!
  * @author Mage Studios Engine Plugins
@@ -192,23 +186,16 @@ MageStudios.Ele.version = 1.00;
  *=============================================================================
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ElementCore');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ElementCore");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.EleMultiRule = Number(MageStudios.Parameters['Multi-Element Rulings']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.EleMultiRule = Number(
+  MageStudios.Parameters["Multi-Element Rulings"]
+);
 
 MageStudios.Ele.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.Ele.DataManager_isDatabaseLoaded.call(this)) return false;
 
   if (!MageStudios._loaded_MSEP_ElementCore) {
@@ -223,20 +210,20 @@ DataManager.isDatabaseLoaded = function() {
     this.processElementNotetags2($dataStates);
     MageStudios._loaded_MSEP_ElementCore = true;
   }
-  
+
   return true;
 };
 
-DataManager.processElementNotetagsSys = function(group) {
+DataManager.processElementNotetagsSys = function (group) {
   MageStudios.ElementIdRef = {};
   for (var i = 1; i < group.elements.length; ++i) {
     var name = group.elements[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
+    name = name.replace(/\\I\[(\d+)\]/gi, "");
     MageStudios.ElementIdRef[name] = i;
   }
 };
 
-DataManager.processElementNotetags1 = function(group) {
+DataManager.processElementNotetags1 = function (group) {
   var noteA1 = /<MULTIPLE ELEMENTS:[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var noteA2 = /<MULTIPLE ELEMENTS:[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   var noteA3 = /<MULTIPLE ELEMENTS:[ ](.*)>/i;
@@ -263,15 +250,17 @@ DataManager.processElementNotetags1 = function(group) {
       } else if (line.match(/<MULTI-ELEMENT RULE:[ ](.*)>/i)) {
         obj.elementMultiRule = String(RegExp.$1);
       } else if (line.match(noteA1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.multipleElements = obj.multipleElements.concat(array);
       } else if (line.match(noteA2)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.multipleElements = obj.multipleElements.concat(range);
       } else if (line.match(noteA3)) {
         var text = String(RegExp.$1);
-        var array = text.split(',');
+        var array = text.split(",");
         var length = array.length;
         for (var j = 0; j < length; ++j) {
           var name = array[j].toUpperCase().trim();
@@ -287,7 +276,7 @@ DataManager.processElementNotetags1 = function(group) {
   }
 };
 
-DataManager.processElementNotetags2 = function(group) {
+DataManager.processElementNotetags2 = function (group) {
   var noteA1 = /<(?:ELEMENT ABSORB):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   var noteB1 = /<(?:ELEMENT REFLECT)[ ](\d+):[ ]([\+\-]\d+)([%％])>/i;
   var noteB2 = /<(?:ELEMENT REFLECT)[ ](.*):[ ]([\+\-]\d+)([%％])>/i;
@@ -313,15 +302,17 @@ DataManager.processElementNotetags2 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:ELEMENT ABSORB):[ ]*(\d+(?:\s*,\s*\d+)*)>/i)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.elementAbsorb = obj.elementAbsorb.concat(array);
       } else if (line.match(noteA1)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.elementAbsorb = obj.elementAbsorb.concat(range);
       } else if (line.match(/<(?:ELEMENT ABSORB):[ ](.*)>/i)) {
         var text = String(RegExp.$1);
-        var array = text.split(',');
+        var array = text.split(",");
         var length = array.length;
         for (var j = 0; j < length; ++j) {
           var name = array[j].toUpperCase().trim();
@@ -392,36 +383,33 @@ DataManager.processElementNotetags2 = function(group) {
   }
 };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.Ele.BattleManager_processActionSequence =
+  MageStudios.Ele.BattleManager_processActionSequence =
     BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  // ADD ELEMENT: X
-  if (actionName === 'ADD ELEMENT') {
-    return this.actionAddElement(actionArgs);
-  }
-  // CLEAR ELEMENT
-  if (actionName === 'CLEAR ELEMENT') {
-    return this.actionClearElement();
-  }
-  // FORCE ELEMENT: X
-  if (actionName === 'FORCE ELEMENT') {
-    return this.actionForceElement(actionArgs);
-  }
-  // FORCE ELEMENT
-  if (actionName === 'NULL ELEMENT') {
-    return this.actionNullElement();
-  }
-  return MageStudios.Ele.BattleManager_processActionSequence.call(this,
-    actionName, actionArgs);
-};
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (actionName === "ADD ELEMENT") {
+      return this.actionAddElement(actionArgs);
+    }
 
-BattleManager.actionAddElement = function(actionArgs) {
+    if (actionName === "CLEAR ELEMENT") {
+      return this.actionClearElement();
+    }
+
+    if (actionName === "FORCE ELEMENT") {
+      return this.actionForceElement(actionArgs);
+    }
+
+    if (actionName === "NULL ELEMENT") {
+      return this.actionNullElement();
+    }
+    return MageStudios.Ele.BattleManager_processActionSequence.call(
+      this,
+      actionName,
+      actionArgs
+    );
+  };
+
+  BattleManager.actionAddElement = function (actionArgs) {
     if (!actionArgs) return;
     var array = [];
     var length = actionArgs.length;
@@ -435,15 +423,15 @@ BattleManager.actionAddElement = function(actionArgs) {
     }
     $gameTemp._addedElements = array;
     return true;
-};
+  };
 
-BattleManager.actionClearElement = function() {
+  BattleManager.actionClearElement = function () {
     $gameTemp._addedElements = undefined;
     $gameTemp._forcedElements = undefined;
     return true;
-};
+  };
 
-BattleManager.actionForceElement = function(actionArgs) {
+  BattleManager.actionForceElement = function (actionArgs) {
     if (!actionArgs) return;
     var array = [];
     var length = actionArgs.length;
@@ -457,22 +445,17 @@ BattleManager.actionForceElement = function(actionArgs) {
     }
     $gameTemp._forcedElements = array;
     return true;
-};
+  };
 
-BattleManager.actionNullElement = function() {
+  BattleManager.actionNullElement = function () {
     $gameTemp._forcedElements = [];
     return true;
-};
-
-}; // Imported.MSEP_BattleEngineCore
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
+  };
+}
 
 MageStudios.Ele.Game_BtlrBase_elementRate =
-    Game_BattlerBase.prototype.elementRate;
-Game_BattlerBase.prototype.elementRate = function(elementId) {
+  Game_BattlerBase.prototype.elementRate;
+Game_BattlerBase.prototype.elementRate = function (elementId) {
   var rate = this.forcedElementRate(elementId);
   if (rate !== undefined) return rate;
   var result = MageStudios.Ele.Game_BtlrBase_elementRate.call(this, elementId);
@@ -482,35 +465,40 @@ Game_BattlerBase.prototype.elementRate = function(elementId) {
   return result;
 };
 
-Game_BattlerBase.prototype.getObjElementReflectRate = function(obj, elementId) {
+Game_BattlerBase.prototype.getObjElementReflectRate = function (
+  obj,
+  elementId
+) {
   if (!obj) return 0;
   if (!obj.elementReflect) return 0;
   return obj.elementReflect[elementId] || 0;
 };
 
-Game_BattlerBase.prototype.getObjElementAmplifyRate = function(obj, elementId) {
+Game_BattlerBase.prototype.getObjElementAmplifyRate = function (
+  obj,
+  elementId
+) {
   if (!obj) return 0;
   if (!obj.elementAmplify) return 0;
   return obj.elementAmplify[elementId] || 0;
 };
 
-Game_BattlerBase.prototype.getObjElementMagnifyRate = function(obj, elementId) {
+Game_BattlerBase.prototype.getObjElementMagnifyRate = function (
+  obj,
+  elementId
+) {
   if (!obj) return 0;
   if (!obj.elementMagnify) return 0;
   return obj.elementMagnify[elementId] || 0;
 };
 
-Game_BattlerBase.prototype.getObjElementForcedRate = function(obj, elementId) {
+Game_BattlerBase.prototype.getObjElementForcedRate = function (obj, elementId) {
   if (!obj) return undefined;
   if (!obj.elementForcedRate) return undefined;
   return obj.elementForcedRate[elementId] || undefined;
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.isAbsorbElement = function(elementId) {
+Game_Battler.prototype.isAbsorbElement = function (elementId) {
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
     var state = this.states()[i];
@@ -521,7 +509,7 @@ Game_Battler.prototype.isAbsorbElement = function(elementId) {
   return false;
 };
 
-Game_Battler.prototype.elementReflectRate = function(elementId) {
+Game_Battler.prototype.elementReflectRate = function (elementId) {
   var rate = 0;
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
@@ -531,7 +519,7 @@ Game_Battler.prototype.elementReflectRate = function(elementId) {
   return rate;
 };
 
-Game_Battler.prototype.elementAmplifyRate = function(elementId) {
+Game_Battler.prototype.elementAmplifyRate = function (elementId) {
   var rate = 0;
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
@@ -541,7 +529,7 @@ Game_Battler.prototype.elementAmplifyRate = function(elementId) {
   return rate;
 };
 
-Game_Battler.prototype.elementMagnifyRate = function(elementId) {
+Game_Battler.prototype.elementMagnifyRate = function (elementId) {
   var rate = 1;
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
@@ -551,7 +539,7 @@ Game_Battler.prototype.elementMagnifyRate = function(elementId) {
   return rate;
 };
 
-Game_Battler.prototype.isNullElement = function() {
+Game_Battler.prototype.isNullElement = function () {
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
     var state = this.states()[i];
@@ -560,7 +548,7 @@ Game_Battler.prototype.isNullElement = function() {
   return false;
 };
 
-Game_Battler.prototype.forcedElementRate = function(elementId) {
+Game_Battler.prototype.forcedElementRate = function (elementId) {
   var length = this.states().length;
   for (var i = 0; i < length; ++i) {
     var state = this.states()[i];
@@ -570,11 +558,7 @@ Game_Battler.prototype.forcedElementRate = function(elementId) {
   return undefined;
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.isAbsorbElement = function(elementId) {
+Game_Actor.prototype.isAbsorbElement = function (elementId) {
   if (this.actor().elementAbsorb.contains(elementId)) return true;
   if (this.currentClass().elementAbsorb.contains(elementId)) return true;
   var length = this.equips().length;
@@ -587,7 +571,7 @@ Game_Actor.prototype.isAbsorbElement = function(elementId) {
   return Game_Battler.prototype.isAbsorbElement.call(this, elementId);
 };
 
-Game_Actor.prototype.elementReflectRate = function(elementId) {
+Game_Actor.prototype.elementReflectRate = function (elementId) {
   var rate = Game_Battler.prototype.elementReflectRate.call(this, elementId);
   var length = this.equips().length;
   for (var i = 0; i < length; ++i) {
@@ -599,7 +583,7 @@ Game_Actor.prototype.elementReflectRate = function(elementId) {
   return rate;
 };
 
-Game_Actor.prototype.elementAmplifyRate = function(elementId) {
+Game_Actor.prototype.elementAmplifyRate = function (elementId) {
   var rate = Game_Battler.prototype.elementAmplifyRate.call(this, elementId);
   var length = this.equips().length;
   for (var i = 0; i < length; ++i) {
@@ -611,7 +595,7 @@ Game_Actor.prototype.elementAmplifyRate = function(elementId) {
   return rate;
 };
 
-Game_Actor.prototype.elementMagnifyRate = function(elementId) {
+Game_Actor.prototype.elementMagnifyRate = function (elementId) {
   var rate = Game_Battler.prototype.elementMagnifyRate.call(this, elementId);
   var length = this.equips().length;
   for (var i = 0; i < length; ++i) {
@@ -623,7 +607,7 @@ Game_Actor.prototype.elementMagnifyRate = function(elementId) {
   return rate;
 };
 
-Game_Actor.prototype.isNullElement = function() {
+Game_Actor.prototype.isNullElement = function () {
   if (this.actor().elementNull) return true;
   if (this.currentClass().elementNull) return true;
   var length = this.equips().length;
@@ -634,7 +618,7 @@ Game_Actor.prototype.isNullElement = function() {
   return Game_Battler.prototype.isNullElement.call(this);
 };
 
-Game_Actor.prototype.forcedElementRate = function(elementId) {
+Game_Actor.prototype.forcedElementRate = function (elementId) {
   var rate = Game_Battler.prototype.forcedElementRate.call(this, elementId);
   if (rate !== undefined) return rate;
   var length = this.equips().length;
@@ -650,39 +634,35 @@ Game_Actor.prototype.forcedElementRate = function(elementId) {
   return undefined;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.isAbsorbElement = function(elementId) {
+Game_Enemy.prototype.isAbsorbElement = function (elementId) {
   if (this.enemy().elementAbsorb.contains(elementId)) return true;
   return Game_Battler.prototype.isAbsorbElement.call(this, elementId);
 };
 
-Game_Enemy.prototype.elementReflectRate = function(elementId) {
+Game_Enemy.prototype.elementReflectRate = function (elementId) {
   var rate = Game_Battler.prototype.elementReflectRate.call(this, elementId);
   rate += this.getObjElementReflectRate(this.enemy(), elementId);
   return rate;
 };
 
-Game_Enemy.prototype.elementAmplifyRate = function(elementId) {
+Game_Enemy.prototype.elementAmplifyRate = function (elementId) {
   var rate = Game_Battler.prototype.elementAmplifyRate.call(this, elementId);
   rate += this.getObjElementAmplifyRate(this.enemy(), elementId);
   return rate;
 };
 
-Game_Enemy.prototype.elementMagnifyRate = function(elementId) {
+Game_Enemy.prototype.elementMagnifyRate = function (elementId) {
   var rate = Game_Battler.prototype.elementMagnifyRate.call(this, elementId);
   rate += this.getObjElementMagnifyRate(this.enemy(), elementId);
   return rate;
 };
 
-Game_Enemy.prototype.isNullElement = function() {
+Game_Enemy.prototype.isNullElement = function () {
   if (this.enemy().elementNull) return true;
   return Game_Battler.prototype.isNullElement.call(this);
 };
 
-Game_Enemy.prototype.forcedElementRate = function(elementId) {
+Game_Enemy.prototype.forcedElementRate = function (elementId) {
   var rate = Game_Battler.prototype.forcedElementRate.call(this, elementId);
   if (rate !== undefined) return rate;
   rate = this.getObjElementForcedRate(this.enemy(), elementId);
@@ -690,11 +670,7 @@ Game_Enemy.prototype.forcedElementRate = function(elementId) {
   return undefined;
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.getItemElements = function() {
+Game_Action.prototype.getItemElements = function () {
   if ($gameTemp._forcedElements !== undefined) {
     return $gameTemp._forcedElements.filter(MageStudios.Util.onlyUnique);
   }
@@ -712,11 +688,11 @@ Game_Action.prototype.getItemElements = function() {
   return elements.filter(MageStudios.Util.onlyUnique);
 };
 
-Game_Action.prototype.calcElementRate = function(target) {
+Game_Action.prototype.calcElementRate = function (target) {
   if (!this.item()) return 1;
   var finalRate;
   var elements = this.getItemElements();
-  if (elements.length < 1) return 1.00;
+  if (elements.length < 1) return 1.0;
   var rule = this.item().elementMultiRule;
   var average = 0;
   while (elements.length > 0) {
@@ -726,41 +702,51 @@ Game_Action.prototype.calcElementRate = function(target) {
     var absorbed = eleRate < 0;
 
     eleRate += this.subject().elementAmplifyRate(elementId);
-    if (rule === 0) { // Lowest Rate
+    if (rule === 0) {
       finalRate = finalRate || eleRate;
       finalRate = Math.min(finalRate, eleRate);
-    } else if (rule === 1) { // Additive
-      finalRate = finalRate || 1.00;
-      eleRate -= 1.00;
+    } else if (rule === 1) {
+      finalRate = finalRate || 1.0;
+      eleRate -= 1.0;
       finalRate += eleRate;
-    } else if (rule === 2) { // Multiplicative
-      finalRate = finalRate || 1.00;
+    } else if (rule === 2) {
+      finalRate = finalRate || 1.0;
       finalRate *= Math.abs(eleRate);
       if (eleRate < 0) finalRate = Math.abs(finalRate) * -1;
-    } else if (rule === 3) { // Highest
+    } else if (rule === 3) {
       finalRate = finalRate || eleRate;
       finalRate = Math.max(finalRate, eleRate);
-    } else if (rule === 4) { // Average
+    } else if (rule === 4) {
       finalRate = finalRate || 0;
       finalRate += eleRate;
       average += 1;
     } else {
-      finalRate = this.calcElementRateRule(target, elementId, finalRate,
-        eleRate, rule);
+      finalRate = this.calcElementRateRule(
+        target,
+        elementId,
+        finalRate,
+        eleRate,
+        rule
+      );
     }
   }
   if (rule === 4) finalRate /= Math.max(1, average);
-  if (finalRate === undefined) finalRate = 1.00;
+  if (finalRate === undefined) finalRate = 1.0;
   return finalRate;
 };
 
-Game_Action.prototype.calcElementRateRule = function(target, elementId,
-finalRate, eleRate, rule) {
+Game_Action.prototype.calcElementRateRule = function (
+  target,
+  elementId,
+  finalRate,
+  eleRate,
+  rule
+) {
   return finalRate;
 };
 
 MageStudios.Ele.Game_Action_itemMrf = Game_Action.prototype.itemMrf;
-Game_Action.prototype.itemMrf = function(target) {
+Game_Action.prototype.itemMrf = function (target) {
   var rate = MageStudios.Ele.Game_Action_itemMrf.call(this, target);
   if (this.item().bypassElementReflect) return rate;
   var elements = this.getItemElements();
@@ -771,28 +757,20 @@ Game_Action.prototype.itemMrf = function(target) {
   return rate;
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.getRange = function(n, m) {
-    var result = [];
-    for (var i = n; i <= m; ++i) result.push(i);
-    return result;
+MageStudios.Util.getRange = function (n, m) {
+  var result = [];
+  for (var i = n; i <= m; ++i) result.push(i);
+  return result;
 };
 
 MageStudios.Util.extend = function (mainArray, otherArray) {
-    otherArray.forEach(function(i) {
-      mainArray.push(i)
-    }, this);
-}
-
-MageStudios.Util.onlyUnique = function(value, index, self) {
-    return self.indexOf(value) === index;
+  otherArray.forEach(function (i) {
+    mainArray.push(i);
+  }, this);
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+MageStudios.Util.onlyUnique = function (value, index, self) {
+  return self.indexOf(value) === index;
+};

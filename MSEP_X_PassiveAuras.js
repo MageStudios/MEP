@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Passive Aura Effects
-// MSEP_X_PassiveAuras.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_PassiveAuras = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Aura = MageStudios.Aura || {};
-MageStudios.Aura.version = 1.00;
+MageStudios.Aura.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_AutoPassiveStates.js) Add aura effects
  * to various database objects.
  * @author Mage Studios Engine Plugins
@@ -214,429 +208,426 @@ MageStudios.Aura.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_AutoPassiveStates) {
+  MageStudios.Aura.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.Aura.DataManager_isDatabaseLoaded.call(this)) return false;
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.Aura.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.Aura.DataManager_isDatabaseLoaded.call(this)) return false;
-
-  if (!MageStudios._loaded_MSEP_X_PassiveAuras) {
-    this.processAuraNotetags1($dataStates);
-    MageStudios._loaded_MSEP_X_PassiveAuras = true;
-  }
-  
-  return true;
-};
-
-MageStudios.Aura.Types = [
-  'friends', 'aliveFriends', 'deadFriends',
-  'opponents', 'aliveOpponents', 'deadOpponents',
-  'party', 'aliveParty', 'deadParty',
-  'troop', 'aliveTroop', 'deadTroop',
-  'all', 'aliveAll', 'deadAll'
-];
-
-DataManager.processAuraNotetags1 = function(group) {
-  var note1 = /<(.*)[ ](?:AURA|STATE AURA):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
-  var note2 = /<(.*)[ ](?:AURA|STATE AURA):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.aura = {};
-    for (a = 0; a < MageStudios.Aura.Types.length; ++a) {
-      obj.aura[MageStudios.Aura.Types[a]] = [];
+    if (!MageStudios._loaded_MSEP_X_PassiveAuras) {
+      this.processAuraNotetags1($dataStates);
+      MageStudios._loaded_MSEP_X_PassiveAuras = true;
     }
-    var evalMode = 'none';
-    obj.auraConditionEval = '';
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        var type = this.getNotetagAuraType(String(RegExp.$1));
-        var array = JSON.parse('[' + RegExp.$2.match(/\d+/g) + ']');
-        obj.aura[type] = obj.aura[type].concat(array);
-        MageStudios.Util.removeArrayElement(obj.aura[type], obj.id);
-      } else if (line.match(note2)) {
-        var type = this.getNotetagAuraType(String(RegExp.$1));
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$2),
-          parseInt(RegExp.$3));
-        obj.aura[type] = obj.aura[type].concat(range);
-        MageStudios.Util.removeArrayElement(obj.aura[type], obj.id);
-      } else if (line.match(/<(?:CUSTOM AURA CONDITION)>/i)) {
-        var evalMode = 'custom aura condition';
-      } else if (line.match(/<\/(?:CUSTOM AURA CONDITION)>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'custom aura condition') {
-        obj.auraConditionEval = obj.auraConditionEval + line + '\n';
+    return true;
+  };
+
+  MageStudios.Aura.Types = [
+    "friends",
+    "aliveFriends",
+    "deadFriends",
+    "opponents",
+    "aliveOpponents",
+    "deadOpponents",
+    "party",
+    "aliveParty",
+    "deadParty",
+    "troop",
+    "aliveTroop",
+    "deadTroop",
+    "all",
+    "aliveAll",
+    "deadAll",
+  ];
+
+  DataManager.processAuraNotetags1 = function (group) {
+    var note1 = /<(.*)[ ](?:AURA|STATE AURA):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
+    var note2 =
+      /<(.*)[ ](?:AURA|STATE AURA):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.aura = {};
+      for (a = 0; a < MageStudios.Aura.Types.length; ++a) {
+        obj.aura[MageStudios.Aura.Types[a]] = [];
+      }
+      var evalMode = "none";
+      obj.auraConditionEval = "";
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          var type = this.getNotetagAuraType(String(RegExp.$1));
+          var array = JSON.parse("[" + RegExp.$2.match(/\d+/g) + "]");
+          obj.aura[type] = obj.aura[type].concat(array);
+          MageStudios.Util.removeArrayElement(obj.aura[type], obj.id);
+        } else if (line.match(note2)) {
+          var type = this.getNotetagAuraType(String(RegExp.$1));
+          var range = MageStudios.Util.getRange(
+            parseInt(RegExp.$2),
+            parseInt(RegExp.$3)
+          );
+          obj.aura[type] = obj.aura[type].concat(range);
+          MageStudios.Util.removeArrayElement(obj.aura[type], obj.id);
+        } else if (line.match(/<(?:CUSTOM AURA CONDITION)>/i)) {
+          var evalMode = "custom aura condition";
+        } else if (line.match(/<\/(?:CUSTOM AURA CONDITION)>/i)) {
+          var evalMode = "none";
+        } else if (evalMode === "custom aura condition") {
+          obj.auraConditionEval = obj.auraConditionEval + line + "\n";
+        }
+      }
+
+      obj.auraConditionEval = new Function(
+        "condition",
+        "a",
+        "user",
+        "subject",
+        "b",
+        "target",
+        "s",
+        "v",
+        obj.auraConditionEval + "\nreturn condition;"
+      );
+    }
+  };
+
+  DataManager.getNotetagAuraType = function (str) {
+    switch (str.toUpperCase()) {
+      case "ALLY":
+      case "ALLIES":
+      case "FRIEND":
+      case "FRIENDS":
+      case "FRIENDLY":
+        return "friends";
+        break;
+
+      case "ALIVE ALLY":
+      case "ALIVE ALLIES":
+      case "ALIVE FRIEND":
+      case "ALIVE FRIENDS":
+      case "ALIVE FRIENDLY":
+        return "aliveFriends";
+        break;
+
+      case "DEAD ALLY":
+      case "DEAD ALLIES":
+      case "DEAD FRIEND":
+      case "DEAD FRIENDS":
+      case "DEAD FRIENDLY":
+        return "deadFriends";
+        break;
+
+      case "FOE":
+      case "FOES":
+      case "OPPONENT":
+      case "OPPONENTS":
+      case "OPPOSING":
+        return "opponents";
+        break;
+
+      case "ALIVE FOE":
+      case "ALIVE FOES":
+      case "ALIVE OPPONENT":
+      case "ALIVE OPPONENTS":
+      case "ALIVE OPPOSING":
+        return "aliveOpponents";
+        break;
+
+      case "DEAD FOE":
+      case "DEAD FOES":
+      case "DEAD OPPONENT":
+      case "DEAD OPPONENTS":
+      case "DEAD OPPOSING":
+        return "deadOpponents";
+        break;
+
+      case "ACTOR":
+      case "ACTORS":
+      case "PARTY":
+      case "PARTIES":
+        return "party";
+        break;
+
+      case "ALIVE ACTOR":
+      case "ALIVE ACTORS":
+      case "ALIVE PARTY":
+      case "ALIVE PARTIES":
+        return "aliveParty";
+        break;
+
+      case "DEAD ACTOR":
+      case "DEAD ACTORS":
+      case "DEAD PARTY":
+      case "DEAD PARTIES":
+        return "deadParty";
+        break;
+
+      case "ENEMY":
+      case "ENEMIES":
+      case "TROOP":
+      case "TROOPS":
+        return "troop";
+        break;
+
+      case "ALIVE ENEMY":
+      case "ALIVE ENEMIES":
+      case "ALIVE TROOP":
+      case "ALIVE TROOPS":
+        return "aliveTroop";
+        break;
+
+      case "DEAD ENEMY":
+      case "DEAD ENEMIES":
+      case "DEAD TROOP":
+      case "DEAD TROOPS":
+        return "deadTroop";
+        break;
+
+      default:
+        return "all";
+    }
+  };
+
+  DataManager.isAuraState = function (state) {
+    if (!state) return false;
+    if (!state.aura) return false;
+    var array = MageStudios.Aura.Types;
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      if (state.aura[array[i]].length > 0) return true;
+    }
+    return false;
+  };
+
+  BattleManager.refreshAllBattlers = function () {
+    var members = $gameParty.members().concat($gameTroop.members());
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) member.refresh();
+    }
+  };
+
+  MageStudios.Aura.Game_BattlerBase_passiveStatesRaw =
+    Game_BattlerBase.prototype.passiveStatesRaw;
+  Game_BattlerBase.prototype.passiveStatesRaw = function () {
+    var array = MageStudios.Aura.Game_BattlerBase_passiveStatesRaw.call(this);
+    if ($gameParty.inBattle()) {
+      array = array.concat(this.validAuraStateIds());
+    }
+    return array.filter(MageStudios.Util.onlyUnique);
+  };
+
+  Game_BattlerBase.prototype.checkAuraAlive = function () {
+    return this.hp > 0 && this.isAlive();
+  };
+
+  Game_BattlerBase.prototype.checkAuraDead = function () {
+    return this.hp <= 0 || this.isDead();
+  };
+
+  Game_BattlerBase.prototype.validAuraStateIds = function () {
+    var array = [];
+    var states = this.auraStateIds();
+    var length = states.length;
+    for (var i = 0; i < length; ++i) {
+      var stateId = states[i];
+      if (this.meetAuraStateCondition(stateId)) array.push(stateId);
+    }
+    return array;
+  };
+
+  Game_BattlerBase.prototype.auraStateIds = function () {
+    if ($gameTemp._isGatheringAuraData) return [];
+    var array = [];
+    var friends = this.friendsUnit();
+    var opponents = this.opponentsUnit();
+    $gameTemp._isGatheringAuraData = true;
+    array = array.concat(friends.auraStateTypeIds("all"));
+    array = array.concat(opponents.auraStateTypeIds("all"));
+    array = array.concat(friends.auraStateTypeIds("friends"));
+    array = array.concat(opponents.auraStateTypeIds("opponents"));
+    if (this.checkAuraAlive()) {
+      array = array.concat(friends.auraStateTypeIds("aliveAll"));
+      array = array.concat(opponents.auraStateTypeIds("aliveAll"));
+      array = array.concat(friends.auraStateTypeIds("aliveFriends"));
+      array = array.concat(opponents.auraStateTypeIds("aliveOpponents"));
+    } else if (this.checkAuraDead()) {
+      array = array.concat(friends.auraStateTypeIds("deadAll"));
+      array = array.concat(opponents.auraStateTypeIds("deadAll"));
+      array = array.concat(friends.auraStateTypeIds("deadFriends"));
+      array = array.concat(opponents.auraStateTypeIds("deadOpponents"));
+    }
+    $gameTemp._isGatheringAuraData = false;
+    return array;
+  };
+
+  Game_BattlerBase.prototype.getAuraStateTypeId = function (type) {
+    var array = [];
+    var states = this.states();
+    var length = states.length;
+    for (var i = 0; i < length; ++i) {
+      var state = states[i];
+      if (!state) continue;
+      if (!DataManager.isAuraState(state)) continue;
+      array = array.concat(state.aura[type]);
+    }
+    return array;
+  };
+
+  Game_BattlerBase.prototype.meetAuraStateCondition = function (stateId) {
+    this._checkAuraStateCondition = this._checkAuraStateCondition || [];
+    if (this._checkAuraStateCondition.contains(stateId)) return false;
+    var state = $dataStates[stateId];
+    if (!state) return false;
+    if (state.auraConditionEval === "") return true;
+    return this.auraStateConditionEval(state);
+  };
+
+  Game_BattlerBase.prototype.auraStateConditionEval = function (state) {
+    this._checkAuraStateCondition = this._checkAuraStateCondition || [];
+    this._checkAuraStateCondition.push(state.id);
+    var condition = true;
+    var a = this;
+    var user = this;
+    var subject = this;
+    var b = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    var code = state.auraConditionEval;
+    try {
+      condition = state.auraConditionEval.call(
+        this,
+        condition,
+        a,
+        user,
+        subject,
+        b,
+        target,
+        s,
+        v
+      );
+    } catch (e) {
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "PASSIVE AURA CUSTOM CONDITION ERROR"
+      );
+    }
+    var index = this._checkAuraStateCondition.indexOf(state.id);
+    this._checkAuraStateCondition.splice(index, 1);
+    return condition;
+  };
+
+  MageStudios.Aura.Game_BattlerBase_addNewState =
+    Game_BattlerBase.prototype.addNewState;
+  Game_BattlerBase.prototype.addNewState = function (stateId) {
+    MageStudios.Aura.Game_BattlerBase_addNewState.call(this, stateId);
+    this.updateAuras(stateId);
+  };
+
+  MageStudios.Aura.Game_BattlerBase_eraseState =
+    Game_BattlerBase.prototype.eraseState;
+  Game_BattlerBase.prototype.eraseState = function (stateId) {
+    MageStudios.Aura.Game_BattlerBase_eraseState.call(this, stateId);
+    this.updateAuras(stateId);
+  };
+
+  Game_BattlerBase.prototype.updateAuras = function (stateId) {
+    var state = $dataStates[stateId];
+    if (!state) return;
+    aura = state.aura;
+    if (aura.all.length + aura.friends.length > 0 || aura.party.length > 0) {
+      $gameParty.refreshMembers();
+    }
+    if (aura.all.length + aura.opponents.length > 0 || aura.troop.length > 0) {
+      $gameTroop.refreshMembers();
+    }
+  };
+
+  MageStudios.Aura.Game_Battler_onTurnEnd = Game_Battler.prototype.onTurnEnd;
+  Game_Battler.prototype.onTurnEnd = function () {
+    if ($gameParty.inBattle()) this.refresh();
+    MageStudios.Aura.Game_Battler_onTurnEnd.call(this);
+  };
+
+  Game_Actor.prototype.auraStateIds = function () {
+    if ($gameTemp._isGatheringAuraData) return [];
+    var array = Game_Battler.prototype.auraStateIds.call(this);
+    var friends = this.friendsUnit();
+    var opponents = this.opponentsUnit();
+    $gameTemp._isGatheringAuraData = true;
+    array = array.concat(friends.auraStateTypeIds("party"));
+    array = array.concat(opponents.auraStateTypeIds("party"));
+    if (this.checkAuraAlive()) {
+      array = array.concat(friends.auraStateTypeIds("aliveParty"));
+      array = array.concat(opponents.auraStateTypeIds("aliveParty"));
+    } else if (this.checkAuraDead()) {
+      array = array.concat(friends.auraStateTypeIds("deadParty"));
+      array = array.concat(opponents.auraStateTypeIds("deadParty"));
+    }
+    $gameTemp._isGatheringAuraData = false;
+    return array;
+  };
+
+  Game_Enemy.prototype.auraStateIds = function () {
+    if ($gameTemp._isGatheringAuraData) return [];
+    var array = Game_Battler.prototype.auraStateIds.call(this);
+    var friends = this.friendsUnit();
+    var opponents = this.opponentsUnit();
+    $gameTemp._isGatheringAuraData = true;
+    array = array.concat(friends.auraStateTypeIds("troop"));
+    array = array.concat(opponents.auraStateTypeIds("troop"));
+    if (this.checkAuraAlive()) {
+      array = array.concat(friends.auraStateTypeIds("aliveTroop"));
+      array = array.concat(opponents.auraStateTypeIds("aliveTroop"));
+    } else if (this.checkAuraDead()) {
+      array = array.concat(friends.auraStateTypeIds("deadTroop"));
+      array = array.concat(opponents.auraStateTypeIds("deadTroop"));
+    }
+    $gameTemp._isGatheringAuraData = false;
+    return array;
+  };
+
+  Game_Unit.prototype.allAliveMembers = function () {
+    return this.members().filter(function (member) {
+      return member.isAlive();
+    });
+  };
+
+  Game_Unit.prototype.auraStateTypeIds = function (type) {
+    var array = [];
+    var members = this.allAliveMembers();
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) {
+        array = array.concat(member.getAuraStateTypeId(type));
       }
     }
+    return array;
+  };
 
-    obj.auraConditionEval = new Function('condition','a','user','subject','b',
-      'target','s','v', obj.auraConditionEval + '\nreturn condition;');
-  }
-};
+  MageStudios.Util = MageStudios.Util || {};
 
-DataManager.getNotetagAuraType = function(str) {
-  switch (str.toUpperCase()) {
-  case 'ALLY':
-  case 'ALLIES':
-  case 'FRIEND':
-  case 'FRIENDS':
-  case 'FRIENDLY':
-    return 'friends';
-    break;
-
-  case 'ALIVE ALLY':
-  case 'ALIVE ALLIES':
-  case 'ALIVE FRIEND':
-  case 'ALIVE FRIENDS':
-  case 'ALIVE FRIENDLY':
-    return 'aliveFriends';
-    break;
-
-  case 'DEAD ALLY':
-  case 'DEAD ALLIES':
-  case 'DEAD FRIEND':
-  case 'DEAD FRIENDS':
-  case 'DEAD FRIENDLY':
-    return 'deadFriends';
-    break;
-
-  case 'FOE':
-  case 'FOES':
-  case 'OPPONENT':
-  case 'OPPONENTS':
-  case 'OPPOSING':
-    return 'opponents';
-    break;
-
-  case 'ALIVE FOE':
-  case 'ALIVE FOES':
-  case 'ALIVE OPPONENT':
-  case 'ALIVE OPPONENTS':
-  case 'ALIVE OPPOSING':
-    return 'aliveOpponents';
-    break;
-
-  case 'DEAD FOE':
-  case 'DEAD FOES':
-  case 'DEAD OPPONENT':
-  case 'DEAD OPPONENTS':
-  case 'DEAD OPPOSING':
-    return 'deadOpponents';
-    break;
-
-  case 'ACTOR':
-  case 'ACTORS':
-  case 'PARTY':
-  case 'PARTIES':
-    return 'party';
-    break;
-
-  case 'ALIVE ACTOR':
-  case 'ALIVE ACTORS':
-  case 'ALIVE PARTY':
-  case 'ALIVE PARTIES':
-    return 'aliveParty';
-    break;
-
-  case 'DEAD ACTOR':
-  case 'DEAD ACTORS':
-  case 'DEAD PARTY':
-  case 'DEAD PARTIES':
-    return 'deadParty';
-    break;
-
-  case 'ENEMY':
-  case 'ENEMIES':
-  case 'TROOP':
-  case 'TROOPS':
-    return 'troop';
-    break;
-
-  case 'ALIVE ENEMY':
-  case 'ALIVE ENEMIES':
-  case 'ALIVE TROOP':
-  case 'ALIVE TROOPS':
-    return 'aliveTroop';
-    break;
-
-  case 'DEAD ENEMY':
-  case 'DEAD ENEMIES':
-  case 'DEAD TROOP':
-  case 'DEAD TROOPS':
-    return 'deadTroop';
-    break;
-
-  default:
-    return 'all';
-  }
-};
-
-DataManager.isAuraState = function(state) {
-  if (!state) return false;
-  if (!state.aura) return false;
-  var array = MageStudios.Aura.Types;
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    if (state.aura[array[i]].length > 0) return true;
-  }
-  return false;
-};
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-BattleManager.refreshAllBattlers = function() {
-  var members = $gameParty.members().concat($gameTroop.members());
-  var length = members.length;
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) member.refresh();
-  }
-};
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.Aura.Game_BattlerBase_passiveStatesRaw =
-  Game_BattlerBase.prototype.passiveStatesRaw;
-Game_BattlerBase.prototype.passiveStatesRaw = function() {
-  var array = MageStudios.Aura.Game_BattlerBase_passiveStatesRaw.call(this);
-  if ($gameParty.inBattle()) {
-    array = array.concat(this.validAuraStateIds());
-  }
-  return array.filter(MageStudios.Util.onlyUnique);
-};
-
-Game_BattlerBase.prototype.checkAuraAlive = function() {
-  return this.hp > 0 && this.isAlive();
-};
-
-Game_BattlerBase.prototype.checkAuraDead = function() {
-  return this.hp <= 0 || this.isDead();
-};
-
-Game_BattlerBase.prototype.validAuraStateIds = function() {
-  var array = [];
-  var states = this.auraStateIds();
-  var length = states.length;
-  for (var i = 0; i < length; ++i) {
-    var stateId = states[i];
-    if (this.meetAuraStateCondition(stateId)) array.push(stateId);
-  }
-  return array;
-};
-
-Game_BattlerBase.prototype.auraStateIds = function() {
-  if ($gameTemp._isGatheringAuraData) return [];
-  var array = [];
-  var friends = this.friendsUnit();
-  var opponents = this.opponentsUnit();
-  $gameTemp._isGatheringAuraData = true;
-  array = array.concat(friends.auraStateTypeIds('all'));
-  array = array.concat(opponents.auraStateTypeIds('all'));
-  array = array.concat(friends.auraStateTypeIds('friends'));
-  array = array.concat(opponents.auraStateTypeIds('opponents'));
-  if (this.checkAuraAlive()) {
-    array = array.concat(friends.auraStateTypeIds('aliveAll'));
-    array = array.concat(opponents.auraStateTypeIds('aliveAll'));
-    array = array.concat(friends.auraStateTypeIds('aliveFriends'));
-    array = array.concat(opponents.auraStateTypeIds('aliveOpponents'));
-  } else if (this.checkAuraDead()) {
-    array = array.concat(friends.auraStateTypeIds('deadAll'));
-    array = array.concat(opponents.auraStateTypeIds('deadAll'));
-    array = array.concat(friends.auraStateTypeIds('deadFriends'));
-    array = array.concat(opponents.auraStateTypeIds('deadOpponents'));
-  }
-  $gameTemp._isGatheringAuraData = false;
-  return array;
-};
-
-Game_BattlerBase.prototype.getAuraStateTypeId = function(type) {
-  var array = [];
-  var states = this.states();
-  var length = states.length;
-  for (var i = 0; i < length; ++i) {
-    var state = states[i];
-    if (!state) continue;
-    if (!DataManager.isAuraState(state)) continue;
-    array = array.concat(state.aura[type]);
-  }
-  return array;
-};
-
-Game_BattlerBase.prototype.meetAuraStateCondition = function(stateId) {
-  this._checkAuraStateCondition = this._checkAuraStateCondition || [];
-  if (this._checkAuraStateCondition.contains(stateId)) return false;
-  var state = $dataStates[stateId];
-  if (!state) return false;
-  if (state.auraConditionEval === '') return true;
-  return this.auraStateConditionEval(state);
-};
-
-Game_BattlerBase.prototype.auraStateConditionEval = function(state) {
-  this._checkAuraStateCondition = this._checkAuraStateCondition || [];
-  this._checkAuraStateCondition.push(state.id);
-  var condition = true;
-  var a = this;
-  var user = this;
-  var subject = this;
-  var b = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  var code = state.auraConditionEval;
-  try {
-      condition = state.auraConditionEval.call(this, condition, a, user,
-        subject, b, target, s, v);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'PASSIVE AURA CUSTOM CONDITION ERROR');
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  var index = this._checkAuraStateCondition.indexOf(state.id);
-  this._checkAuraStateCondition.splice(index, 1);
-  return condition;
-};
+  };
 
-MageStudios.Aura.Game_BattlerBase_addNewState =
-  Game_BattlerBase.prototype.addNewState;
-Game_BattlerBase.prototype.addNewState = function(stateId) {
-  MageStudios.Aura.Game_BattlerBase_addNewState.call(this, stateId);
-  this.updateAuras(stateId);
-};
-
-MageStudios.Aura.Game_BattlerBase_eraseState =
-  Game_BattlerBase.prototype.eraseState;
-Game_BattlerBase.prototype.eraseState = function(stateId) {
-  MageStudios.Aura.Game_BattlerBase_eraseState.call(this, stateId);
-  this.updateAuras(stateId);
-};
-
-Game_BattlerBase.prototype.updateAuras = function(stateId) {
-  var state = $dataStates[stateId];
-  if (!state) return;
-  aura = state.aura;
-  if ((aura.all.length + aura.friends.length > 0) || aura.party.length > 0) {
-    $gameParty.refreshMembers();
-  }
-  if ((aura.all.length + aura.opponents.length > 0) || aura.troop.length > 0) {
-    $gameTroop.refreshMembers();
-  }
-};
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.Aura.Game_Battler_onTurnEnd = Game_Battler.prototype.onTurnEnd;
-Game_Battler.prototype.onTurnEnd = function() {
-  if ($gameParty.inBattle()) this.refresh();
-  MageStudios.Aura.Game_Battler_onTurnEnd.call(this);
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.auraStateIds = function() {
-  if ($gameTemp._isGatheringAuraData) return [];
-  var array = Game_Battler.prototype.auraStateIds.call(this);
-  var friends = this.friendsUnit();
-  var opponents = this.opponentsUnit();
-  $gameTemp._isGatheringAuraData = true;
-  array = array.concat(friends.auraStateTypeIds('party'));
-  array = array.concat(opponents.auraStateTypeIds('party'));
-  if (this.checkAuraAlive()) {
-    array = array.concat(friends.auraStateTypeIds('aliveParty'));
-    array = array.concat(opponents.auraStateTypeIds('aliveParty'));
-  } else if (this.checkAuraDead()) {
-    array = array.concat(friends.auraStateTypeIds('deadParty'));
-    array = array.concat(opponents.auraStateTypeIds('deadParty'));
-  }
-  $gameTemp._isGatheringAuraData = false;
-  return array;
-};
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.auraStateIds = function() {
-  if ($gameTemp._isGatheringAuraData) return [];
-  var array = Game_Battler.prototype.auraStateIds.call(this);
-  var friends = this.friendsUnit();
-  var opponents = this.opponentsUnit();
-  $gameTemp._isGatheringAuraData = true;
-  array = array.concat(friends.auraStateTypeIds('troop'));
-  array = array.concat(opponents.auraStateTypeIds('troop'));
-  if (this.checkAuraAlive()) {
-    array = array.concat(friends.auraStateTypeIds('aliveTroop'));
-    array = array.concat(opponents.auraStateTypeIds('aliveTroop'));
-  } else if (this.checkAuraDead()) {
-    array = array.concat(friends.auraStateTypeIds('deadTroop'));
-    array = array.concat(opponents.auraStateTypeIds('deadTroop'));
-  }
-  $gameTemp._isGatheringAuraData = false;
-  return array;
-};
-
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-Game_Unit.prototype.allAliveMembers = function() {
-  return this.members().filter(function(member) {
-      return member.isAlive();
-  });
-};
-
-Game_Unit.prototype.auraStateTypeIds = function(type) {
-  var array = [];
-  var members = this.allAliveMembers();
-  var length = members.length;
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) {
-      array = array.concat(member.getAuraStateTypeId(type));
+  MageStudios.Util.removeArrayElement = function (array, element) {
+    while (array.indexOf(element) >= 0) {
+      array.splice(array.indexOf(element), 1);
     }
-  }
-  return array;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
-  }
-};
-
-MageStudios.Util.removeArrayElement = function(array, element) {
-  while (array.indexOf(element) >= 0) {
-    array.splice(array.indexOf(element), 1);
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_AutoPassiveStates
+  };
+}

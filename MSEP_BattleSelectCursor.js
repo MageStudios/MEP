@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Select Cursor
-// MSEP_BattleSelectCursor.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_BattleSelectCursor = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BattleCursor = MageStudios.BattleCursor || {};
-MageStudios.BattleCursor.version = 1.00;
+MageStudios.BattleCursor.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Adds a cursor to battle when selecting allies and/or
  * enemies for targeting.
  * @author Mage Studios Engine Plugins
@@ -89,7 +83,7 @@ MageStudios.BattleCursor.version = 1.00;
  * the following format:
  *
  *      filename_WidthxHeight
- * 
+ *
  * Therefore, when using 'Crystal_Blue_4x2', it means there will be 4 frames
  * usable from left to right and 2 frames usable from top to bottom. It will
  * have a width of 4 frames and a height of 2.
@@ -128,28 +122,32 @@ MageStudios.BattleCursor.version = 1.00;
  *   - These notetags determine where the select cursor will appear on the
  *   actor or enemy when targeting them.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_BattleSelectCursor');
+MageStudios.Parameters = PluginManager.parameters("MSEP_BattleSelectCursor");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.BattleCursorAlly = String(MageStudios.Parameters['Ally Cursor']);
-MageStudios.Param.BattleCursorEnemy = String(MageStudios.Parameters['Enemy Cursor']);
-MageStudios.Param.BattleCursorAnchorX = String(MageStudios.Parameters['Anchor X']);
-MageStudios.Param.BattleCursorAnchorY = String(MageStudios.Parameters['Anchor Y']);
-MageStudios.Param.BattleCursorPosX = String(MageStudios.Parameters['Position X']);
-MageStudios.Param.BattleCursorPosY = String(MageStudios.Parameters['Position Y']);
+MageStudios.Param.BattleCursorAlly = String(
+  MageStudios.Parameters["Ally Cursor"]
+);
+MageStudios.Param.BattleCursorEnemy = String(
+  MageStudios.Parameters["Enemy Cursor"]
+);
+MageStudios.Param.BattleCursorAnchorX = String(
+  MageStudios.Parameters["Anchor X"]
+);
+MageStudios.Param.BattleCursorAnchorY = String(
+  MageStudios.Parameters["Anchor Y"]
+);
+MageStudios.Param.BattleCursorPosX = String(
+  MageStudios.Parameters["Position X"]
+);
+MageStudios.Param.BattleCursorPosY = String(
+  MageStudios.Parameters["Position Y"]
+);
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.BattleCursor.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+MageStudios.BattleCursor.DataManager_isDatabaseLoaded =
+  DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.BattleCursor.DataManager_isDatabaseLoaded.call(this)) {
     return false;
   }
@@ -159,11 +157,11 @@ DataManager.isDatabaseLoaded = function() {
     this.processBattleCursorNotetags1($dataEnemies, false);
     MageStudios.MSEP_BattleSelectCursor = true;
   }
-  
+
   return true;
 };
 
-DataManager.processBattleCursorNotetags1 = function(group, isActor) {
+DataManager.processBattleCursorNotetags1 = function (group, isActor) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -177,8 +175,8 @@ DataManager.processBattleCursorNotetags1 = function(group, isActor) {
       anchorX: MageStudios.Param.BattleCursorAnchorX,
       anchorY: MageStudios.Param.BattleCursorAnchorY,
       posX: MageStudios.Param.BattleCursorPosX,
-      posY: MageStudios.Param.BattleCursorPosY
-    }
+      posY: MageStudios.Param.BattleCursorPosY,
+    };
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -187,246 +185,218 @@ DataManager.processBattleCursorNotetags1 = function(group, isActor) {
       } else if (line.match(/<BATTLE SELECT CURSOR ANCHOR X:[ ](.*)>/i)) {
         var text = String(RegExp.$1);
         if (text.match(/LEFT/i)) {
-          obj.battleSelectCursorSettings.anchorX = 'left';
+          obj.battleSelectCursorSettings.anchorX = "left";
         } else if (text.match(/RIGHT/i)) {
-          obj.battleSelectCursorSettings.anchorX = 'right';
+          obj.battleSelectCursorSettings.anchorX = "right";
         } else {
-          obj.battleSelectCursorSettings.anchorX = 'center';
+          obj.battleSelectCursorSettings.anchorX = "center";
         }
       } else if (line.match(/<BATTLE SELECT CURSOR ANCHOR Y:[ ](.*)>/i)) {
         var text = String(RegExp.$1);
         if (text.match(/TOP/i)) {
-          obj.battleSelectCursorSettings.anchorY = 'top';
+          obj.battleSelectCursorSettings.anchorY = "top";
         } else if (text.match(/BOTTOM/i)) {
-          obj.battleSelectCursorSettings.anchorY = 'bottom';
+          obj.battleSelectCursorSettings.anchorY = "bottom";
         } else {
-          obj.battleSelectCursorSettings.anchorY = 'center';
+          obj.battleSelectCursorSettings.anchorY = "center";
         }
       } else if (line.match(/<BATTLE SELECT CURSOR POSITION X:[ ](.*)>/i)) {
         var text = String(RegExp.$1);
         if (text.match(/LEFT/i)) {
-          obj.battleSelectCursorSettings.posX = 'left';
+          obj.battleSelectCursorSettings.posX = "left";
         } else if (text.match(/RIGHT/i)) {
-          obj.battleSelectCursorSettings.posX = 'right';
+          obj.battleSelectCursorSettings.posX = "right";
         } else {
-          obj.battleSelectCursorSettings.posX = 'center';
+          obj.battleSelectCursorSettings.posX = "center";
         }
       } else if (line.match(/<BATTLE SELECT CURSOR POSITION Y:[ ](.*)>/i)) {
         var text = String(RegExp.$1);
         if (text.match(/TOP/i)) {
-          obj.battleSelectCursorSettings.posY = 'top';
+          obj.battleSelectCursorSettings.posY = "top";
         } else if (text.match(/BOTTOM/i)) {
-          obj.battleSelectCursorSettings.posY = 'bottom';
+          obj.battleSelectCursorSettings.posY = "bottom";
         } else {
-          obj.battleSelectCursorSettings.posY = 'center';
+          obj.battleSelectCursorSettings.posY = "center";
         }
       }
     }
   }
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.battleSelectCursor = function() {
-    return MageStudios.Param.BattleCursorEnemy;
+Game_Battler.prototype.battleSelectCursor = function () {
+  return MageStudios.Param.BattleCursorEnemy;
 };
 
-Game_Battler.prototype.battleSelectCursorSettings = function() {
-    return {
-      anchorX: MageStudios.Param.BattleCursorAnchorX,
-      anchorY: MageStudios.Param.BattleCursorAnchorY,
-      posX: MageStudios.Param.BattleCursorPosX,
-      posY: MageStudios.Param.BattleCursorPosY
-    }
+Game_Battler.prototype.battleSelectCursorSettings = function () {
+  return {
+    anchorX: MageStudios.Param.BattleCursorAnchorX,
+    anchorY: MageStudios.Param.BattleCursorAnchorY,
+    posX: MageStudios.Param.BattleCursorPosX,
+    posY: MageStudios.Param.BattleCursorPosY,
+  };
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.battleSelectCursor = function() {
-    return this.actor().battleSelectCursor;
+Game_Actor.prototype.battleSelectCursor = function () {
+  return this.actor().battleSelectCursor;
 };
 
-Game_Actor.prototype.battleSelectCursorSettings = function() {
-    return this.actor().battleSelectCursorSettings;
+Game_Actor.prototype.battleSelectCursorSettings = function () {
+  return this.actor().battleSelectCursorSettings;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.battleSelectCursor = function() {
-    return this.enemy().battleSelectCursor;
+Game_Enemy.prototype.battleSelectCursor = function () {
+  return this.enemy().battleSelectCursor;
 };
 
-Game_Enemy.prototype.battleSelectCursorSettings = function() {
-    return this.enemy().battleSelectCursorSettings;
+Game_Enemy.prototype.battleSelectCursorSettings = function () {
+  return this.enemy().battleSelectCursorSettings;
 };
 
-//=============================================================================
-// Sprite_Battler
-//=============================================================================
-
-Sprite_Battler.prototype.createBattleSelectCursor = function() {
-    this._battleSelectCursorSprite = new Sprite_BattleSelectCursor();
-    this.addChild(this._battleSelectCursorSprite);
+Sprite_Battler.prototype.createBattleSelectCursor = function () {
+  this._battleSelectCursorSprite = new Sprite_BattleSelectCursor();
+  this.addChild(this._battleSelectCursorSprite);
 };
 
 MageStudios.BattleCursor.Sprite_Battler_setBattler =
-    Sprite_Battler.prototype.setBattler;
-Sprite_Battler.prototype.setBattler = function(battler) {
-    MageStudios.BattleCursor.Sprite_Battler_setBattler.call(this, battler);
-    if (this._battleSelectCursorSprite) {
-      this._battleSelectCursorSprite.setBattler(battler);
-    }
+  Sprite_Battler.prototype.setBattler;
+Sprite_Battler.prototype.setBattler = function (battler) {
+  MageStudios.BattleCursor.Sprite_Battler_setBattler.call(this, battler);
+  if (this._battleSelectCursorSprite) {
+    this._battleSelectCursorSprite.setBattler(battler);
+  }
 };
 
 MageStudios.BattleCursor.Sprite_Battler_updateMain =
   Sprite_Battler.prototype.updateMain;
-Sprite_Battler.prototype.updateMain = function() {
+Sprite_Battler.prototype.updateMain = function () {
   MageStudios.BattleCursor.Sprite_Battler_updateMain.call(this);
   if (this._battleSelectCursorSprite) this.updateBattleCursorPriority();
 };
 
-Sprite_Battler.prototype.updateBattleCursorPriority = function() {
+Sprite_Battler.prototype.updateBattleCursorPriority = function () {
   this.removeChild(this._battleSelectCursorSprite);
   this.addChild(this._battleSelectCursorSprite);
 };
 
-//=============================================================================
-// Sprite_Actor
-//=============================================================================
-
-MageStudios.BattleCursor.Sprite_Actor_initMembers = 
-    Sprite_Actor.prototype.initMembers;
-Sprite_Actor.prototype.initMembers = function() {
-    MageStudios.BattleCursor.Sprite_Actor_initMembers.call(this);
-    this.createBattleSelectCursor();
+MageStudios.BattleCursor.Sprite_Actor_initMembers =
+  Sprite_Actor.prototype.initMembers;
+Sprite_Actor.prototype.initMembers = function () {
+  MageStudios.BattleCursor.Sprite_Actor_initMembers.call(this);
+  this.createBattleSelectCursor();
 };
-
-//=============================================================================
-// Sprite_Enemy
-//=============================================================================
 
 MageStudios.BattleCursor.Sprite_Enemy_initMembers =
-    Sprite_Enemy.prototype.initMembers;
-Sprite_Enemy.prototype.initMembers = function() {
-    MageStudios.BattleCursor.Sprite_Enemy_initMembers.call(this);
-    this.createBattleSelectCursor();
+  Sprite_Enemy.prototype.initMembers;
+Sprite_Enemy.prototype.initMembers = function () {
+  MageStudios.BattleCursor.Sprite_Enemy_initMembers.call(this);
+  this.createBattleSelectCursor();
 };
 
-//=============================================================================
-// Sprite_BattleSelectCursor
-//=============================================================================
-
 function Sprite_BattleSelectCursor() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Sprite_BattleSelectCursor.prototype = Object.create(Sprite_Base.prototype);
 Sprite_BattleSelectCursor.prototype.constructor = Sprite_BattleSelectCursor;
 
-Sprite_BattleSelectCursor.prototype.initialize = function() {
-    Sprite_Base.prototype.initialize.call(this);
-    this._index = 0;
-    this._frameUpdateCount = 10;
-    this.opacity = 0;
+Sprite_BattleSelectCursor.prototype.initialize = function () {
+  Sprite_Base.prototype.initialize.call(this);
+  this._index = 0;
+  this._frameUpdateCount = 10;
+  this.opacity = 0;
 };
 
-Sprite_BattleSelectCursor.prototype.setBattler = function(battler) {
-    if (battler === this._battler) return;
-    this._battler = battler;
-    if (battler) {
-      this._settings = battler.battleSelectCursorSettings();
-      this.updateAnchor();
-      this.loadBitmap();
-    } else {
-      this._settings = undefined;
-    }
+Sprite_BattleSelectCursor.prototype.setBattler = function (battler) {
+  if (battler === this._battler) return;
+  this._battler = battler;
+  if (battler) {
+    this._settings = battler.battleSelectCursorSettings();
+    this.updateAnchor();
+    this.loadBitmap();
+  } else {
+    this._settings = undefined;
+  }
 };
 
-Sprite_BattleSelectCursor.prototype.updateAnchor = function() {
-    if (this._settings.anchorX === 'left') {
-      this.anchor.x = 0;
-    } else if (this._settings.anchorX === 'right') {
-      this.anchor.x = 1;
-    } else {
-      this.anchor.x = 0.5;
-    }
-    if (this._settings.anchorY === 'top') {
-      this.anchor.y = 0;
-    } else if (this._settings.anchorY === 'bottom') {
-      this.anchor.y = 1;
-    } else {
-      this.anchor.y = 0.5;
-    }
+Sprite_BattleSelectCursor.prototype.updateAnchor = function () {
+  if (this._settings.anchorX === "left") {
+    this.anchor.x = 0;
+  } else if (this._settings.anchorX === "right") {
+    this.anchor.x = 1;
+  } else {
+    this.anchor.x = 0.5;
+  }
+  if (this._settings.anchorY === "top") {
+    this.anchor.y = 0;
+  } else if (this._settings.anchorY === "bottom") {
+    this.anchor.y = 1;
+  } else {
+    this.anchor.y = 0.5;
+  }
 };
 
-Sprite_BattleSelectCursor.prototype.loadBitmap = function() {
-    if (!this._battler) return;
-    var filename = this._battler.battleSelectCursor();
-    this.bitmap = ImageManager.loadPicture(filename);
-    this.createBitmap(filename);
+Sprite_BattleSelectCursor.prototype.loadBitmap = function () {
+  if (!this._battler) return;
+  var filename = this._battler.battleSelectCursor();
+  this.bitmap = ImageManager.loadPicture(filename);
+  this.createBitmap(filename);
 };
 
-Sprite_BattleSelectCursor.prototype.createBitmap = function(filename) {
-    if (this.bitmap.width <= 0) {
-      return setTimeout(this.createBitmap.bind(this, filename), 10);
-    }
-    if (filename.match(/(\d+)x(\d+)/i)) {
-      this._frameCols = Math.max(1, parseInt(RegExp.$1));
-      this._frameRows = Math.max(1, parseInt(RegExp.$2));
-    } else {
-      this._frameCols = 1;
-      this._frameRows = 1;
-    }
-    this._maxCount = this._frameRows * this._frameCols;
-    this.setFrame(0, 0, 0, 0);
+Sprite_BattleSelectCursor.prototype.createBitmap = function (filename) {
+  if (this.bitmap.width <= 0) {
+    return setTimeout(this.createBitmap.bind(this, filename), 10);
+  }
+  if (filename.match(/(\d+)x(\d+)/i)) {
+    this._frameCols = Math.max(1, parseInt(RegExp.$1));
+    this._frameRows = Math.max(1, parseInt(RegExp.$2));
+  } else {
+    this._frameCols = 1;
+    this._frameRows = 1;
+  }
+  this._maxCount = this._frameRows * this._frameCols;
+  this.setFrame(0, 0, 0, 0);
 };
 
-Sprite_BattleSelectCursor.prototype.update = function() {
-    Sprite_Base.prototype.update.call(this);
-    if (this._battler) {
-      this.updateScale();
-      this.updatePosition();
-    }
-    if (this._frameRows) this.updateFrame();
+Sprite_BattleSelectCursor.prototype.update = function () {
+  Sprite_Base.prototype.update.call(this);
+  if (this._battler) {
+    this.updateScale();
+    this.updatePosition();
+  }
+  if (this._frameRows) this.updateFrame();
 };
 
-Sprite_BattleSelectCursor.prototype.updateScale = function() {
-    this.scale.x = 1 / this.parent.scale.x;
-    this.scale.y = 1 / this.parent.scale.y;
+Sprite_BattleSelectCursor.prototype.updateScale = function () {
+  this.scale.x = 1 / this.parent.scale.x;
+  this.scale.y = 1 / this.parent.scale.y;
 };
 
-Sprite_BattleSelectCursor.prototype.updatePosition = function() {
-    if (Imported.MSEP_BattleEngineCore) {
-      var width = this._battler.spriteWidth();
-      var height = this._battler.spriteHeight();
-    } else {
-      var width = this.parent.width;
-      var height = this.parent.height;
-    }
-    if (this._settings.posX === 'left') {
-      this.x = width / -2;
-    } else if (this._settings.posX === 'right') {
-      this.x = width / 2;
-    } else {
-      this.x = 0;
-    }
-    if (this._settings.posY === 'top') {
-      this.y = height * -1;
-    } else if (this._settings.posY === 'bottom') {
-      this.y = 0;
-    } else {
-      this.y = height / -2;
-    }
+Sprite_BattleSelectCursor.prototype.updatePosition = function () {
+  if (Imported.MSEP_BattleEngineCore) {
+    var width = this._battler.spriteWidth();
+    var height = this._battler.spriteHeight();
+  } else {
+    var width = this.parent.width;
+    var height = this.parent.height;
+  }
+  if (this._settings.posX === "left") {
+    this.x = width / -2;
+  } else if (this._settings.posX === "right") {
+    this.x = width / 2;
+  } else {
+    this.x = 0;
+  }
+  if (this._settings.posY === "top") {
+    this.y = height * -1;
+  } else if (this._settings.posY === "bottom") {
+    this.y = 0;
+  } else {
+    this.y = height / -2;
+  }
 };
 
-Sprite_BattleSelectCursor.prototype.updateFrame = function() {
-  --this._frameUpdateCount
+Sprite_BattleSelectCursor.prototype.updateFrame = function () {
+  --this._frameUpdateCount;
   if (this._frameUpdateCount === 0) {
     this._frameUpdateCount = 10;
     this._index += 1;
@@ -435,7 +405,7 @@ Sprite_BattleSelectCursor.prototype.updateFrame = function() {
   if (this._battler && this._battler.isSelected()) {
     var pw = this.bitmap.width / this._frameCols;
     var ph = this.bitmap.height / this._frameRows;
-    var sx = this._index % this._frameCols * pw;
+    var sx = (this._index % this._frameCols) * pw;
     var sy = Math.floor(this._index / this._frameCols) * ph;
     if (!this._initialLoad) {
       this.opacity = 255;
@@ -446,7 +416,3 @@ Sprite_BattleSelectCursor.prototype.updateFrame = function() {
     this.setFrame(0, 0, 0, 0);
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

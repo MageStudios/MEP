@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Lunatic Pack - Skill Rewards
-// MSEP_Z_SkillRewards.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_Z_SkillRewards = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunSkRew = MageStudios.LunSkRew || {};
-MageStudios.LunSkRew.version = 1.00;
+MageStudios.LunSkRew.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Lunatic Pack) Add a variety of effects to your items and
  * skills to reward the player for good (or bad) gameplay.
  * @author Mage Studios Engine Plugins
@@ -256,9 +250,9 @@ MageStudios.LunSkRew.version = 1.00;
  *
  * ---
  *
- * // ----------
- * // Flat Gains
- * // ----------
+ * 
+ * 
+ * 
  * if (data.match(/([\+\-]\d+)[ ]HP/i)) {
  *   value = parseInt(RegExp.$1);
  *   user.gainHp(value);
@@ -271,9 +265,9 @@ MageStudios.LunSkRew.version = 1.00;
  *
  * ...
  *
- * // -------------------------------
- * // Add new effects above this line
- * // -------------------------------
+ * 
+ * 
+ * 
  * } else {
  *   skip = true;
  * }
@@ -350,7 +344,7 @@ MageStudios.LunSkRew.version = 1.00;
  * @type note
  * @desc LUNATIC MODE: This is the code used for each of the notetag
  * effects. Refer to the help file for variables used here.
- * @default "// ----------\n// Flat Gains\n// ----------\nif (data.match(/([\\+\\-]\\d+)[ ]HP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainHp(value);\n  animation = animation || hpAnimation;\n\n} else if (data.match(/([\\+\\-]\\d+)[ ]MP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainMp(value);\n  animation = animation || mpAnimation;\n\n} else if (data.match(/([\\+\\-]\\d+)[ ]TP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainTp(value);\n  animation = animation || tpAnimation;\n\n// ----------------\n// Percentile Gains\n// ----------------\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]HP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.mhp * rate);\n  user.gainHp(value);\n  animation = animation || hpAnimation;\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]MP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.mmp * rate);\n  user.gainMp(value);\n  animation = animation || mpAnimation;\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]TP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.maxTp() * rate);\n  user.gainTp(value);\n  animation = animation || tpAnimation;\n\n// ------------------\n// Refund Skill Costs\n// ------------------\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]REFUND HP COST/i)) {\n  if (isSkill) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    value = Math.round(user.skillHpCost(skill) * rate);\n    user.gainHp(value);\n    animation = animation || hpAnimation;\n  } else {\n    skip = true;\n  }\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]REFUND MP COST/i)) {\n  if (isSkill) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    value = Math.round(user.skillMpCost(skill) * rate);\n    user.gainMp(value);\n    animation = animation || mpAnimation;\n  } else {\n    skip = true;\n  }\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]REFUND TP COST/i)) {\n  if (isSkill) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    value = Math.round(user.skillTpCost(skill) * rate);\n    user.gainTp(value);\n    animation = animation || tpAnimation;\n  } else {\n    skip = true;\n  }\n\n// -----------\n// Refund Item\n// -----------\n} else if (data.match(/(\\d+)([%％])[ ]REFUND ITEM/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  if (isItem && Math.random() < chance) {\n    $gameParty.gainItem(item, 1);\n    SoundManager.playUseItem();\n    animation = animation || itemAnimation;\n  } else {\n    skip = true;\n  }\n\n// ------------------------\n// Add/Remove Buffs/Debuffs\n// ------------------------\n} else if (data.match(/ADD[ ](.*)[ ]BUFF,[ ](\\d+)[ ]TURN/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var turns = parseInt(RegExp.$2);\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.addBuff(paramId, turns);\n  } else {\n    skip = true;\n  }\n  animation = animation || buffAnimation;\n\n} else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var turns = 5;\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.addBuff(paramId, turns);\n  } else {\n    skip = true;\n  }\n  animation = animation || buffAnimation;\n\n} else if (data.match(/ADD[ ](.*)[ ]DEBUFF,[ ](\\d+)[ ]TURN/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var turns = parseInt(RegExp.$2);\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.addDebuff(paramId, turns);\n  } else {\n    skip = true;\n  }\n  animation = animation || debuffAnimation;\n\n} else if (data.match(/ADD[ ](.*)[ ]DEBUFF/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var turns = 5;\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.addDebuff(paramId, turns);\n  } else {\n    skip = true;\n  }\n  animation = animation || debuffAnimation;\n\n} else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.removeBuff(paramId);\n  } else {\n    skip = true;\n  }\n  animation = animation || miscAnimation;\n\n// -----------------\n// Add/Remove States\n// -----------------\n} else if (data.match(/ADD STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  user.addState(stateId);\n  animation = animation || addStateAnimation;\n\n} else if (data.match(/REMOVE STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  if (user.isStateAffected(stateId)) {\n    user.removeState(stateId);\n    animation = animation || removeStateAnimation;\n  } else {\n    skip = true;\n  }\n\n// ----------------\n// Rolling Critical\n// ----------------\n} else if (data.match(/ROLLING CRITICAL[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (isSkill) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    user._rollingCritical = user._rollingCritical || {};\n    user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;\n    user._rollingCritical[skill.id] += rate;\n  } else {\n    skip = true;\n  }\n\n} else if (data.match(/ROLLING CRITICAL[ ](\\d+)([%％])/i)) {\n  if (isSkill) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    user._rollingCritical = user._rollingCritical || {};\n    user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;\n    user._rollingCritical[skill.id] = rate;\n  } else {\n    skip = true;\n  }\n\n// -------------------------------\n// Add new effects above this line\n// -------------------------------\n} else {\n  skip = true;\n}"
+ * @default "
  *
  * @param Weakness Rate
  * @parent ---General---
@@ -428,514 +422,458 @@ MageStudios.LunSkRew.version = 1.00;
  * @default 97
  *
  */
-//=============================================================================
 
-MageStudios.PluginRequirements = function() {
-  return Imported.MSEP_BattleEngineCore &&
-         Imported.MSEP_SkillCore;
+MageStudios.PluginRequirements = function () {
+  return Imported.MSEP_BattleEngineCore && Imported.MSEP_SkillCore;
 };
 
 if (MageStudios.PluginRequirements()) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_Z_SkillRewards");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.LunSkRewEffect = JSON.parse(
+    MageStudios.Parameters["Effect Code"]
+  );
+  MageStudios.Param.LunSkRewWeakness = Number(
+    MageStudios.Parameters["Weakness Rate"]
+  );
+  MageStudios.Param.LunSkRewResisted = Number(
+    MageStudios.Parameters["Resisted Rate"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_Z_SkillRewards');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.LunSkRewAniHp = Number(
+    MageStudios.Parameters["HP Animation"]
+  );
+  MageStudios.Param.LunSkRewAniMp = Number(
+    MageStudios.Parameters["MP Animation"]
+  );
+  MageStudios.Param.LunSkRewAniTp = Number(
+    MageStudios.Parameters["TP Animation"]
+  );
+  MageStudios.Param.LunSkRewAniItem = Number(
+    MageStudios.Parameters["Item Animation"]
+  );
+  MageStudios.Param.LunSkRewAniBuff = Number(
+    MageStudios.Parameters["Buff Animation"]
+  );
+  MageStudios.Param.LunSkRewAniDebuff = Number(
+    MageStudios.Parameters["Debuff Animation"]
+  );
+  MageStudios.Param.LunSkRewAniAddState = Number(
+    MageStudios.Parameters["Add State Animation"]
+  );
+  MageStudios.Param.LunSkRewAniRemoveState = Number(
+    MageStudios.Parameters["Remove State Animation"]
+  );
+  MageStudios.Param.LunSkRewAniMisc = Number(
+    MageStudios.Parameters["Misc Animation"]
+  );
 
-MageStudios.Param.LunSkRewEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
-MageStudios.Param.LunSkRewWeakness = Number(MageStudios.Parameters['Weakness Rate']);
-MageStudios.Param.LunSkRewResisted = Number(MageStudios.Parameters['Resisted Rate']);
+  MageStudios.LunSkRew.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.LunSkRew.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.LunSkRewAniHp = 
-  Number(MageStudios.Parameters['HP Animation']);
-MageStudios.Param.LunSkRewAniMp = 
-  Number(MageStudios.Parameters['MP Animation']);
-MageStudios.Param.LunSkRewAniTp = 
-  Number(MageStudios.Parameters['TP Animation']);
-MageStudios.Param.LunSkRewAniItem = 
-  Number(MageStudios.Parameters['Item Animation']);
-MageStudios.Param.LunSkRewAniBuff = 
-  Number(MageStudios.Parameters['Buff Animation']);
-MageStudios.Param.LunSkRewAniDebuff = 
-  Number(MageStudios.Parameters['Debuff Animation']);
-MageStudios.Param.LunSkRewAniAddState = 
-  Number(MageStudios.Parameters['Add State Animation']);
-MageStudios.Param.LunSkRewAniRemoveState = 
-  Number(MageStudios.Parameters['Remove State Animation']);
-MageStudios.Param.LunSkRewAniMisc = 
-  Number(MageStudios.Parameters['Misc Animation']);
+    if (!MageStudios._loaded_MSEP_Z_SkillRewards) {
+      this.processLunSkRewNotetags1($dataSkills);
+      this.processLunSkRewNotetags1($dataItems);
+      MageStudios._loaded_MSEP_Z_SkillRewards = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.LunSkRew.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.LunSkRew.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processLunSkRewNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_Z_SkillRewards) {
-    this.processLunSkRewNotetags1($dataSkills);
-    this.processLunSkRewNotetags1($dataItems);
-    MageStudios._loaded_MSEP_Z_SkillRewards = true;
-  }
-  
-  return true;
-};
+      obj.rewardAnimation = 0;
+      obj.criticalRewards = [];
+      obj.noncriticalRewards = [];
+      obj.defeatRewards = [];
+      obj.hitRewards = [];
+      obj.missedRewards = [];
+      obj.weaknessRewards = [];
+      obj.resistRewards = [];
+      obj.nulledRewards = [];
+      obj.absorbRewards = [];
 
-DataManager.processLunSkRewNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.rewardAnimation = 0;
-    obj.criticalRewards = [];
-    obj.noncriticalRewards = [];
-    obj.defeatRewards = [];
-    obj.hitRewards = [];
-    obj.missedRewards = [];
-    obj.weaknessRewards = [];
-    obj.resistRewards = [];
-    obj.nulledRewards = [];
-    obj.absorbRewards = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<REWARD[ ](?:ANI|ANIMATION):[ ](\d+)>/i)) {
-        obj.rewardAnimation = parseInt(RegExp.$1);
-      } else if (line.match(/<(.*)[ ](?:REWARD|REWARDS):[ ](.*)>/i)) {
-        var condition = String(RegExp.$1);
-        var data = String(RegExp.$2);
-        if (condition.match(/DEFEAT/i)) {
-          obj.defeatRewards.push(data);
-        } else if (condition.match(/NONCRITICAL/i)) {
-          obj.noncriticalRewards.push(data);
-        } else if (condition.match(/CRITICAL/i)) {
-          obj.criticalRewards.push(data);
-        } else if (condition.match(/HIT/i)) {
-          obj.hitRewards.push(data);
-        } else if (condition.match(/(?:MISSED|EVADE)/i)) {
-          obj.missedRewards.push(data);
-        } else if (condition.match(/WEAKNESS/i)) {
-          obj.weaknessRewards.push(data);
-        } else if (condition.match(/RESIST/i)) {
-          obj.resistRewards.push(data);
-        } else if (condition.match(/NULLED/i)) {
-          obj.nulledRewards.push(data);
-        } else if (condition.match(/ABSORB/i)) {
-          obj.absorbRewards.push(data);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<REWARD[ ](?:ANI|ANIMATION):[ ](\d+)>/i)) {
+          obj.rewardAnimation = parseInt(RegExp.$1);
+        } else if (line.match(/<(.*)[ ](?:REWARD|REWARDS):[ ](.*)>/i)) {
+          var condition = String(RegExp.$1);
+          var data = String(RegExp.$2);
+          if (condition.match(/DEFEAT/i)) {
+            obj.defeatRewards.push(data);
+          } else if (condition.match(/NONCRITICAL/i)) {
+            obj.noncriticalRewards.push(data);
+          } else if (condition.match(/CRITICAL/i)) {
+            obj.criticalRewards.push(data);
+          } else if (condition.match(/HIT/i)) {
+            obj.hitRewards.push(data);
+          } else if (condition.match(/(?:MISSED|EVADE)/i)) {
+            obj.missedRewards.push(data);
+          } else if (condition.match(/WEAKNESS/i)) {
+            obj.weaknessRewards.push(data);
+          } else if (condition.match(/RESIST/i)) {
+            obj.resistRewards.push(data);
+          } else if (condition.match(/NULLED/i)) {
+            obj.nulledRewards.push(data);
+          } else if (condition.match(/ABSORB/i)) {
+            obj.absorbRewards.push(data);
+          }
         }
       }
     }
-  }
-};
+  };
 
-DataManager.getParamId = function(str) {
-  switch (str.toUpperCase()) {
-  case 'HP':
-  case 'MAXHP':
-  case 'MAX HP':
-    return 0;
-    break;
-  case 'MP':
-  case 'MAXMP':
-  case 'MAX MP':
-  case 'SP':
-  case 'MAXSP':
-  case 'MAX SP':
-    return 1;
-    break;
-  case 'ATK':
-  case 'STR':
-    return 2;
-    break;
-  case 'DEF':
-    return 3;
-    break;
-  case 'MAT':
-  case 'INT':
-  case 'SPI':
-    return 4;
-    break;
-  case 'MDF':
-  case 'RES':
-    return 5;
-    break;
-  case 'AGI':
-  case 'SPD':
-    return 6;
-    break;
-  case 'LUK':
-    return 7;
-    break;
-  default:
-    return -1;
-    break;
-  }
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.LunSkRew.Game_Action_apply = Game_Action.prototype.apply;
-Game_Action.prototype.apply = function(target) {
-  var alive = target.hp > 0;
-  MageStudios.LunSkRew.Game_Action_apply.call(this, target);
-  var result = target.result();
-  if (alive) {
-    if (target.hp <= 0 || target.isDead()) {
-      this.processLunaticSkillReward(target, 'defeat');
+  DataManager.getParamId = function (str) {
+    switch (str.toUpperCase()) {
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
+        return 0;
+        break;
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
+        return 1;
+        break;
+      case "ATK":
+      case "STR":
+        return 2;
+        break;
+      case "DEF":
+        return 3;
+        break;
+      case "MAT":
+      case "INT":
+      case "SPI":
+        return 4;
+        break;
+      case "MDF":
+      case "RES":
+        return 5;
+        break;
+      case "AGI":
+      case "SPD":
+        return 6;
+        break;
+      case "LUK":
+        return 7;
+        break;
+      default:
+        return -1;
+        break;
     }
-  }
-  if (result.isHit()) {
-    this.processLunaticSkillReward(target, 'hit');
-    if (result.critical) {
-      this.processLunaticSkillReward(target, 'critical');
+  };
+
+  MageStudios.LunSkRew.Game_Action_apply = Game_Action.prototype.apply;
+  Game_Action.prototype.apply = function (target) {
+    var alive = target.hp > 0;
+    MageStudios.LunSkRew.Game_Action_apply.call(this, target);
+    var result = target.result();
+    if (alive) {
+      if (target.hp <= 0 || target.isDead()) {
+        this.processLunaticSkillReward(target, "defeat");
+      }
+    }
+    if (result.isHit()) {
+      this.processLunaticSkillReward(target, "hit");
+      if (result.critical) {
+        this.processLunaticSkillReward(target, "critical");
+      } else {
+        this.processLunaticSkillReward(target, "noncritical");
+      }
+      var rate = this.calcElementRate(target);
+      if (rate >= MageStudios.Param.LunSkRewWeakness) {
+        this.processLunaticSkillReward(target, "weakness");
+      } else if (rate < 0) {
+        this.processLunaticSkillReward(target, "absorb");
+      } else if (rate === 0) {
+        this.processLunaticSkillReward(target, "nulled");
+      } else if (rate <= MageStudios.Param.LunSkRewResisted) {
+        this.processLunaticSkillReward(target, "resist");
+      }
     } else {
-      this.processLunaticSkillReward(target, 'noncritical');
+      this.processLunaticSkillReward(target, "missed");
     }
-    var rate = this.calcElementRate(target);
-    if (rate >= MageStudios.Param.LunSkRewWeakness) {
-      this.processLunaticSkillReward(target, 'weakness');
-    } else if (rate < 0) {
-      this.processLunaticSkillReward(target, 'absorb');
-    } else if (rate === 0) {
-      this.processLunaticSkillReward(target, 'nulled');
-    } else if (rate <= MageStudios.Param.LunSkRewResisted) {
-      this.processLunaticSkillReward(target, 'resist');
+  };
+
+  MageStudios.LunSkRew.Game_Action_itemCri = Game_Action.prototype.itemCri;
+  Game_Action.prototype.itemCri = function (target) {
+    var cri = MageStudios.LunSkRew.Game_Action_itemCri.call(this, target);
+    var user = this.subject();
+    if (this.isSkill() && user && user._rollingCritical) {
+      user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
+      cri += user._rollingCritical[skill.id];
     }
-  } else {
-    this.processLunaticSkillReward(target, 'missed');
-  }
-};
+    return cri;
+  };
 
-MageStudios.LunSkRew.Game_Action_itemCri = Game_Action.prototype.itemCri;
-Game_Action.prototype.itemCri = function(target) {
-  var cri = MageStudios.LunSkRew.Game_Action_itemCri.call(this, target);
-  var user = this.subject();
-  if (this.isSkill() && user && user._rollingCritical) {
-    user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
-    cri += user._rollingCritical[skill.id];
-  }
-  return cri;
-};
+  Game_Action.prototype.processLunaticSkillReward = function (target, type) {
+    switch (type) {
+      case "defeat":
+        var dataInfo = this.item().defeatRewards;
+        break;
+      case "noncritical":
+        var dataInfo = this.item().noncriticalRewards;
+        break;
+      case "critical":
+        var dataInfo = this.item().criticalRewards;
+        break;
+      case "hit":
+        var dataInfo = this.item().hitRewards;
+        break;
+      case "missed":
+        var dataInfo = this.item().missedRewards;
+        break;
+      case "weakness":
+        var dataInfo = this.item().weaknessRewards;
+        break;
+      case "resist":
+        var dataInfo = this.item().resistRewards;
+        break;
+      case "nulled":
+        var dataInfo = this.item().nulledRewards;
+        break;
+      case "absorb":
+        var dataInfo = this.item().absorbRewards;
+        break;
+      default:
+        return;
+    }
+    var length = dataInfo.length;
+    for (var i = 0; i < length; ++i) {
+      var data = dataInfo[i];
+      this.lunaticSkillRewardEval(target, type, data);
+    }
+  };
 
-Game_Action.prototype.processLunaticSkillReward = function(target, type) {
-  switch (type) {
-  case 'defeat':
-    var dataInfo = this.item().defeatRewards;
-    break;
-  case 'noncritical':
-    var dataInfo = this.item().noncriticalRewards;
-    break;
-  case 'critical':
-    var dataInfo = this.item().criticalRewards;
-    break;
-  case 'hit':
-    var dataInfo = this.item().hitRewards;
-    break;
-  case 'missed':
-    var dataInfo = this.item().missedRewards;
-    break;
-  case 'weakness':
-    var dataInfo = this.item().weaknessRewards;
-    break;
-  case 'resist':
-    var dataInfo = this.item().resistRewards;
-    break;
-  case 'nulled':
-    var dataInfo = this.item().nulledRewards;
-    break;
-  case 'absorb':
-    var dataInfo = this.item().absorbRewards;
-    break;
-  default:
-    return;
-  }
-  var length = dataInfo.length;
-  for (var i = 0; i < length; ++i) {
-    var data = dataInfo[i];
-    this.lunaticSkillRewardEval(target, type, data);
-  }
-};
+  Game_Action.prototype.lunaticSkillRewardEval = function (target, type, data) {
+    var item = this.item();
+    var skill = this.item();
+    var isSkill = DataManager.isSkill(skill);
+    var isItem = DataManager.isSkill(item);
+    var user = this.subject();
+    var a = user;
+    var subject = user;
+    var b = target;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    var userPreviousResult = JsonEx.makeDeepCopy(user._result);
+    var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
+    var skip = false;
+    var value = 0;
+    var rate = 1;
 
-Game_Action.prototype.lunaticSkillRewardEval = function(target, type, data) {
-  var item = this.item();
-  var skill = this.item();
-  var isSkill = DataManager.isSkill(skill);
-  var isItem = DataManager.isSkill(item);
-  var user = this.subject();
-  var a = user;
-  var subject = user;
-  var b = target;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  var userPreviousResult = JsonEx.makeDeepCopy(user._result);
-  var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
-  var skip = false;
-  var value = 0;
-  var rate = 1;
+    var hpAnimation = MageStudios.Param.LunSkRewAniHp;
+    var mpAnimation = MageStudios.Param.LunSkRewAniMp;
+    var tpAnimation = MageStudios.Param.LunSkRewAniTp;
+    var itemAnimation = MageStudios.Param.LunSkRewAniItem;
+    var buffAnimation = MageStudios.Param.LunSkRewAniBuff;
+    var debuffAnimation = MageStudios.Param.LunSkRewAniDebuff;
+    var addStateAnimation = MageStudios.Param.LunSkRewAniAddState;
+    var removeStateAnimation = MageStudios.Param.LunSkRewAniRemoveState;
+    var miscAnimation = MageStudios.Param.LunSkRewAniMisc;
 
-  var hpAnimation = MageStudios.Param.LunSkRewAniHp;
-  var mpAnimation = MageStudios.Param.LunSkRewAniMp;
-  var tpAnimation = MageStudios.Param.LunSkRewAniTp;
-  var itemAnimation = MageStudios.Param.LunSkRewAniItem;
-  var buffAnimation = MageStudios.Param.LunSkRewAniBuff;
-  var debuffAnimation = MageStudios.Param.LunSkRewAniDebuff;
-  var addStateAnimation = MageStudios.Param.LunSkRewAniAddState;
-  var removeStateAnimation = MageStudios.Param.LunSkRewAniRemoveState;
-  var miscAnimation = MageStudios.Param.LunSkRewAniMisc;
+    var animation = this.item().rewardAnimation || 0;
 
-  var animation = this.item().rewardAnimation || 0;
+    var code = MageStudios.Param.LunSkRewEffect;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(e, code, "LUNATIC SKILL REWARDS ERROR");
+    }
 
-  var code = MageStudios.Param.LunSkRewEffect;
-  try {
-    eval(code)
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'LUNATIC SKILL REWARDS ERROR');
-  }
+    if (!skip) {
+      user.startDamagePopup();
+      if (animation > 0) {
+        user.startAnimation(animation);
+      }
+    }
 
-  if (!skip) {
-    user.startDamagePopup();
-    if (animation > 0) {
-      user.startAnimation(animation);
+    if (user.isDead()) user.performCollapse();
+    if (target.isDead()) target.performCollapse();
+    user._result = userPreviousResult;
+    target._result = targetPreviousResult;
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+
+  if (false) {
+    if (data.match(/([\+\-]\d+)[ ]HP/i)) {
+      value = parseInt(RegExp.$1);
+      user.gainHp(value);
+      animation = animation || hpAnimation;
+    } else if (data.match(/([\+\-]\d+)[ ]MP/i)) {
+      value = parseInt(RegExp.$1);
+      user.gainMp(value);
+      animation = animation || mpAnimation;
+    } else if (data.match(/([\+\-]\d+)[ ]TP/i)) {
+      value = parseInt(RegExp.$1);
+      user.gainTp(value);
+      animation = animation || tpAnimation;
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]HP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.mhp * rate);
+      user.gainHp(value);
+      animation = animation || hpAnimation;
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]MP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.mmp * rate);
+      user.gainMp(value);
+      animation = animation || mpAnimation;
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]TP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.maxTp() * rate);
+      user.gainTp(value);
+      animation = animation || tpAnimation;
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND HP COST/i)) {
+      if (isSkill) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        value = Math.round(user.skillHpCost(skill) * rate);
+        user.gainHp(value);
+        animation = animation || hpAnimation;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND MP COST/i)) {
+      if (isSkill) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        value = Math.round(user.skillMpCost(skill) * rate);
+        user.gainMp(value);
+        animation = animation || mpAnimation;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND TP COST/i)) {
+      if (isSkill) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        value = Math.round(user.skillTpCost(skill) * rate);
+        user.gainTp(value);
+        animation = animation || tpAnimation;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/(\d+)([%％])[ ]REFUND ITEM/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      if (isItem && Math.random() < chance) {
+        $gameParty.gainItem(item, 1);
+        SoundManager.playUseItem();
+        animation = animation || itemAnimation;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/ADD[ ](.*)[ ]BUFF,[ ](\d+)[ ]TURN/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var turns = parseInt(RegExp.$2);
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.addBuff(paramId, turns);
+      } else {
+        skip = true;
+      }
+      animation = animation || buffAnimation;
+    } else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var turns = 5;
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.addBuff(paramId, turns);
+      } else {
+        skip = true;
+      }
+      animation = animation || buffAnimation;
+    } else if (data.match(/ADD[ ](.*)[ ]DEBUFF,[ ](\d+)[ ]TURN/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var turns = parseInt(RegExp.$2);
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.addDebuff(paramId, turns);
+      } else {
+        skip = true;
+      }
+      animation = animation || debuffAnimation;
+    } else if (data.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var turns = 5;
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.addDebuff(paramId, turns);
+      } else {
+        skip = true;
+      }
+      animation = animation || debuffAnimation;
+    } else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.removeBuff(paramId);
+      } else {
+        skip = true;
+      }
+      animation = animation || miscAnimation;
+    } else if (data.match(/ADD STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      user.addState(stateId);
+      animation = animation || addStateAnimation;
+    } else if (data.match(/REMOVE STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      if (user.isStateAffected(stateId)) {
+        user.removeState(stateId);
+        animation = animation || removeStateAnimation;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/ROLLING CRITICAL[ ]([\+\-]\d+)([%％])/i)) {
+      if (isSkill) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        user._rollingCritical = user._rollingCritical || {};
+        user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
+        user._rollingCritical[skill.id] += rate;
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/ROLLING CRITICAL[ ](\d+)([%％])/i)) {
+      if (isSkill) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        user._rollingCritical = user._rollingCritical || {};
+        user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
+        user._rollingCritical[skill.id] = rate;
+      } else {
+        skip = true;
+      }
+    } else {
+      skip = true;
     }
   }
-  
-  if (user.isDead()) user.performCollapse();
-  if (target.isDead()) target.performCollapse();
-  user._result = userPreviousResult;
-  target._result = targetPreviousResult;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
-  }
-};
-
-//=============================================================================
-// Default Effect Code
-//=============================================================================
-
-if (false) {
-
-// ----------
-// Flat Gains
-// ----------
-if (data.match(/([\+\-]\d+)[ ]HP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainHp(value);
-  animation = animation || hpAnimation;
-
-} else if (data.match(/([\+\-]\d+)[ ]MP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainMp(value);
-  animation = animation || mpAnimation;
-
-} else if (data.match(/([\+\-]\d+)[ ]TP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainTp(value);
-  animation = animation || tpAnimation;
-
-// ----------------
-// Percentile Gains
-// ----------------
-} else if (data.match(/([\+\-]\d+)([%％])[ ]HP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.mhp * rate);
-  user.gainHp(value);
-  animation = animation || hpAnimation;
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]MP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.mmp * rate);
-  user.gainMp(value);
-  animation = animation || mpAnimation;
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]TP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.maxTp() * rate);
-  user.gainTp(value);
-  animation = animation || tpAnimation;
-
-// ------------------
-// Refund Skill Costs
-// ------------------
-} else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND HP COST/i)) {
-  if (isSkill) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    value = Math.round(user.skillHpCost(skill) * rate);
-    user.gainHp(value);
-    animation = animation || hpAnimation;
-  } else {
-    skip = true;
-  }
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND MP COST/i)) {
-  if (isSkill) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    value = Math.round(user.skillMpCost(skill) * rate);
-    user.gainMp(value);
-    animation = animation || mpAnimation;
-  } else {
-    skip = true;
-  }
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]REFUND TP COST/i)) {
-  if (isSkill) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    value = Math.round(user.skillTpCost(skill) * rate);
-    user.gainTp(value);
-    animation = animation || tpAnimation;
-  } else {
-    skip = true;
-  }
-
-// -----------
-// Refund Item
-// -----------
-} else if (data.match(/(\d+)([%％])[ ]REFUND ITEM/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  if (isItem && Math.random() < chance) {
-    $gameParty.gainItem(item, 1);
-    SoundManager.playUseItem();
-    animation = animation || itemAnimation;
-  } else {
-    skip = true;
-  }
-
-// ------------------------
-// Add/Remove Buffs/Debuffs
-// ------------------------
-} else if (data.match(/ADD[ ](.*)[ ]BUFF,[ ](\d+)[ ]TURN/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var turns = parseInt(RegExp.$2);
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.addBuff(paramId, turns);
-  } else {
-    skip = true;
-  }
-  animation = animation || buffAnimation;
-
-} else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var turns = 5;
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.addBuff(paramId, turns);
-  } else {
-    skip = true;
-  }
-  animation = animation || buffAnimation;
-
-} else if (data.match(/ADD[ ](.*)[ ]DEBUFF,[ ](\d+)[ ]TURN/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var turns = parseInt(RegExp.$2);
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.addDebuff(paramId, turns);
-  } else {
-    skip = true;
-  }
-  animation = animation || debuffAnimation;
-
-} else if (data.match(/ADD[ ](.*)[ ]DEBUFF/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var turns = 5;
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.addDebuff(paramId, turns);
-  } else {
-    skip = true;
-  }
-  animation = animation || debuffAnimation;
-
-} else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.removeBuff(paramId);
-  } else {
-    skip = true;
-  }
-  animation = animation || miscAnimation;
-
-// -----------------
-// Add/Remove States
-// -----------------
-} else if (data.match(/ADD STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  user.addState(stateId);
-  animation = animation || addStateAnimation;
-
-} else if (data.match(/REMOVE STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  if (user.isStateAffected(stateId)) {
-    user.removeState(stateId);
-    animation = animation || removeStateAnimation;
-  } else {
-    skip = true;
-  }
-
-// ----------------
-// Rolling Critical
-// ----------------
-} else if (data.match(/ROLLING CRITICAL[ ]([\+\-]\d+)([%％])/i)) {
-  if (isSkill) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    user._rollingCritical = user._rollingCritical || {};
-    user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
-    user._rollingCritical[skill.id] += rate;
-  } else {
-    skip = true;
-  }
-
-} else if (data.match(/ROLLING CRITICAL[ ](\d+)([%％])/i)) {
-  if (isSkill) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    user._rollingCritical = user._rollingCritical || {};
-    user._rollingCritical[skill.id] = user._rollingCritical[skill.id] || 0;
-    user._rollingCritical[skill.id] = rate;
-  } else {
-    skip = true;
-  }
-
-// -------------------------------
-// Add new effects above this line
-// -------------------------------
 } else {
-  skip = true;
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_Z_SkillRewards without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-
-}; // Default Effect Code
-
-//=============================================================================
-// End of File
-//=============================================================================
-} else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_Z_SkillRewards without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // MageStudios.PluginRequirements

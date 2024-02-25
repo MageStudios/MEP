@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Save Event Locations
-// MSEP_SaveEventLocations.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SaveEventLocations = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SEL = MageStudios.SEL || {};
-MageStudios.SEL.version = 1.00;
+MageStudios.SEL.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Enable specified maps to memorize the locations of
  * events when leaving and loading them upon reentering map.
  * @author Mage Studios Engine Plugins
@@ -81,13 +75,8 @@ MageStudios.SEL.version = 1.00;
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.processSELNotetags1 = function() {
+DataManager.processSELNotetags1 = function () {
   if (!$dataMap) return;
   if (!$dataMap.note) return;
   var notedata = $dataMap.note.split(/[\r\n]+/);
@@ -100,7 +89,7 @@ DataManager.processSELNotetags1 = function() {
   }
 };
 
-DataManager.processSELNotetags2 = function(obj) {
+DataManager.processSELNotetags2 = function (obj) {
   var notedata = obj.note.split(/[\r\n]+/);
   obj.saveEventLocation = false;
   for (var i = 0; i < notedata.length; i++) {
@@ -111,46 +100,42 @@ DataManager.processSELNotetags2 = function(obj) {
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.SEL.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.SEL.Game_System_initialize.call(this);
   this.initSavedEventLocations();
 };
 
-Game_System.prototype.initSavedEventLocations = function() {
+Game_System.prototype.initSavedEventLocations = function () {
   this._savedEventLocations = {};
 };
 
-Game_System.prototype.savedEventLocations = function() {
+Game_System.prototype.savedEventLocations = function () {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   return this._savedEventLocations;
 };
 
-Game_System.prototype.isSavedEventLocation = function(mapId, eventId) {
+Game_System.prototype.isSavedEventLocation = function (mapId, eventId) {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   return this._savedEventLocations[[mapId, eventId]] !== undefined;
 };
 
-Game_System.prototype.getSavedEventX = function(mapId, eventId) {
+Game_System.prototype.getSavedEventX = function (mapId, eventId) {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   return this._savedEventLocations[[mapId, eventId]][0];
 };
 
-Game_System.prototype.getSavedEventY = function(mapId, eventId) {
+Game_System.prototype.getSavedEventY = function (mapId, eventId) {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   return this._savedEventLocations[[mapId, eventId]][1];
 };
 
-Game_System.prototype.getSavedEventDir = function(mapId, eventId) {
+Game_System.prototype.getSavedEventDir = function (mapId, eventId) {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   return this._savedEventLocations[[mapId, eventId]][2];
 };
 
-Game_System.prototype.saveEventLocation = function(mapId, event) {
+Game_System.prototype.saveEventLocation = function (mapId, event) {
   if (this._savedEventLocations === undefined) this.initSavedEventLocations();
   var eventId = event.eventId();
   var eventX = event.x;
@@ -159,89 +144,76 @@ Game_System.prototype.saveEventLocation = function(mapId, event) {
   this._savedEventLocations[[mapId, eventId]] = [eventX, eventY, eventDir];
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.SEL.Game_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
-    if ($dataMap) DataManager.processSELNotetags1();
-    MageStudios.SEL.Game_Map_setup.call(this, mapId);
+Game_Map.prototype.setup = function (mapId) {
+  if ($dataMap) DataManager.processSELNotetags1();
+  MageStudios.SEL.Game_Map_setup.call(this, mapId);
 };
 
-Game_Map.prototype.isSaveEventLocations = function() {
-    return $dataMap.saveEventLocations;
+Game_Map.prototype.isSaveEventLocations = function () {
+  return $dataMap.saveEventLocations;
 };
 
-Game_Map.prototype.resetAllEventLocations = function() {
-    for (var i = 0; i < this.events().length; ++i) {
-      var ev = this.events()[i];
-      ev.resetLocation();
-    }
+Game_Map.prototype.resetAllEventLocations = function () {
+  for (var i = 0; i < this.events().length; ++i) {
+    var ev = this.events()[i];
+    ev.resetLocation();
+  }
 };
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
 
 MageStudios.SEL.Game_CharacterBase_setDirection =
   Game_CharacterBase.prototype.setDirection;
-Game_CharacterBase.prototype.setDirection = function(d) {
-    MageStudios.SEL.Game_CharacterBase_setDirection.call(this, d);
-    this.saveLocation();
+Game_CharacterBase.prototype.setDirection = function (d) {
+  MageStudios.SEL.Game_CharacterBase_setDirection.call(this, d);
+  this.saveLocation();
 };
 
-Game_CharacterBase.prototype.saveLocation = function() {
-};
-
-//=============================================================================
-// Game_Event
-//=============================================================================
+Game_CharacterBase.prototype.saveLocation = function () {};
 
 MageStudios.SEL.Game_Event_locate = Game_Event.prototype.locate;
-Game_Event.prototype.locate = function(x, y) {
-    DataManager.processSELNotetags2(this.event());
-    MageStudios.SEL.Game_Event_locate.call(this, x, y);
-    if (!$gameTemp._bypassLoadLocation) this.loadLocation();
-    this.saveLocation();
+Game_Event.prototype.locate = function (x, y) {
+  DataManager.processSELNotetags2(this.event());
+  MageStudios.SEL.Game_Event_locate.call(this, x, y);
+  if (!$gameTemp._bypassLoadLocation) this.loadLocation();
+  this.saveLocation();
 };
 
 MageStudios.SEL.Game_Event_updateMove = Game_Event.prototype.updateMove;
-Game_Event.prototype.updateMove = function() {
-    MageStudios.SEL.Game_Event_updateMove.call(this);
-    this.saveLocation();
+Game_Event.prototype.updateMove = function () {
+  MageStudios.SEL.Game_Event_updateMove.call(this);
+  this.saveLocation();
 };
 
-Game_Event.prototype.isSaveLocation = function() {
-    if ($gameMap.isSaveEventLocations()) return true;
-    if (this.event().saveEventLocation === undefined) {
-      DataManager.processSELNotetags2(this.event());
-    }
-    return this.event().saveEventLocation;
+Game_Event.prototype.isSaveLocation = function () {
+  if ($gameMap.isSaveEventLocations()) return true;
+  if (this.event().saveEventLocation === undefined) {
+    DataManager.processSELNotetags2(this.event());
+  }
+  return this.event().saveEventLocation;
 };
 
-Game_Event.prototype.saveLocation = function() {
-    if (!this.isSaveLocation()) return;
-    $gameSystem.saveEventLocation($gameMap.mapId(), this);
+Game_Event.prototype.saveLocation = function () {
+  if (!this.isSaveLocation()) return;
+  $gameSystem.saveEventLocation($gameMap.mapId(), this);
 };
 
-Game_Event.prototype.isLoadLocation = function() {
-    if (!this.isSaveLocation()) return false;
-    return $gameSystem.isSavedEventLocation($gameMap.mapId(), this.eventId());
+Game_Event.prototype.isLoadLocation = function () {
+  if (!this.isSaveLocation()) return false;
+  return $gameSystem.isSavedEventLocation($gameMap.mapId(), this.eventId());
 };
 
-Game_Event.prototype.loadLocation = function() {
-    if (!this.isLoadLocation()) return;
-    var x = $gameSystem.getSavedEventX($gameMap.mapId(), this.eventId());
-    var y = $gameSystem.getSavedEventY($gameMap.mapId(), this.eventId());
-    this.setPosition(x, y);
-    var dir = $gameSystem.getSavedEventDir($gameMap.mapId(), this.eventId());
-    $gameTemp._loadLocationDirection = dir;
+Game_Event.prototype.loadLocation = function () {
+  if (!this.isLoadLocation()) return;
+  var x = $gameSystem.getSavedEventX($gameMap.mapId(), this.eventId());
+  var y = $gameSystem.getSavedEventY($gameMap.mapId(), this.eventId());
+  this.setPosition(x, y);
+  var dir = $gameSystem.getSavedEventDir($gameMap.mapId(), this.eventId());
+  $gameTemp._loadLocationDirection = dir;
 };
 
 MageStudios.SEL.Game_Event_setupPageSettings =
   Game_Event.prototype.setupPageSettings;
-Game_Event.prototype.setupPageSettings = function() {
+Game_Event.prototype.setupPageSettings = function () {
   MageStudios.SEL.Game_Event_setupPageSettings.call(this);
   if ($gameTemp._loadLocationDirection) {
     this.setDirection($gameTemp._loadLocationDirection);
@@ -249,32 +221,24 @@ Game_Event.prototype.setupPageSettings = function() {
   }
 };
 
-Game_Event.prototype.resetLocation = function() {
-    MageStudios.SEL.Game_Event_locate.call(this, this.event().x, this.event().y);
-    this.setDirection(this._originalDirection);
-    this.saveLocation();
+Game_Event.prototype.resetLocation = function () {
+  MageStudios.SEL.Game_Event_locate.call(this, this.event().x, this.event().y);
+  this.setDirection(this._originalDirection);
+  this.saveLocation();
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.SEL.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.SEL.Game_Interpreter_pluginCommand.call(this, command, args)
-  if (command === 'ResetAllEventLocations') $gameMap.resetAllEventLocations();
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.SEL.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "ResetAllEventLocations") $gameMap.resetAllEventLocations();
 };
 
-// Set Event Location
-MageStudios.SEL.Game_Interpreter_command203 = Game_Interpreter.prototype.command203;
-Game_Interpreter.prototype.command203 = function() {
-    $gameTemp._bypassLoadLocation = true;
-    var result = MageStudios.SEL.Game_Interpreter_command203.call(this);
-    $gameTemp._bypassLoadLocation = undefined;
-    return result;
+MageStudios.SEL.Game_Interpreter_command203 =
+  Game_Interpreter.prototype.command203;
+Game_Interpreter.prototype.command203 = function () {
+  $gameTemp._bypassLoadLocation = true;
+  var result = MageStudios.SEL.Game_Interpreter_command203.call(this);
+  $gameTemp._bypassLoadLocation = undefined;
+  return result;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

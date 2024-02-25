@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Item Requirements
-// MSEP_X_ItemRequirements.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ItemRequirements = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemReq = MageStudios.ItemReq || {};
-MageStudios.ItemReq.version = 1.00;
+MageStudios.ItemReq.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Place requirements on
  * items before they can be used.
  * @author Mage Studios Engine Plugins
@@ -307,388 +301,385 @@ MageStudios.ItemReq.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_ItemCore) {
+  MageStudios.ItemReq.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.ItemReq.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    if (!MageStudios._loaded_MSEP_X_ItemRequirements) {
+      this.processItemRequirementsNotetags1($dataItems);
+      MageStudios._loaded_MSEP_X_ItemRequirements = true;
+    }
 
-MageStudios.ItemReq.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.ItemReq.DataManager_isDatabaseLoaded.call(this)) return false;
+    return true;
+  };
 
-  if (!MageStudios._loaded_MSEP_X_ItemRequirements) {
-    this.processItemRequirementsNotetags1($dataItems);
-    MageStudios._loaded_MSEP_X_ItemRequirements = true;
-  }
-  
-  return true;
-};
+  DataManager.processItemRequirementsNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processItemRequirementsNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+      obj.itemRequirements = [];
+      var evalMode = "none";
+      obj.customItemRequirements = "";
 
-    obj.itemRequirements = [];
-    var evalMode = 'none';
-    obj.customItemRequirements = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
-        evalMode = 'enable requirements';
-      } else if (line.match(/<\/ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'enable requirements') {
-        obj.itemRequirements.push(line);
-      } else if (line.match(/<CUSTOM ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
-        evalMode = 'custom enable requirements';
-      } else if (line.match(/<\/CUSTOM ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom enable requirements') {
-        obj.customItemRequirements += line + '\n';
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
+          evalMode = "enable requirements";
+        } else if (line.match(/<\/ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "enable requirements") {
+          obj.itemRequirements.push(line);
+        } else if (
+          line.match(/<CUSTOM ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)
+        ) {
+          evalMode = "custom enable requirements";
+        } else if (
+          line.match(/<\/CUSTOM ENABLE (?:REQUIREMENT|REQUIREMENTS)>/i)
+        ) {
+          evalMode = "none";
+        } else if (evalMode === "custom enable requirements") {
+          obj.customItemRequirements += line + "\n";
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
+  MageStudios.ItemReq.Game_BattlerBase_mIC =
+    Game_BattlerBase.prototype.meetsItemConditions;
+  Game_BattlerBase.prototype.meetsItemConditions = function (item) {
+    if (!MageStudios.ItemReq.Game_BattlerBase_mIC.call(this, item)) {
+      return false;
+    }
+    return ItemManager.meetsUsableItemRequirements(item, this);
+  };
 
-MageStudios.ItemReq.Game_BattlerBase_mIC =
-  Game_BattlerBase.prototype.meetsItemConditions;
-Game_BattlerBase.prototype.meetsItemConditions = function(item) {
-  if (!MageStudios.ItemReq.Game_BattlerBase_mIC.call(this, item)) {
-    return false;
-  }
-  return ItemManager.meetsUsableItemRequirements(item, this);
-};
+  Game_Actor.prototype.isAtypeEquipped = function (atypeId) {
+    return this.armors().some(function (armor) {
+      return armor.atypeId === atypeId;
+    });
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
+  ItemManager.meetsUsableItemRequirements = function (item, battler) {
+    if (!item) return false;
+    if (!item.itemRequirements) {
+      var baseItem = DataManager.getBaseItem(item);
+      item.itemRequirements = JsonEx.makeDeepCopy(baseItem.itemRequirements);
+    }
+    var length = item.itemRequirements.length;
+    if ($gameParty.inBattle()) var battler = this.battleSubject() || battler;
+    for (var i = 0; i < length; ++i) {
+      var line = item.itemRequirements[i];
+      if (!line) continue;
+      if (!this.checkUsableItemRequirement(line, item, battler)) return false;
+    }
+    if (
+      item.customItemRequirements &&
+      item.customItemRequirements.length >= 1
+    ) {
+      if (!this.checkCustomUsableItemRequirement(item, battler)) return false;
+    }
+    return true;
+  };
 
-Game_Actor.prototype.isAtypeEquipped = function(atypeId) {
-  return this.armors().some(function(armor) {
-    return armor.atypeId === atypeId;
-  });
-};
+  ItemManager.battleSubject = function () {
+    return BattleManager.actor() || BattleManager._subject;
+  };
 
-//=============================================================================
-// ItemManager
-//=============================================================================
+  ItemManager.checkUsableItemRequirement = function (line, item, battler) {
+    if (line.match(/EVAL:(.*)/i)) {
+      var code = String(RegExp.$1);
+      return this.usableItemRequirementEval(code);
+    }
 
-ItemManager.meetsUsableItemRequirements = function(item, battler) {
-  if (!item) return false;
-  if (!item.itemRequirements) {
-    var baseItem = DataManager.getBaseItem(item);
-    item.itemRequirements = JsonEx.makeDeepCopy(baseItem.itemRequirements);
-  }
-  var length = item.itemRequirements.length;
-  if ($gameParty.inBattle()) var battler = this.battleSubject() || battler;
-  for (var i = 0; i < length; ++i) {
-    var line = item.itemRequirements[i];
-    if (!line) continue;
-    if (!this.checkUsableItemRequirement(line, item, battler)) return false;
-  }
-  if (item.customItemRequirements && item.customItemRequirements.length >= 1) {
-    if (!this.checkCustomUsableItemRequirement(item, battler)) return false;
-  }
-  return true;
-};
-
-ItemManager.battleSubject = function() {
-  return BattleManager.actor() || BattleManager._subject;
-};
-
-ItemManager.checkUsableItemRequirement = function(line, item, battler) {
-  // EVAL
-  if (line.match(/EVAL:(.*)/i)) {
-    var code = String(RegExp.$1);
-    return this.usableItemRequirementEval(code);
-  }
-  // NOT ACTOR
-  if (line.match(/NOT ACTOR:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementActor(data, battler, false);
-  }
-  // ACTOR
-  if (line.match(/ACTOR:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementActor(data, battler, true);
-  }
-  // NOT ARMOR TYPE
-  if (line.match(/NOT ARMOR TYPE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementAtype(data, battler, false);
-  }
-  // ARMOR TYPE
-  if (line.match(/ARMOR TYPE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementAtype(data, battler, true);
-  }
-  // NOT ARMOR
-  if (line.match(/NOT ARMOR:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementArmor(data, battler, false);
-  }
-  // ARMOR
-  if (line.match(/ARMOR:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementArmor(data, battler, true);
-  }
-  if (Imported.MSEP_X_Subclass) {
-    // NOT SUBCLASS
-    if (line.match(/NOT SUBCLASS:(.*)/i)) {
+    if (line.match(/NOT ACTOR:(.*)/i)) {
       var data = String(RegExp.$1);
-      return this.usableItemRequirementSubclass(data, battler, false);
+      return this.usableItemRequirementActor(data, battler, false);
     }
-    // SUBCLASS
-    if (line.match(/SUBCLASS:(.*)/i)) {
+
+    if (line.match(/ACTOR:(.*)/i)) {
       var data = String(RegExp.$1);
-      return this.usableItemRequirementSubclass(data, battler, true);
+      return this.usableItemRequirementActor(data, battler, true);
     }
-    // EITHER CLASS
-    if (line.match(/EITHER CLASS:(.*)/i)) {
+
+    if (line.match(/NOT ARMOR TYPE:(.*)/i)) {
       var data = String(RegExp.$1);
-      return this.usableItemRequirementDuoClass(data, battler, true);
+      return this.usableItemRequirementAtype(data, battler, false);
     }
-    // NEITHER CLASS
-    if (line.match(/NEITHER CLASS:(.*)/i)) {
+
+    if (line.match(/ARMOR TYPE:(.*)/i)) {
       var data = String(RegExp.$1);
-      return this.usableItemRequirementDuoClass(data, battler, false);
+      return this.usableItemRequirementAtype(data, battler, true);
     }
-  }
-  // NOT CLASS
-  if (line.match(/NOT CLASS:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementClass(data, battler, false);
-  }
-  // CLASS
-  if (line.match(/CLASS:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementClass(data, battler, true);
-  }
-  // NOT STATE
-  if (line.match(/NOT STATE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementState(data, battler, false);
-  }
-  // STATE
-  if (line.match(/STATE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementState(data, battler, true);
-  }
-  // NOT WEAPON TYPE
-  if (line.match(/NOT WEAPON TYPE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementWtype(data, battler, false);
-  }
-  // WEAPON TYPE
-  if (line.match(/WEAPON TYPE:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementWtype(data, battler, true);
-  }
-  // NOT WEAPON
-  if (line.match(/NOT WEAPON:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementWeapon(data, battler, false);
-  }
-  // WEAPON
-  if (line.match(/WEAPON:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementWeapon(data, battler, true);
-  }
-  // SWITCH OFF
-  if (line.match(/SWITCH OFF:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementSwitch(data, false);
-  }
-  // SWITCH ON
-  if (line.match(/SWITCH ON:(.*)/i)) {
-    var data = String(RegExp.$1);
-    return this.usableItemRequirementSwitch(data, true);
-  }
-  // VARIABLE
-  if (line.match(/VARIABLE[ ](\d+)[ ](.*)/i)) {
-    var variableId = parseInt(RegExp.$1);
-    var code = String(RegExp.$2);
-    return this.usableItemRequirementVariable(variableId, code);
-  }
-  return true;
-};
 
-ItemManager.usableItemRequirementEval = function(code) {
-  var value = false;
-  try {
-    eval(code);
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'CUSTOM ITEM USE EVAL CODE ERROR');
-  }
-  return value;
-};
-
-ItemManager.usableItemRequirementActor = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var actorId = parseInt(array[i].trim());
-    if (battler.actorId() === actorId) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementClass = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var classId = parseInt(array[i].trim());
-    if (battler._classId === classId) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementDuoClass = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var classId = parseInt(array[i].trim());
-    var subclassId = parseInt(array[i].trim());
-    if (battler._classId === classId || battler._subclassId === subclassId) {
-      return condition;
+    if (line.match(/NOT ARMOR:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementArmor(data, battler, false);
     }
-  }
-  return !condition;
-};
 
-ItemManager.usableItemRequirementSubclass = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var subclassId = parseInt(array[i].trim());
-    if (battler._subclassId === subclassId) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementState = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var stateId = parseInt(array[i].trim());
-    var state = $dataStates[stateId];
-    if (battler.states().contains(state)) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementWtype = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var id = parseInt(array[i].trim());
-    if (battler.isWtypeEquipped(id)) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementWeapon = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var id = parseInt(array[i].trim());
-    var equip = $dataWeapons[id];
-    if (battler.hasWeapon(equip)) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementAtype = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var id = parseInt(array[i].trim());
-    if (battler.isAtypeEquipped(id)) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementArmor = function(data, battler, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var id = parseInt(array[i].trim());
-    var equip = $dataArmors[id];
-    if (battler.hasArmor(equip)) return condition;
-  }
-  return !condition;
-};
-
-ItemManager.usableItemRequirementSwitch = function(data, condition) {
-  var array = data.split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    var switchId = parseInt(array[i].trim());
-    if ($gameSwitches.value(switchId) !== condition) return false;
-  }
-  return true;
-};
-
-ItemManager.usableItemRequirementVariable = function(variableId, code) {
-  return eval('$gameVariables.value(variableId) ' + code);
-};
-
-ItemManager.checkCustomUsableItemRequirement = function(item, battler) {
-  var condition = false;
-  var user = battler;
-  var a = battler;
-  var b = battler;
-  var target = battler;
-  var subject = battler;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  var code = item.customItemRequirements;
-  try {
-    eval(code);
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'CUSTOM ITEM USE REQUIREMENT CODE ERROR');
-  }
-  return condition;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+    if (line.match(/ARMOR:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementArmor(data, battler, true);
     }
-  }
-};
+    if (Imported.MSEP_X_Subclass) {
+      if (line.match(/NOT SUBCLASS:(.*)/i)) {
+        var data = String(RegExp.$1);
+        return this.usableItemRequirementSubclass(data, battler, false);
+      }
 
-//=============================================================================
-// End of File
-//=============================================================================
+      if (line.match(/SUBCLASS:(.*)/i)) {
+        var data = String(RegExp.$1);
+        return this.usableItemRequirementSubclass(data, battler, true);
+      }
+
+      if (line.match(/EITHER CLASS:(.*)/i)) {
+        var data = String(RegExp.$1);
+        return this.usableItemRequirementDuoClass(data, battler, true);
+      }
+
+      if (line.match(/NEITHER CLASS:(.*)/i)) {
+        var data = String(RegExp.$1);
+        return this.usableItemRequirementDuoClass(data, battler, false);
+      }
+    }
+
+    if (line.match(/NOT CLASS:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementClass(data, battler, false);
+    }
+
+    if (line.match(/CLASS:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementClass(data, battler, true);
+    }
+
+    if (line.match(/NOT STATE:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementState(data, battler, false);
+    }
+
+    if (line.match(/STATE:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementState(data, battler, true);
+    }
+
+    if (line.match(/NOT WEAPON TYPE:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementWtype(data, battler, false);
+    }
+
+    if (line.match(/WEAPON TYPE:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementWtype(data, battler, true);
+    }
+
+    if (line.match(/NOT WEAPON:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementWeapon(data, battler, false);
+    }
+
+    if (line.match(/WEAPON:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementWeapon(data, battler, true);
+    }
+
+    if (line.match(/SWITCH OFF:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementSwitch(data, false);
+    }
+
+    if (line.match(/SWITCH ON:(.*)/i)) {
+      var data = String(RegExp.$1);
+      return this.usableItemRequirementSwitch(data, true);
+    }
+
+    if (line.match(/VARIABLE[ ](\d+)[ ](.*)/i)) {
+      var variableId = parseInt(RegExp.$1);
+      var code = String(RegExp.$2);
+      return this.usableItemRequirementVariable(variableId, code);
+    }
+    return true;
+  };
+
+  ItemManager.usableItemRequirementEval = function (code) {
+    var value = false;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(e, code, "CUSTOM ITEM USE EVAL CODE ERROR");
+    }
+    return value;
+  };
+
+  ItemManager.usableItemRequirementActor = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var actorId = parseInt(array[i].trim());
+      if (battler.actorId() === actorId) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementClass = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var classId = parseInt(array[i].trim());
+      if (battler._classId === classId) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementDuoClass = function (
+    data,
+    battler,
+    condition
+  ) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var classId = parseInt(array[i].trim());
+      var subclassId = parseInt(array[i].trim());
+      if (battler._classId === classId || battler._subclassId === subclassId) {
+        return condition;
+      }
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementSubclass = function (
+    data,
+    battler,
+    condition
+  ) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var subclassId = parseInt(array[i].trim());
+      if (battler._subclassId === subclassId) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementState = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var stateId = parseInt(array[i].trim());
+      var state = $dataStates[stateId];
+      if (battler.states().contains(state)) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementWtype = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var id = parseInt(array[i].trim());
+      if (battler.isWtypeEquipped(id)) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementWeapon = function (
+    data,
+    battler,
+    condition
+  ) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var id = parseInt(array[i].trim());
+      var equip = $dataWeapons[id];
+      if (battler.hasWeapon(equip)) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementAtype = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var id = parseInt(array[i].trim());
+      if (battler.isAtypeEquipped(id)) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementArmor = function (data, battler, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var id = parseInt(array[i].trim());
+      var equip = $dataArmors[id];
+      if (battler.hasArmor(equip)) return condition;
+    }
+    return !condition;
+  };
+
+  ItemManager.usableItemRequirementSwitch = function (data, condition) {
+    var array = data.split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      var switchId = parseInt(array[i].trim());
+      if ($gameSwitches.value(switchId) !== condition) return false;
+    }
+    return true;
+  };
+
+  ItemManager.usableItemRequirementVariable = function (variableId, code) {
+    return eval("$gameVariables.value(variableId) " + code);
+  };
+
+  ItemManager.checkCustomUsableItemRequirement = function (item, battler) {
+    var condition = false;
+    var user = battler;
+    var a = battler;
+    var b = battler;
+    var target = battler;
+    var subject = battler;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    var code = item.customItemRequirements;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "CUSTOM ITEM USE REQUIREMENT CODE ERROR"
+      );
+    }
+    return condition;
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
 } else {
-
-var text = '================================================================\n';
-text += 'MSEP_X_ItemRequirements requires MSEP_ItemCore to be at the ';
-text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
-text += 'update to the latest version for the MSEP_ItemCore plugin.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-} // // Imported.MSEP_ItemCore
+  var text =
+    "================================================================\n";
+  text += "MSEP_X_ItemRequirements requires MSEP_ItemCore to be at the ";
+  text +=
+    "latest version to run properly.\n\nPlease go to www.MageStudios.moe and ";
+  text += "update to the latest version for the MSEP_ItemCore plugin.\n";
+  text += "================================================================\n";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

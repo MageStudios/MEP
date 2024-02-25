@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Self Switches & Variables
-// MSEP_SelfSwVar.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SelfSwVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SSV = MageStudios.SSV || {};
-MageStudios.SSV.version = 1.00;
+MageStudios.SSV.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Self Switches and Self Variables functionality
  * without the need for plugin commands or script calls.
  * @author Mage Studios Engine Plugins
@@ -166,69 +160,60 @@ MageStudios.SSV.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.isSelfSwitch = function(switchId) {
+DataManager.isSelfSwitch = function (switchId) {
   var sw = $dataSystem.switches[switchId];
   return sw && sw.match(/SELF[ ]SW/i);
 };
 
-DataManager.isSelfVariable = function(variableId) {
+DataManager.isSelfVariable = function (variableId) {
   var va = $dataSystem.variables[variableId];
   return va && va.match(/SELF[ ]VAR/i);
 };
 
-//=============================================================================
-// Game_Temp
-//=============================================================================
-
-Game_Temp.prototype.getSelfSwVarEvent = function() {
+Game_Temp.prototype.getSelfSwVarEvent = function () {
   return this._selfSwVarEvent;
 };
 
-Game_Temp.prototype.setSelfSwVarEvent = function(mapId, eventId) {
+Game_Temp.prototype.setSelfSwVarEvent = function (mapId, eventId) {
   this._selfSwVarEvent = [mapId, eventId];
 };
 
-Game_Temp.prototype.clearSelfSwVarEvent = function() {
+Game_Temp.prototype.clearSelfSwVarEvent = function () {
   this._selfSwVarEvent = undefined;
 };
 
-Game_Temp.prototype.getSelfSwVarEvBrdge = function() {
+Game_Temp.prototype.getSelfSwVarEvBrdge = function () {
   return this._selfSwVarEvBridge;
 };
 
-Game_Temp.prototype.setSelfSwVarEvBridge = function(mapId, eventId) {
+Game_Temp.prototype.setSelfSwVarEvBridge = function (mapId, eventId) {
   this.setSelfSwVarEvent(mapId, eventId);
   this._selfSwVarEvBridge = [mapId, eventId];
 };
 
-Game_Temp.prototype.clearSelfSwVarEvBridge = function() {
+Game_Temp.prototype.clearSelfSwVarEvBridge = function () {
   this._selfSwVarEvent = this._selfSwVarEvBridge;
   this._selfSwVarEvBridge = undefined;
 };
 
-Game_Temp.prototype.getSelfSwVarEventOneTimeClear = function() {
+Game_Temp.prototype.getSelfSwVarEventOneTimeClear = function () {
   return this._selfSwVarEventOneTimeClear;
 };
 
-Game_Temp.prototype.setSelfSwVarEventOneTimeClear = function(value) {
+Game_Temp.prototype.setSelfSwVarEventOneTimeClear = function (value) {
   this._selfSwVarEventOneTimeClear = value;
 };
 
-Game_Temp.prototype.getPersistingSelfSwVarEvent = function() {
+Game_Temp.prototype.getPersistingSelfSwVarEvent = function () {
   return this._selfPersistingSwVarEvent;
 };
 
-Game_Temp.prototype.setPersistingSelfSwVarEvent = function(mapId, eventId) {
+Game_Temp.prototype.setPersistingSelfSwVarEvent = function (mapId, eventId) {
   this._selfPersistingSwVarEvent = [mapId, eventId];
 };
 
-Game_Temp.prototype.carryPersistingSelfSwVarEvent = function() {
+Game_Temp.prototype.carryPersistingSelfSwVarEvent = function () {
   this._revertSelfSwVarEvent = this._selfSwVarEvent;
   this._selfSwVarEvent = [];
   if (!this._selfPersistingSwVarEvent) return;
@@ -236,17 +221,13 @@ Game_Temp.prototype.carryPersistingSelfSwVarEvent = function() {
   this._selfSwVarEvent.push(this._selfPersistingSwVarEvent[1]);
 };
 
-Game_Temp.prototype.revertSelfSwVarEvent = function() {
+Game_Temp.prototype.revertSelfSwVarEvent = function () {
   this._selfSwVarEvent = this._revertSelfSwVarEvent;
 };
 
-//=============================================================================
-// Game_Character
-//=============================================================================
-
 MageStudios.SSV.Game_Character_processMoveCommand =
   Game_Character.prototype.processMoveCommand;
-Game_Character.prototype.processMoveCommand = function(command) {
+Game_Character.prototype.processMoveCommand = function (command) {
   if (this._mapId && this._eventId) {
     $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   }
@@ -256,28 +237,21 @@ Game_Character.prototype.processMoveCommand = function(command) {
   }
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
-MageStudios.SSV.Game_Event_meetsConditions = Game_Event.prototype.meetsConditions;
-Game_Event.prototype.meetsConditions = function(page) {
+MageStudios.SSV.Game_Event_meetsConditions =
+  Game_Event.prototype.meetsConditions;
+Game_Event.prototype.meetsConditions = function (page) {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   var value = MageStudios.SSV.Game_Event_meetsConditions.call(this, page);
   $gameTemp.clearSelfSwVarEvent();
   return value;
 };
 
-//=============================================================================
-// Game_Switches
-//=============================================================================
-
 MageStudios.SSV.Game_Switches_value = Game_Switches.prototype.value;
-Game_Switches.prototype.value = function(switchId) {
+Game_Switches.prototype.value = function (switchId) {
   if (DataManager.isSelfSwitch(switchId) && $gameTemp.getSelfSwVarEvent()) {
     var mapId = $gameTemp.getSelfSwVarEvent()[0];
     var eventId = $gameTemp.getSelfSwVarEvent()[1];
-    var switchId = 'SELF SWITCH ' + switchId;
+    var switchId = "SELF SWITCH " + switchId;
     var key = [mapId, eventId, switchId];
     return $gameSelfSwitches.value(key);
   } else {
@@ -286,12 +260,12 @@ Game_Switches.prototype.value = function(switchId) {
 };
 
 MageStudios.SSV.Game_Switches_setValue = Game_Switches.prototype.setValue;
-Game_Switches.prototype.setValue = function(switchId, value) {
+Game_Switches.prototype.setValue = function (switchId, value) {
   if (switchId <= 0) return;
   if (DataManager.isSelfSwitch(switchId) && $gameTemp.getSelfSwVarEvent()) {
     var mapId = $gameTemp.getSelfSwVarEvent()[0];
     var eventId = $gameTemp.getSelfSwVarEvent()[1];
-    var switchId = 'SELF SWITCH ' + switchId;
+    var switchId = "SELF SWITCH " + switchId;
     var key = [mapId, eventId, switchId];
     $gameSelfSwitches.setValue(key, value);
   } else {
@@ -299,16 +273,12 @@ Game_Switches.prototype.setValue = function(switchId, value) {
   }
 };
 
-//=============================================================================
-// Game_Variables
-//=============================================================================
-
 MageStudios.SSV.Game_Variables_value = Game_Variables.prototype.value;
-Game_Variables.prototype.value = function(variableId) {
+Game_Variables.prototype.value = function (variableId) {
   if (DataManager.isSelfVariable(variableId) && $gameTemp.getSelfSwVarEvent()) {
     var mapId = $gameTemp.getSelfSwVarEvent()[0];
     var eventId = $gameTemp.getSelfSwVarEvent()[1];
-    var variableId = 'SELF VARIABLE ' + variableId;
+    var variableId = "SELF VARIABLE " + variableId;
     var key = [mapId, eventId, variableId];
     return $gameSelfSwitches.value(key);
   } else {
@@ -317,12 +287,12 @@ Game_Variables.prototype.value = function(variableId) {
 };
 
 MageStudios.SSV.Game_Variables_setValue = Game_Variables.prototype.setValue;
-Game_Variables.prototype.setValue = function(variableId, value) {
+Game_Variables.prototype.setValue = function (variableId, value) {
   if (variableId <= 0) return;
   if (DataManager.isSelfVariable(variableId) && $gameTemp.getSelfSwVarEvent()) {
     var mapId = $gameTemp.getSelfSwVarEvent()[0];
     var eventId = $gameTemp.getSelfSwVarEvent()[1];
-    var variableId = 'SELF VARIABLE ' + variableId;
+    var variableId = "SELF VARIABLE " + variableId;
     var key = [mapId, eventId, variableId];
     $gameSelfSwitches.setValue(key, value);
   } else {
@@ -330,12 +300,8 @@ Game_Variables.prototype.setValue = function(variableId, value) {
   }
 };
 
-//=============================================================================
-// Game_SelfSwitches
-//=============================================================================
-
 MageStudios.SSV.Game_SelfSwitches_value = Game_SelfSwitches.prototype.value;
-Game_SelfSwitches.prototype.value = function(key) {
+Game_SelfSwitches.prototype.value = function (key) {
   if (key[2].match(/SELF[ ]VAR/i)) {
     this._data[key] = this._data[key] || 0;
     return this._data[key];
@@ -343,18 +309,20 @@ Game_SelfSwitches.prototype.value = function(key) {
   return MageStudios.SSV.Game_SelfSwitches_value.call(this, key);
 };
 
-MageStudios.SSV.Game_SelfSwitches_setValue = Game_SelfSwitches.prototype.setValue;
-Game_SelfSwitches.prototype.setValue = function(key, value) {
+MageStudios.SSV.Game_SelfSwitches_setValue =
+  Game_SelfSwitches.prototype.setValue;
+Game_SelfSwitches.prototype.setValue = function (key, value) {
   if (key[2].match(/SELF[ ]VAR/i)) {
     this._data[key] = value;
     this.onChange();
   } else {
-    MageStudios.SSV.Game_SelfSwitches_setValue.call(this, key, value)
+    MageStudios.SSV.Game_SelfSwitches_setValue.call(this, key, value);
   }
 };
 
-MageStudios.SSV.Game_SelfSwitches_onChange = Game_SelfSwitches.prototype.onChange;
-Game_SelfSwitches.prototype.onChange = function() {
+MageStudios.SSV.Game_SelfSwitches_onChange =
+  Game_SelfSwitches.prototype.onChange;
+Game_SelfSwitches.prototype.onChange = function () {
   MageStudios.SSV.Game_SelfSwitches_onChange.call(this);
   if ($gameTemp.getSelfSwVarEventOneTimeClear()) {
     $gameTemp.setSelfSwVarEventOneTimeClear(false);
@@ -362,100 +330,96 @@ Game_SelfSwitches.prototype.onChange = function() {
   }
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-// Show Text
-MageStudios.SSV.Game_Interpreter_command101 = Game_Interpreter.prototype.command101;
-Game_Interpreter.prototype.command101 = function() {
+MageStudios.SSV.Game_Interpreter_command101 =
+  Game_Interpreter.prototype.command101;
+Game_Interpreter.prototype.command101 = function () {
   $gameTemp.setPersistingSelfSwVarEvent(this._mapId, this._eventId);
   return MageStudios.SSV.Game_Interpreter_command101.call(this);
 };
 
-// Select Item
-MageStudios.SSV.Game_Interpreter_command104 = Game_Interpreter.prototype.command104;
-Game_Interpreter.prototype.command104 = function() {
+MageStudios.SSV.Game_Interpreter_command104 =
+  Game_Interpreter.prototype.command104;
+Game_Interpreter.prototype.command104 = function () {
   $gameTemp.setSelfSwVarEventOneTimeClear(true);
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   return MageStudios.SSV.Game_Interpreter_command104.call(this);
 };
 
-// Conditional Branch
-MageStudios.SSV.Game_Interpreter_command111 = Game_Interpreter.prototype.command111;
-Game_Interpreter.prototype.command111 = function() {
+MageStudios.SSV.Game_Interpreter_command111 =
+  Game_Interpreter.prototype.command111;
+Game_Interpreter.prototype.command111 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command111.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Control Switches
-MageStudios.SSV.Game_Interpreter_command121 = Game_Interpreter.prototype.command121;
-Game_Interpreter.prototype.command121 = function() {
+MageStudios.SSV.Game_Interpreter_command121 =
+  Game_Interpreter.prototype.command121;
+Game_Interpreter.prototype.command121 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command121.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Control Variables
-MageStudios.SSV.Game_Interpreter_command122 = Game_Interpreter.prototype.command122;
-Game_Interpreter.prototype.command122 = function() {
+MageStudios.SSV.Game_Interpreter_command122 =
+  Game_Interpreter.prototype.command122;
+Game_Interpreter.prototype.command122 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command122.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Transfer Player
-MageStudios.SSV.Game_Interpreter_command201 = Game_Interpreter.prototype.command201;
-Game_Interpreter.prototype.command201 = function() {
+MageStudios.SSV.Game_Interpreter_command201 =
+  Game_Interpreter.prototype.command201;
+Game_Interpreter.prototype.command201 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command201.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return false;
 };
 
-// Set Vehicle Location
-MageStudios.SSV.Game_Interpreter_command202 = Game_Interpreter.prototype.command202;
-Game_Interpreter.prototype.command202 = function() {
+MageStudios.SSV.Game_Interpreter_command202 =
+  Game_Interpreter.prototype.command202;
+Game_Interpreter.prototype.command202 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command202.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Set Event Location
-MageStudios.SSV.Game_Interpreter_command203 = Game_Interpreter.prototype.command203;
-Game_Interpreter.prototype.command203 = function() {
+MageStudios.SSV.Game_Interpreter_command203 =
+  Game_Interpreter.prototype.command203;
+Game_Interpreter.prototype.command203 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command203.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Show Picture
-MageStudios.SSV.Game_Interpreter_command231 = Game_Interpreter.prototype.command231;
-Game_Interpreter.prototype.command231 = function() {
+MageStudios.SSV.Game_Interpreter_command231 =
+  Game_Interpreter.prototype.command231;
+Game_Interpreter.prototype.command231 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command231.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Move Picture
-MageStudios.SSV.Game_Interpreter_command232 = Game_Interpreter.prototype.command232;
-Game_Interpreter.prototype.command232 = function() {
+MageStudios.SSV.Game_Interpreter_command232 =
+  Game_Interpreter.prototype.command232;
+Game_Interpreter.prototype.command232 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command232.call(this);
   $gameTemp.clearSelfSwVarEvent();
   return true;
 };
 
-// Get Location Info
-MageStudios.SSV.Game_Interpreter_command285 = Game_Interpreter.prototype.command285;
-Game_Interpreter.prototype.command285 = function() {
+MageStudios.SSV.Game_Interpreter_command285 =
+  Game_Interpreter.prototype.command285;
+Game_Interpreter.prototype.command285 = function () {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_command285.call(this);
   $gameTemp.clearSelfSwVarEvent();
@@ -464,56 +428,59 @@ Game_Interpreter.prototype.command285 = function() {
 
 MageStudios.SSV.Game_Interpreter_operateValue =
   Game_Interpreter.prototype.operateValue;
-Game_Interpreter.prototype.operateValue = function(op1, type, op2) {
+Game_Interpreter.prototype.operateValue = function (op1, type, op2) {
   $gameTemp.setSelfSwVarEvent(this._mapId, this._eventId);
-  value = MageStudios.SSV.Game_Interpreter_operateValue.call(this, op1, type, op2);
+  value = MageStudios.SSV.Game_Interpreter_operateValue.call(
+    this,
+    op1,
+    type,
+    op2
+  );
   $gameTemp.clearSelfSwVarEvent();
   return value;
 };
 
 MageStudios.SSV.Game_Interpreter_setupItemChoice =
   Game_Interpreter.prototype.setupItemChoice;
-Game_Interpreter.prototype.setupItemChoice = function(params) {
+Game_Interpreter.prototype.setupItemChoice = function (params) {
   $gameTemp.setSelfSwVarEvBridge(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_setupItemChoice.call(this, params);
 };
 
 MageStudios.SSV.Game_Interpreter_setupNumInput =
   Game_Interpreter.prototype.setupNumInput;
-Game_Interpreter.prototype.setupNumInput = function(params) {
+Game_Interpreter.prototype.setupNumInput = function (params) {
   $gameTemp.setSelfSwVarEvBridge(this._mapId, this._eventId);
   MageStudios.SSV.Game_Interpreter_setupNumInput.call(this, params);
 };
 
 MageStudios.SSV.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.SSV.Game_Interpreter_pluginCommand.call(this, command, args);
-  // Compatibility Update
-  if (command === 'MapSelectSkill') {
+
+  if (command === "MapSelectSkill") {
     $gameTemp.setSelfSwVarEventOneTimeClear(true);
     $gameTemp.setSelfSwVarEvBridge(this._mapId, this._eventId);
-  // SelfSwitch
-  } else if (command === 'SelfSwitch') {
+  } else if (command === "SelfSwitch") {
     var line = this.argsToString(args);
     this.adjustSelfSwitch(line);
-  // SelfVariable
-  } else if (command === 'SelfVariable') {
+  } else if (command === "SelfVariable") {
     var line = this.argsToString(args);
     this.adjustSelfVariable(line);
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-    var str = '';
-    var length = args.length;
-    for (var i = 0; i < length; ++i) {
-      str += args[i] + ' ';
-    }
-    return str.trim();
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
+  var length = args.length;
+  for (var i = 0; i < length; ++i) {
+    str += args[i] + " ";
+  }
+  return str.trim();
 };
 
-Game_Interpreter.prototype.adjustSelfSwitch = function(line) {
+Game_Interpreter.prototype.adjustSelfSwitch = function (line) {
   var eventId;
   var switchId;
   if (line.match(/(.*)[ ]TO[ ](.*)/i)) {
@@ -529,18 +496,18 @@ Game_Interpreter.prototype.adjustSelfSwitch = function(line) {
   if (line.match(/SWITCH[ ](\d+)/i)) switchId = parseInt(RegExp.$1);
   if (switchId === undefined) return;
   if (!DataManager.isSelfSwitch(switchId)) return;
-  var key = [mapId, eventId, 'SELF SWITCH ' + switchId];
+  var key = [mapId, eventId, "SELF SWITCH " + switchId];
   var value = $gameSelfSwitches.value(key);
   try {
     value = eval(code);
   } catch (e) {
     value = 0;
-    MageStudios.Util.displayError(e, code, 'ADJUST SELF SWITCH SCRIPT ERROR');
+    MageStudios.Util.displayError(e, code, "ADJUST SELF SWITCH SCRIPT ERROR");
   }
   $gameSelfSwitches.setValue(key, value);
 };
 
-Game_Interpreter.prototype.adjustSelfVariable = function(line) {
+Game_Interpreter.prototype.adjustSelfVariable = function (line) {
   var eventId;
   var varId;
   if (line.match(/(.*)[ ]TO[ ](.*)/i)) {
@@ -556,91 +523,74 @@ Game_Interpreter.prototype.adjustSelfVariable = function(line) {
   if (line.match(/VARIABLE[ ](\d+)/i)) varId = parseInt(RegExp.$1);
   if (varId === undefined) return;
   if (!DataManager.isSelfVariable(varId)) return;
-  var key = [mapId, eventId, 'SELF VARIABLE ' + varId];
+  var key = [mapId, eventId, "SELF VARIABLE " + varId];
   var value = $gameSelfSwitches.value(key);
   try {
     value = eval(code);
   } catch (e) {
     value = 0;
-    MageStudios.Util.displayError(e, code, 'ADJUST SELF VARIABLE SCRIPT ERROR');
+    MageStudios.Util.displayError(e, code, "ADJUST SELF VARIABLE SCRIPT ERROR");
   }
   $gameSelfSwitches.setValue(key, value);
 };
 
-// New Script Calls
-
-Game_Interpreter.prototype.getSelfSwitchValue = function(mapId, eventId, id) {
-  var key = [mapId, eventId, 'SELF SWITCH ' + id];
+Game_Interpreter.prototype.getSelfSwitchValue = function (mapId, eventId, id) {
+  var key = [mapId, eventId, "SELF SWITCH " + id];
   return $gameSelfSwitches.value(key);
 };
 
-Game_Interpreter.prototype.getSelfVariableValue = function(mapId, eventId, id) {
-  var key = [mapId, eventId, 'SELF VARIABLE ' + id];
+Game_Interpreter.prototype.getSelfVariableValue = function (
+  mapId,
+  eventId,
+  id
+) {
+  var key = [mapId, eventId, "SELF VARIABLE " + id];
   return $gameSelfSwitches.value(key);
 };
 
-Game_Interpreter.prototype.setSelfSwitchValue = function(m, e, id, value) {
-  var key = [m, e, 'SELF SWITCH ' + id];
+Game_Interpreter.prototype.setSelfSwitchValue = function (m, e, id, value) {
+  var key = [m, e, "SELF SWITCH " + id];
   $gameSelfSwitches.setValue(key, value);
 };
 
-Game_Interpreter.prototype.setSelfVariableValue = function(m, e, id, value) {
-  var key = [m, e, 'SELF VARIABLE ' + id];
+Game_Interpreter.prototype.setSelfVariableValue = function (m, e, id, value) {
+  var key = [m, e, "SELF VARIABLE " + id];
   $gameSelfSwitches.setValue(key, value);
 };
 
-//=============================================================================
-// Window_Message
-//=============================================================================
-
-MageStudios.SSV.Window_Message_startMessage = Window_Message.prototype.startMessage;
-Window_Message.prototype.startMessage = function() {
+MageStudios.SSV.Window_Message_startMessage =
+  Window_Message.prototype.startMessage;
+Window_Message.prototype.startMessage = function () {
   $gameTemp.carryPersistingSelfSwVarEvent();
   MageStudios.SSV.Window_Message_startMessage.call(this);
   $gameTemp.revertSelfSwVarEvent();
 };
 
-//=============================================================================
-// Window_NumberInput
-//=============================================================================
-
 MageStudios.SSV.Window_NumberInput_processOk =
   Window_NumberInput.prototype.processOk;
-Window_NumberInput.prototype.processOk = function() {
+Window_NumberInput.prototype.processOk = function () {
   $gameTemp.clearSelfSwVarEvBridge();
   MageStudios.SSV.Window_NumberInput_processOk.call(this);
   $gameTemp.clearSelfSwVarEvent();
 };
 
-//=============================================================================
-// Window_EventItem
-//=============================================================================
-
 MageStudios.SSV.Window_EventItem_onOk = Window_EventItem.prototype.onOk;
-Window_EventItem.prototype.onOk = function() {
+Window_EventItem.prototype.onOk = function () {
   $gameTemp.clearSelfSwVarEvBridge();
   MageStudios.SSV.Window_EventItem_onOk.call(this);
   $gameTemp.clearSelfSwVarEvent();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

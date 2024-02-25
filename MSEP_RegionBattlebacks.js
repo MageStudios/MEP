@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Region Battlebacks
-// MSEP_RegionBattlebacks.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_RegionBattlebacks = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RBB = MageStudios.RBB || {};
-MageStudios.RBB.version = 1.00
+MageStudios.RBB.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This lets you assign certain battlebacks to specific
  * region ID's when entering battle in that region.
  * @author Mage Studios Engine Plugins
@@ -320,43 +314,38 @@ MageStudios.RBB.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_RegionBattlebacks');
+MageStudios.Parameters = PluginManager.parameters("MSEP_RegionBattlebacks");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.RBBDefault1 = String(MageStudios.Parameters['Default 1']);
-MageStudios.Param.RBBDefault2 = String(MageStudios.Parameters['Default 2']);
-MageStudios.Param.RBBShip1 = String(MageStudios.Parameters['Ship 1']);
-MageStudios.Param.RBBShip2 = String(MageStudios.Parameters['Ship 2']);
-MageStudios.Param.RBBForest2 = String(MageStudios.Parameters['Forest 2']);
-MageStudios.Param.RBBCliff2 = String(MageStudios.Parameters['Cliff 2']);
-MageStudios.Param.RBBWasteland1 = String(MageStudios.Parameters['Wasteland 1']);
-MageStudios.Param.RBBWasteland2 = String(MageStudios.Parameters['Wasteland 2']);
-MageStudios.Param.RBBDirtField1 = String(MageStudios.Parameters['Dirtfield 1']);
-MageStudios.Param.RBBDesert1 = String(MageStudios.Parameters['Desert 1']);
-MageStudios.Param.RBBDesert2 = String(MageStudios.Parameters['Desert 2']);
-MageStudios.Param.RBBLaval11 = String(MageStudios.Parameters['Lava1 1']);
-MageStudios.Param.RBBLaval12 = String(MageStudios.Parameters['Lava1 2']);
-MageStudios.Param.RBBLaval21 = String(MageStudios.Parameters['Lava2 1']);
-MageStudios.Param.RBBLaval22 = String(MageStudios.Parameters['Lava2 2']);
-MageStudios.Param.RBBSnowfield1 = String(MageStudios.Parameters['Snowfield 1']);
-MageStudios.Param.RBBSnowfield2 = String(MageStudios.Parameters['Snowfield 2']);
-MageStudios.Param.RBBClouds1 = String(MageStudios.Parameters['Clouds 1']);
-MageStudios.Param.RBBClouds2 = String(MageStudios.Parameters['Clouds 2']);
-MageStudios.Param.RBBPoisonSwamp1 = String(MageStudios.Parameters['PoisonSwamp 1']);
-MageStudios.Param.RBBPoisonSwamp2 = String(MageStudios.Parameters['PoisonSwamp 2']);
+MageStudios.Param.RBBDefault1 = String(MageStudios.Parameters["Default 1"]);
+MageStudios.Param.RBBDefault2 = String(MageStudios.Parameters["Default 2"]);
+MageStudios.Param.RBBShip1 = String(MageStudios.Parameters["Ship 1"]);
+MageStudios.Param.RBBShip2 = String(MageStudios.Parameters["Ship 2"]);
+MageStudios.Param.RBBForest2 = String(MageStudios.Parameters["Forest 2"]);
+MageStudios.Param.RBBCliff2 = String(MageStudios.Parameters["Cliff 2"]);
+MageStudios.Param.RBBWasteland1 = String(MageStudios.Parameters["Wasteland 1"]);
+MageStudios.Param.RBBWasteland2 = String(MageStudios.Parameters["Wasteland 2"]);
+MageStudios.Param.RBBDirtField1 = String(MageStudios.Parameters["Dirtfield 1"]);
+MageStudios.Param.RBBDesert1 = String(MageStudios.Parameters["Desert 1"]);
+MageStudios.Param.RBBDesert2 = String(MageStudios.Parameters["Desert 2"]);
+MageStudios.Param.RBBLaval11 = String(MageStudios.Parameters["Lava1 1"]);
+MageStudios.Param.RBBLaval12 = String(MageStudios.Parameters["Lava1 2"]);
+MageStudios.Param.RBBLaval21 = String(MageStudios.Parameters["Lava2 1"]);
+MageStudios.Param.RBBLaval22 = String(MageStudios.Parameters["Lava2 2"]);
+MageStudios.Param.RBBSnowfield1 = String(MageStudios.Parameters["Snowfield 1"]);
+MageStudios.Param.RBBSnowfield2 = String(MageStudios.Parameters["Snowfield 2"]);
+MageStudios.Param.RBBClouds1 = String(MageStudios.Parameters["Clouds 1"]);
+MageStudios.Param.RBBClouds2 = String(MageStudios.Parameters["Clouds 2"]);
+MageStudios.Param.RBBPoisonSwamp1 = String(
+  MageStudios.Parameters["PoisonSwamp 1"]
+);
+MageStudios.Param.RBBPoisonSwamp2 = String(
+  MageStudios.Parameters["PoisonSwamp 2"]
+);
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.getBattlebackName = function(regionId, type) {
-  if (!$dataMap) return '';
+DataManager.getBattlebackName = function (regionId, type) {
+  if (!$dataMap) return "";
   var notedata = $dataMap.note.split(/[\r\n]+/);
   for (var i = 0; i < notedata.length; i++) {
     var line = notedata[i];
@@ -367,98 +356,100 @@ DataManager.getBattlebackName = function(regionId, type) {
       if (id === regionId && typeId === type) return name;
     }
   }
-  return '';
+  return "";
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.RBB.Game_Map_battleback1Name = Game_Map.prototype.battleback1Name;
-Game_Map.prototype.battleback1Name = function() {
+Game_Map.prototype.battleback1Name = function () {
   var battlebackName = this.getRegionBattlebackName(1);
-  if (battlebackName !== '') return battlebackName;
+  if (battlebackName !== "") return battlebackName;
   return MageStudios.RBB.Game_Map_battleback1Name.call(this);
 };
 
 MageStudios.RBB.Game_Map_battleback2Name = Game_Map.prototype.battleback2Name;
-Game_Map.prototype.battleback2Name = function() {
+Game_Map.prototype.battleback2Name = function () {
   var battlebackName = this.getRegionBattlebackName(2);
-  if (battlebackName !== '') return battlebackName;
+  if (battlebackName !== "") return battlebackName;
   return MageStudios.RBB.Game_Map_battleback2Name.call(this);
 };
 
-Game_Map.prototype.getRegionBattlebackName = function(type) {
-  if (!$dataMap) return '';
+Game_Map.prototype.getRegionBattlebackName = function (type) {
+  if (!$dataMap) return "";
   return DataManager.getBattlebackName($gamePlayer.regionId(), type);
 };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-Spriteset_Battle.prototype.terrainBattleback1Name = function(type) {
-    switch (type) {
-    case 24: case 25:
-        return MageStudios.Param.RBBWasteland1;
-    case 26: case 27:
-        return MageStudios.Param.RBBDirtField1;
-    case 32: case 33:
-        return MageStudios.Param.RBBDesert1;
+Spriteset_Battle.prototype.terrainBattleback1Name = function (type) {
+  switch (type) {
+    case 24:
+    case 25:
+      return MageStudios.Param.RBBWasteland1;
+    case 26:
+    case 27:
+      return MageStudios.Param.RBBDirtField1;
+    case 32:
+    case 33:
+      return MageStudios.Param.RBBDesert1;
     case 34:
-        return MageStudios.Param.RBBLaval11;
+      return MageStudios.Param.RBBLaval11;
     case 35:
-        return MageStudios.Param.RBBLaval21;
-    case 40: case 41:
-        return MageStudios.Param.RBBSnowfield1;
+      return MageStudios.Param.RBBLaval21;
+    case 40:
+    case 41:
+      return MageStudios.Param.RBBSnowfield1;
     case 42:
-        return MageStudios.Param.RBBClouds1;
-    case 4: case 5:
-        return MageStudios.Param.RBBPoisonSwamp1;
+      return MageStudios.Param.RBBClouds1;
+    case 4:
+    case 5:
+      return MageStudios.Param.RBBPoisonSwamp1;
     default:
-        return null;
-    }
+      return null;
+  }
 };
 
-Spriteset_Battle.prototype.terrainBattleback2Name = function(type) {
-    switch (type) {
-    case 20: case 21:
-        return MageStudios.Param.RBBForest2;
-    case 22: case 30: case 38:
-        return MageStudios.Param.RBBCliff2;
-    case 24: case 25: case 26: case 27:
-        return MageStudios.Param.RBBWasteland2;
-    case 32: case 33:
-        return MageStudios.Param.RBBDesert2;
+Spriteset_Battle.prototype.terrainBattleback2Name = function (type) {
+  switch (type) {
+    case 20:
+    case 21:
+      return MageStudios.Param.RBBForest2;
+    case 22:
+    case 30:
+    case 38:
+      return MageStudios.Param.RBBCliff2;
+    case 24:
+    case 25:
+    case 26:
+    case 27:
+      return MageStudios.Param.RBBWasteland2;
+    case 32:
+    case 33:
+      return MageStudios.Param.RBBDesert2;
     case 34:
-        return MageStudios.Param.RBBLaval12;
+      return MageStudios.Param.RBBLaval12;
     case 35:
-        return MageStudios.Param.RBBLaval22;
-    case 40: case 41:
-        return MageStudios.Param.RBBSnowfield2;
+      return MageStudios.Param.RBBLaval22;
+    case 40:
+    case 41:
+      return MageStudios.Param.RBBSnowfield2;
     case 42:
-        return MageStudios.Param.RBBClouds2;
-    case 4: case 5:
-        return MageStudios.Param.RBBPoisonSwamp2;
-    }
+      return MageStudios.Param.RBBClouds2;
+    case 4:
+    case 5:
+      return MageStudios.Param.RBBPoisonSwamp2;
+  }
 };
 
-Spriteset_Battle.prototype.defaultBattleback1Name = function() {
-    return MageStudios.Param.RBBDefault1;
+Spriteset_Battle.prototype.defaultBattleback1Name = function () {
+  return MageStudios.Param.RBBDefault1;
 };
 
-Spriteset_Battle.prototype.defaultBattleback2Name = function() {
-    return MageStudios.Param.RBBDefault2;
+Spriteset_Battle.prototype.defaultBattleback2Name = function () {
+  return MageStudios.Param.RBBDefault2;
 };
 
-Spriteset_Battle.prototype.shipBattleback1Name = function() {
-    return MageStudios.Param.RBBShip1;
+Spriteset_Battle.prototype.shipBattleback1Name = function () {
+  return MageStudios.Param.RBBShip1;
 };
 
-Spriteset_Battle.prototype.shipBattleback2Name = function() {
-    return MageStudios.Param.RBBShip2;
+Spriteset_Battle.prototype.shipBattleback2Name = function () {
+  return MageStudios.Param.RBBShip2;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

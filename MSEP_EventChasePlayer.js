@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Chase Player
-// MSEP_EventChasePlayer.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventChasePlayer = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ECP = MageStudios.ECP || {};
-MageStudios.ECP.version = 1.00;
+MageStudios.ECP.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc When a player is in the proximity of a certain event,
  * the event will start chasing or fleeing from the player.
  * @author Mage Studios Engine Plugins
@@ -114,36 +108,33 @@ MageStudios.ECP.version = 1.00;
  * frequency hasn't loaded up 'this._chaseRange = x' in its movement queue yet,
  * the event will not chase the player just yet.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EventChasePlayer');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EventChasePlayer");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.ECPSightLock = Number(MageStudios.Parameters['Sight Lock']);
-MageStudios.Param.ECPSeePlayer = String(MageStudios.Parameters['See Player']);
+MageStudios.Param.ECPSightLock = Number(MageStudios.Parameters["Sight Lock"]);
+MageStudios.Param.ECPSeePlayer = String(MageStudios.Parameters["See Player"]);
 MageStudios.Param.ECPSeePlayer = eval(MageStudios.Param.ECPSeePlayer);
-MageStudios.Param.ECPAlertTimer = Number(MageStudios.Parameters['Alert Timer']);
-MageStudios.Param.ECPAlertBalloon = Number(MageStudios.Parameters['Alert Balloon']);
-MageStudios.Param.ECPAlertSound = String(MageStudios.Parameters['Alert Sound']);
-MageStudios.Param.ECPAlertEvent = Number(MageStudios.Parameters['Alert Common Event']);
-MageStudios.Param.ECPReturn = eval(String(MageStudios.Parameters['Return After']));
-MageStudios.Param.ECPReturnWait = Number(MageStudios.Parameters['Return Wait']);
-
-//=============================================================================
-// Main Code
-//=============================================================================
+MageStudios.Param.ECPAlertTimer = Number(MageStudios.Parameters["Alert Timer"]);
+MageStudios.Param.ECPAlertBalloon = Number(
+  MageStudios.Parameters["Alert Balloon"]
+);
+MageStudios.Param.ECPAlertSound = String(MageStudios.Parameters["Alert Sound"]);
+MageStudios.Param.ECPAlertEvent = Number(
+  MageStudios.Parameters["Alert Common Event"]
+);
+MageStudios.Param.ECPReturn = eval(
+  String(MageStudios.Parameters["Return After"])
+);
+MageStudios.Param.ECPReturnWait = Number(MageStudios.Parameters["Return Wait"]);
 
 MageStudios.ECP.Game_Event_setupPage = Game_Event.prototype.setupPage;
-Game_Event.prototype.setupPage = function() {
-    MageStudios.ECP.Game_Event_setupPage.call(this);
-    this.clearChaseSettings();
+Game_Event.prototype.setupPage = function () {
+  MageStudios.ECP.Game_Event_setupPage.call(this);
+  this.clearChaseSettings();
 };
 
-Game_Event.prototype.clearChaseSettings = function() {
+Game_Event.prototype.clearChaseSettings = function () {
   this._alertBalloon = MageStudios.Param.ECPAlertBalloon;
   this._alertCommonEvent = MageStudios.Param.ECPAlertEvent;
   this._alertLock = 0;
@@ -173,60 +164,60 @@ Game_Event.prototype.clearChaseSettings = function() {
 };
 
 MageStudios.ECP.Game_Event_updateSelfMovement =
-    Game_Event.prototype.updateSelfMovement;
-Game_Event.prototype.updateSelfMovement = function() {
-    if (Imported.MSEP_StopAllMove && $gameSystem.isEventMoveStopped()) return;
-    this.updateChaseDistance();
-    this.updateFleeDistance();
-    this.updateChaseMovement();
+  Game_Event.prototype.updateSelfMovement;
+Game_Event.prototype.updateSelfMovement = function () {
+  if (Imported.MSEP_StopAllMove && $gameSystem.isEventMoveStopped()) return;
+  this.updateChaseDistance();
+  this.updateFleeDistance();
+  this.updateChaseMovement();
 };
 
 MageStudios.ECP.Game_Event_update = Game_Event.prototype.update;
-Game_Event.prototype.update = function() {
-    MageStudios.ECP.Game_Event_update.call(this);
-    this.updateAlert();
-    this.updateReturnPhase();
+Game_Event.prototype.update = function () {
+  MageStudios.ECP.Game_Event_update.call(this);
+  this.updateAlert();
+  this.updateReturnPhase();
 };
 
-Game_Event.prototype.canSeePlayer = function() {
-    if (!this._seePlayer) return false;
-    var sx = this.deltaXFrom($gamePlayer.x);
-    var sy = this.deltaYFrom($gamePlayer.y);
-    if (Math.abs(sx) > Math.abs(sy)) {
-      var direction = (sx > 0) ? 4 : 6;
-    } else {
-      var direction = (sy > 0) ? 8 : 2;
-    }
-    if (direction === this.direction()) {
-      this._alertLock = this._sightLock;
-      return true;
-    }
-    return false;
+Game_Event.prototype.canSeePlayer = function () {
+  if (!this._seePlayer) return false;
+  var sx = this.deltaXFrom($gamePlayer.x);
+  var sy = this.deltaYFrom($gamePlayer.y);
+  if (Math.abs(sx) > Math.abs(sy)) {
+    var direction = sx > 0 ? 4 : 6;
+  } else {
+    var direction = sy > 0 ? 8 : 2;
+  }
+  if (direction === this.direction()) {
+    this._alertLock = this._sightLock;
+    return true;
+  }
+  return false;
 };
 
-Game_Event.prototype.updateChaseDistance = function() {
-    if (this._erased) return;
-    if (this._chaseRange <= 0) return;
-    var dis = Math.abs(this.deltaXFrom($gamePlayer.x));
-    dis += Math.abs(this.deltaYFrom($gamePlayer.y));
-    if (this.chaseConditions(dis)) {
-      this.startEventChase();
-    } else if (this._chasePlayer) {
-      this.endEventChase();
-    }
+Game_Event.prototype.updateChaseDistance = function () {
+  if (this._erased) return;
+  if (this._chaseRange <= 0) return;
+  var dis = Math.abs(this.deltaXFrom($gamePlayer.x));
+  dis += Math.abs(this.deltaYFrom($gamePlayer.y));
+  if (this.chaseConditions(dis)) {
+    this.startEventChase();
+  } else if (this._chasePlayer) {
+    this.endEventChase();
+  }
 };
 
-Game_Event.prototype.chaseConditions = function(dis) {
-    if (dis <= this._chaseRange && this.nonSeePlayer()) {
-      this._alertLock = this._sightLock;
-      return true;
-    }
-    if (this._alertLock > 0) return true;
-    if (dis <= this._chaseRange && this.canSeePlayer()) return true;
-    return false;
+Game_Event.prototype.chaseConditions = function (dis) {
+  if (dis <= this._chaseRange && this.nonSeePlayer()) {
+    this._alertLock = this._sightLock;
+    return true;
+  }
+  if (this._alertLock > 0) return true;
+  if (dis <= this._chaseRange && this.canSeePlayer()) return true;
+  return false;
 };
 
-Game_Event.prototype.nonSeePlayer = function() {
+Game_Event.prototype.nonSeePlayer = function () {
   if (Imported.MSEP_X_EventChaseStealth) {
     if (this.meetStealthModeConditions()) {
       this.stealthClearChaseSettings();
@@ -237,159 +228,159 @@ Game_Event.prototype.nonSeePlayer = function() {
   return !this._seePlayer;
 };
 
-Game_Event.prototype.startEventChase = function() {
-    this._chasePlayer = true;
-    this.setMoveSpeed(this._chaseSpeed);
+Game_Event.prototype.startEventChase = function () {
+  this._chasePlayer = true;
+  this.setMoveSpeed(this._chaseSpeed);
 };
 
-Game_Event.prototype.endEventChase = function() {
-    this._chasePlayer = false;
-    this.setMoveSpeed(this._defaultSpeed);
-    if (this._alertTimer <= 0) this._alertPlayer = false;
-    this.startReturnPhase();
+Game_Event.prototype.endEventChase = function () {
+  this._chasePlayer = false;
+  this.setMoveSpeed(this._defaultSpeed);
+  if (this._alertTimer <= 0) this._alertPlayer = false;
+  this.startReturnPhase();
 };
 
-Game_Event.prototype.updateFleeDistance = function() {
-    if (this._erased) return;
-    if (this._fleeRange <= 0) return;
-    var dis = Math.abs(this.deltaXFrom($gamePlayer.x));
-    dis += Math.abs(this.deltaYFrom($gamePlayer.y));
-    if (this.fleeConditions(dis)) {
-      this.startEventFlee();
-    } else if (this._fleePlayer) {
-      this.endEventFlee();
+Game_Event.prototype.updateFleeDistance = function () {
+  if (this._erased) return;
+  if (this._fleeRange <= 0) return;
+  var dis = Math.abs(this.deltaXFrom($gamePlayer.x));
+  dis += Math.abs(this.deltaYFrom($gamePlayer.y));
+  if (this.fleeConditions(dis)) {
+    this.startEventFlee();
+  } else if (this._fleePlayer) {
+    this.endEventFlee();
+  }
+};
+
+Game_Event.prototype.fleeConditions = function (dis) {
+  if (this._alertLock > 0) return true;
+  if (dis <= this._fleeRange && this.canSeePlayer()) return true;
+  if (dis <= this._fleeRange && !this._seePlayer) {
+    this._alertLock = this._sightLock;
+    return true;
+  }
+  return false;
+};
+
+Game_Event.prototype.startEventFlee = function () {
+  this._fleePlayer = true;
+  this.setMoveSpeed(this._fleeSpeed);
+};
+
+Game_Event.prototype.endEventFlee = function () {
+  this._fleePlayer = false;
+  this.setMoveSpeed(this._defaultSpeed);
+  if (this._alertTimer <= 0) this._alertPlayer = false;
+  this.startReturnPhase();
+};
+
+Game_Event.prototype.updateChaseMovement = function () {
+  if (this._staggerCount > 0) {
+    return this._staggerCount--;
+  }
+  if (this._stopCount > 0 && this._chasePlayer) {
+    var direction = this.findDirectionTo($gamePlayer.x, $gamePlayer.y);
+    if (direction > 0) {
+      var x = this._x;
+      var y = this._y;
+      this.moveStraight(direction);
+      if (x === this._x && y === this._y) this._staggerCount = 20;
     }
+  } else if (this._stopCount > 0 && this._fleePlayer) {
+    this.updateFleeMovement();
+  } else if (this._returnPhase) {
+    this.updateMoveReturnAfter();
+  } else {
+    MageStudios.ECP.Game_Event_updateSelfMovement.call(this);
+  }
 };
 
-Game_Event.prototype.fleeConditions = function(dis) {
-    if (this._alertLock > 0) return true;
-    if (dis <= this._fleeRange && this.canSeePlayer()) return true;
-    if (dis <= this._fleeRange && !this._seePlayer) {
-      this._alertLock = this._sightLock;
-      return true;
-    }
-    return false;
-};
-
-Game_Event.prototype.startEventFlee = function() {
-    this._fleePlayer = true;
-    this.setMoveSpeed(this._fleeSpeed);
-};
-
-Game_Event.prototype.endEventFlee = function() {
-    this._fleePlayer = false;
-    this.setMoveSpeed(this._defaultSpeed);
-    if (this._alertTimer <= 0) this._alertPlayer = false;
-    this.startReturnPhase();
-};
-
-Game_Event.prototype.updateChaseMovement = function() {
-    if (this._staggerCount > 0) {
-      return this._staggerCount--;
-    }
-    if (this._stopCount > 0 && this._chasePlayer) {
-      var direction = this.findDirectionTo($gamePlayer.x, $gamePlayer.y);
-      if (direction > 0) {
-        var x = this._x;
-        var y = this._y;
-        this.moveStraight(direction);
-        if (x === this._x && y === this._y) this._staggerCount = 20;
-      }
-    } else if (this._stopCount > 0 && this._fleePlayer) {
-      this.updateFleeMovement();
-    } else if (this._returnPhase) {
-      this.updateMoveReturnAfter();
-    } else {
-      MageStudios.ECP.Game_Event_updateSelfMovement.call(this);
-    }
-};
-
-Game_Event.prototype.updateFleeMovement = function() {
-    switch (Math.randomInt(6)) {
-    case 0: case 1: case 2: case 3: case 4:
+Game_Event.prototype.updateFleeMovement = function () {
+  switch (Math.randomInt(6)) {
+    case 0:
+    case 1:
+    case 2:
+    case 3:
+    case 4:
       this.moveAwayFromPlayer();
       break;
     case 5:
       this.moveRandom();
       break;
-    }
+  }
 };
 
-Game_Event.prototype.updateAlert = function() {
-    if (this._erased) return;
-    this._alertLock--;
-    if (this.alertConditions()) this.activateAlert();
-    if (this._alertPlayer) this._alertTimer--;
+Game_Event.prototype.updateAlert = function () {
+  if (this._erased) return;
+  this._alertLock--;
+  if (this.alertConditions()) this.activateAlert();
+  if (this._alertPlayer) this._alertTimer--;
 };
 
-Game_Event.prototype.alertConditions = function() {
-    return (this._chasePlayer || this._fleePlayer) && !this._alertPlayer;
+Game_Event.prototype.alertConditions = function () {
+  return (this._chasePlayer || this._fleePlayer) && !this._alertPlayer;
 };
 
-Game_Event.prototype.activateAlert = function() {
-    if (this._alertBalloon >= 0) this.requestBalloon(this._alertBalloon);
-    this._alertPlayer = true;
-    this._alertTimer = MageStudios.Param.ECPAlertTimer;
-    this.playAlertSound();
-    this.playAlertCommonEvent();
+Game_Event.prototype.activateAlert = function () {
+  if (this._alertBalloon >= 0) this.requestBalloon(this._alertBalloon);
+  this._alertPlayer = true;
+  this._alertTimer = MageStudios.Param.ECPAlertTimer;
+  this.playAlertSound();
+  this.playAlertCommonEvent();
 };
 
-Game_Event.prototype.playAlertSound = function() {
-    if (this._alertSound === '') return;
-    var sound = {
-      name:   this._alertSound,
-      volume: this._alertSoundVol,
-      pitch:  this._alertSoundPitch,
-      pan:    this._alertSoundPan
-    };
-    AudioManager.playSe(sound);
+Game_Event.prototype.playAlertSound = function () {
+  if (this._alertSound === "") return;
+  var sound = {
+    name: this._alertSound,
+    volume: this._alertSoundVol,
+    pitch: this._alertSoundPitch,
+    pan: this._alertSoundPan,
+  };
+  AudioManager.playSe(sound);
 };
 
-Game_Event.prototype.playAlertCommonEvent = function() {
-    if (this._alertCommonEvent <= 0) return;
-    $gameTemp.reserveCommonEvent(this._alertCommonEvent);
+Game_Event.prototype.playAlertCommonEvent = function () {
+  if (this._alertCommonEvent <= 0) return;
+  $gameTemp.reserveCommonEvent(this._alertCommonEvent);
 };
 
-Game_Event.prototype.startReturnPhase = function() {
-    if (!this._returnAfter) return;
-    this._returnPhase = true;
-    this._returnFrames = this._returnWait;
+Game_Event.prototype.startReturnPhase = function () {
+  if (!this._returnAfter) return;
+  this._returnPhase = true;
+  this._returnFrames = this._returnWait;
 };
 
-Game_Event.prototype.updateReturnPhase = function() {
-    if (this._returnPhase) this._returnFrames--;
+Game_Event.prototype.updateReturnPhase = function () {
+  if (this._returnPhase) this._returnFrames--;
 };
 
-Game_Event.prototype.updateMoveReturnAfter = function() {
-    if (this._returnFrames > 0) return;
-    var sx = this.deltaXFrom(this._startLocationX);
-    var sy = this.deltaYFrom(this._startLocationY);
-    if (Math.abs(sx) > Math.abs(sy)) {
-      if (Math.randomInt(6) <= 4) {
-        this.moveStraight(sx > 0 ? 4 : 6);
-        if (!this.isMovementSucceeded() && sy !== 0) {
-          this.moveStraight(sy > 0 ? 8 : 2);
-        }
-      } else {
-        this.moveRandom();
-      }
-    } else if (sy !== 0) {
-      if (Math.randomInt(6) <= 4) {
+Game_Event.prototype.updateMoveReturnAfter = function () {
+  if (this._returnFrames > 0) return;
+  var sx = this.deltaXFrom(this._startLocationX);
+  var sy = this.deltaYFrom(this._startLocationY);
+  if (Math.abs(sx) > Math.abs(sy)) {
+    if (Math.randomInt(6) <= 4) {
+      this.moveStraight(sx > 0 ? 4 : 6);
+      if (!this.isMovementSucceeded() && sy !== 0) {
         this.moveStraight(sy > 0 ? 8 : 2);
-        if (!this.isMovementSucceeded() && sx !== 0) {
-          this.moveStraight(sx > 0 ? 4 : 6);
-        }
-      } else {
-        this.moveRandom();
       }
+    } else {
+      this.moveRandom();
     }
-    if (sx === 0 && sy === 0) {
-      this._returnPhase = false;
-      this._returnFrames = 0;
-      this._direction = this._startLocationDir;
+  } else if (sy !== 0) {
+    if (Math.randomInt(6) <= 4) {
+      this.moveStraight(sy > 0 ? 8 : 2);
+      if (!this.isMovementSucceeded() && sx !== 0) {
+        this.moveStraight(sx > 0 ? 4 : 6);
+      }
+    } else {
+      this.moveRandom();
     }
+  }
+  if (sx === 0 && sy === 0) {
+    this._returnPhase = false;
+    this._returnFrames = 0;
+    this._direction = this._startLocationDir;
+  }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Template
-// MSEP_SpecialParamFormula.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SpecialParamFormula = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SParam = MageStudios.SParam || {};
-MageStudios.SParam.version = 1.00;
+MageStudios.SParam.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Control the formulas of special parameters for
  * TGR, GRD, REC, PHA, MCR, TCR, PDR, MDR, FDR, EXR.
  * @author Mage Studios Engine Plugins
@@ -271,7 +265,7 @@ MageStudios.SParam.version = 1.00;
  * --- REC ---
  * (base + plus) * rate + flat + ((user.def + user.mdf) / 2000)
  * - This will increase the user's recovery rate from DEF and MDF.
- * 
+ *
  * --- MCR ---
  * (base + plus) * rate + flat - (user.mat / 3000)
  * - This will cause the MP cost to reduce from the user having more MAT.
@@ -327,7 +321,7 @@ MageStudios.SParam.version = 1.00;
  *
  * You can use the following JavaScript functions to alter the special
  * parameter values of actors. In these listed functions, the 'actor' variable
- * is to be referenced by an actor: 
+ * is to be referenced by an actor:
  *
  * ie. actor = $gameActors.actor(3);
  *
@@ -407,7 +401,7 @@ MageStudios.SParam.version = 1.00;
  * - Lunatic Mode fail safes added.
  *
  * Version 1.03:
- * - Fixed an issue with the battler.setSParam functions that made them take 
+ * - Fixed an issue with the battler.setSParam functions that made them take
  * the wrong value due caching issues.
  *
  * Version 1.02:
@@ -419,37 +413,54 @@ MageStudios.SParam.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_SpecialParamFormula');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SpecialParamFormula");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SParamFormula = [];
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['TGR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['GRD Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['REC Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['PHA Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['MCR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['TCR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['PDR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['MDR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['FDR Formula']));
-MageStudios.Param.SParamFormula.push(String(MageStudios.Parameters['EXR Formula']));
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["TGR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["GRD Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["REC Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["PHA Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["MCR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["TCR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["PDR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["MDR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["FDR Formula"])
+);
+MageStudios.Param.SParamFormula.push(
+  String(MageStudios.Parameters["EXR Formula"])
+);
 
-MageStudios.Param.SParamGrdCalc = String(MageStudios.Parameters['Guard Calculation']);
-MageStudios.Param.SParamFloorDmg = String(MageStudios.Parameters['Basic Floor Damage']);
-MageStudios.Param.SParamReserveExp = String(MageStudios.Parameters['Reserve EXP Rate']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.SParamGrdCalc = String(
+  MageStudios.Parameters["Guard Calculation"]
+);
+MageStudios.Param.SParamFloorDmg = String(
+  MageStudios.Parameters["Basic Floor Damage"]
+);
+MageStudios.Param.SParamReserveExp = String(
+  MageStudios.Parameters["Reserve EXP Rate"]
+);
 
 MageStudios.SParam.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.SParam.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_SpecialParamFormula) {
     this.processSParamNotetags($dataActors);
@@ -463,7 +474,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processSParamNotetags = function(group) {
+DataManager.processSParamNotetags = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -481,7 +492,7 @@ DataManager.processSParamNotetags = function(group) {
         if (id !== null) obj.plusSParams[id] = rate;
       } else if (line.match(/<(.*) PLUS:[ ]([\+\-]\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getSParamId(text);
         if (id !== null) obj.plusSParams[id] = rate;
       } else if (line.match(/<(.*) RATE:[ ](\d+)([%％])>/i)) {
@@ -491,7 +502,7 @@ DataManager.processSParamNotetags = function(group) {
         if (id !== null) obj.rateSParams[id] = rate;
       } else if (line.match(/<(.*) RATE:[ ](\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getSParamId(text);
         if (id !== null) obj.rateSParams[id] = rate;
       } else if (line.match(/<(.*) FLAT:[ ]([\+\-]\d+)([%％])>/i)) {
@@ -501,7 +512,7 @@ DataManager.processSParamNotetags = function(group) {
         if (id !== null) obj.flatSParams[id] = rate;
       } else if (line.match(/<(.*) FLAT:[ ]([\+\-]\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getSParamId(text);
         if (id !== null) obj.flatSParams[id] = rate;
       }
@@ -509,447 +520,424 @@ DataManager.processSParamNotetags = function(group) {
   }
 };
 
-DataManager.getSParamId = function(string) {
-    if (['TGR', 'TARGET RATE'].contains(string)) {
-      return 0;
-    } else if (['GRD', 'GUARD EFFECT'].contains(string)) {
-      return 1;
-    } else if (['REC', 'RECOVERY', 'RECOVERY RATE'].contains(string)) {
-      return 2;
-    } else if (['PHA', 'PHARMACOLOGY', 'ITEM EFFECT'].contains(string)) {
-      return 3;
-    } else if (['MCR', 'MP COST', 'MP COST RATE'].contains(string)) {
-      return 4;
-    } else if (['TCR', 'TP COST', 'TP COST RATE'].contains(string)) {
-      return 5;
-    } else if (['PDR', 'PHYSICAL DAMAGE RATE'].contains(string)) {
-      return 6;
-    } else if (['MDR', 'MAGICAL DAMAGE RATE'].contains(string)) {
-      return 7;
-    } else if (['FDR', 'FLOOR DAMAGE RATE'].contains(string)) {
-      return 8;
-    } else if (['EXR', 'EXPERIENCE RATE', 'EXPERIENCE GAIN'].contains(string)) {
-      return 9;
-    } else {
-      return null;
-    }
-};
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.SParam.Game_BattlerBase_initMembers =
-    Game_BattlerBase.prototype.initMembers; 
-Game_BattlerBase.prototype.initMembers = function() {
-    MageStudios.SParam.Game_BattlerBase_initMembers.call(this);
-    this.clearSParamPlus();
-};
-
-Game_BattlerBase.prototype.clearSParamPlus = function(id) {
-    this._sparamPlus = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-};
-
-MageStudios.SParam.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    this._sparam = undefined;
-    MageStudios.SParam.Game_BattlerBase_refresh.call(this);
-};
-
-MageStudios.SParam.Game_BattlerBase_sparam = Game_BattlerBase.prototype.sparam;
-Game_BattlerBase.prototype.sparam = function(id) {
-    if (this._sparam && this._sparam[id] !== undefined) return this._sparam[id];
-    if (this._sparam === undefined) this._sparam = {};
-    var base = MageStudios.SParam.Game_BattlerBase_sparam.call(this, id);
-    var plus = this.sparamPlus(id);
-    var rate = this.sparamRate(id);
-    var flat = this.sparamFlat(id);
-    var a = this;
-    var user = this;
-    var subject = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.SParamFormula[id];
-    try {
-      this._sparam[id] = eval(code);
-    } catch (e) {
-      this._sparam[id] = 0;
-      MageStudios.Util.displayError(e, code, 'SPECIAL PARAM FORMULA ERROR');
-    }
-    return this._sparam[id];
-};
-
-Game_BattlerBase.prototype.sparamPlus = function(id) {
-    if (this._sparamPlus === undefined) this.clearSParamPlus();
-    return this._sparamPlus[id];
-};
-
-Game_BattlerBase.prototype.sparamRate = function(id) {
-    return 1;
-};
-
-Game_BattlerBase.prototype.sparamFlat = function(id) {
+DataManager.getSParamId = function (string) {
+  if (["TGR", "TARGET RATE"].contains(string)) {
     return 0;
-};
-
-Game_BattlerBase.prototype.setSParam = function(id, value) {
-    if (this._sparamPlus === undefined) this.clearSParamPlus();
-    this._sparam = {};
-    this._sparamPlus[id] = 0;
-    this._sparamPlus[id] = value - this.sparam(id);
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.setTgr = function(value) {
-    this.setSParam(0, value);
-};
-
-Game_BattlerBase.prototype.setGrd = function(value) {
-    this.setSParam(1, value);
-};
-
-Game_BattlerBase.prototype.setRec = function(value) {
-    this.setSParam(2, value);
-};
-
-Game_BattlerBase.prototype.setPha = function(value) {
-    this.setSParam(3, value);
-};
-
-Game_BattlerBase.prototype.setMcr = function(value) {
-    this.setSParam(4, value);
-};
-
-Game_BattlerBase.prototype.setTcr = function(value) {
-    this.setSParam(5, value);
-};
-
-Game_BattlerBase.prototype.setPdr = function(value) {
-    this.setSParam(6, value);
-};
-
-Game_BattlerBase.prototype.setMdr = function(value) {
-    this.setSParam(7, value);
-};
-
-Game_BattlerBase.prototype.setFdr = function(value) {
-    this.setSParam(8, value);
-};
-
-Game_BattlerBase.prototype.setExr = function(value) {
-    this.setSParam(9, value);
-};
-
-Game_BattlerBase.prototype.setSParamPlus = function(id, value) {
-    if (this._sparamPlus === undefined) this.clearSParamPlus();
-    this._sparamPlus[id] = value;
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.setTgrPlus = function(value) {
-    this.setSParamPlus(0, value);
-};
-
-Game_BattlerBase.prototype.setGrdPlus = function(value) {
-    this.setSParamPlus(1, value);
-};
-
-Game_BattlerBase.prototype.setRecPlus = function(value) {
-    this.setSParamPlus(2, value);
-};
-
-Game_BattlerBase.prototype.setPhaPlus = function(value) {
-    this.setSParamPlus(3, value);
-};
-
-Game_BattlerBase.prototype.setMcrPlus = function(value) {
-    this.setSParamPlus(4, value);
-};
-
-Game_BattlerBase.prototype.setTcrPlus = function(value) {
-    this.setSParamPlus(5, value);
-};
-
-Game_BattlerBase.prototype.setPdrPlus = function(value) {
-    this.setSParamPlus(6, value);
-};
-
-Game_BattlerBase.prototype.setMdrPlus = function(value) {
-    this.setSParamPlus(7, value);
-};
-
-Game_BattlerBase.prototype.setFdrPlus = function(value) {
-    this.setSParamPlus(8, value);
-};
-
-Game_BattlerBase.prototype.setExrPlus = function(value) {
-    this.setSParamPlus(9, value);
-};
-
-Game_BattlerBase.prototype.addSParam = function(id, value) {
-    if (this._sparamPlus === undefined) this.clearSParamPlus();
-    this._sparamPlus[id] += value;
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.addTgr = function(value) {
-    this.addSParam(0, value);
-};
-
-Game_BattlerBase.prototype.addGrd = function(value) {
-    this.addSParam(1, value);
-};
-
-Game_BattlerBase.prototype.addRec = function(value) {
-    this.addSParam(2, value);
-};
-
-Game_BattlerBase.prototype.addPha = function(value) {
-    this.addSParam(3, value);
-};
-
-Game_BattlerBase.prototype.addMcr = function(value) {
-    this.addSParam(4, value);
-};
-
-Game_BattlerBase.prototype.addTcr = function(value) {
-    this.addSParam(5, value);
-};
-
-Game_BattlerBase.prototype.addPdr = function(value) {
-    this.addSParam(6, value);
-};
-
-Game_BattlerBase.prototype.addMdr = function(value) {
-    this.addSParam(7, value);
-};
-
-Game_BattlerBase.prototype.addFdr = function(value) {
-    this.addSParam(8, value);
-};
-
-Game_BattlerBase.prototype.addExr = function(value) {
-    this.addSParam(9, value);
-};
-
-Game_BattlerBase.prototype.minusTgr = function(value) {
-    this.addSParam(0, -value);
-};
-
-Game_BattlerBase.prototype.minusGrd = function(value) {
-    this.addSParam(1, -value);
-};
-
-Game_BattlerBase.prototype.minusRec = function(value) {
-    this.addSParam(2, -value);
-};
-
-Game_BattlerBase.prototype.minusPha = function(value) {
-    this.addSParam(3, -value);
-};
-
-Game_BattlerBase.prototype.minusMcr = function(value) {
-    this.addSParam(4, -value);
-};
-
-Game_BattlerBase.prototype.minusTcr = function(value) {
-    this.addSParam(5, -value);
-};
-
-Game_BattlerBase.prototype.minusPdr = function(value) {
-    this.addSParam(6, -value);
-};
-
-Game_BattlerBase.prototype.minusMdr = function(value) {
-    this.addSParam(7, -value);
-};
-
-Game_BattlerBase.prototype.minusFdr = function(value) {
-    this.addSParam(8, -value);
-};
-
-Game_BattlerBase.prototype.minusExr = function(value) {
-    this.addSParam(9, -value);
-};
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.sparamPlus = function(id) {
-    var value = Game_BattlerBase.prototype.sparamPlus.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.plusSParams) value += obj.plusSParams[id];
-    }
-    return value;
-};
-
-Game_Battler.prototype.sparamRate = function(id) {
-    var value = Game_BattlerBase.prototype.sparamRate.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.rateSParams) value *= obj.rateSParams[id];
-    }
-    return value;
-};
-
-Game_Battler.prototype.sparamFlat = function(id) {
-    var value = Game_BattlerBase.prototype.sparamFlat.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.flatSParams) value += obj.flatSParams[id];
-    }
-    return value;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.SParam.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.SParam.Game_Actor_setup.call(this, actorId);
-    this.clearSParamPlus();
-};
-
-Game_Actor.prototype.sparamPlus = function(id) {
-    var value = Game_Battler.prototype.sparamPlus.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.plusSParams) value += obj.plusSParams[id];
-    }
-    value += this.actor().plusSParams[id];
-    value += this.currentClass().plusSParams[id];
-    return value;
-};
-
-Game_Actor.prototype.sparamRate = function(id) {
-    var value = Game_Battler.prototype.sparamRate.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.rateSParams) value *= obj.rateSParams[id];
-    }
-    value *= this.actor().rateSParams[id];
-    value *= this.currentClass().rateSParams[id];
-    return value;
-};
-
-Game_Actor.prototype.sparamFlat = function(id) {
-    var value = Game_Battler.prototype.sparamFlat.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.flatSParams) value += obj.flatSParams[id];
-    }
-    value += this.actor().flatSParams[id];
-    value += this.currentClass().flatSParams[id];
-    return value;
-};
-
-Game_Actor.prototype.basicFloorDamage = function() {
-    var value = 0;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var b = this;
-    var target = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.SParamFloorDmg;
-    try {
-      value = eval(code);
-    } catch (e) {
-      value = 0;
-      MageStudios.Util.displayError(e, code, 'FLOOR DAMAGE FORMULA ERROR');
-    }
-    return value;
-};
-
-Game_Actor.prototype.benchMembersExpRate = function() {
-    if (!$dataSystem.optExtraExp) return 0;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.SParamReserveExp;
-    try {
-      var rate = eval(code);
-    } catch (e) {
-      var rate = 1;
-      MageStudios.Util.displayError(e, code, 'BENCH MEMBERS EXP RATE FORMULA ERROR');
-    }
-    return rate;
-};
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.sparamPlus = function(id) {
-    var value = Game_Battler.prototype.sparamPlus.call(this, id);
-    value += this.enemy().plusSParams[id];
-    return value;
-};
-
-Game_Enemy.prototype.sparamRate = function(id) {
-    var value = Game_Battler.prototype.sparamRate.call(this, id);
-    value *= this.enemy().rateSParams[id];
-    return value;
-};
-
-Game_Enemy.prototype.sparamFlat = function(id) {
-    var value = Game_Battler.prototype.sparamFlat.call(this, id);
-    value += this.enemy().flatSParams[id];
-    return value;
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.applyGuard = function(damage, target) {
-    var item = this.item();
-    var skill = this.item()
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.SParamGrdCalc;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'SPECIAL PARAM GUARD FORMULA ERROR');
-      return 1;
-    }
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  } else if (["GRD", "GUARD EFFECT"].contains(string)) {
+    return 1;
+  } else if (["REC", "RECOVERY", "RECOVERY RATE"].contains(string)) {
+    return 2;
+  } else if (["PHA", "PHARMACOLOGY", "ITEM EFFECT"].contains(string)) {
+    return 3;
+  } else if (["MCR", "MP COST", "MP COST RATE"].contains(string)) {
+    return 4;
+  } else if (["TCR", "TP COST", "TP COST RATE"].contains(string)) {
+    return 5;
+  } else if (["PDR", "PHYSICAL DAMAGE RATE"].contains(string)) {
+    return 6;
+  } else if (["MDR", "MAGICAL DAMAGE RATE"].contains(string)) {
+    return 7;
+  } else if (["FDR", "FLOOR DAMAGE RATE"].contains(string)) {
+    return 8;
+  } else if (["EXR", "EXPERIENCE RATE", "EXPERIENCE GAIN"].contains(string)) {
+    return 9;
+  } else {
+    return null;
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+MageStudios.SParam.Game_BattlerBase_initMembers =
+  Game_BattlerBase.prototype.initMembers;
+Game_BattlerBase.prototype.initMembers = function () {
+  MageStudios.SParam.Game_BattlerBase_initMembers.call(this);
+  this.clearSParamPlus();
+};
+
+Game_BattlerBase.prototype.clearSParamPlus = function (id) {
+  this._sparamPlus = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+};
+
+MageStudios.SParam.Game_BattlerBase_refresh =
+  Game_BattlerBase.prototype.refresh;
+Game_BattlerBase.prototype.refresh = function () {
+  this._sparam = undefined;
+  MageStudios.SParam.Game_BattlerBase_refresh.call(this);
+};
+
+MageStudios.SParam.Game_BattlerBase_sparam = Game_BattlerBase.prototype.sparam;
+Game_BattlerBase.prototype.sparam = function (id) {
+  if (this._sparam && this._sparam[id] !== undefined) return this._sparam[id];
+  if (this._sparam === undefined) this._sparam = {};
+  var base = MageStudios.SParam.Game_BattlerBase_sparam.call(this, id);
+  var plus = this.sparamPlus(id);
+  var rate = this.sparamRate(id);
+  var flat = this.sparamFlat(id);
+  var a = this;
+  var user = this;
+  var subject = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.SParamFormula[id];
+  try {
+    this._sparam[id] = eval(code);
+  } catch (e) {
+    this._sparam[id] = 0;
+    MageStudios.Util.displayError(e, code, "SPECIAL PARAM FORMULA ERROR");
+  }
+  return this._sparam[id];
+};
+
+Game_BattlerBase.prototype.sparamPlus = function (id) {
+  if (this._sparamPlus === undefined) this.clearSParamPlus();
+  return this._sparamPlus[id];
+};
+
+Game_BattlerBase.prototype.sparamRate = function (id) {
+  return 1;
+};
+
+Game_BattlerBase.prototype.sparamFlat = function (id) {
+  return 0;
+};
+
+Game_BattlerBase.prototype.setSParam = function (id, value) {
+  if (this._sparamPlus === undefined) this.clearSParamPlus();
+  this._sparam = {};
+  this._sparamPlus[id] = 0;
+  this._sparamPlus[id] = value - this.sparam(id);
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.setTgr = function (value) {
+  this.setSParam(0, value);
+};
+
+Game_BattlerBase.prototype.setGrd = function (value) {
+  this.setSParam(1, value);
+};
+
+Game_BattlerBase.prototype.setRec = function (value) {
+  this.setSParam(2, value);
+};
+
+Game_BattlerBase.prototype.setPha = function (value) {
+  this.setSParam(3, value);
+};
+
+Game_BattlerBase.prototype.setMcr = function (value) {
+  this.setSParam(4, value);
+};
+
+Game_BattlerBase.prototype.setTcr = function (value) {
+  this.setSParam(5, value);
+};
+
+Game_BattlerBase.prototype.setPdr = function (value) {
+  this.setSParam(6, value);
+};
+
+Game_BattlerBase.prototype.setMdr = function (value) {
+  this.setSParam(7, value);
+};
+
+Game_BattlerBase.prototype.setFdr = function (value) {
+  this.setSParam(8, value);
+};
+
+Game_BattlerBase.prototype.setExr = function (value) {
+  this.setSParam(9, value);
+};
+
+Game_BattlerBase.prototype.setSParamPlus = function (id, value) {
+  if (this._sparamPlus === undefined) this.clearSParamPlus();
+  this._sparamPlus[id] = value;
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.setTgrPlus = function (value) {
+  this.setSParamPlus(0, value);
+};
+
+Game_BattlerBase.prototype.setGrdPlus = function (value) {
+  this.setSParamPlus(1, value);
+};
+
+Game_BattlerBase.prototype.setRecPlus = function (value) {
+  this.setSParamPlus(2, value);
+};
+
+Game_BattlerBase.prototype.setPhaPlus = function (value) {
+  this.setSParamPlus(3, value);
+};
+
+Game_BattlerBase.prototype.setMcrPlus = function (value) {
+  this.setSParamPlus(4, value);
+};
+
+Game_BattlerBase.prototype.setTcrPlus = function (value) {
+  this.setSParamPlus(5, value);
+};
+
+Game_BattlerBase.prototype.setPdrPlus = function (value) {
+  this.setSParamPlus(6, value);
+};
+
+Game_BattlerBase.prototype.setMdrPlus = function (value) {
+  this.setSParamPlus(7, value);
+};
+
+Game_BattlerBase.prototype.setFdrPlus = function (value) {
+  this.setSParamPlus(8, value);
+};
+
+Game_BattlerBase.prototype.setExrPlus = function (value) {
+  this.setSParamPlus(9, value);
+};
+
+Game_BattlerBase.prototype.addSParam = function (id, value) {
+  if (this._sparamPlus === undefined) this.clearSParamPlus();
+  this._sparamPlus[id] += value;
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.addTgr = function (value) {
+  this.addSParam(0, value);
+};
+
+Game_BattlerBase.prototype.addGrd = function (value) {
+  this.addSParam(1, value);
+};
+
+Game_BattlerBase.prototype.addRec = function (value) {
+  this.addSParam(2, value);
+};
+
+Game_BattlerBase.prototype.addPha = function (value) {
+  this.addSParam(3, value);
+};
+
+Game_BattlerBase.prototype.addMcr = function (value) {
+  this.addSParam(4, value);
+};
+
+Game_BattlerBase.prototype.addTcr = function (value) {
+  this.addSParam(5, value);
+};
+
+Game_BattlerBase.prototype.addPdr = function (value) {
+  this.addSParam(6, value);
+};
+
+Game_BattlerBase.prototype.addMdr = function (value) {
+  this.addSParam(7, value);
+};
+
+Game_BattlerBase.prototype.addFdr = function (value) {
+  this.addSParam(8, value);
+};
+
+Game_BattlerBase.prototype.addExr = function (value) {
+  this.addSParam(9, value);
+};
+
+Game_BattlerBase.prototype.minusTgr = function (value) {
+  this.addSParam(0, -value);
+};
+
+Game_BattlerBase.prototype.minusGrd = function (value) {
+  this.addSParam(1, -value);
+};
+
+Game_BattlerBase.prototype.minusRec = function (value) {
+  this.addSParam(2, -value);
+};
+
+Game_BattlerBase.prototype.minusPha = function (value) {
+  this.addSParam(3, -value);
+};
+
+Game_BattlerBase.prototype.minusMcr = function (value) {
+  this.addSParam(4, -value);
+};
+
+Game_BattlerBase.prototype.minusTcr = function (value) {
+  this.addSParam(5, -value);
+};
+
+Game_BattlerBase.prototype.minusPdr = function (value) {
+  this.addSParam(6, -value);
+};
+
+Game_BattlerBase.prototype.minusMdr = function (value) {
+  this.addSParam(7, -value);
+};
+
+Game_BattlerBase.prototype.minusFdr = function (value) {
+  this.addSParam(8, -value);
+};
+
+Game_BattlerBase.prototype.minusExr = function (value) {
+  this.addSParam(9, -value);
+};
+
+Game_Battler.prototype.sparamPlus = function (id) {
+  var value = Game_BattlerBase.prototype.sparamPlus.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.plusSParams) value += obj.plusSParams[id];
+  }
+  return value;
+};
+
+Game_Battler.prototype.sparamRate = function (id) {
+  var value = Game_BattlerBase.prototype.sparamRate.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.rateSParams) value *= obj.rateSParams[id];
+  }
+  return value;
+};
+
+Game_Battler.prototype.sparamFlat = function (id) {
+  var value = Game_BattlerBase.prototype.sparamFlat.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.flatSParams) value += obj.flatSParams[id];
+  }
+  return value;
+};
+
+MageStudios.SParam.Game_Actor_setup = Game_Actor.prototype.setup;
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.SParam.Game_Actor_setup.call(this, actorId);
+  this.clearSParamPlus();
+};
+
+Game_Actor.prototype.sparamPlus = function (id) {
+  var value = Game_Battler.prototype.sparamPlus.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.plusSParams) value += obj.plusSParams[id];
+  }
+  value += this.actor().plusSParams[id];
+  value += this.currentClass().plusSParams[id];
+  return value;
+};
+
+Game_Actor.prototype.sparamRate = function (id) {
+  var value = Game_Battler.prototype.sparamRate.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.rateSParams) value *= obj.rateSParams[id];
+  }
+  value *= this.actor().rateSParams[id];
+  value *= this.currentClass().rateSParams[id];
+  return value;
+};
+
+Game_Actor.prototype.sparamFlat = function (id) {
+  var value = Game_Battler.prototype.sparamFlat.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.flatSParams) value += obj.flatSParams[id];
+  }
+  value += this.actor().flatSParams[id];
+  value += this.currentClass().flatSParams[id];
+  return value;
+};
+
+Game_Actor.prototype.basicFloorDamage = function () {
+  var value = 0;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var b = this;
+  var target = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.SParamFloorDmg;
+  try {
+    value = eval(code);
+  } catch (e) {
+    value = 0;
+    MageStudios.Util.displayError(e, code, "FLOOR DAMAGE FORMULA ERROR");
+  }
+  return value;
+};
+
+Game_Actor.prototype.benchMembersExpRate = function () {
+  if (!$dataSystem.optExtraExp) return 0;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.SParamReserveExp;
+  try {
+    var rate = eval(code);
+  } catch (e) {
+    var rate = 1;
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "BENCH MEMBERS EXP RATE FORMULA ERROR"
+    );
+  }
+  return rate;
+};
+
+Game_Enemy.prototype.sparamPlus = function (id) {
+  var value = Game_Battler.prototype.sparamPlus.call(this, id);
+  value += this.enemy().plusSParams[id];
+  return value;
+};
+
+Game_Enemy.prototype.sparamRate = function (id) {
+  var value = Game_Battler.prototype.sparamRate.call(this, id);
+  value *= this.enemy().rateSParams[id];
+  return value;
+};
+
+Game_Enemy.prototype.sparamFlat = function (id) {
+  var value = Game_Battler.prototype.sparamFlat.call(this, id);
+  value += this.enemy().flatSParams[id];
+  return value;
+};
+
+Game_Action.prototype.applyGuard = function (damage, target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.SParamGrdCalc;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "SPECIAL PARAM GUARD FORMULA ERROR");
+    return 1;
+  }
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Extra Parameter Formula
-// MSEP_ExtraParamFormula.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ExtraParamFormula = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.XParam = MageStudios.XParam || {};
-MageStudios.XParam.version = 1.00;
+MageStudios.XParam.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Control the formulas of the extra parameters for
  * HIT, EVA, CRI, CEV, MEV, MRF, CNT, HRG, MRG, and TRG.
  * @author Mage Studios Engine Plugins
@@ -96,7 +90,7 @@ MageStudios.XParam.version = 1.00;
  * will be considered a MISS.
  *
  * ---
- * 
+ *
  * EVA - Evasion Rate%
  * - This determines the physical evasion rate against any incoming physical
  * actions. If the HIT value passes, the action is then passed to the EVA check
@@ -290,7 +284,7 @@ MageStudios.XParam.version = 1.00;
  *
  * You can use the following JavaScript functions to alter the extra parameter
  * values of actors. In these listed functions, the 'actor' variable is to be
- * referenced by an actor: 
+ * referenced by an actor:
  *
  * ie. actor = $gameActors.actor(3));
  *
@@ -367,7 +361,7 @@ MageStudios.XParam.version = 1.00;
  * - Documentation update to fix typos.
  *
  * Version 1.02:
- * - Fixed an issue with the battler.setXParam functions that made them take 
+ * - Fixed an issue with the battler.setXParam functions that made them take
  * the wrong value due caching issues.
  *
  * Version 1.01:
@@ -376,33 +370,44 @@ MageStudios.XParam.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ExtraParamFormula');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ExtraParamFormula");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.XParamFormula = [];
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['HIT Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['EVA Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['CRI Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['CEV Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['MEV Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['MRF Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['CNT Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['HRG Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['MRG Formula']));
-MageStudios.Param.XParamFormula.push(String(MageStudios.Parameters['TRG Formula']));
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["HIT Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["EVA Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["CRI Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["CEV Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["MEV Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["MRF Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["CNT Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["HRG Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["MRG Formula"])
+);
+MageStudios.Param.XParamFormula.push(
+  String(MageStudios.Parameters["TRG Formula"])
+);
 
 MageStudios.XParam.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.XParam.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_ExtraParamFormula) {
     this.processXParamNotetags($dataActors);
@@ -416,7 +421,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processXParamNotetags = function(group) {
+DataManager.processXParamNotetags = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -434,7 +439,7 @@ DataManager.processXParamNotetags = function(group) {
         if (id !== null) obj.plusXParams[id] = rate;
       } else if (line.match(/<(.*) PLUS:[ ]([\+\-]\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getXParamId(text);
         if (id !== null) obj.plusXParams[id] = rate;
       } else if (line.match(/<(.*) RATE:[ ](\d+)([%％])>/i)) {
@@ -444,7 +449,7 @@ DataManager.processXParamNotetags = function(group) {
         if (id !== null) obj.rateXParams[id] = rate;
       } else if (line.match(/<(.*) RATE:[ ](\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getXParamId(text);
         if (id !== null) obj.rateXParams[id] = rate;
       } else if (line.match(/<(.*) FLAT:[ ]([\+\-]\d+)([%％])>/i)) {
@@ -454,7 +459,7 @@ DataManager.processXParamNotetags = function(group) {
         if (id !== null) obj.flatXParams[id] = rate;
       } else if (line.match(/<(.*) FLAT:[ ]([\+\-]\d+).(\d+)>/i)) {
         var text = String(RegExp.$1).toUpperCase();
-        var rate = parseFloat(String(RegExp.$2) + '.' + String(RegExp.$3));
+        var rate = parseFloat(String(RegExp.$2) + "." + String(RegExp.$3));
         var id = this.getXParamId(text);
         if (id !== null) obj.flatXParams[id] = rate;
       }
@@ -462,388 +467,365 @@ DataManager.processXParamNotetags = function(group) {
   }
 };
 
-DataManager.getXParamId = function(string) {
-    if (['HIT', 'HIT RATE'].contains(string)) {
-      return 0;
-    } else if (['EVA', 'EVADE', 'EVASION'].contains(string)) {
-      return 1;
-    } else if (['CRI', 'CRITICAL', 'CRITICAL HIT'].contains(string)) {
-      return 2;
-    } else if (['CEV', 'CRITICAL EVADE', 'CRITICAL EVASION'].contains(string)) {
-      return 3;
-    } else if (['MEV', 'MAGIC EVADE', 'MAGIC EVASION'].contains(string)) {
-      return 4;
-    } else if (['MRF', 'MAGIC REFLECT', 'MAGIC REFLECTION'].contains(string)) {
-      return 5;
-    } else if (['CNT', 'COUNTER', 'COUNTERATTACK'].contains(string)) {
-      return 6;
-    } else if (['HRG', 'HP REGEN', 'HP REGENERATION'].contains(string)) {
-      return 7;
-    } else if (['MRG', 'MP REGEN', 'MP REGENERATION'].contains(string)) {
-      return 8;
-    } else if (['TRG', 'TP REGEN', 'TP REGENERATION'].contains(string)) {
-      return 9;
-    } else {
-      return null;
-    }
-};
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.XParam.Game_BattlerBase_initMembers =
-    Game_BattlerBase.prototype.initMembers; 
-Game_BattlerBase.prototype.initMembers = function() {
-    MageStudios.XParam.Game_BattlerBase_initMembers.call(this);
-    this.clearXParamPlus();
-};
-
-Game_BattlerBase.prototype.clearXParamPlus = function(id) {
-    this._xparamPlus = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-};
-
-MageStudios.XParam.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    this._xparam = undefined;
-    MageStudios.XParam.Game_BattlerBase_refresh.call(this);
-};
-
-MageStudios.XParam.Game_BattlerBase_xparam = Game_BattlerBase.prototype.xparam;
-Game_BattlerBase.prototype.xparam = function(id) {
-    if (this._xparam && this._xparam[id] !== undefined) return this._xparam[id];
-    if (this._xparam === undefined) this._xparam = {};
-    var base = MageStudios.XParam.Game_BattlerBase_xparam.call(this, id);
-    var plus = this.xparamPlus(id);
-    var rate = this.xparamRate(id);
-    var flat = this.xparamFlat(id);;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = MageStudios.Param.XParamFormula[id];
-    try {
-      this._xparam[id] = eval(code);
-    } catch (e) {
-      this._xparam[id] = 0;
-      MageStudios.Util.displayError(e, code, 'EXTRA PARAM FORMULA ERROR');
-    }
-    return this._xparam[id];
-};
-
-Game_BattlerBase.prototype.xparamPlus = function(id) {
-    if (this._xparamPlus === undefined) this.clearXParamPlus();
-    return this._xparamPlus[id];
-};
-
-Game_BattlerBase.prototype.xparamRate = function(id) {
-    return 1;
-};
-
-Game_BattlerBase.prototype.xparamFlat = function(id) {
+DataManager.getXParamId = function (string) {
+  if (["HIT", "HIT RATE"].contains(string)) {
     return 0;
-};
-
-Game_BattlerBase.prototype.setXParam = function(id, value) {
-    if (this._xparamPlus === undefined) this.clearXParamPlus();
-    this._xparam = {};
-    this._xparamPlus[id] = 0;
-    this._xparamPlus[id] = value - this.xparam(id);
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.setHit = function(value) {
-    this.setXParam(0, value);
-};
-
-Game_BattlerBase.prototype.setEva = function(value) {
-    this.setXParam(1, value);
-};
-
-Game_BattlerBase.prototype.setCri = function(value) {
-    this.setXParam(2, value);
-};
-
-Game_BattlerBase.prototype.setCev = function(value) {
-    this.setXParam(3, value);
-};
-
-Game_BattlerBase.prototype.setMev = function(value) {
-    this.setXParam(4, value);
-};
-
-Game_BattlerBase.prototype.setMrf = function(value) {
-    this.setXParam(5, value);
-};
-
-Game_BattlerBase.prototype.setCnt = function(value) {
-    this.setXParam(6, value);
-};
-
-Game_BattlerBase.prototype.setHrg = function(value) {
-    this.setXParam(7, value);
-};
-
-Game_BattlerBase.prototype.setMrg = function(value) {
-    this.setXParam(8, value);
-};
-
-Game_BattlerBase.prototype.setTrg = function(value) {
-    this.setXParam(9, value);
-};
-
-Game_BattlerBase.prototype.setXParamPlus = function(id, value) {
-    if (this._xparamPlus === undefined) this.clearXParamPlus();
-    this._xparamPlus[id] = value;
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.setHitPlus = function(value) {
-    this.setXParamPlus(0, value);
-};
-
-Game_BattlerBase.prototype.setEvaPlus = function(value) {
-    this.setXParamPlus(1, value);
-};
-
-Game_BattlerBase.prototype.setCriPlus = function(value) {
-    this.setXParamPlus(2, value);
-};
-
-Game_BattlerBase.prototype.setCevPlus = function(value) {
-    this.setXParamPlus(3, value);
-};
-
-Game_BattlerBase.prototype.setMevPlus = function(value) {
-    this.setXParamPlus(4, value);
-};
-
-Game_BattlerBase.prototype.setMrfPlus = function(value) {
-    this.setXParamPlus(5, value);
-};
-
-Game_BattlerBase.prototype.setCntPlus = function(value) {
-    this.setXParamPlus(6, value);
-};
-
-Game_BattlerBase.prototype.setHrgPlus = function(value) {
-    this.setXParamPlus(7, value);
-};
-
-Game_BattlerBase.prototype.setMrgPlus = function(value) {
-    this.setXParamPlus(8, value);
-};
-
-Game_BattlerBase.prototype.setTrgPlus = function(value) {
-    this.setXParamPlus(9, value);
-};
-
-Game_BattlerBase.prototype.addXParam = function(id, value) {
-    if (this._xparamPlus === undefined) this.clearXParamPlus();
-    this._xparamPlus[id] += value;
-    this.refresh();
-};
-
-Game_BattlerBase.prototype.addHit = function(value) {
-    this.addXParam(0, value);
-};
-
-Game_BattlerBase.prototype.addEva = function(value) {
-    this.addXParam(1, value);
-};
-
-Game_BattlerBase.prototype.addCri = function(value) {
-    this.addXParam(2, value);
-};
-
-Game_BattlerBase.prototype.addCev = function(value) {
-    this.addXParam(3, value);
-};
-
-Game_BattlerBase.prototype.addMev = function(value) {
-    this.addXParam(4, value);
-};
-
-Game_BattlerBase.prototype.addMrf = function(value) {
-    this.addXParam(5, value);
-};
-
-Game_BattlerBase.prototype.addCnt = function(value) {
-    this.addXParam(6, value);
-};
-
-Game_BattlerBase.prototype.addHrg = function(value) {
-    this.addXParam(7, value);
-};
-
-Game_BattlerBase.prototype.addMrg = function(value) {
-    this.addXParam(8, value);
-};
-
-Game_BattlerBase.prototype.addTrg = function(value) {
-    this.addXParam(9, value);
-};
-
-Game_BattlerBase.prototype.minusHit = function(value) {
-    this.addXParam(0, -value);
-};
-
-Game_BattlerBase.prototype.minusEva = function(value) {
-    this.addXParam(1, -value);
-};
-
-Game_BattlerBase.prototype.minusCri = function(value) {
-    this.addXParam(2, -value);
-};
-
-Game_BattlerBase.prototype.minusCev = function(value) {
-    this.addXParam(3, -value);
-};
-
-Game_BattlerBase.prototype.minusMev = function(value) {
-    this.addXParam(4, -value);
-};
-
-Game_BattlerBase.prototype.minusMrf = function(value) {
-    this.addXParam(5, -value);
-};
-
-Game_BattlerBase.prototype.minusCnt = function(value) {
-    this.addXParam(6, -value);
-};
-
-Game_BattlerBase.prototype.minusHrg = function(value) {
-    this.addXParam(7, -value);
-};
-
-Game_BattlerBase.prototype.minusMrg = function(value) {
-    this.addXParam(8, -value);
-};
-
-Game_BattlerBase.prototype.minusTrg = function(value) {
-    this.addXParam(9, -value);
-};
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.xparamPlus = function(id) {
-    var value = Game_BattlerBase.prototype.xparamPlus.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.plusXParams) value += obj.plusXParams[id];
-    }
-    return value;
-};
-
-Game_Battler.prototype.xparamRate = function(id) {
-    var value = Game_BattlerBase.prototype.xparamRate.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.rateXParams) value *= obj.rateXParams[id];
-    }
-    return value;
-};
-
-Game_Battler.prototype.xparamFlat = function(id) {
-    var value = Game_BattlerBase.prototype.xparamFlat.call(this, id);
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.flatXParams) value += obj.flatXParams[id];
-    }
-    return value;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.XParam.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.XParam.Game_Actor_setup.call(this, actorId);
-    this.clearXParamPlus();
-};
-
-Game_Actor.prototype.xparamPlus = function(id) {
-    var value = Game_Battler.prototype.xparamPlus.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.plusXParams) value += obj.plusXParams[id];
-    }
-    value += this.actor().plusXParams[id];
-    value += this.currentClass().plusXParams[id];
-    return value;
-};
-
-Game_Actor.prototype.xparamRate = function(id) {
-    var value = Game_Battler.prototype.xparamRate.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.rateXParams) value *= obj.rateXParams[id];
-    }
-    value *= this.actor().rateXParams[id];
-    value *= this.currentClass().rateXParams[id];
-    return value;
-};
-
-Game_Actor.prototype.xparamFlat = function(id) {
-    var value = Game_Battler.prototype.xparamFlat.call(this, id);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.flatXParams) value += obj.flatXParams[id];
-    }
-    value += this.actor().flatXParams[id];
-    value += this.currentClass().flatXParams[id];
-    return value;
-};
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.xparamPlus = function(id) {
-    var value = Game_Battler.prototype.xparamPlus.call(this, id);
-    value += this.enemy().plusXParams[id];
-    return value;
-};
-
-Game_Enemy.prototype.xparamRate = function(id) {
-    var value = Game_Battler.prototype.xparamRate.call(this, id);
-    value *= this.enemy().rateXParams[id];
-    return value;
-};
-
-Game_Enemy.prototype.xparamFlat = function(id) {
-    var value = Game_Battler.prototype.xparamFlat.call(this, id);
-    value += this.enemy().flatXParams[id];
-    return value;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  } else if (["EVA", "EVADE", "EVASION"].contains(string)) {
+    return 1;
+  } else if (["CRI", "CRITICAL", "CRITICAL HIT"].contains(string)) {
+    return 2;
+  } else if (["CEV", "CRITICAL EVADE", "CRITICAL EVASION"].contains(string)) {
+    return 3;
+  } else if (["MEV", "MAGIC EVADE", "MAGIC EVASION"].contains(string)) {
+    return 4;
+  } else if (["MRF", "MAGIC REFLECT", "MAGIC REFLECTION"].contains(string)) {
+    return 5;
+  } else if (["CNT", "COUNTER", "COUNTERATTACK"].contains(string)) {
+    return 6;
+  } else if (["HRG", "HP REGEN", "HP REGENERATION"].contains(string)) {
+    return 7;
+  } else if (["MRG", "MP REGEN", "MP REGENERATION"].contains(string)) {
+    return 8;
+  } else if (["TRG", "TP REGEN", "TP REGENERATION"].contains(string)) {
+    return 9;
+  } else {
+    return null;
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+MageStudios.XParam.Game_BattlerBase_initMembers =
+  Game_BattlerBase.prototype.initMembers;
+Game_BattlerBase.prototype.initMembers = function () {
+  MageStudios.XParam.Game_BattlerBase_initMembers.call(this);
+  this.clearXParamPlus();
+};
+
+Game_BattlerBase.prototype.clearXParamPlus = function (id) {
+  this._xparamPlus = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+};
+
+MageStudios.XParam.Game_BattlerBase_refresh =
+  Game_BattlerBase.prototype.refresh;
+Game_BattlerBase.prototype.refresh = function () {
+  this._xparam = undefined;
+  MageStudios.XParam.Game_BattlerBase_refresh.call(this);
+};
+
+MageStudios.XParam.Game_BattlerBase_xparam = Game_BattlerBase.prototype.xparam;
+Game_BattlerBase.prototype.xparam = function (id) {
+  if (this._xparam && this._xparam[id] !== undefined) return this._xparam[id];
+  if (this._xparam === undefined) this._xparam = {};
+  var base = MageStudios.XParam.Game_BattlerBase_xparam.call(this, id);
+  var plus = this.xparamPlus(id);
+  var rate = this.xparamRate(id);
+  var flat = this.xparamFlat(id);
+  var a = this;
+  var user = this;
+  var subject = this;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = MageStudios.Param.XParamFormula[id];
+  try {
+    this._xparam[id] = eval(code);
+  } catch (e) {
+    this._xparam[id] = 0;
+    MageStudios.Util.displayError(e, code, "EXTRA PARAM FORMULA ERROR");
+  }
+  return this._xparam[id];
+};
+
+Game_BattlerBase.prototype.xparamPlus = function (id) {
+  if (this._xparamPlus === undefined) this.clearXParamPlus();
+  return this._xparamPlus[id];
+};
+
+Game_BattlerBase.prototype.xparamRate = function (id) {
+  return 1;
+};
+
+Game_BattlerBase.prototype.xparamFlat = function (id) {
+  return 0;
+};
+
+Game_BattlerBase.prototype.setXParam = function (id, value) {
+  if (this._xparamPlus === undefined) this.clearXParamPlus();
+  this._xparam = {};
+  this._xparamPlus[id] = 0;
+  this._xparamPlus[id] = value - this.xparam(id);
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.setHit = function (value) {
+  this.setXParam(0, value);
+};
+
+Game_BattlerBase.prototype.setEva = function (value) {
+  this.setXParam(1, value);
+};
+
+Game_BattlerBase.prototype.setCri = function (value) {
+  this.setXParam(2, value);
+};
+
+Game_BattlerBase.prototype.setCev = function (value) {
+  this.setXParam(3, value);
+};
+
+Game_BattlerBase.prototype.setMev = function (value) {
+  this.setXParam(4, value);
+};
+
+Game_BattlerBase.prototype.setMrf = function (value) {
+  this.setXParam(5, value);
+};
+
+Game_BattlerBase.prototype.setCnt = function (value) {
+  this.setXParam(6, value);
+};
+
+Game_BattlerBase.prototype.setHrg = function (value) {
+  this.setXParam(7, value);
+};
+
+Game_BattlerBase.prototype.setMrg = function (value) {
+  this.setXParam(8, value);
+};
+
+Game_BattlerBase.prototype.setTrg = function (value) {
+  this.setXParam(9, value);
+};
+
+Game_BattlerBase.prototype.setXParamPlus = function (id, value) {
+  if (this._xparamPlus === undefined) this.clearXParamPlus();
+  this._xparamPlus[id] = value;
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.setHitPlus = function (value) {
+  this.setXParamPlus(0, value);
+};
+
+Game_BattlerBase.prototype.setEvaPlus = function (value) {
+  this.setXParamPlus(1, value);
+};
+
+Game_BattlerBase.prototype.setCriPlus = function (value) {
+  this.setXParamPlus(2, value);
+};
+
+Game_BattlerBase.prototype.setCevPlus = function (value) {
+  this.setXParamPlus(3, value);
+};
+
+Game_BattlerBase.prototype.setMevPlus = function (value) {
+  this.setXParamPlus(4, value);
+};
+
+Game_BattlerBase.prototype.setMrfPlus = function (value) {
+  this.setXParamPlus(5, value);
+};
+
+Game_BattlerBase.prototype.setCntPlus = function (value) {
+  this.setXParamPlus(6, value);
+};
+
+Game_BattlerBase.prototype.setHrgPlus = function (value) {
+  this.setXParamPlus(7, value);
+};
+
+Game_BattlerBase.prototype.setMrgPlus = function (value) {
+  this.setXParamPlus(8, value);
+};
+
+Game_BattlerBase.prototype.setTrgPlus = function (value) {
+  this.setXParamPlus(9, value);
+};
+
+Game_BattlerBase.prototype.addXParam = function (id, value) {
+  if (this._xparamPlus === undefined) this.clearXParamPlus();
+  this._xparamPlus[id] += value;
+  this.refresh();
+};
+
+Game_BattlerBase.prototype.addHit = function (value) {
+  this.addXParam(0, value);
+};
+
+Game_BattlerBase.prototype.addEva = function (value) {
+  this.addXParam(1, value);
+};
+
+Game_BattlerBase.prototype.addCri = function (value) {
+  this.addXParam(2, value);
+};
+
+Game_BattlerBase.prototype.addCev = function (value) {
+  this.addXParam(3, value);
+};
+
+Game_BattlerBase.prototype.addMev = function (value) {
+  this.addXParam(4, value);
+};
+
+Game_BattlerBase.prototype.addMrf = function (value) {
+  this.addXParam(5, value);
+};
+
+Game_BattlerBase.prototype.addCnt = function (value) {
+  this.addXParam(6, value);
+};
+
+Game_BattlerBase.prototype.addHrg = function (value) {
+  this.addXParam(7, value);
+};
+
+Game_BattlerBase.prototype.addMrg = function (value) {
+  this.addXParam(8, value);
+};
+
+Game_BattlerBase.prototype.addTrg = function (value) {
+  this.addXParam(9, value);
+};
+
+Game_BattlerBase.prototype.minusHit = function (value) {
+  this.addXParam(0, -value);
+};
+
+Game_BattlerBase.prototype.minusEva = function (value) {
+  this.addXParam(1, -value);
+};
+
+Game_BattlerBase.prototype.minusCri = function (value) {
+  this.addXParam(2, -value);
+};
+
+Game_BattlerBase.prototype.minusCev = function (value) {
+  this.addXParam(3, -value);
+};
+
+Game_BattlerBase.prototype.minusMev = function (value) {
+  this.addXParam(4, -value);
+};
+
+Game_BattlerBase.prototype.minusMrf = function (value) {
+  this.addXParam(5, -value);
+};
+
+Game_BattlerBase.prototype.minusCnt = function (value) {
+  this.addXParam(6, -value);
+};
+
+Game_BattlerBase.prototype.minusHrg = function (value) {
+  this.addXParam(7, -value);
+};
+
+Game_BattlerBase.prototype.minusMrg = function (value) {
+  this.addXParam(8, -value);
+};
+
+Game_BattlerBase.prototype.minusTrg = function (value) {
+  this.addXParam(9, -value);
+};
+
+Game_Battler.prototype.xparamPlus = function (id) {
+  var value = Game_BattlerBase.prototype.xparamPlus.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.plusXParams) value += obj.plusXParams[id];
+  }
+  return value;
+};
+
+Game_Battler.prototype.xparamRate = function (id) {
+  var value = Game_BattlerBase.prototype.xparamRate.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.rateXParams) value *= obj.rateXParams[id];
+  }
+  return value;
+};
+
+Game_Battler.prototype.xparamFlat = function (id) {
+  var value = Game_BattlerBase.prototype.xparamFlat.call(this, id);
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.flatXParams) value += obj.flatXParams[id];
+  }
+  return value;
+};
+
+MageStudios.XParam.Game_Actor_setup = Game_Actor.prototype.setup;
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.XParam.Game_Actor_setup.call(this, actorId);
+  this.clearXParamPlus();
+};
+
+Game_Actor.prototype.xparamPlus = function (id) {
+  var value = Game_Battler.prototype.xparamPlus.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.plusXParams) value += obj.plusXParams[id];
+  }
+  value += this.actor().plusXParams[id];
+  value += this.currentClass().plusXParams[id];
+  return value;
+};
+
+Game_Actor.prototype.xparamRate = function (id) {
+  var value = Game_Battler.prototype.xparamRate.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.rateXParams) value *= obj.rateXParams[id];
+  }
+  value *= this.actor().rateXParams[id];
+  value *= this.currentClass().rateXParams[id];
+  return value;
+};
+
+Game_Actor.prototype.xparamFlat = function (id) {
+  var value = Game_Battler.prototype.xparamFlat.call(this, id);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.flatXParams) value += obj.flatXParams[id];
+  }
+  value += this.actor().flatXParams[id];
+  value += this.currentClass().flatXParams[id];
+  return value;
+};
+
+Game_Enemy.prototype.xparamPlus = function (id) {
+  var value = Game_Battler.prototype.xparamPlus.call(this, id);
+  value += this.enemy().plusXParams[id];
+  return value;
+};
+
+Game_Enemy.prototype.xparamRate = function (id) {
+  var value = Game_Battler.prototype.xparamRate.call(this, id);
+  value *= this.enemy().rateXParams[id];
+  return value;
+};
+
+Game_Enemy.prototype.xparamFlat = function (id) {
+  var value = Game_Battler.prototype.xparamFlat.call(this, id);
+  value += this.enemy().flatXParams[id];
+  return value;
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

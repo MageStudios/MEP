@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Encounter Aid
-// MSEP_EventEncounterAid.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventEncounter = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EEA = MageStudios.EEA || {};
-MageStudios.EEA.version = 1.00;
+MageStudios.EEA.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin helps make eventable encounters easier
  * and determine player position relative to the event.
  * @author Mage Studios Engine Plugins
@@ -78,13 +72,8 @@ MageStudios.EEA.version = 1.00;
  * means that even if you were to misspell or put a single letter in the wrong
  * case, the effect will cease to work as this is code we're dealing with.
  */
-//=============================================================================
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.processEEANotetags1 = function(obj) {
+DataManager.processEEANotetags1 = function (obj) {
   var notedata = obj.note.split(/[\r\n]+/);
   obj.encounterDirectionLock = false;
   obj.encounterFollowerTrigger = false;
@@ -99,235 +88,231 @@ DataManager.processEEANotetags1 = function(obj) {
   }
 };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
-Game_CharacterBase.prototype.debugShowDirections = function(ev) {
-    return;
-    console.log(' This X: ' + this.x + ',  This Y: ' + this.y);
-    console.log('Event X: ' + ev.x + ', Event Y: ' + ev.y);
+Game_CharacterBase.prototype.debugShowDirections = function (ev) {
+  return;
+  console.log(" This X: " + this.x + ",  This Y: " + this.y);
+  console.log("Event X: " + ev.x + ", Event Y: " + ev.y);
 };
 
-Game_CharacterBase.prototype.isFacingTowards = function(ev) {
-    switch (this.direction()) {
-    case 1: // Down Left
+Game_CharacterBase.prototype.isFacingTowards = function (ev) {
+  switch (this.direction()) {
+    case 1:
       return [8, 9, 6].contains(ev.direction());
       break;
-    case 2: // Down
+    case 2:
       return [7, 8, 9].contains(ev.direction());
       break;
-    case 3: // Down Right
+    case 3:
       return [4, 7, 8].contains(ev.direction());
       break;
-    case 4: // Left
+    case 4:
       return [9, 6, 3].contains(ev.direction());
       break;
-    case 6: // Right
+    case 6:
       return [7, 4, 1].contains(ev.direction());
       break;
-    case 7: // Up Left
+    case 7:
       return [2, 3, 6].contains(ev.direction());
       break;
-    case 8: // Up
+    case 8:
       return [1, 2, 3].contains(ev.direction());
       break;
-    case 9: // Up Right
+    case 9:
       return [4, 1, 2].contains(ev.direction());
       break;
-    }
-    return false;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.isFacingAway = function(ev) {
-    switch (this.direction()) {
-    case 1: // Down Left
+Game_CharacterBase.prototype.isFacingAway = function (ev) {
+  switch (this.direction()) {
+    case 1:
       return [4, 1, 2].contains(ev.direction());
       break;
-    case 2: // Down
+    case 2:
       return [1, 2, 3].contains(ev.direction());
       break;
-    case 3: // Down Right
+    case 3:
       return [2, 3, 6].contains(ev.direction());
       break;
-    case 4: // Left
+    case 4:
       return [7, 4, 1].contains(ev.direction());
       break;
-    case 6: // Right
+    case 6:
       return [9, 6, 3].contains(ev.direction());
       break;
-    case 7: // Up Left
+    case 7:
       return [4, 7, 8].contains(ev.direction());
       break;
-    case 8: // Up
+    case 8:
       return [7, 8, 9].contains(ev.direction());
       break;
-    case 9: // Up Right
+    case 9:
       return [8, 9, 6].contains(ev.direction());
       break;
-    }
-    return false;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.isFacingSideways = function(ev) {
-    switch (this.direction()) {
-    case 1: // Down Left
+Game_CharacterBase.prototype.isFacingSideways = function (ev) {
+  switch (this.direction()) {
+    case 1:
       return [4, 7, 8, 2, 3, 6].contains(ev.direction());
       break;
-    case 2: // Down
+    case 2:
       return [7, 4, 1, 9, 6, 3].contains(ev.direction());
       break;
-    case 3: // Down Right
+    case 3:
       return [4, 1, 2, 8, 9, 6].contains(ev.direction());
       break;
-    case 4: // Left
+    case 4:
       return [7, 8, 9, 1, 2, 3].contains(ev.direction());
       break;
-    case 6: // Right
+    case 6:
       return [7, 8, 9, 1, 2, 3].contains(ev.direction());
       break;
-    case 7: // Up Left
+    case 7:
       return [4, 1, 2, 8, 9, 6].contains(ev.direction());
       break;
-    case 8: // Up
+    case 8:
       return [7, 4, 1, 9, 6, 3].contains(ev.direction());
       break;
-    case 9: // Up Right
+    case 9:
       return [4, 7, 8, 2, 3, 6].contains(ev.direction());
       break;
-    }
-    return false;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.isPositionFrontOf = function(ev) {
-    this.debugShowDirections(ev);
-    switch (this.direction()) {
-    case 1: // Down Left
+Game_CharacterBase.prototype.isPositionFrontOf = function (ev) {
+  this.debugShowDirections(ev);
+  switch (this.direction()) {
+    case 1:
       return ev.y > this.y;
       break;
-    case 2: // Down
+    case 2:
       return ev.y > this.y;
       break;
-    case 3: // Down Right
+    case 3:
       return ev.y > this.y;
       break;
-    case 4: // Left
+    case 4:
       return ev.x < this.x;
       break;
-    case 6: // Right
+    case 6:
       return ev.x > this.x;
       break;
-    case 7: // Up Left
+    case 7:
       return ev.y < this.y;
       break;
-    case 8: // Up
+    case 8:
       return ev.y < this.y;
       break;
-    case 9: // Up Right
+    case 9:
       return ev.y < this.y;
       break;
-    }
-    return false;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.isPositionBackOf = function(ev) {
-    this.debugShowDirections(ev);
-    switch (this.direction()) {
-    case 1: // Down Left
+Game_CharacterBase.prototype.isPositionBackOf = function (ev) {
+  this.debugShowDirections(ev);
+  switch (this.direction()) {
+    case 1:
       return ev.y < this.y;
       break;
-    case 2: // Down
+    case 2:
       return ev.y < this.y;
       break;
-    case 3: // Down Right
+    case 3:
       return ev.y < this.y;
       break;
-    case 4: // Left
+    case 4:
       return ev.x > this.x;
       break;
-    case 6: // Right
+    case 6:
       return ev.x < this.x;
       break;
-    case 7: // Up Left
+    case 7:
       return ev.y > this.y;
       break;
-    case 8: // Up
+    case 8:
       return ev.y > this.y;
       break;
-    case 9: // Up Right
+    case 9:
       return ev.y > this.y;
       break;
-    }
-    return false;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.isPositionSideOf = function(ev) {
-    this.debugShowDirections(ev);
-    switch (this.direction()) {
-    case 1: // Down Left
-      return (this.x < ev.x && this.y > ev.y) ||
-             (this.x > ev.x && this.y < ev.y)
+Game_CharacterBase.prototype.isPositionSideOf = function (ev) {
+  this.debugShowDirections(ev);
+  switch (this.direction()) {
+    case 1:
+      return (
+        (this.x < ev.x && this.y > ev.y) || (this.x > ev.x && this.y < ev.y)
+      );
       break;
-    case 2: // Down
+    case 2:
       return this.x !== ev.x;
       break;
-    case 3: // Down Right
-      return (this.x > ev.x && this.y > ev.y) ||
-             (this.x < ev.x && this.y < ev.y)
+    case 3:
+      return (
+        (this.x > ev.x && this.y > ev.y) || (this.x < ev.x && this.y < ev.y)
+      );
       break;
-    case 4: // Left
+    case 4:
       return this.y !== ev.y;
       break;
-    case 6: // Right
+    case 6:
       return this.y !== ev.y;
       break;
-    case 7: // Up Left
-      return (this.x > ev.x && this.y > ev.y) ||
-             (this.x < ev.x && this.y < ev.y)
+    case 7:
+      return (
+        (this.x > ev.x && this.y > ev.y) || (this.x < ev.x && this.y < ev.y)
+      );
       break;
-    case 8: // Up
+    case 8:
       return this.x !== ev.x;
       break;
-    case 9: // Up Right
-      return (this.x < ev.x && this.y > ev.y) ||
-             (this.x > ev.x && this.y < ev.y)
+    case 9:
+      return (
+        (this.x < ev.x && this.y > ev.y) || (this.x > ev.x && this.y < ev.y)
+      );
       break;
-    }
-    return false;
+  }
+  return false;
 };
-
-//=============================================================================
-// Game_Event
-//=============================================================================
 
 MageStudios.EEA.Game_Event_start = Game_Event.prototype.start;
-Game_Event.prototype.start = function() {
-    if (this.isEncounterDirectionLocked()) {
-      var list = this.list();
-      if (list && list.length > 1) {
-        this._starting = true;
-        if (this.isTriggerIn([0,1,2])) this.encounterLock();
-      }
-    } else {
-      MageStudios.EEA.Game_Event_start.call(this);
+Game_Event.prototype.start = function () {
+  if (this.isEncounterDirectionLocked()) {
+    var list = this.list();
+    if (list && list.length > 1) {
+      this._starting = true;
+      if (this.isTriggerIn([0, 1, 2])) this.encounterLock();
     }
+  } else {
+    MageStudios.EEA.Game_Event_start.call(this);
+  }
 };
 
-Game_Event.prototype.encounterLock = function() {
-    this._prelockDirection = this.direction();
-    this._locked = true;
+Game_Event.prototype.encounterLock = function () {
+  this._prelockDirection = this.direction();
+  this._locked = true;
 };
 
-Game_Event.prototype.isEncounterDirectionLocked = function() {
-    if (this.event().encounterDirectionLock === undefined) {
-      DataManager.processEEANotetags1(this.event());
-    }
-    return this.event().encounterDirectionLock;
+Game_Event.prototype.isEncounterDirectionLocked = function () {
+  if (this.event().encounterDirectionLock === undefined) {
+    DataManager.processEEANotetags1(this.event());
+  }
+  return this.event().encounterDirectionLock;
 };
 
 MageStudios.EEA.Game_Event_checkEventTriggerTouch =
   Game_Event.prototype.checkEventTriggerTouch;
-Game_Event.prototype.checkEventTriggerTouch = function(x, y) {
+Game_Event.prototype.checkEventTriggerTouch = function (x, y) {
   MageStudios.EEA.Game_Event_checkEventTriggerTouch.call(this, x, y);
   if ($gameMap.isEventRunning()) return;
   if (this._trigger !== 2) return;
@@ -342,59 +327,51 @@ Game_Event.prototype.checkEventTriggerTouch = function(x, y) {
   }
 };
 
-Game_Event.prototype.isFollowerTriggerTouch = function() {
-    if (this.event().encounterFollowerTrigger === undefined) {
-      DataManager.processEEANotetags1(this.event());
-    }
-    return this.event().encounterFollowerTrigger;
+Game_Event.prototype.isFollowerTriggerTouch = function () {
+  if (this.event().encounterFollowerTrigger === undefined) {
+    DataManager.processEEANotetags1(this.event());
+  }
+  return this.event().encounterFollowerTrigger;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-Game_Interpreter.prototype.checkEventFacingPlayerFront = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;    
-    return ev.isFacingTowards(pl) && pl.isPositionFrontOf(ev);
+Game_Interpreter.prototype.checkEventFacingPlayerFront = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return ev.isFacingTowards(pl) && pl.isPositionFrontOf(ev);
 };
 
-Game_Interpreter.prototype.checkEventFacingPlayerBack = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;
-    return ev.isFacingAway(pl) && pl.isPositionBackOf(ev);
+Game_Interpreter.prototype.checkEventFacingPlayerBack = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return ev.isFacingAway(pl) && pl.isPositionBackOf(ev);
 };
 
-Game_Interpreter.prototype.checkEventFacingPlayerSide = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;
-    return ev.isFacingSideways(pl) && pl.isPositionSideOf(ev);
+Game_Interpreter.prototype.checkEventFacingPlayerSide = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return ev.isFacingSideways(pl) && pl.isPositionSideOf(ev);
 };
 
-Game_Interpreter.prototype.checkPlayerFacingEventFront = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;
-    return pl.isFacingTowards(ev) && ev.isPositionFrontOf(pl);
+Game_Interpreter.prototype.checkPlayerFacingEventFront = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return pl.isFacingTowards(ev) && ev.isPositionFrontOf(pl);
 };
 
-Game_Interpreter.prototype.checkPlayerFacingEventBack = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;
-    return pl.isFacingAway(ev) && ev.isPositionBackOf(pl);
+Game_Interpreter.prototype.checkPlayerFacingEventBack = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return pl.isFacingAway(ev) && ev.isPositionBackOf(pl);
 };
 
-Game_Interpreter.prototype.checkPlayerFacingEventSide = function() {
-    var ev = $gameMap.event(this.eventId());
-    if (!ev) return false;
-    var pl = $gamePlayer;
-    return pl.isFacingSideways(ev) && ev.isPositionSideOf(pl);
+Game_Interpreter.prototype.checkPlayerFacingEventSide = function () {
+  var ev = $gameMap.event(this.eventId());
+  if (!ev) return false;
+  var pl = $gamePlayer;
+  return pl.isFacingSideways(ev) && ev.isPositionSideOf(pl);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Lunatic Pack - Custom Critical Rates
-// MSEP_Z_CriticalSway.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_Z_CriticalSway = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunCriSway = MageStudios.LunCriSway || {};
-MageStudios.LunCriSway.version = 1.00;
+MageStudios.LunCriSway.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Lunatic Pack) Add new effects to adjust the critical hit
  * rates of your skills, items, and states!
  * @author Mage Studios Engine Plugins
@@ -66,7 +60,7 @@ MageStudios.LunCriSway.version = 1.00;
  *   type. As a result, only the first entry of a similar effect will go
  *   through regardless of whether or not the effect is stronger or weaker.
  *   It will go through in the order of skill/item first, then in priority
- *   order for the user's states. Not all effects can become nonstackable. 
+ *   order for the user's states. Not all effects can become nonstackable.
  *   Effects listed below will suggest if they can become nonstackable.
  *
  * =-=-=-= Effect CONDITIONS =-=-=-=
@@ -222,9 +216,9 @@ MageStudios.LunCriSway.version = 1.00;
  *
  * ---
  *
- * // ---------------
- * // User Param Rate
- * // ---------------
+ *
+ *
+ *
  * if (data.match(/(.*)[ ]PRIDE[ ](\d+)([%％])/i)) {
  *   var param = String(RegExp.$1).toUpperCase();
  *   var modifier = parseFloat(RegExp.$2) * 0.01;
@@ -253,9 +247,9 @@ MageStudios.LunCriSway.version = 1.00;
  *
  * ...
  *
- * // -------------------------------
- * // Add new effects above this line
- * // -------------------------------
+ *
+ *
+ *
  * } else {
  *   skip = true;
  * }
@@ -320,428 +314,373 @@ MageStudios.LunCriSway.version = 1.00;
  * @type note
  * @desc LUNATIC MODE: This is the code used for each of the notetag
  * effects. Refer to the help file for variables used here.
- * @default "// ---------------\n// User Param Rate\n// ---------------\nif (data.match(/(.*)[ ]PRIDE[ ](\\d+)([%％])/i)) {\n  var param = String(RegExp.$1).toUpperCase();\n  var modifier = parseFloat(RegExp.$2) * 0.01;\n  if (param === 'HP') {\n    var paramRate = user.hpRate();\n    if (nonstack) {\n      stackCheck = this._stackHpPride;\n      this._stackHpPride = true;\n    }\n  } else if (param === 'MP') {\n    var paramRate = user.mpRate();\n    if (nonstack) {\n      stackCheck = this._stackMpPride;\n      this._stackMpPride = true;\n    }\n  } else if (param === 'TP') {\n    var paramRate = user.tpRate();\n    if (nonstack) {\n      stackCheck = this._stackTpPride;\n      this._stackTpPride = true;\n    }\n  } else {\n    skip = true;\n  }\n  rate += paramRate * modifier;\n\n} else if (data.match(/(.*)[ ]CRISIS[ ](\\d+)([%％])/i)) {\n  var param = String(RegExp.$1).toUpperCase();\n  var modifier = parseFloat(RegExp.$2) * 0.01;\n  if (param === 'HP') {\n    var paramRate = 1 - user.hpRate();\n    if (nonstack) {\n      stackCheck = this._stackHpCrisis;\n      this._stackHpCrisis = true;\n    }\n  } else if (param === 'MP') {\n    var paramRate = 1 - user.mpRate();\n    if (nonstack) {\n      stackCheck = this._stackMpCrisis;\n      this._stackMpCrisis = true;\n    }\n  } else if (param === 'TP') {\n    var paramRate = 1 - user.tpRate();\n    if (nonstack) {\n      stackCheck = this._stackTpCrisis;\n      this._stackTpCrisis = true;\n    }\n  } else {\n    skip = true;\n  }\n  rate += paramRate * modifier;\n\n// -----------------\n// Target Param Rate\n// -----------------\n} else if (data.match(/(.*)[ ]HERO[ ](\\d+)([%％])/i)) {\n  var param = String(RegExp.$1).toUpperCase();\n  var modifier = parseFloat(RegExp.$2) * 0.01;\n  if (param === 'HP') {\n    var paramRate = target.hpRate();\n    if (nonstack) {\n      stackCheck = this._stackHpHero;\n      this._stackHpHero = true;\n    }\n  } else if (param === 'MP') {\n    var paramRate = target.mpRate();\n    if (nonstack) {\n      stackCheck = this._stackMpHero;\n      this._stackMpHero = true;\n    }\n  } else if (param === 'TP') {\n    var paramRate = target.tpRate();\n    if (nonstack) {\n      stackCheck = this._stackTpHero;\n      this._stackTpHero = true;\n    }\n  } else {\n    skip = true;\n  }\n  rate += paramRate * modifier;\n\n} else if (data.match(/(.*)[ ]BULLY[ ](\\d+)([%％])/i)) {\n  var param = String(RegExp.$1).toUpperCase();\n  var modifier = parseFloat(RegExp.$2) * 0.01;\n  if (param === 'HP') {\n    var paramRate = 1 - target.hpRate();\n    if (nonstack) {\n      stackCheck = this._stackHpBully;\n      this._stackHpBully = true;\n    }\n  } else if (param === 'MP') {\n    var paramRate = 1 - target.mpRate();\n    if (nonstack) {\n      stackCheck = this._stackMpBully;\n      this._stackMpBully = true;\n    }\n  } else if (param === 'TP') {\n    var paramRate = 1 - target.tpRate();\n    if (nonstack) {\n      stackCheck = this._stackTpBully;\n      this._stackTpBully = true;\n    }\n  } else {\n    skip = true;\n  }\n  rate += paramRate * modifier;\n\n// ------------\n// Element Rate\n// ------------\n} else if (data.match(/ELEMENT RATE[ ](\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackAddElementRate;\n    this._stackAddElementRate = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var eleRate = this.calcElementRate(target);\n  rate *= eleRate * modifier;\n\n// ---------------\n// State Modifiers\n// ---------------\n} else if (data.match(/USER STATES[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackUserStates;\n    this._stackUserStates = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = user.states().length;\n  rate += total * modifier;\n\n} else if (data.match(/TARGET STATES[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackTargetStates;\n    this._stackTargetStates = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = target.states().length;\n  rate += total * modifier;\n\n// --------------\n// Buff Modifiers\n// --------------\n} else if (data.match(/USER BUFFS[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackUserBuffs;\n    this._stackUserBuffs = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = user.totalBuffs();\n  rate += total * modifier;\n\n} else if (data.match(/USER DEBUFFS[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackUserDebuffs;\n    this._stackUserDebuffs = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = user.totalDebuffs();\n  rate += total * modifier;\n\n// ----------------\n// Debuff Modifiers\n// ----------------\n} else if (data.match(/TARGET BUFFS[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackTargetBuffs;\n    this._stackTargetBuffs = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = target.totalBuffs();\n  rate += total * modifier;\n\n} else if (data.match(/TARGET DEBUFFS[ ]([\\+\\-]\\d+)([%％])/i)) {\n  if (nonstack) {\n    stackCheck = this._stackTargetDebuffs;\n    this._stackTargetDebuffs = true;\n  }\n  var modifier = parseFloat(RegExp.$1) * 0.01;\n  var total = target.totalDebuffs();\n  rate += total * modifier;\n\n// -------------------------------\n// Add new effects above this line\n// -------------------------------\n} else {\n  skip = true;\n}"
+ * @default "
  *
  */
-//=============================================================================
 
-MageStudios.PluginRequirements = function() {
-  return Imported.MSEP_BattleEngineCore &&
-         Imported.MSEP_DamageCore &&
-         Imported.MSEP_X_CriticalControl;
+MageStudios.PluginRequirements = function () {
+  return (
+    Imported.MSEP_BattleEngineCore &&
+    Imported.MSEP_DamageCore &&
+    Imported.MSEP_X_CriticalControl
+  );
 };
 
 if (MageStudios.PluginRequirements()) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_Z_CriticalSway");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.LunCriSwayEffect = JSON.parse(
+    MageStudios.Parameters["Effect Code"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_Z_CriticalSway');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.LunCriSway.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.LunCriSway.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.LunCriSwayEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
+    if (!MageStudios._loaded_MSEP_Z_CriticalSway) {
+      this.processLunCriSwayNotetags1($dataSkills);
+      this.processLunCriSwayNotetags1($dataItems);
+      this.processLunCriSwayNotetags1($dataStates);
+      MageStudios._loaded_MSEP_Z_CriticalSway = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.LunCriSway.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.LunCriSway.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processLunCriSwayNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_Z_CriticalSway) {
-    this.processLunCriSwayNotetags1($dataSkills);
-    this.processLunCriSwayNotetags1($dataItems);
-    this.processLunCriSwayNotetags1($dataStates);
-    MageStudios._loaded_MSEP_Z_CriticalSway = true;
-  }
-  
-  return true;
-};
+      obj.customCriticalRates = [];
 
-DataManager.processLunCriSwayNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.customCriticalRates = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<CUSTOM[ ](?:CRITICAL|CRIT)[ ]RATE:[ ](.*)>/i)) {
-        var data = String(RegExp.$1);
-        obj.customCriticalRates.push(data);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<CUSTOM[ ](?:CRITICAL|CRIT)[ ]RATE:[ ](.*)>/i)) {
+          var data = String(RegExp.$1);
+          obj.customCriticalRates.push(data);
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.getParamId = function(str) {
-  switch (str.toUpperCase()) {
-  case 'HP':
-  case 'MAXHP':
-  case 'MAX HP':
-    return 0;
-    break;
-  case 'MP':
-  case 'MAXMP':
-  case 'MAX MP':
-  case 'SP':
-  case 'MAXSP':
-  case 'MAX SP':
-    return 1;
-    break;
-  case 'ATK':
-  case 'STR':
-    return 2;
-    break;
-  case 'DEF':
-    return 3;
-    break;
-  case 'MAT':
-  case 'INT':
-  case 'SPI':
-    return 4;
-    break;
-  case 'MDF':
-  case 'RES':
-    return 5;
-    break;
-  case 'AGI':
-  case 'SPD':
-    return 6;
-    break;
-  case 'LUK':
-    return 7;
-    break;
-  default:
-    return -1;
-    break;
-  }
-};
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-Game_BattlerBase.prototype.totalBuffs = function() {
-  var value = 0;
-  for (var i = 0; i < 8; ++i) {
-    if (this.isBuffAffected(i)) value += 1;
-  }
-  return value;
-};
-
-Game_BattlerBase.prototype.totalDebuffs = function() {
-  var value = 0;
-  for (var i = 0; i < 8; ++i) {
-    if (this.isDebuffAffected(i)) value += 1;
-  }
-  return value;
-};
-
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.LunCriSway.Game_Action_itemCri = Game_Action.prototype.itemCri;
-Game_Action.prototype.itemCri = function(target) {
-  if (!this.item().daMageStudios.critical) return 0;
-  var rate = MageStudios.LunCriSway.Game_Action_itemCri.call(this, target);
-  rate = this.applyCustomCriticalRates(target, rate);
-  return rate;
-};
-
-Game_Action.prototype.applyCustomCriticalRates = function(target, rate) {
-  var effects = [];
-  effects = effects.concat(this.item().customCriticalRates);
-  var states = this.subject().states();
-  var length = states.length;
-  for (var i = 0; i < length; ++i) {
-    var state = states[i];
-    if (state && state.customCriticalRates) {
-      effects = effects.concat(state.customCriticalRates);
+  DataManager.getParamId = function (str) {
+    switch (str.toUpperCase()) {
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
+        return 0;
+        break;
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
+        return 1;
+        break;
+      case "ATK":
+      case "STR":
+        return 2;
+        break;
+      case "DEF":
+        return 3;
+        break;
+      case "MAT":
+      case "INT":
+      case "SPI":
+        return 4;
+        break;
+      case "MDF":
+      case "RES":
+        return 5;
+        break;
+      case "AGI":
+      case "SPD":
+        return 6;
+        break;
+      case "LUK":
+        return 7;
+        break;
+      default:
+        return -1;
+        break;
     }
-  }
-  var length = effects.length;
-  for (var i = 0; i < length; ++i) {
-    var data = effects[i];
-    rate = this.customCritRateEval(target, rate, data);
-  }
-  return rate;
-};
+  };
 
-Game_Action.prototype.customCritRateEval = function(target, rate, data) {
-  var prevRate = rate;
-  var item = this.item();
-  var skill = this.item();
-  var isSkill = DataManager.isSkill(skill);
-  var isItem = DataManager.isSkill(item);
-  var user = this.subject();
-  var a = user;
-  var subject = user;
-  var b = target;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  var userPreviousResult = JsonEx.makeDeepCopy(user._result);
-  var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
+  Game_BattlerBase.prototype.totalBuffs = function () {
+    var value = 0;
+    for (var i = 0; i < 8; ++i) {
+      if (this.isBuffAffected(i)) value += 1;
+    }
+    return value;
+  };
 
-  var nonstack = data.match(/(?:NONSTACK|NON-STACK|NO STACK)/i)
-  var stackCheck = false;
+  Game_BattlerBase.prototype.totalDebuffs = function () {
+    var value = 0;
+    for (var i = 0; i < 8; ++i) {
+      if (this.isDebuffAffected(i)) value += 1;
+    }
+    return value;
+  };
 
-  var skip = false;
-
-  var code = MageStudios.Param.LunCriSwayEffect;
-  try {
-    eval(code)
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'LUNATIC CUSTOM CRITICAL RATES ERROR');
-  }
-
-  if (user.isDead()) user.performCollapse();
-  if (target.isDead()) target.performCollapse();
-  user._result = userPreviousResult;
-  target._result = targetPreviousResult;
-
-  if (nonstack && stackCheck) skip = true;
-
-  if (skip) {
-    return prevRate
-  } else {
+  MageStudios.LunCriSway.Game_Action_itemCri = Game_Action.prototype.itemCri;
+  Game_Action.prototype.itemCri = function (target) {
+    if (!this.item().daMageStudios.critical) return 0;
+    var rate = MageStudios.LunCriSway.Game_Action_itemCri.call(this, target);
+    rate = this.applyCustomCriticalRates(target, rate);
     return rate;
-  }
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  Game_Action.prototype.applyCustomCriticalRates = function (target, rate) {
+    var effects = [];
+    effects = effects.concat(this.item().customCriticalRates);
+    var states = this.subject().states();
+    var length = states.length;
+    for (var i = 0; i < length; ++i) {
+      var state = states[i];
+      if (state && state.customCriticalRates) {
+        effects = effects.concat(state.customCriticalRates);
+      }
+    }
+    var length = effects.length;
+    for (var i = 0; i < length; ++i) {
+      var data = effects[i];
+      rate = this.customCritRateEval(target, rate, data);
+    }
+    return rate;
+  };
 
-MageStudios.Util = MageStudios.Util || {};
+  Game_Action.prototype.customCritRateEval = function (target, rate, data) {
+    var prevRate = rate;
+    var item = this.item();
+    var skill = this.item();
+    var isSkill = DataManager.isSkill(skill);
+    var isItem = DataManager.isSkill(item);
+    var user = this.subject();
+    var a = user;
+    var subject = user;
+    var b = target;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    var userPreviousResult = JsonEx.makeDeepCopy(user._result);
+    var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
 
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+    var nonstack = data.match(/(?:NONSTACK|NON-STACK|NO STACK)/i);
+    var stackCheck = false;
+
+    var skip = false;
+
+    var code = MageStudios.Param.LunCriSwayEffect;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "LUNATIC CUSTOM CRITICAL RATES ERROR"
+      );
+    }
+
+    if (user.isDead()) user.performCollapse();
+    if (target.isDead()) target.performCollapse();
+    user._result = userPreviousResult;
+    target._result = targetPreviousResult;
+
+    if (nonstack && stackCheck) skip = true;
+
+    if (skip) {
+      return prevRate;
+    } else {
+      return rate;
+    }
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+
+  if (false) {
+    if (data.match(/(.*)[ ]PRIDE[ ](\d+)([%％])/i)) {
+      var param = String(RegExp.$1).toUpperCase();
+      var modifier = parseFloat(RegExp.$2) * 0.01;
+      if (param === "HP") {
+        var paramRate = user.hpRate();
+        if (nonstack) {
+          stackCheck = this._stackHpPride;
+          this._stackHpPride = true;
+        }
+      } else if (param === "MP") {
+        var paramRate = user.mpRate();
+        if (nonstack) {
+          stackCheck = this._stackMpPride;
+          this._stackMpPride = true;
+        }
+      } else if (param === "TP") {
+        var paramRate = user.tpRate();
+        if (nonstack) {
+          stackCheck = this._stackTpPride;
+          this._stackTpPride = true;
+        }
+      } else {
+        skip = true;
+      }
+      rate += paramRate * modifier;
+    } else if (data.match(/(.*)[ ]CRISIS[ ](\d+)([%％])/i)) {
+      var param = String(RegExp.$1).toUpperCase();
+      var modifier = parseFloat(RegExp.$2) * 0.01;
+      if (param === "HP") {
+        var paramRate = 1 - user.hpRate();
+        if (nonstack) {
+          stackCheck = this._stackHpCrisis;
+          this._stackHpCrisis = true;
+        }
+      } else if (param === "MP") {
+        var paramRate = 1 - user.mpRate();
+        if (nonstack) {
+          stackCheck = this._stackMpCrisis;
+          this._stackMpCrisis = true;
+        }
+      } else if (param === "TP") {
+        var paramRate = 1 - user.tpRate();
+        if (nonstack) {
+          stackCheck = this._stackTpCrisis;
+          this._stackTpCrisis = true;
+        }
+      } else {
+        skip = true;
+      }
+      rate += paramRate * modifier;
+    } else if (data.match(/(.*)[ ]HERO[ ](\d+)([%％])/i)) {
+      var param = String(RegExp.$1).toUpperCase();
+      var modifier = parseFloat(RegExp.$2) * 0.01;
+      if (param === "HP") {
+        var paramRate = target.hpRate();
+        if (nonstack) {
+          stackCheck = this._stackHpHero;
+          this._stackHpHero = true;
+        }
+      } else if (param === "MP") {
+        var paramRate = target.mpRate();
+        if (nonstack) {
+          stackCheck = this._stackMpHero;
+          this._stackMpHero = true;
+        }
+      } else if (param === "TP") {
+        var paramRate = target.tpRate();
+        if (nonstack) {
+          stackCheck = this._stackTpHero;
+          this._stackTpHero = true;
+        }
+      } else {
+        skip = true;
+      }
+      rate += paramRate * modifier;
+    } else if (data.match(/(.*)[ ]BULLY[ ](\d+)([%％])/i)) {
+      var param = String(RegExp.$1).toUpperCase();
+      var modifier = parseFloat(RegExp.$2) * 0.01;
+      if (param === "HP") {
+        var paramRate = 1 - target.hpRate();
+        if (nonstack) {
+          stackCheck = this._stackHpBully;
+          this._stackHpBully = true;
+        }
+      } else if (param === "MP") {
+        var paramRate = 1 - target.mpRate();
+        if (nonstack) {
+          stackCheck = this._stackMpBully;
+          this._stackMpBully = true;
+        }
+      } else if (param === "TP") {
+        var paramRate = 1 - target.tpRate();
+        if (nonstack) {
+          stackCheck = this._stackTpBully;
+          this._stackTpBully = true;
+        }
+      } else {
+        skip = true;
+      }
+      rate += paramRate * modifier;
+    } else if (data.match(/ELEMENT RATE[ ](\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackAddElementRate;
+        this._stackAddElementRate = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var eleRate = this.calcElementRate(target);
+      rate *= eleRate * modifier;
+    } else if (data.match(/USER STATES[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackUserStates;
+        this._stackUserStates = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = user.states().length;
+      rate += total * modifier;
+    } else if (data.match(/TARGET STATES[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackTargetStates;
+        this._stackTargetStates = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = target.states().length;
+      rate += total * modifier;
+    } else if (data.match(/USER BUFFS[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackUserBuffs;
+        this._stackUserBuffs = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = user.totalBuffs();
+      rate += total * modifier;
+    } else if (data.match(/USER DEBUFFS[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackUserDebuffs;
+        this._stackUserDebuffs = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = user.totalDebuffs();
+      rate += total * modifier;
+    } else if (data.match(/TARGET BUFFS[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackTargetBuffs;
+        this._stackTargetBuffs = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = target.totalBuffs();
+      rate += total * modifier;
+    } else if (data.match(/TARGET DEBUFFS[ ]([\+\-]\d+)([%％])/i)) {
+      if (nonstack) {
+        stackCheck = this._stackTargetDebuffs;
+        this._stackTargetDebuffs = true;
+      }
+      var modifier = parseFloat(RegExp.$1) * 0.01;
+      var total = target.totalDebuffs();
+      rate += total * modifier;
+    } else {
+      skip = true;
     }
   }
-};
-
-//=============================================================================
-// Default Effect Code
-//=============================================================================
-
-if (false) {
-
-// ---------------
-// User Param Rate
-// ---------------
-if (data.match(/(.*)[ ]PRIDE[ ](\d+)([%％])/i)) {
-  var param = String(RegExp.$1).toUpperCase();
-  var modifier = parseFloat(RegExp.$2) * 0.01;
-  if (param === 'HP') {
-    var paramRate = user.hpRate();
-    if (nonstack) {
-      stackCheck = this._stackHpPride;
-      this._stackHpPride = true;
-    }
-  } else if (param === 'MP') {
-    var paramRate = user.mpRate();
-    if (nonstack) {
-      stackCheck = this._stackMpPride;
-      this._stackMpPride = true;
-    }
-  } else if (param === 'TP') {
-    var paramRate = user.tpRate();
-    if (nonstack) {
-      stackCheck = this._stackTpPride;
-      this._stackTpPride = true;
-    }
-  } else {
-    skip = true;
-  }
-  rate += paramRate * modifier;
-
-} else if (data.match(/(.*)[ ]CRISIS[ ](\d+)([%％])/i)) {
-  var param = String(RegExp.$1).toUpperCase();
-  var modifier = parseFloat(RegExp.$2) * 0.01;
-  if (param === 'HP') {
-    var paramRate = 1 - user.hpRate();
-    if (nonstack) {
-      stackCheck = this._stackHpCrisis;
-      this._stackHpCrisis = true;
-    }
-  } else if (param === 'MP') {
-    var paramRate = 1 - user.mpRate();
-    if (nonstack) {
-      stackCheck = this._stackMpCrisis;
-      this._stackMpCrisis = true;
-    }
-  } else if (param === 'TP') {
-    var paramRate = 1 - user.tpRate();
-    if (nonstack) {
-      stackCheck = this._stackTpCrisis;
-      this._stackTpCrisis = true;
-    }
-  } else {
-    skip = true;
-  }
-  rate += paramRate * modifier;
-
-// -----------------
-// Target Param Rate
-// -----------------
-} else if (data.match(/(.*)[ ]HERO[ ](\d+)([%％])/i)) {
-  var param = String(RegExp.$1).toUpperCase();
-  var modifier = parseFloat(RegExp.$2) * 0.01;
-  if (param === 'HP') {
-    var paramRate = target.hpRate();
-    if (nonstack) {
-      stackCheck = this._stackHpHero;
-      this._stackHpHero = true;
-    }
-  } else if (param === 'MP') {
-    var paramRate = target.mpRate();
-    if (nonstack) {
-      stackCheck = this._stackMpHero;
-      this._stackMpHero = true;
-    }
-  } else if (param === 'TP') {
-    var paramRate = target.tpRate();
-    if (nonstack) {
-      stackCheck = this._stackTpHero;
-      this._stackTpHero = true;
-    }
-  } else {
-    skip = true;
-  }
-  rate += paramRate * modifier;
-
-} else if (data.match(/(.*)[ ]BULLY[ ](\d+)([%％])/i)) {
-  var param = String(RegExp.$1).toUpperCase();
-  var modifier = parseFloat(RegExp.$2) * 0.01;
-  if (param === 'HP') {
-    var paramRate = 1 - target.hpRate();
-    if (nonstack) {
-      stackCheck = this._stackHpBully;
-      this._stackHpBully = true;
-    }
-  } else if (param === 'MP') {
-    var paramRate = 1 - target.mpRate();
-    if (nonstack) {
-      stackCheck = this._stackMpBully;
-      this._stackMpBully = true;
-    }
-  } else if (param === 'TP') {
-    var paramRate = 1 - target.tpRate();
-    if (nonstack) {
-      stackCheck = this._stackTpBully;
-      this._stackTpBully = true;
-    }
-  } else {
-    skip = true;
-  }
-  rate += paramRate * modifier;
-
-// ------------
-// Element Rate
-// ------------
-} else if (data.match(/ELEMENT RATE[ ](\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackAddElementRate;
-    this._stackAddElementRate = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var eleRate = this.calcElementRate(target);
-  rate *= eleRate * modifier;
-
-// ---------------
-// State Modifiers
-// ---------------
-} else if (data.match(/USER STATES[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackUserStates;
-    this._stackUserStates = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = user.states().length;
-  rate += total * modifier;
-
-} else if (data.match(/TARGET STATES[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackTargetStates;
-    this._stackTargetStates = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = target.states().length;
-  rate += total * modifier;
-
-// --------------
-// Buff Modifiers
-// --------------
-} else if (data.match(/USER BUFFS[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackUserBuffs;
-    this._stackUserBuffs = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = user.totalBuffs();
-  rate += total * modifier;
-
-} else if (data.match(/USER DEBUFFS[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackUserDebuffs;
-    this._stackUserDebuffs = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = user.totalDebuffs();
-  rate += total * modifier;
-
-// ----------------
-// Debuff Modifiers
-// ----------------
-} else if (data.match(/TARGET BUFFS[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackTargetBuffs;
-    this._stackTargetBuffs = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = target.totalBuffs();
-  rate += total * modifier;
-
-} else if (data.match(/TARGET DEBUFFS[ ]([\+\-]\d+)([%％])/i)) {
-  if (nonstack) {
-    stackCheck = this._stackTargetDebuffs;
-    this._stackTargetDebuffs = true;
-  }
-  var modifier = parseFloat(RegExp.$1) * 0.01;
-  var total = target.totalDebuffs();
-  rate += total * modifier;
-
-// -------------------------------
-// Add new effects above this line
-// -------------------------------
 } else {
-  skip = true;
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_Z_CriticalSway without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-
-}; // Default Effect Code
-
-//=============================================================================
-// End of File
-//=============================================================================
-} else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_Z_CriticalSway without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // MageStudios.PluginRequirements

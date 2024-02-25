@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Status Menu Extension - More Status Menu Pages
-// MSEP_X_MoreStatusPages.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MoreStatusPages = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MSMP = MageStudios.MSMP || {};
-MageStudios.MSMP.version = 1.00;
+MageStudios.MSMP.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_StatusMenuCore.js) Add more pages to
  * your status menu however you want!
  * @author Mage Studios Engine Plugins
@@ -111,189 +105,173 @@ MageStudios.MSMP.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-if (Imported.MSEP_StatusMenuCore && MageStudios.Status.version &&
-  MageStudios.Status.version >= 1.02) {
+if (
+  Imported.MSEP_StatusMenuCore &&
+  MageStudios.Status.version &&
+  MageStudios.Status.version >= 1.02
+) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MoreStatusPages");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.Variables = String(MageStudios.Parameters["Variables"]);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreStatusPages');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.MSMP.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.MSMP.DataManager_isDatabaseLoaded.call(this)) return false;
 
-MageStudios.Param.Variables = String(MageStudios.Parameters['Variables']);
+    if (!MageStudios._loaded_MSEP_X_MoreStatusPages) {
+      this.processMoreStatusMenuPagesNotetags1($dataActors);
+      MageStudios._loaded_MSEP_X_MoreStatusPages = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.MSMP.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.MSMP.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processMoreStatusMenuPagesNotetags1 = function (group) {
+    var note1 = /<STATUS MENU PAGE:[ ](.*)>/i;
+    var note2 = /<\/STATUS MENU PAGE:[ ](.*)>/i;
+    var note3 = /<STATUS MENU PAGE[ ](.*)[ ]SWITCH:[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_X_MoreStatusPages) {
-    this.processMoreStatusMenuPagesNotetags1($dataActors);
-    MageStudios._loaded_MSEP_X_MoreStatusPages = true;
-  }
-  
-  return true;
-};
+      obj.customStatusMenuPages = [];
+      obj.customStatusMenuPagesData = {};
+      obj.customStatusMenuPageRequirement = {};
+      var evalMode = "none";
+      var pageKey = "none";
 
-DataManager.processMoreStatusMenuPagesNotetags1 = function(group) {
-  var note1 = /<STATUS MENU PAGE:[ ](.*)>/i;
-  var note2 = /<\/STATUS MENU PAGE:[ ](.*)>/i;
-  var note3 = /<STATUS MENU PAGE[ ](.*)[ ]SWITCH:[ ]*(\d+(?:\s*,\s*\d+)*)>/i
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.customStatusMenuPages = [];
-    obj.customStatusMenuPagesData = {};
-    obj.customStatusMenuPageRequirement = {};
-    var evalMode = 'none';
-    var pageKey = 'none';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        evalMode = 'custom status menu page';
-        var pageKey = String(RegExp.$1);
-        obj.customStatusMenuPages.push(pageKey);
-        obj.customStatusMenuPagesData[pageKey] = [];
-      } else if (line.match(note2)) {
-        evalMode = 'none';
-        pageKey = 'none';
-      } else if (evalMode === 'custom status menu page') {
-        obj.customStatusMenuPagesData[pageKey].push(line);
-      } else if (line.match(note3)) {
-        var pageKey = String(RegExp.$1);
-        obj.customStatusMenuPageRequirement[pageKey] =
-          obj.customStatusMenuPageRequirement[pageKey] || [];
-        var array = JSON.parse('[' + RegExp.$2.match(/\d+/g) + ']');
-        obj.customStatusMenuPageRequirement[pageKey] =
-          obj.customStatusMenuPageRequirement[pageKey].concat(array);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          evalMode = "custom status menu page";
+          var pageKey = String(RegExp.$1);
+          obj.customStatusMenuPages.push(pageKey);
+          obj.customStatusMenuPagesData[pageKey] = [];
+        } else if (line.match(note2)) {
+          evalMode = "none";
+          pageKey = "none";
+        } else if (evalMode === "custom status menu page") {
+          obj.customStatusMenuPagesData[pageKey].push(line);
+        } else if (line.match(note3)) {
+          var pageKey = String(RegExp.$1);
+          obj.customStatusMenuPageRequirement[pageKey] =
+            obj.customStatusMenuPageRequirement[pageKey] || [];
+          var array = JSON.parse("[" + RegExp.$2.match(/\d+/g) + "]");
+          obj.customStatusMenuPageRequirement[pageKey] =
+            obj.customStatusMenuPageRequirement[pageKey].concat(array);
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Window_StatusCommand
-//=============================================================================
-
-MageStudios.MSMP.Window_StatusCommand_createCommand =
-  Window_StatusCommand.prototype.createCommand;
-Window_StatusCommand.prototype.createCommand = function(command) {
-  MageStudios.MSMP.Window_StatusCommand_createCommand.call(this, command);
-  command = command.toUpperCase();
-  if (['MOREPAGES', 'MOREPAGE'].contains(command)) {
-    this.addMoreStatusMenuPages();
-  }
-};
-
-MageStudios.MSMP.Window_StatusCommand_setActor =
-  Window_StatusCommand.prototype.setActor;
-Window_StatusCommand.prototype.setActor = function(actor) {
-  var prevActor = this._actor;
-  MageStudios.MSMP.Window_StatusCommand_setActor.call(this, actor);
-  this.clearCommandList();
-  this.makeCommandList();
-  this.refresh();
-};
-
-Window_StatusCommand.prototype.addMoreStatusMenuPages = function() {
-  if (!this._actor) {
-    return;
-  }
-  var order = this._actor.actor().customStatusMenuPages;
-  if (!order) return;
-  for (var i = 0; i < order.length; i++) {
-    var pageKey = order[i];
-    if (this.isShowStatusMenuPage(pageKey)) {
-      this.addCommand(pageKey, 'morePages', true, pageKey);
+  MageStudios.MSMP.Window_StatusCommand_createCommand =
+    Window_StatusCommand.prototype.createCommand;
+  Window_StatusCommand.prototype.createCommand = function (command) {
+    MageStudios.MSMP.Window_StatusCommand_createCommand.call(this, command);
+    command = command.toUpperCase();
+    if (["MOREPAGES", "MOREPAGE"].contains(command)) {
+      this.addMoreStatusMenuPages();
     }
-  }
-};
+  };
 
-Window_StatusCommand.prototype.isShowStatusMenuPage = function(pageKey) {
-  var data = this._actor.actor().customStatusMenuPageRequirement[pageKey] || [];
-  if (data.length <= 0) return true;
-  for (var i = 0; i < data.length; i++) {
-    var switchId = data[i];
-    if (!$gameSwitches.value(switchId)) {
-      return false;
-    }
-  }
-  return true;
-};
-
-//=============================================================================
-// Window_StatusInfo
-//=============================================================================
-
-MageStudios.MSMP.Window_StatusInfo_setSymbol =
-  Window_StatusInfo.prototype.setSymbol;
-Window_StatusInfo.prototype.setSymbol = function(symbol) {
-  MageStudios.MSMP.Window_StatusInfo_setSymbol.call(this, symbol);
-  if (this._symbol === 'morePages') {
+  MageStudios.MSMP.Window_StatusCommand_setActor =
+    Window_StatusCommand.prototype.setActor;
+  Window_StatusCommand.prototype.setActor = function (actor) {
+    var prevActor = this._actor;
+    MageStudios.MSMP.Window_StatusCommand_setActor.call(this, actor);
+    this.clearCommandList();
+    this.makeCommandList();
     this.refresh();
-  }
-};
+  };
 
-MageStudios.MSMP.Window_StatusInfo_drawInfoContents =
-  Window_StatusInfo.prototype.drawInfoContents;
-Window_StatusInfo.prototype.drawInfoContents = function(symbol) {
-  if (symbol === 'morePages') {
-    this.drawAllItems();
-  } else {
-    MageStudios.MSMP.Window_StatusInfo_drawInfoContents.call(this, symbol);
-  }
-};
-
-MageStudios.MSMP.Window_StatusInfo_maxItems = Window_StatusInfo.prototype.maxItems;
-Window_StatusInfo.prototype.maxItems = function() {
-  if (this._symbol === 'morePages') {
-    var pageKey = SceneManager._scene._commandWindow.currentExt();
-    if (this._actor.actor().customStatusMenuPagesData) {
-      if (this._actor.actor().customStatusMenuPagesData[pageKey]) {
-        return this._actor.actor().customStatusMenuPagesData[pageKey].length;
+  Window_StatusCommand.prototype.addMoreStatusMenuPages = function () {
+    if (!this._actor) {
+      return;
+    }
+    var order = this._actor.actor().customStatusMenuPages;
+    if (!order) return;
+    for (var i = 0; i < order.length; i++) {
+      var pageKey = order[i];
+      if (this.isShowStatusMenuPage(pageKey)) {
+        this.addCommand(pageKey, "morePages", true, pageKey);
       }
     }
-  }
-  return MageStudios.MSMP.Window_StatusInfo_maxItems.call(this);
-};
+  };
 
-MageStudios.MSMP.Window_StatusInfo_drawItem = Window_StatusInfo.prototype.drawItem;
-Window_StatusInfo.prototype.drawItem = function(index) {
-  MageStudios.MSMP.Window_StatusInfo_drawItem.call(this);
-  if (this._symbol === 'morePages') {
-    this.drawMoreStatusPageContent(index);
-  }
-};
+  Window_StatusCommand.prototype.isShowStatusMenuPage = function (pageKey) {
+    var data =
+      this._actor.actor().customStatusMenuPageRequirement[pageKey] || [];
+    if (data.length <= 0) return true;
+    for (var i = 0; i < data.length; i++) {
+      var switchId = data[i];
+      if (!$gameSwitches.value(switchId)) {
+        return false;
+      }
+    }
+    return true;
+  };
 
-Window_StatusInfo.prototype.drawMoreStatusPageContent = function(index) {
-  var pageKey = SceneManager._scene._commandWindow.currentExt();
-  if (!this._actor.actor().customStatusMenuPagesData) return;
-  if (!this._actor.actor().customStatusMenuPagesData[pageKey]) return;
-  var data = this._actor.actor().customStatusMenuPagesData[pageKey];
-  var text = data[index];
-  var rect = this.itemRectForText(index);
-  this.drawTextEx(text, rect.x, rect.y);
-};
+  MageStudios.MSMP.Window_StatusInfo_setSymbol =
+    Window_StatusInfo.prototype.setSymbol;
+  Window_StatusInfo.prototype.setSymbol = function (symbol) {
+    MageStudios.MSMP.Window_StatusInfo_setSymbol.call(this, symbol);
+    if (this._symbol === "morePages") {
+      this.refresh();
+    }
+  };
 
-//=============================================================================
-// End of File
-//=============================================================================
+  MageStudios.MSMP.Window_StatusInfo_drawInfoContents =
+    Window_StatusInfo.prototype.drawInfoContents;
+  Window_StatusInfo.prototype.drawInfoContents = function (symbol) {
+    if (symbol === "morePages") {
+      this.drawAllItems();
+    } else {
+      MageStudios.MSMP.Window_StatusInfo_drawInfoContents.call(this, symbol);
+    }
+  };
+
+  MageStudios.MSMP.Window_StatusInfo_maxItems =
+    Window_StatusInfo.prototype.maxItems;
+  Window_StatusInfo.prototype.maxItems = function () {
+    if (this._symbol === "morePages") {
+      var pageKey = SceneManager._scene._commandWindow.currentExt();
+      if (this._actor.actor().customStatusMenuPagesData) {
+        if (this._actor.actor().customStatusMenuPagesData[pageKey]) {
+          return this._actor.actor().customStatusMenuPagesData[pageKey].length;
+        }
+      }
+    }
+    return MageStudios.MSMP.Window_StatusInfo_maxItems.call(this);
+  };
+
+  MageStudios.MSMP.Window_StatusInfo_drawItem =
+    Window_StatusInfo.prototype.drawItem;
+  Window_StatusInfo.prototype.drawItem = function (index) {
+    MageStudios.MSMP.Window_StatusInfo_drawItem.call(this);
+    if (this._symbol === "morePages") {
+      this.drawMoreStatusPageContent(index);
+    }
+  };
+
+  Window_StatusInfo.prototype.drawMoreStatusPageContent = function (index) {
+    var pageKey = SceneManager._scene._commandWindow.currentExt();
+    if (!this._actor.actor().customStatusMenuPagesData) return;
+    if (!this._actor.actor().customStatusMenuPagesData[pageKey]) return;
+    var data = this._actor.actor().customStatusMenuPagesData[pageKey];
+    var text = data[index];
+    var rect = this.itemRectForText(index);
+    this.drawTextEx(text, rect.x, rect.y);
+  };
 } else {
-
-var text = '================================================================\n';
-text += 'MSEP_X_MoreStatusPages requires MSEP_StatusMenuCore to be at the ';
-text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
-text += 'update to the latest version for the MSEP_StatusMenuCore plugin.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // MSEP_StatusMenuCore
+  var text =
+    "================================================================\n";
+  text += "MSEP_X_MoreStatusPages requires MSEP_StatusMenuCore to be at the ";
+  text +=
+    "latest version to run properly.\n\nPlease go to www.MageStudios.moe and ";
+  text += "update to the latest version for the MSEP_StatusMenuCore plugin.\n";
+  text += "================================================================\n";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

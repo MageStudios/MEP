@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Skill Cost Extension - Cooldowns
-// MSEP_X_SkillCooldowns.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_SkillCooldowns = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SCD = MageStudios.SCD || {};
-MageStudios.SCD.version = 1.00;
+MageStudios.SCD.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_SkillCore.js) Cooldowns can be applied
  * to skills to prevent them from being used continuously.
  * @author Mage Studios Engine Plugins
@@ -455,306 +449,307 @@ MageStudios.SCD.version = 1.00;
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
-
 
 if (Imported.MSEP_SkillCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_SkillCooldowns");
+  MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Icon = MageStudios.Icon || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.CDFmt = String(MageStudios.Parameters["Cooldown Format"]);
+  MageStudios.Param.CDFontSize = Number(
+    MageStudios.Parameters["Cooldown Font Size"]
+  );
+  MageStudios.Param.CDTextColor = Number(
+    MageStudios.Parameters["Cooldown Text Color"]
+  );
+  MageStudios.Icon.Cooldown = Number(MageStudios.Parameters["Cooldown Icon"]);
+  MageStudios.Param.CDAfterBattle = Number(
+    MageStudios.Parameters["Cooldown After Battle"]
+  );
+  MageStudios.Param.CDSteps = Number(MageStudios.Parameters["Cooldown Steps"]);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_SkillCooldowns');
-MageStudios.Param = MageStudios.Param || {};
-MageStudios.Icon = MageStudios.Icon || {};
+  MageStudios.Param.WUFmt = String(MageStudios.Parameters["Warmup Format"]);
+  MageStudios.Param.WUFontSize = Number(
+    MageStudios.Parameters["Warmup Font Size"]
+  );
+  MageStudios.Param.WUTextColor = Number(
+    MageStudios.Parameters["Warmup Text Color"]
+  );
+  MageStudios.Param.CDTimeBased = String(MageStudios.Parameters["Time Based"]);
+  MageStudios.Param.CDTurnTime = Number(MageStudios.Parameters["Turn Time"]);
+  MageStudios.Icon.Warmup = Number(MageStudios.Parameters["Warmup Icon"]);
 
-MageStudios.Param.CDFmt = String(MageStudios.Parameters['Cooldown Format']);
-MageStudios.Param.CDFontSize = Number(MageStudios.Parameters['Cooldown Font Size']);
-MageStudios.Param.CDTextColor = Number(MageStudios.Parameters['Cooldown Text Color']);
-MageStudios.Icon.Cooldown = Number(MageStudios.Parameters['Cooldown Icon']);
-MageStudios.Param.CDAfterBattle = Number(MageStudios.Parameters['Cooldown After Battle']);
-MageStudios.Param.CDSteps = Number(MageStudios.Parameters['Cooldown Steps']);
+  MageStudios.SetupParameters = function () {
+    MageStudios.Param.CDBypass = String(
+      MageStudios.Parameters["Cooldown Bypass"]
+    );
+    MageStudios.Param.CDBypass = MageStudios.Param.CDBypass.split(" ");
+    for (var i = 0; i < MageStudios.Param.CDBypass.length; ++i) {
+      MageStudios.Param.CDBypass[i] = parseInt(MageStudios.Param.CDBypass[i]);
+    }
+    var data = JSON.parse(
+      MageStudios.Parameters["Cooldown Bypass List"] || "[]"
+    );
+    for (var i = 0; i < data.length; ++i) {
+      var id = parseInt(data[i]);
+      if (id <= 0) continue;
+      if (MageStudios.Param.CDBypass.contains(id)) continue;
+      MageStudios.Param.CDBypass.push(id);
+    }
+  };
+  MageStudios.SetupParameters();
 
-MageStudios.Param.WUFmt = String(MageStudios.Parameters['Warmup Format']);
-MageStudios.Param.WUFontSize = Number(MageStudios.Parameters['Warmup Font Size']);
-MageStudios.Param.WUTextColor = Number(MageStudios.Parameters['Warmup Text Color']);
-MageStudios.Param.CDTimeBased = String(MageStudios.Parameters['Time Based']);
-MageStudios.Param.CDTurnTime = Number(MageStudios.Parameters['Turn Time']);
-MageStudios.Icon.Warmup = Number(MageStudios.Parameters['Warmup Icon']);
+  MageStudios.SCD.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.SCD.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_SkillCooldowns) {
+      this.processSCDNotetagsS($dataSkills);
+      this.processSCDNotetags1($dataSkills);
+      this.processSCDNotetags2($dataSkills);
+      this.processSCDNotetags2($dataItems);
+      this.processSCDNotetags2($dataActors);
+      this.processSCDNotetags2($dataClasses);
+      this.processSCDNotetags2($dataEnemies);
+      this.processSCDNotetags2($dataWeapons);
+      this.processSCDNotetags2($dataArmors);
+      this.processSCDNotetags2($dataStates);
+      this.processSCDNotetags3($dataActors);
+      this.processSCDNotetags3($dataClasses);
+      this.processSCDNotetags3($dataEnemies);
+      this.processSCDNotetags3($dataWeapons);
+      this.processSCDNotetags3($dataArmors);
+      this.processSCDNotetags3($dataStates);
+      MageStudios._loaded_MSEP_X_SkillCooldowns = true;
+    }
+    return true;
+  };
 
-MageStudios.SetupParameters = function() {
-  MageStudios.Param.CDBypass = String(MageStudios.Parameters['Cooldown Bypass']);
-  MageStudios.Param.CDBypass = MageStudios.Param.CDBypass.split(' ');
-  for (var i = 0; i < MageStudios.Param.CDBypass.length; ++i) {
-    MageStudios.Param.CDBypass[i] = parseInt(MageStudios.Param.CDBypass[i]);
-  }
-  var data = JSON.parse(MageStudios.Parameters['Cooldown Bypass List'] || '[]');
-  for (var i = 0; i < data.length; ++i) {
-    var id = parseInt(data[i]);
-    if (id <= 0) continue;
-    if (MageStudios.Param.CDBypass.contains(id)) continue;
-    MageStudios.Param.CDBypass.push(id);
-  }
-};
-MageStudios.SetupParameters()
+  DataManager.processSCDNotetagsS = function (group) {
+    if (MageStudios.SkillIdRef) return;
+    MageStudios.SkillIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  DataManager.processSCDNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-MageStudios.SCD.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.SCD.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_SkillCooldowns) {
-    this.processSCDNotetagsS($dataSkills);
-    this.processSCDNotetags1($dataSkills);
-    this.processSCDNotetags2($dataSkills);
-    this.processSCDNotetags2($dataItems);
-    this.processSCDNotetags2($dataActors);
-    this.processSCDNotetags2($dataClasses);
-    this.processSCDNotetags2($dataEnemies);
-    this.processSCDNotetags2($dataWeapons);
-    this.processSCDNotetags2($dataArmors);
-    this.processSCDNotetags2($dataStates);
-    this.processSCDNotetags3($dataActors);
-    this.processSCDNotetags3($dataClasses);
-    this.processSCDNotetags3($dataEnemies);
-    this.processSCDNotetags3($dataWeapons);
-    this.processSCDNotetags3($dataArmors);
-    this.processSCDNotetags3($dataStates);
-    MageStudios._loaded_MSEP_X_SkillCooldowns = true;
-  }
-  return true;
-};
+      obj.cooldown = {};
+      obj.stypeCooldown = {};
+      obj.globalCooldown = 0;
+      obj.afterBattleCooldown = MageStudios.Param.CDAfterBattle;
+      obj.cooldownSteps = Math.max(1, parseInt(MageStudios.Param.CDSteps));
+      obj.warmup = 0;
+      obj.bypassCooldown = MageStudios.Param.CDBypass.contains(obj.id);
+      obj.cooldownEval = "";
+      obj.warmupEval = "";
+      var evalMode = "none";
 
-DataManager.processSCDNotetagsS = function(group) {
-  if (MageStudios.SkillIdRef) return;
-  MageStudios.SkillIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processSCDNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.cooldown = {};
-    obj.stypeCooldown = {}
-    obj.globalCooldown = 0;
-    obj.afterBattleCooldown = MageStudios.Param.CDAfterBattle;
-    obj.cooldownSteps = Math.max(1, parseInt(MageStudios.Param.CDSteps));
-    obj.warmup = 0;
-    obj.bypassCooldown = MageStudios.Param.CDBypass.contains(obj.id);
-    obj.cooldownEval = '';
-    obj.warmupEval = '';
-    var evalMode = 'none';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:COOLDOWN):[ ](\d+)>/i)) {
-        obj.cooldown[obj.id] = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:AFTER BATTLE COOLDOWN):[ ]([\+\-]\d+)>/i)) {
-        obj.afterBattleCooldown = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:COOLDOWN STEPS):[ ](\d+)>/i)) {
-        obj.cooldownSteps = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:WARMUP):[ ](\d+)>/i)) {
-        obj.warmup = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
-        obj.cooldown[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<(?:SKILL)[ ](.*)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:COOLDOWN):[ ](\d+)>/i)) {
+          obj.cooldown[obj.id] = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:AFTER BATTLE COOLDOWN):[ ]([\+\-]\d+)>/i)) {
+          obj.afterBattleCooldown = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:COOLDOWN STEPS):[ ](\d+)>/i)) {
+          obj.cooldownSteps = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:WARMUP):[ ](\d+)>/i)) {
+          obj.warmup = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
+          obj.cooldown[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<(?:SKILL)[ ](.*)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.cooldown[id] = parseInt(RegExp.$2);
+        } else if (line.match(/<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
+          obj.stypeCooldown[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<(?:GLOBAL COOLDOWN):[ ](\d+)>/i)) {
+          obj.globalCooldown = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:BYPASS COOLDOWN)>/i)) {
+          obj.bypassCooldown = true;
+        } else if (line.match(/<(?:COOLDOWN EVAL)>/i)) {
+          obj.cooldown[obj.id] = obj.cooldown[obj.id] || 0;
+          evalMode = "cooldown";
+        } else if (line.match(/<\/(?:COOLDOWN EVAL)>/i)) {
+          evalMode = "none";
+        } else if (line.match(/<(?:WARMUP EVAL)>/i)) {
+          evalMode = "warmup";
+        } else if (line.match(/<\/(?:WARMUP EVAL)>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "cooldown") {
+          obj.cooldownEval = obj.cooldownEval + line + "\n";
+        } else if (evalMode === "warmup") {
+          obj.warmupEval = obj.warmupEval + line + "\n";
         }
-        obj.cooldown[id] = parseInt(RegExp.$2);
-      } else if (line.match(/<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN):[ ](\d+)>/i)) {
-        obj.stypeCooldown[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<(?:GLOBAL COOLDOWN):[ ](\d+)>/i)) {
-        obj.globalCooldown = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:BYPASS COOLDOWN)>/i)) {
-        obj.bypassCooldown = true;
-      } else if (line.match(/<(?:COOLDOWN EVAL)>/i)) {
-        obj.cooldown[obj.id] = obj.cooldown[obj.id] || 0;
-        evalMode = 'cooldown';
-      } else if (line.match(/<\/(?:COOLDOWN EVAL)>/i)) {
-        evalMode = 'none';
-      } else if (line.match(/<(?:WARMUP EVAL)>/i)) {
-        evalMode = 'warmup';
-      } else if (line.match(/<\/(?:WARMUP EVAL)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'cooldown') {
-        obj.cooldownEval = obj.cooldownEval + line + '\n';
-      } else if (evalMode === 'warmup') {
-        obj.warmupEval = obj.warmupEval + line + '\n';
       }
     }
-  }
-};
+  };
 
-DataManager.processSCDNotetags2 = function(group) {
-  var note1 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
-  var note1a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
-  var note2 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
-  var note3 = /<(?:GLOBAL COOLDOWN):[ ]([\+\-]\d+)>/i;
-  var note4 = /<(?:SKILL)[ ](\d+)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
-  var note4a = /<(?:SKILL)[ ](.*)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
-  var note5 = /<(?:STYPE)[ ](\d+)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
-  var note6 = /<(?:GLOBAL WARMUP):[ ]([\+\-]\d+)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processSCDNotetags2 = function (group) {
+    var note1 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
+    var note1a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
+    var note2 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN):[ ]([\+\-]\d+)>/i;
+    var note3 = /<(?:GLOBAL COOLDOWN):[ ]([\+\-]\d+)>/i;
+    var note4 = /<(?:SKILL)[ ](\d+)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
+    var note4a = /<(?:SKILL)[ ](.*)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
+    var note5 = /<(?:STYPE)[ ](\d+)[ ](?:WARMUP):[ ]([\+\-]\d+)>/i;
+    var note6 = /<(?:GLOBAL WARMUP):[ ]([\+\-]\d+)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.cooldownChange = {};
-    obj.stypeCooldownChange = {};
-    obj.globalCooldownChange = 0;
-    obj.warmupChange = {};
-    obj.stypeWarmupChange = {};
-    obj.globalWarmupChange = 0;
+      obj.cooldownChange = {};
+      obj.stypeCooldownChange = {};
+      obj.globalCooldownChange = 0;
+      obj.warmupChange = {};
+      obj.stypeWarmupChange = {};
+      obj.globalWarmupChange = 0;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        obj.cooldownChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(note1a)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          obj.cooldownChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(note1a)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.cooldownChange[id] = parseInt(RegExp.$2);
+        } else if (line.match(note2)) {
+          obj.stypeCooldownChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(note3)) {
+          obj.globalCooldownChange = parseInt(RegExp.$1);
+        } else if (line.match(note4)) {
+          obj.warmupChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(note4a)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.warmupChange[id] = parseInt(RegExp.$2);
+        } else if (line.match(note5)) {
+          obj.stypeWarmupChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(note6)) {
+          obj.globalWarmupChange = parseInt(RegExp.$1);
         }
-        obj.cooldownChange[id] = parseInt(RegExp.$2);
-      } else if (line.match(note2)) {
-        obj.stypeCooldownChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(note3)) {
-        obj.globalCooldownChange = parseInt(RegExp.$1);
-      } else if (line.match(note4)) {
-        obj.warmupChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(note4a)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
-        }
-        obj.warmupChange[id] = parseInt(RegExp.$2);
-      } else if (line.match(note5)) {
-        obj.stypeWarmupChange[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(note6)) {
-        obj.globalWarmupChange = parseInt(RegExp.$1);
       }
     }
-  }
-};
+  };
 
-DataManager.processSCDNotetags3 = function(group) {
-  var note1 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
-  var note1a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
-  var note2 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
-  var note3 = /<(?:GLOBAL COOLDOWN DURATION):[ ](\d+)([%％])>/i;
-  var note4 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
-  var note4a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
-  var note5 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
-  var note6 = /<(?:GLOBAL COOLDOWN RATE):[ ](\d+)([%％])>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processSCDNotetags3 = function (group) {
+    var note1 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
+    var note1a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
+    var note2 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN DURATION):[ ](\d+)([%％])>/i;
+    var note3 = /<(?:GLOBAL COOLDOWN DURATION):[ ](\d+)([%％])>/i;
+    var note4 = /<(?:SKILL)[ ](\d+)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
+    var note4a = /<(?:SKILL)[ ](.*)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
+    var note5 = /<(?:STYPE)[ ](\d+)[ ](?:COOLDOWN RATE):[ ](\d+)([%％])>/i;
+    var note6 = /<(?:GLOBAL COOLDOWN RATE):[ ](\d+)([%％])>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.cooldownDuration = {};
-    obj.stypeCooldownDuration = {};
-    obj.globalCooldownDuration = 1.0;
-    obj.cooldownRate = {};
-    obj.stypeCooldownRate = {};
-    obj.globalCooldownRate = 1.0;
+      obj.cooldownDuration = {};
+      obj.stypeCooldownDuration = {};
+      obj.globalCooldownDuration = 1.0;
+      obj.cooldownRate = {};
+      obj.stypeCooldownRate = {};
+      obj.globalCooldownRate = 1.0;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        obj.cooldownDuration[parseInt(RegExp.$1)] = 
-          parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note1a)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          obj.cooldownDuration[parseInt(RegExp.$1)] =
+            parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note1a)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.cooldownDuration[id] = parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note2)) {
+          obj.stypeCooldownDuration[parseInt(RegExp.$1)] =
+            parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note3)) {
+          obj.globalCooldownDuration = parseFloat(RegExp.$1) * 0.01;
+        } else if (line.match(note4)) {
+          obj.cooldownRate[parseInt(RegExp.$1)] = parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note4a)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.SkillIdRef[name]) {
+            var id = MageStudios.SkillIdRef[name];
+          } else {
+            continue;
+          }
+          obj.cooldownRate[id] = parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note5)) {
+          obj.stypeCooldownRate[parseInt(RegExp.$1)] =
+            parseFloat(RegExp.$2) * 0.01;
+        } else if (line.match(note6)) {
+          obj.globalCooldownRate = parseFloat(RegExp.$1 * 0.01);
         }
-        obj.cooldownDuration[id] = parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note2)) {
-        obj.stypeCooldownDuration[parseInt(RegExp.$1)] = 
-          parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note3)) {
-        obj.globalCooldownDuration = parseFloat(RegExp.$1) * 0.01;
-      } else if (line.match(note4)) {
-        obj.cooldownRate[parseInt(RegExp.$1)] = parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note4a)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.SkillIdRef[name]) {
-          var id = MageStudios.SkillIdRef[name];
-        } else {
-          continue;
-        }
-        obj.cooldownRate[id] = parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note5)) {
-        obj.stypeCooldownRate[parseInt(RegExp.$1)] = 
-          parseFloat(RegExp.$2) * 0.01;
-      } else if (line.match(note6)) {
-        obj.globalCooldownRate = parseFloat(RegExp.$1 * 0.01);
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.SCD.BattleManager_endBattle = BattleManager.endBattle;
-BattleManager.endBattle = function(result) {
+  MageStudios.SCD.BattleManager_endBattle = BattleManager.endBattle;
+  BattleManager.endBattle = function (result) {
     MageStudios.SCD.BattleManager_endBattle.call(this, result);
     $gameParty.endBattleCooldowns();
-};
-
-BattleManager.timeBasedCooldowns = function() {
-  if (!$gameParty.inBattle()) return false;
-  if (!Imported.MSEP_BattleEngineCore) return false;
-  if (this.isTurnBased()) return false;
-  if (this._timeBasedCooldowns !== undefined) return this._timeBasedCooldowns;
-  this._timeBasedCooldowns = eval(MageStudios.Param.CDTimeBased);
-  return this._timeBasedCooldowns;
-};
-
-if (Imported.MSEP_BattleEngineCore) {
-MageStudios.SCD.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-  BattleManager.processActionSequence = function(actionName, actionArgs) {
-    // GLOBAL COOLDOWN
-    if (actionName === 'GLOBAL COOLDOWN') {
-      return this.actionGlobalCooldown(actionArgs);
-    }
-    // SKILL COOLDOWN
-    if (actionName.match(/SKILL[ ](\d+)[ ]COOLDOWN/i)) {
-      return this.actionSkillCooldown(parseInt(RegExp.$1), actionArgs);
-    }
-    // SKILL TYPE COOLDOWN
-    if (actionName.match(/SKILL[ ]TYPE[ ](\d+)[ ]COOLDOWN/i)) {
-      return this.actionSTypeCooldown(parseInt(RegExp.$1), actionArgs);
-    }
-    // STYPE COOLDOWN
-    if (actionName.match(/STYPE[ ](\d+)[ ]COOLDOWN/i)) {
-      return this.actionSTypeCooldown(parseInt(RegExp.$1), actionArgs);
-    }
-    return MageStudios.SCD.BattleManager_processActionSequence.call(this,
-      actionName, actionArgs);
   };
-};
 
-BattleManager.actionGlobalCooldown = function(actionArgs) {
+  BattleManager.timeBasedCooldowns = function () {
+    if (!$gameParty.inBattle()) return false;
+    if (!Imported.MSEP_BattleEngineCore) return false;
+    if (this.isTurnBased()) return false;
+    if (this._timeBasedCooldowns !== undefined) return this._timeBasedCooldowns;
+    this._timeBasedCooldowns = eval(MageStudios.Param.CDTimeBased);
+    return this._timeBasedCooldowns;
+  };
+
+  if (Imported.MSEP_BattleEngineCore) {
+    MageStudios.SCD.BattleManager_processActionSequence =
+      BattleManager.processActionSequence;
+    BattleManager.processActionSequence = function (actionName, actionArgs) {
+      if (actionName === "GLOBAL COOLDOWN") {
+        return this.actionGlobalCooldown(actionArgs);
+      }
+
+      if (actionName.match(/SKILL[ ](\d+)[ ]COOLDOWN/i)) {
+        return this.actionSkillCooldown(parseInt(RegExp.$1), actionArgs);
+      }
+
+      if (actionName.match(/SKILL[ ]TYPE[ ](\d+)[ ]COOLDOWN/i)) {
+        return this.actionSTypeCooldown(parseInt(RegExp.$1), actionArgs);
+      }
+
+      if (actionName.match(/STYPE[ ](\d+)[ ]COOLDOWN/i)) {
+        return this.actionSTypeCooldown(parseInt(RegExp.$1), actionArgs);
+      }
+      return MageStudios.SCD.BattleManager_processActionSequence.call(
+        this,
+        actionName,
+        actionArgs
+      );
+    };
+  }
+
+  BattleManager.actionGlobalCooldown = function (actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return true;
     var cmd = actionArgs[1];
@@ -784,9 +779,9 @@ BattleManager.actionGlobalCooldown = function(actionArgs) {
       return true;
     }
     return true;
-};
+  };
 
-BattleManager.actionSkillCooldown = function(skillId, actionArgs) {
+  BattleManager.actionSkillCooldown = function (skillId, actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return true;
     var cmd = actionArgs[1];
@@ -806,9 +801,9 @@ BattleManager.actionSkillCooldown = function(skillId, actionArgs) {
       return true;
     }
     return true;
-};
+  };
 
-BattleManager.actionSTypeCooldown = function(stypeId, actionArgs) {
+  BattleManager.actionSTypeCooldown = function (stypeId, actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return true;
     var cmd = actionArgs[1];
@@ -838,67 +833,63 @@ BattleManager.actionSTypeCooldown = function(stypeId, actionArgs) {
       return true;
     }
     return true;
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.SCD.Game_BattlerBase_initMembers =
+  MageStudios.SCD.Game_BattlerBase_initMembers =
     Game_BattlerBase.prototype.initMembers;
-Game_BattlerBase.prototype.initMembers = function() {
+  Game_BattlerBase.prototype.initMembers = function () {
     MageStudios.SCD.Game_BattlerBase_initMembers.call(this);
     this.clearCooldowns();
     this.clearWarmups();
-};
+  };
 
-Game_BattlerBase.prototype.clearCooldowns = function() {
+  Game_BattlerBase.prototype.clearCooldowns = function () {
     this._cooldownTurns = {};
-};
+  };
 
-Game_BattlerBase.prototype.clearWarmups = function() {
+  Game_BattlerBase.prototype.clearWarmups = function () {
     this._warmupTurns = {};
-};
+  };
 
-Game_BattlerBase.prototype.cooldown = function(skillId) {
+  Game_BattlerBase.prototype.cooldown = function (skillId) {
     if (this._cooldownTurns === undefined) this.clearCooldowns();
     if (this._cooldownTurns[skillId] === undefined) {
       this._cooldownTurns[skillId] = 0;
     }
     return this._cooldownTurns[skillId];
-};
+  };
 
-Game_BattlerBase.prototype.warmup = function(skillId) {
+  Game_BattlerBase.prototype.warmup = function (skillId) {
     if (this._warmupTurns === undefined) this.clearWarmups();
     if (this._warmupTurns[skillId] === undefined) {
       this._warmupTurns[skillId] = 0;
     }
     return this._warmupTurns[skillId];
-};
+  };
 
-Game_BattlerBase.prototype.setCooldown = function(skillId, value) {
+  Game_BattlerBase.prototype.setCooldown = function (skillId, value) {
     if (!$dataSkills[skillId]) return;
     if ($dataSkills[skillId].bypassCooldown) return;
     if (this._cooldownTurns === undefined) this.clearCooldowns();
     this._cooldownTurns[skillId] = value;
-};
+  };
 
-Game_BattlerBase.prototype.addCooldown = function(skillId, value) {
+  Game_BattlerBase.prototype.addCooldown = function (skillId, value) {
     if (!$dataSkills[skillId]) return;
     if ($dataSkills[skillId].bypassCooldown) return;
     if (this._cooldownTurns === undefined) this.clearCooldowns();
     if (!this._cooldownTurns[skillId]) this._cooldownTurns[skillId] = 0;
     this._cooldownTurns[skillId] += value;
-};
+  };
 
-Game_BattlerBase.prototype.setWarmup = function(skillId, value) {
+  Game_BattlerBase.prototype.setWarmup = function (skillId, value) {
     if (!$dataSkills[skillId]) return;
     if ($dataSkills[skillId].bypassCooldown) return;
     if (this._warmupTurns === undefined) this.clearWarmups();
     this._warmupTurns[skillId] = value;
-};
+  };
 
-Game_BattlerBase.prototype.startWarmups = function() {
+  Game_BattlerBase.prototype.startWarmups = function () {
     if (this._warmupTurns === undefined) this.clearWarmups();
     for (var i = 0; i < this.allSkills().length; ++i) {
       var skill = this.allSkills()[i];
@@ -915,34 +906,34 @@ Game_BattlerBase.prototype.startWarmups = function() {
         try {
           eval(code);
         } catch (e) {
-          MageStudios.Util.displayError(e, code, 'CUSTOM WARMUP EVAL ERROR');
+          MageStudios.Util.displayError(e, code, "CUSTOM WARMUP EVAL ERROR");
         }
       }
       warmup *= this.cooldownDuration(skill);
       warmup += this.getWarmupMods(skill);
       this.setWarmup(skill.id, warmup);
     }
-};
+  };
 
-Game_BattlerBase.prototype.updateCooldowns = function() {
+  Game_BattlerBase.prototype.updateCooldowns = function () {
     if (this._cooldownTurns === undefined) this.clearCooldowns();
     for (var skillId in this._cooldownTurns) {
       var skill = $dataSkills[skillId];
       if (!skill) continue;
       this._cooldownTurns[skillId] -= this.cooldownRate(skill);
     }
-};
+  };
 
-Game_BattlerBase.prototype.updateWarmups = function() {
+  Game_BattlerBase.prototype.updateWarmups = function () {
     if (this._warmupTurns === undefined) this.clearWarmups();
     for (var skillId in this._warmupTurns) {
       var skill = $dataSkills[skillId];
       if (!skill) continue;
       this._warmupTurns[skillId] -= this.cooldownRate(skill);
     }
-};
+  };
 
-Game_BattlerBase.prototype.cooldownRateTick = function(skill) {
+  Game_BattlerBase.prototype.cooldownRateTick = function (skill) {
     this._cooldownTickRate = this._cooldownTickRate || {};
     if (!this._cooldownTickRate[skill.id]) {
       this._cooldownTickRate[skill.id] = this.cooldownRate(skill);
@@ -950,9 +941,9 @@ Game_BattlerBase.prototype.cooldownRateTick = function(skill) {
     var rate = this._cooldownTickRate[skill.id];
     rate *= BattleManager.tickRate() / MageStudios.Param.CDTurnTime;
     return rate;
-};
+  };
 
-Game_BattlerBase.prototype.updateCooldownTicks = function() {
+  Game_BattlerBase.prototype.updateCooldownTicks = function () {
     if (this._cooldownTurns === undefined) this.clearCooldowns();
     for (var skillId in this._cooldownTurns) {
       var skill = $dataSkills[skillId];
@@ -961,9 +952,9 @@ Game_BattlerBase.prototype.updateCooldownTicks = function() {
       this._cooldownTurns[skillId] -= this.cooldownRateTick(skill);
       this._cooldownTurns[skillId] = Math.max(0, this._cooldownTurns[skillId]);
     }
-};
+  };
 
-Game_BattlerBase.prototype.updateWarmupTicks = function() {
+  Game_BattlerBase.prototype.updateWarmupTicks = function () {
     if (this._warmupTurns === undefined) this.clearWarmups();
     for (var skillId in this._warmupTurns) {
       var skill = $dataSkills[skillId];
@@ -972,27 +963,30 @@ Game_BattlerBase.prototype.updateWarmupTicks = function() {
       this._warmupTurns[skillId] -= this.cooldownRateTick(skill);
       this._warmupTurns[skillId] = Math.max(0, this._warmupTurns[skillId]);
     }
-};
+  };
 
-MageStudios.SCD.Game_BattlerBase_meetsSkillConditions =
+  MageStudios.SCD.Game_BattlerBase_meetsSkillConditions =
     Game_BattlerBase.prototype.meetsSkillConditions;
-Game_BattlerBase.prototype.meetsSkillConditions = function(skill) {
+  Game_BattlerBase.prototype.meetsSkillConditions = function (skill) {
     if (this.cooldown(skill.id) > 0) return false;
     if (this.warmup(skill.id) > 0) return false;
-    return MageStudios.SCD.Game_BattlerBase_meetsSkillConditions.call(this, skill);
-};
+    return MageStudios.SCD.Game_BattlerBase_meetsSkillConditions.call(
+      this,
+      skill
+    );
+  };
 
-MageStudios.SCD.Game_BattlerBase_paySkillCost = 
+  MageStudios.SCD.Game_BattlerBase_paySkillCost =
     Game_BattlerBase.prototype.paySkillCost;
-Game_BattlerBase.prototype.paySkillCost = function(skill) {
+  Game_BattlerBase.prototype.paySkillCost = function (skill) {
     MageStudios.SCD.Game_BattlerBase_paySkillCost.call(this, skill);
     this.payGlobalCooldown(skill);
     this.payStypeCooldownCost(skill);
     this.payCooldownCost(skill);
     this.applyCooldownMods(skill);
-};
+  };
 
-Game_BattlerBase.prototype.payGlobalCooldown = function(mainSkill) {
+  Game_BattlerBase.prototype.payGlobalCooldown = function (mainSkill) {
     for (var i = 0; i < this.allSkills().length; ++i) {
       var skill = this.allSkills()[i];
       if (!skill) continue;
@@ -1001,9 +995,9 @@ Game_BattlerBase.prototype.payGlobalCooldown = function(mainSkill) {
       value = Math.max(value, this.cooldown(skill.id));
       this.setCooldown(skill.id, value);
     }
-};
+  };
 
-Game_BattlerBase.prototype.payStypeCooldownCost = function(mainSkill) {
+  Game_BattlerBase.prototype.payStypeCooldownCost = function (mainSkill) {
     for (var stypeId in mainSkill.stypeCooldown) {
       stypeId = parseInt(stypeId);
       for (var i = 0; i < this.allSkills().length; ++i) {
@@ -1016,9 +1010,9 @@ Game_BattlerBase.prototype.payStypeCooldownCost = function(mainSkill) {
         this.setCooldown(skill.id, value);
       }
     }
-};
+  };
 
-Game_BattlerBase.prototype.payCooldownCost = function(skill) {
+  Game_BattlerBase.prototype.payCooldownCost = function (skill) {
     for (var skillId in skill.cooldown) {
       skillId = parseInt(skillId);
       if (!$dataSkills[skillId]) continue;
@@ -1035,7 +1029,11 @@ Game_BattlerBase.prototype.payCooldownCost = function(skill) {
           try {
             eval(code);
           } catch (e) {
-            MageStudios.Util.displayError(e, code, 'CUSTOM COOLDOWN EVAL ERROR');
+            MageStudios.Util.displayError(
+              e,
+              code,
+              "CUSTOM COOLDOWN EVAL ERROR"
+            );
           }
         }
       }
@@ -1043,20 +1041,20 @@ Game_BattlerBase.prototype.payCooldownCost = function(skill) {
       cooldown = Math.max(cooldown, this.cooldown(skillId));
       this.setCooldown(skillId, cooldown);
     }
-};
+  };
 
-Game_BattlerBase.prototype.endBattleCooldowns = function() {
+  Game_BattlerBase.prototype.endBattleCooldowns = function () {
     this.resetCooldownTickRates();
     for (var skillId in this._cooldownTurns) {
       this._cooldownTurns[skillId] += $dataSkills[skillId].afterBattleCooldown;
     }
-};
+  };
 
-Game_BattlerBase.prototype.resetCooldownTickRates = function() {
+  Game_BattlerBase.prototype.resetCooldownTickRates = function () {
     this._cooldownTickRate = {};
-};
+  };
 
-Game_BattlerBase.prototype.updateCooldownSteps = function() {
+  Game_BattlerBase.prototype.updateCooldownSteps = function () {
     for (var skillId in this._cooldownTurns) {
       var skill = $dataSkills[skillId];
       if (skill) {
@@ -1065,15 +1063,15 @@ Game_BattlerBase.prototype.updateCooldownSteps = function() {
         }
       }
     }
-};
+  };
 
-Game_BattlerBase.prototype.applyCooldownEffect = function(skill) {
+  Game_BattlerBase.prototype.applyCooldownEffect = function (skill) {
     this.applyGlobalCooldownChange(skill);
     this.applyStypeCooldownChange(skill);
     this.applyCooldownChange(skill);
-};
+  };
 
-Game_BattlerBase.prototype.applyCooldownChange = function(skill) {
+  Game_BattlerBase.prototype.applyCooldownChange = function (skill) {
     for (var skillId in skill.cooldownChange) {
       skillId = parseInt(skillId);
       if (!$dataSkills[skillId]) continue;
@@ -1081,9 +1079,9 @@ Game_BattlerBase.prototype.applyCooldownChange = function(skill) {
       var value = skill.cooldownChange[skillId];
       this.addCooldown(skillId, value);
     }
-};
+  };
 
-Game_BattlerBase.prototype.applyStypeCooldownChange = function(mainSkill) {
+  Game_BattlerBase.prototype.applyStypeCooldownChange = function (mainSkill) {
     for (var stypeId in mainSkill.stypeCooldownChange) {
       stypeId = parseInt(stypeId);
       for (var i = 0; i < this.allSkills().length; ++i) {
@@ -1095,39 +1093,35 @@ Game_BattlerBase.prototype.applyStypeCooldownChange = function(mainSkill) {
         this.addCooldown(skill.id, value);
       }
     }
-};
+  };
 
-Game_BattlerBase.prototype.applyGlobalCooldownChange = function(mainSkill) {
+  Game_BattlerBase.prototype.applyGlobalCooldownChange = function (mainSkill) {
     for (var i = 0; i < this.allSkills().length; ++i) {
       var skill = this.allSkills()[i];
       if (!skill) continue;
       var value = mainSkill.globalCooldownChange;
       this.addCooldown(skill.id, value);
     }
-};
+  };
 
-Game_BattlerBase.prototype.getWarmupMods = function(skill) {
+  Game_BattlerBase.prototype.getWarmupMods = function (skill) {
     var value = 0;
     value += this.flatWarmupChange(skill);
     return value;
-};
+  };
 
-Game_BattlerBase.prototype.applyCooldownMods = function(skill) {
+  Game_BattlerBase.prototype.applyCooldownMods = function (skill) {
     var value = this.cooldown(skill.id);
     value += this.flatCooldownChange(skill);
     this.setCooldown(skill.id, Math.max(0, value));
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.onBattleStartCooldowns = function() {
+  Game_Battler.prototype.onBattleStartCooldowns = function () {
     this.resetCooldownTickRates();
     this.startWarmups();
-};
+  };
 
-Game_Battler.prototype.cooldownDuration = function(skill) {
+  Game_Battler.prototype.cooldownDuration = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = 1.0;
@@ -1143,9 +1137,9 @@ Game_Battler.prototype.cooldownDuration = function(skill) {
       value *= state.globalCooldownDuration;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.cooldownRate = function(skill) {
+  Game_Battler.prototype.cooldownRate = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = 1;
@@ -1161,9 +1155,9 @@ Game_Battler.prototype.cooldownRate = function(skill) {
       value *= state.globalCooldownRate;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.flatCooldownChange = function(skill) {
+  Game_Battler.prototype.flatCooldownChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = 0;
@@ -1179,9 +1173,9 @@ Game_Battler.prototype.flatCooldownChange = function(skill) {
       value += state.globalCooldownChange;
     }
     return value;
-};
+  };
 
-Game_Battler.prototype.flatWarmupChange = function(skill) {
+  Game_Battler.prototype.flatWarmupChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = 0;
@@ -1197,49 +1191,44 @@ Game_Battler.prototype.flatWarmupChange = function(skill) {
       value += state.globalWarmupChange;
     }
     return value;
-};
+  };
 
-MageStudios.SCD.Game_Battler_refresh = Game_Battler.prototype.refresh;
-Game_Battler.prototype.refresh = function() {
+  MageStudios.SCD.Game_Battler_refresh = Game_Battler.prototype.refresh;
+  Game_Battler.prototype.refresh = function () {
     MageStudios.SCD.Game_Battler_refresh.call(this);
     this.resetCooldownTickRates();
-};
-
-if (Imported.MSEP_BattleEngineCore) {
-
-  MageStudios.SCD.Game_Battler_onTurnStart = Game_Battler.prototype.onTurnStart;
-  Game_Battler.prototype.onTurnStart = function() {
-    MageStudios.SCD.Game_Battler_onTurnStart.call(this);
-    if (BattleManager.isTickBased() && !BattleManager.timeBasedCooldowns()) {
-      this.updateCooldowns();
-      this.updateWarmups();
-    }
   };
 
-  MageStudios.SCD.Game_Battler_updateTick = Game_Battler.prototype.updateTick;
-  Game_Battler.prototype.updateTick = function() {
-    MageStudios.SCD.Game_Battler_updateTick.call(this);
-    if (BattleManager.isTickBased() && BattleManager.timeBasedCooldowns()) {
-      this.updateCooldownTicks();
-      this.updateWarmupTicks();
+  if (Imported.MSEP_BattleEngineCore) {
+    MageStudios.SCD.Game_Battler_onTurnStart =
+      Game_Battler.prototype.onTurnStart;
+    Game_Battler.prototype.onTurnStart = function () {
+      MageStudios.SCD.Game_Battler_onTurnStart.call(this);
+      if (BattleManager.isTickBased() && !BattleManager.timeBasedCooldowns()) {
+        this.updateCooldowns();
+        this.updateWarmups();
+      }
     };
+
+    MageStudios.SCD.Game_Battler_updateTick = Game_Battler.prototype.updateTick;
+    Game_Battler.prototype.updateTick = function () {
+      MageStudios.SCD.Game_Battler_updateTick.call(this);
+      if (BattleManager.isTickBased() && BattleManager.timeBasedCooldowns()) {
+        this.updateCooldownTicks();
+        this.updateWarmupTicks();
+      }
+    };
+  }
+
+  Game_Battler.prototype.allSkills = function () {
+    var prevCase = $gameTemp._disableBattleSkills;
+    $gameTemp._disableBattleSkills = true;
+    var skills = this.skills();
+    $gameTemp._disableBattleSkills = prevCase;
+    return skills;
   };
 
-}; // Imported.MSEP_BattleEngineCore
-
-Game_Battler.prototype.allSkills = function() {
-  var prevCase = $gameTemp._disableBattleSkills;
-  $gameTemp._disableBattleSkills = true;
-  var skills = this.skills();
-  $gameTemp._disableBattleSkills = prevCase;
-  return skills;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.cooldownDuration = function(skill) {
+  Game_Actor.prototype.cooldownDuration = function (skill) {
     var value = Game_Battler.prototype.cooldownDuration.call(this, skill);
     var skillId = skill.id;
     var stypeId = skill.stypeId;
@@ -1275,9 +1264,9 @@ Game_Actor.prototype.cooldownDuration = function(skill) {
       }
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.cooldownRate = function(skill) {
+  Game_Actor.prototype.cooldownRate = function (skill) {
     var value = Game_Battler.prototype.cooldownRate.call(this, skill);
     var skillId = skill.id;
     var stypeId = skill.stypeId;
@@ -1313,9 +1302,9 @@ Game_Actor.prototype.cooldownRate = function(skill) {
       }
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.flatCooldownChange = function(skill) {
+  Game_Actor.prototype.flatCooldownChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = Game_Battler.prototype.flatCooldownChange.call(this, skill);
@@ -1346,9 +1335,9 @@ Game_Actor.prototype.flatCooldownChange = function(skill) {
       value += equip.globalCooldownChange;
     }
     return value;
-};
+  };
 
-Game_Actor.prototype.flatWarmupChange = function(skill) {
+  Game_Actor.prototype.flatWarmupChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = Game_Battler.prototype.flatWarmupChange.call(this, skill);
@@ -1379,24 +1368,20 @@ Game_Actor.prototype.flatWarmupChange = function(skill) {
       value += equip.globalWarmupChange;
     }
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-if (!Game_Enemy.prototype.skills) {
-    Game_Enemy.prototype.skills = function() {
-      var skills = []
+  if (!Game_Enemy.prototype.skills) {
+    Game_Enemy.prototype.skills = function () {
+      var skills = [];
       for (var i = 0; i < this.enemy().actions.length; ++i) {
-        var skill = $dataSkills[this.enemy().actions[i].skillId]
+        var skill = $dataSkills[this.enemy().actions[i].skillId];
         if (skill) skills.push(skill);
       }
       return skills;
-    }
-};
+    };
+  }
 
-Game_Enemy.prototype.cooldownDuration = function(skill) {
+  Game_Enemy.prototype.cooldownDuration = function (skill) {
     var value = Game_Battler.prototype.cooldownDuration.call(this, skill);
     var skillId = skill.id;
     var stypeId = skill.stypeId;
@@ -1408,9 +1393,9 @@ Game_Enemy.prototype.cooldownDuration = function(skill) {
     }
     value *= this.enemy().globalCooldownDuration;
     return value;
-};
+  };
 
-Game_Enemy.prototype.cooldownRate = function(skill) {
+  Game_Enemy.prototype.cooldownRate = function (skill) {
     var value = Game_Battler.prototype.cooldownRate.call(this, skill);
     var skillId = skill.id;
     var stypeId = skill.stypeId;
@@ -1422,9 +1407,9 @@ Game_Enemy.prototype.cooldownRate = function(skill) {
     }
     value *= this.enemy().globalCooldownRate;
     return value;
-};
+  };
 
-Game_Enemy.prototype.flatCooldownChange = function(skill) {
+  Game_Enemy.prototype.flatCooldownChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = Game_Battler.prototype.flatCooldownChange.call(this, skill);
@@ -1436,9 +1421,9 @@ Game_Enemy.prototype.flatCooldownChange = function(skill) {
     }
     value += this.enemy().globalCooldownChange;
     return value;
-};
+  };
 
-Game_Enemy.prototype.flatWarmupChange = function(skill) {
+  Game_Enemy.prototype.flatWarmupChange = function (skill) {
     var skillId = skill.id;
     var stypeId = skill.stypeId;
     var value = Game_Battler.prototype.flatWarmupChange.call(this, skill);
@@ -1450,93 +1435,77 @@ Game_Enemy.prototype.flatWarmupChange = function(skill) {
     }
     value += this.enemy().globalWarmupChange;
     return value;
-};
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.SCD.Game_Action_applyItemUserEffect =
+  MageStudios.SCD.Game_Action_applyItemUserEffect =
     Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
+  Game_Action.prototype.applyItemUserEffect = function (target) {
     MageStudios.SCD.Game_Action_applyItemUserEffect.call(this, target);
     if (target) target.applyCooldownEffect(this.item());
-};
+  };
 
-//=============================================================================
-// Game_Unit
-//=============================================================================
+  MageStudios.SCD.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
+  Game_Unit.prototype.onBattleStart = function () {
+    MageStudios.SCD.Game_Unit_onBattleStart.call(this);
+    this.onBattleStartCooldowns();
+  };
 
-MageStudios.SCD.Game_Unit_onBattleStart = Game_Unit.prototype.onBattleStart;
-Game_Unit.prototype.onBattleStart = function() {
-  MageStudios.SCD.Game_Unit_onBattleStart.call(this);
-  this.onBattleStartCooldowns();
-};
-
-Game_Unit.prototype.onBattleStartCooldowns = function() {
-  var members = this.cooldownMembers();
-  var length = members.length
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) member.onBattleStartCooldowns();
-  }
-};
-
-Game_Unit.prototype.updateCooldowns = function() {
-  if (BattleManager.timeBasedCooldowns()) return;
-  var members = this.members();
-  var length = members.length
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) {
-      member.updateCooldowns();
-      member.updateWarmups();
+  Game_Unit.prototype.onBattleStartCooldowns = function () {
+    var members = this.cooldownMembers();
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) member.onBattleStartCooldowns();
     }
-  }
-};
+  };
 
-Game_Unit.prototype.endBattleCooldowns = function() {
-  var members = this.members();
-  var length = members.length
-  for (var i = 0; i < length; ++i) {
-    var member = members[i];
-    if (member) {
-      member.endBattleCooldowns();
-      member.clearWarmups();
+  Game_Unit.prototype.updateCooldowns = function () {
+    if (BattleManager.timeBasedCooldowns()) return;
+    var members = this.members();
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) {
+        member.updateCooldowns();
+        member.updateWarmups();
+      }
     }
-  }
-};
+  };
 
-Game_Unit.prototype.cooldownMembers = function() {
-  return this.members();
-};
+  Game_Unit.prototype.endBattleCooldowns = function () {
+    var members = this.members();
+    var length = members.length;
+    for (var i = 0; i < length; ++i) {
+      var member = members[i];
+      if (member) {
+        member.endBattleCooldowns();
+        member.clearWarmups();
+      }
+    }
+  };
 
-//=============================================================================
-// Game_Party
-//=============================================================================
+  Game_Unit.prototype.cooldownMembers = function () {
+    return this.members();
+  };
 
-MageStudios.SCD.Game_Party_increaseSteps = Game_Party.prototype.increaseSteps;
-Game_Party.prototype.increaseSteps = function() {
+  MageStudios.SCD.Game_Party_increaseSteps = Game_Party.prototype.increaseSteps;
+  Game_Party.prototype.increaseSteps = function () {
     MageStudios.SCD.Game_Party_increaseSteps.call(this);
     this.updateCooldownSteps();
-};
+  };
 
-Game_Party.prototype.updateCooldownSteps = function() {
-    return this.members().forEach(function(member) {
-        return member.updateCooldownSteps();
+  Game_Party.prototype.updateCooldownSteps = function () {
+    return this.members().forEach(function (member) {
+      return member.updateCooldownSteps();
     });
-};
+  };
 
-Game_Party.prototype.cooldownMembers = function() {
-  return this.allMembers();
-};
+  Game_Party.prototype.cooldownMembers = function () {
+    return this.allMembers();
+  };
 
-//=============================================================================
-// Game_Troop
-//=============================================================================
-
-MageStudios.SCD.Game_Troop_increaseTurn = Game_Troop.prototype.increaseTurn;
-Game_Troop.prototype.increaseTurn = function() {
+  MageStudios.SCD.Game_Troop_increaseTurn = Game_Troop.prototype.increaseTurn;
+  Game_Troop.prototype.increaseTurn = function () {
     MageStudios.SCD.Game_Troop_increaseTurn.call(this);
     if (Imported.MSEP_BattleEngineCore) {
       if (BattleManager.isTurnBased()) {
@@ -1547,24 +1516,27 @@ Game_Troop.prototype.increaseTurn = function() {
       this.updateCooldowns();
       $gameParty.updateCooldowns();
     }
-};
+  };
 
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-MageStudios.SCD.Window_SkillList_drawCost = Window_SkillList.prototype.drawSkillCost;
-Window_SkillList.prototype.drawSkillCost = function(skill, wx, wy, ww) {
+  MageStudios.SCD.Window_SkillList_drawCost =
+    Window_SkillList.prototype.drawSkillCost;
+  Window_SkillList.prototype.drawSkillCost = function (skill, wx, wy, ww) {
     if (this._actor.warmup(skill.id) > 0) {
       return this.drawWarmup(skill, wx, wy, ww);
     } else if (this._actor.cooldown(skill.id) > 0) {
       return this.drawCooldown(skill, wx, wy, ww);
     } else {
-      return MageStudios.SCD.Window_SkillList_drawCost.call(this, skill, wx, wy, ww);
+      return MageStudios.SCD.Window_SkillList_drawCost.call(
+        this,
+        skill,
+        wx,
+        wy,
+        ww
+      );
     }
-};
+  };
 
-Window_SkillList.prototype.drawCooldown = function(skill, wx, wy, dw) {
+  Window_SkillList.prototype.drawCooldown = function (skill, wx, wy, dw) {
     if (MageStudios.Icon.Cooldown > 0) {
       var iw = wx + dw - Window_Base._iconWidth;
       this.drawIcon(MageStudios.Icon.Cooldown, iw, wy + 2);
@@ -1577,13 +1549,14 @@ Window_SkillList.prototype.drawCooldown = function(skill, wx, wy, dw) {
     if (value <= 0.009) value = 0.01;
     var text = fmt.format(MageStudios.Util.toGroup(value));
     this.contents.fontSize = MageStudios.Param.CDFontSize;
-    this.drawText(text, wx, wy, dw, 'right');
-    var returnWidth = dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
+    this.drawText(text, wx, wy, dw, "right");
+    var returnWidth =
+      dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
     this.resetFontSettings();
     return returnWidth;
-};
+  };
 
-Window_SkillList.prototype.drawWarmup = function(skill, wx, wy, dw) {
+  Window_SkillList.prototype.drawWarmup = function (skill, wx, wy, dw) {
     if (MageStudios.Icon.Warmup > 0) {
       var iw = wx + dw - Window_Base._iconWidth;
       this.drawIcon(MageStudios.Icon.Warmup, iw, wy + 2);
@@ -1596,25 +1569,18 @@ Window_SkillList.prototype.drawWarmup = function(skill, wx, wy, dw) {
     if (value <= 0.009) value = 0.01;
     var text = fmt.format(MageStudios.Util.toGroup(value));
     this.contents.fontSize = MageStudios.Param.WUFontSize;
-    this.drawText(text, wx, wy, dw, 'right');
-    var returnWidth = dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
+    this.drawText(text, wx, wy, dw, "right");
+    var returnWidth =
+      dw - this.textWidth(text) - MageStudios.Param.SCCCostPadding;
     this.resetFontSettings();
     return returnWidth;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
+  }
+}

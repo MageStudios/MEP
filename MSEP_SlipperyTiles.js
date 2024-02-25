@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Slippery Tiles
-// MSEP_SlipperyTiles.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SlipperyTiles = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Slip = MageStudios.Slip || {};
-MageStudios.Slip.version = 1.00
+MageStudios.Slip.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc You can create slippery tiles by marking them with
  * either a terrain tag or a region number.
  * @author Mage Studios Engine Plugins
@@ -75,125 +69,106 @@ MageStudios.Slip.version = 1.00
  * - Updated for RPG Maker MV version 1.1.0.
  *
  * Version 1.01:
- * - Added failsafe for people who aren't using tilesets 
+ * - Added failsafe for people who aren't using tilesets
  *
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_SlipperyTiles');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SlipperyTiles");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.SlipRegion = Number(MageStudios.Parameters['Slippery Region']);
-MageStudios.Param.SlipFrame = Number(MageStudios.Parameters['Slippery Frame']);
-MageStudios.Param.SlipSpeed = Number(MageStudios.Parameters['Slippery Speed']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.SlipRegion = Number(
+  MageStudios.Parameters["Slippery Region"]
+);
+MageStudios.Param.SlipFrame = Number(MageStudios.Parameters["Slippery Frame"]);
+MageStudios.Param.SlipSpeed = Number(MageStudios.Parameters["Slippery Speed"]);
 
 MageStudios.Slip.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.Slip.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_SlipperyTiles) {
-	  this.processSlipNotetags($dataTilesets);
+    this.processSlipNotetags($dataTilesets);
     MageStudios._loaded_MSEP_SlipperyTiles = true;
   }
-	return true;
+  return true;
 };
 
-DataManager.processSlipNotetags = function(group) {
+DataManager.processSlipNotetags = function (group) {
   var regexp1 = /<(?:SLIPPERY|slippery tile):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
-	for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		var notedata = obj.note.split(/[\r\n]+/);
+  for (var n = 1; n < group.length; n++) {
+    var obj = group[n];
+    var notedata = obj.note.split(/[\r\n]+/);
 
     obj.slippery = [];
 
-		for (var i = 0; i < notedata.length; i++) {
-			var line = notedata[i];
-			if (line.match(regexp1)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+    for (var i = 0; i < notedata.length; i++) {
+      var line = notedata[i];
+      if (line.match(regexp1)) {
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.slippery = obj.slippery.concat(array);
       }
-		}
-	}
-};
-
-//=============================================================================
-// Game_Map
-//=============================================================================
-
-Game_Map.prototype.isSlippery = function(mx, my) {
-    if ($gameParty.inBattle()) return false;
-    if (this.isValid(mx, my) && this.tileset()) {
-      if (MageStudios.Param.SlipRegion !== 0 &&
-        this.regionId(mx, my) === MageStudios.Param.SlipRegion) return true;
-      var tagId = this.terrainTag(mx, my);
-      var slipTiles = this.tileset().slippery;
-      return slipTiles.contains(tagId);
     }
-    return false;
+  }
 };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
-Game_CharacterBase.prototype.onSlipperyFloor = function() {
-    return $gameMap.isSlippery(this._x, this._y);
+Game_Map.prototype.isSlippery = function (mx, my) {
+  if ($gameParty.inBattle()) return false;
+  if (this.isValid(mx, my) && this.tileset()) {
+    if (
+      MageStudios.Param.SlipRegion !== 0 &&
+      this.regionId(mx, my) === MageStudios.Param.SlipRegion
+    )
+      return true;
+    var tagId = this.terrainTag(mx, my);
+    var slipTiles = this.tileset().slippery;
+    return slipTiles.contains(tagId);
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.slipperyPose = function() {
-    if (!this.onSlipperyFloor()) return false;
-    if (this._stepAnime) return false;
-    return true;
+Game_CharacterBase.prototype.onSlipperyFloor = function () {
+  return $gameMap.isSlippery(this._x, this._y);
 };
 
-MageStudios.Slip.Game_CharacterBase_pattern = Game_CharacterBase.prototype.pattern;
-Game_CharacterBase.prototype.pattern = function() {
-    if (this.slipperyPose()) return MageStudios.Param.SlipFrame;
-    return MageStudios.Slip.Game_CharacterBase_pattern.call(this);
+Game_CharacterBase.prototype.slipperyPose = function () {
+  if (!this.onSlipperyFloor()) return false;
+  if (this._stepAnime) return false;
+  return true;
+};
+
+MageStudios.Slip.Game_CharacterBase_pattern =
+  Game_CharacterBase.prototype.pattern;
+Game_CharacterBase.prototype.pattern = function () {
+  if (this.slipperyPose()) return MageStudios.Param.SlipFrame;
+  return MageStudios.Slip.Game_CharacterBase_pattern.call(this);
 };
 
 MageStudios.Slip.Game_CharacterBase_realMoveSpeed =
   Game_CharacterBase.prototype.realMoveSpeed;
-Game_CharacterBase.prototype.realMoveSpeed = function() {
-    if (this.onSlipperyFloor() && MageStudios.Param.SlipSpeed > 0) {
-      return MageStudios.Param.SlipSpeed;
-    }
-    return MageStudios.Slip.Game_CharacterBase_realMoveSpeed.call(this);
+Game_CharacterBase.prototype.realMoveSpeed = function () {
+  if (this.onSlipperyFloor() && MageStudios.Param.SlipSpeed > 0) {
+    return MageStudios.Param.SlipSpeed;
+  }
+  return MageStudios.Slip.Game_CharacterBase_realMoveSpeed.call(this);
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
 MageStudios.Slip.Game_Player_isDashing = Game_Player.prototype.isDashing;
-Game_Player.prototype.isDashing = function() {
-    if (this.onSlipperyFloor()) return false;
-    return MageStudios.Slip.Game_Player_isDashing.call(this);
+Game_Player.prototype.isDashing = function () {
+  if (this.onSlipperyFloor()) return false;
+  return MageStudios.Slip.Game_Player_isDashing.call(this);
 };
 
 MageStudios.Slip.Game_Player_update = Game_Player.prototype.update;
-Game_Player.prototype.update = function(sceneActive) {
-    MageStudios.Slip.Game_Player_update.call(this, sceneActive);
-    this.updateSlippery();
+Game_Player.prototype.update = function (sceneActive) {
+  MageStudios.Slip.Game_Player_update.call(this, sceneActive);
+  this.updateSlippery();
 };
 
-Game_Player.prototype.updateSlippery = function() {
-    if ($gameMap.isEventRunning()) return;
-    if (this.onSlipperyFloor() && !this.isMoving()) {
-      $gameTemp.clearDestination();
-			this.moveStraight(this._direction);
-    }
+Game_Player.prototype.updateSlippery = function () {
+  if ($gameMap.isEventRunning()) return;
+  if (this.onSlipperyFloor() && !this.isMoving()) {
+    $gameTemp.clearDestination();
+    this.moveStraight(this._direction);
+  }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

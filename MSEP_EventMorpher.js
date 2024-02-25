@@ -1,21 +1,15 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Morpher
-// MSEP_EventMorpher.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventMorpher = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EventMorph = MageStudios.EventMorph || {};
-MageStudios.EventMorph.version = 1.00;
+MageStudios.EventMorph.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows events to completely morph into another, copying
  * over all pages, conditions, and event commands.
  * @author Mage Studios Engine Plugins
- * 
+ *
  * @param ---General---
  * @default
  *
@@ -175,44 +169,44 @@ MageStudios.EventMorph.version = 1.00;
  * @max 999
  * @desc The ID of the event to be morphed when using this template.
  * @default 1
- * 
+ *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_EventMorpher');
+MageStudios.Parameters = PluginManager.parameters("MSEP_EventMorpher");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.EventMorpherData = eval(MageStudios.Parameters['TemplateMaps']);
-MageStudios.Param.EventMorpherList = JSON.parse(MageStudios.Parameters['TemplateNames']);
+MageStudios.Param.EventMorpherData = eval(
+  MageStudios.Parameters["TemplateMaps"]
+);
+MageStudios.Param.EventMorpherList = JSON.parse(
+  MageStudios.Parameters["TemplateNames"]
+);
 
 MageStudios.PreloadedMaps = MageStudios.PreloadedMaps || [];
 
-MageStudios.loadMapData = function(mapId) {
+MageStudios.loadMapData = function (mapId) {
   mapId = mapId.clamp(1, 999);
   if (MageStudios.PreloadedMaps[mapId]) return;
-  var src = 'Map%1.json'.format(mapId.padZero(3));
+  var src = "Map%1.json".format(mapId.padZero(3));
   var xhr = new XMLHttpRequest();
-  var url = 'data/' + src;
-  xhr.open('GET', url);
-  xhr.overrideMimeType('application/json');
-  xhr.onload = function() {
+  var url = "data/" + src;
+  xhr.open("GET", url);
+  xhr.overrideMimeType("application/json");
+  xhr.onload = function () {
     if (xhr.status < 400) {
       MageStudios.PreloadedMaps[mapId] = JSON.parse(xhr.responseText);
     }
   };
-  xhr.onerror = this._mapLoader || function() {
-    DataManager._errorUrl = DataManager._errorUrl || url;
-  };
+  xhr.onerror =
+    this._mapLoader ||
+    function () {
+      DataManager._errorUrl = DataManager._errorUrl || url;
+    };
   MageStudios.PreloadedMaps[mapId] = null;
   xhr.send();
 };
 
-MageStudios.SetupParameters = function() {
-  // Process Template Names
+MageStudios.SetupParameters = function () {
   MageStudios.EventMorph.Template = {};
   var length = MageStudios.Param.EventMorpherList.length;
   for (var i = 0; i < length; ++i) {
@@ -221,50 +215,60 @@ MageStudios.SetupParameters = function() {
     MageStudios.loadMapData(parseInt(data.MapID));
     MageStudios.EventMorph.Template[name] = {
       mapId: data.MapID,
-      eventId: data.EventID
-    }
+      eventId: data.EventID,
+    };
   }
-  // Preload Map Data List
+
   var data = MageStudios.Param.EventMorpherData;
   var length = data.length;
   for (var i = 0; i < length; ++i) {
     var mapId = parseInt(data[i]);
-    MageStudios.loadMapData(mapId)
+    MageStudios.loadMapData(mapId);
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// Mage Morph Event - Script Calls
-//=============================================================================
-
-MageStudios.MorphEventFailChecks = function(targetId, mapId, eventId) {
+MageStudios.MorphEventFailChecks = function (targetId, mapId, eventId) {
   var target = $gameMap.event(targetId);
   if (!target) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Target Event ID ' + targetId + ' does not exist. ' +
-        'It cannot be used for the MageStudios.MorphEvent function.');
+      console.log(
+        "Target Event ID " +
+          targetId +
+          " does not exist. " +
+          "It cannot be used for the MageStudios.MorphEvent function."
+      );
     }
     return true;
   }
   if (!MageStudios.PreloadedMaps[mapId]) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Map ID ' + mapId + ' has not been preloaded. ' +
-        'It cannot be used for the Morph Event function.');
+      console.log(
+        "Map ID " +
+          mapId +
+          " has not been preloaded. " +
+          "It cannot be used for the Morph Event function."
+      );
     }
     return true;
   }
   if (!MageStudios.PreloadedMaps[mapId].events[eventId]) {
     if ($gameTemp.isPlaytest()) {
-      console.log('Map ID ' + mapId + ', Event ID ' + eventId + ' does not ' +
-        'exist. It cannot be used for the Morph Event function.');
+      console.log(
+        "Map ID " +
+          mapId +
+          ", Event ID " +
+          eventId +
+          " does not " +
+          "exist. It cannot be used for the Morph Event function."
+      );
     }
     return true;
   }
   return false;
 };
 
-MageStudios.MorphEvent = function(targetId, mapId, eventId, preserved) {
+MageStudios.MorphEvent = function (targetId, mapId, eventId, preserved) {
   if ($gameParty.inBattle()) return;
   if (MageStudios.MorphEventFailChecks(targetId, mapId, eventId)) return;
   preserved = preserved || false;
@@ -274,74 +278,85 @@ MageStudios.MorphEvent = function(targetId, mapId, eventId, preserved) {
   if (preserved) $gameSystem.logPreservedEventMorph(target);
 };
 
-MageStudios.MorphEventTemplate = function(targetId, template, preserved) {
+MageStudios.MorphEventTemplate = function (targetId, template, preserved) {
   var str = template.toUpperCase();
   if (MageStudios.EventMorph.Template[str]) {
     var mapId = MageStudios.EventMorph.Template[str].mapId;
     var eventId = MageStudios.EventMorph.Template[str].eventId;
     MageStudios.MorphEvent(targetId, mapId, eventId, preserved);
   } else {
-    console.log('Template ' + template + ' does not exist to morph into!');
+    console.log("Template " + template + " does not exist to morph into!");
   }
 };
 
-MageStudios.RemoteMorphEvent = function(targetMapId, targetEventId, mapId, eventId) {
+MageStudios.RemoteMorphEvent = function (
+  targetMapId,
+  targetEventId,
+  mapId,
+  eventId
+) {
   if ($gameParty.inBattle() && $gameTemp.isPlaytest()) return;
   if ($gameMap.mapId() === targetMapId) {
     MageStudios.MorphEvent(targetEventId, mapId, eventId, true);
   } else {
-    $gameSystem.logPreservedEventMorphRaw(targetMapId, targetEventId,
-      mapId, eventId);
+    $gameSystem.logPreservedEventMorphRaw(
+      targetMapId,
+      targetEventId,
+      mapId,
+      eventId
+    );
   }
 };
 
-MageStudios.RemoteMorphEventTemplate = function(targetMapId, targetEventId, name) {
+MageStudios.RemoteMorphEventTemplate = function (
+  targetMapId,
+  targetEventId,
+  name
+) {
   var str = name.toUpperCase();
   if (MageStudios.EventMorph.Template[str]) {
     var mapId = MageStudios.EventMorph.Template[str].mapId;
     var eventId = MageStudios.EventMorph.Template[str].eventId;
     MageStudios.RemoteMorphEvent(targetMapId, targetEventId, mapId, eventId);
   } else {
-    console.log('Template ' + name + ' does not exist to morph into!');
+    console.log("Template " + name + " does not exist to morph into!");
   }
 };
 
-MageStudios.RemoveMorph = function(targetId) {
+MageStudios.RemoveMorph = function (targetId) {
   var target = $gameMap.event(targetId);
   if (!target) return;
   target.removeMorph();
 };
 
-MageStudios.RemovePreserveMorph = function(targetMapId, targetId) {
+MageStudios.RemovePreserveMorph = function (targetMapId, targetId) {
   if ($gameParty.inBattle() && $gameTemp.isPlaytest()) return;
-  if (targetMapId === $gameMap.mapId()) return MageStudios.RemoveMorph(targetId);
+  if (targetMapId === $gameMap.mapId())
+    return MageStudios.RemoveMorph(targetId);
   $gameSystem.removePreservedEventMorph(targetMapId, targetId);
 };
 
-MageStudios.RemoteRemoveMorph = function(targetMapId, targetId) {
+MageStudios.RemoteRemoveMorph = function (targetMapId, targetId) {
   MageStudios.RemovePreserveMorph(targetMapId, targetId);
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.EventMorph.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+MageStudios.EventMorph.Game_System_initialize =
+  Game_System.prototype.initialize;
+Game_System.prototype.initialize = function () {
   MageStudios.EventMorph.Game_System_initialize.call(this);
   this.initEventMorpher();
 };
 
-Game_System.prototype.initEventMorpher = function() {
+Game_System.prototype.initEventMorpher = function () {
   this._preservedEventMorphs = {};
 };
 
-Game_System.prototype.getPreservedEventMorphs = function() {
+Game_System.prototype.getPreservedEventMorphs = function () {
   if (this._preservedEventMorphs === undefined) this.initEventMorpher();
   return this._preservedEventMorphs;
 };
 
-Game_System.prototype.logPreservedEventMorphRaw = function(a, b, c, d) {
+Game_System.prototype.logPreservedEventMorphRaw = function (a, b, c, d) {
   var targetMapId = a;
   var targetEventId = b;
   var mapId = c;
@@ -352,11 +367,11 @@ Game_System.prototype.logPreservedEventMorphRaw = function(a, b, c, d) {
 
   preserved[key] = {
     mapId: mapId,
-    eventId: eventId
-  }
+    eventId: eventId,
+  };
 };
 
-Game_System.prototype.logPreservedEventMorph = function(target) {
+Game_System.prototype.logPreservedEventMorph = function (target) {
   var targetMapId = $gameMap.mapId();
   var targetEventId = target.eventId();
   var mapId = target._morphMapId;
@@ -364,29 +379,25 @@ Game_System.prototype.logPreservedEventMorph = function(target) {
   this.logPreservedEventMorphRaw(targetMapId, targetEventId, mapId, eventId);
 };
 
-Game_System.prototype.getPreservedEventMorph = function(mapId, eventId) {
+Game_System.prototype.getPreservedEventMorph = function (mapId, eventId) {
   var preserved = this.getPreservedEventMorphs();
   var key = [mapId, eventId];
   return preserved[key];
 };
 
-Game_System.prototype.removePreservedEventMorph = function(mapId, eventId) {
+Game_System.prototype.removePreservedEventMorph = function (mapId, eventId) {
   var preserved = this.getPreservedEventMorphs();
   var key = [mapId, eventId];
   preserved[key] = undefined;
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
 MageStudios.EventMorph.Game_Event_initialize = Game_Event.prototype.initialize;
-Game_Event.prototype.initialize = function(mapId, eventId) {
+Game_Event.prototype.initialize = function (mapId, eventId) {
   this.initEventMorpher(mapId, eventId);
   MageStudios.EventMorph.Game_Event_initialize.call(this, mapId, eventId);
 };
 
-Game_Event.prototype.initEventMorpher = function(mapId, eventId) {
+Game_Event.prototype.initEventMorpher = function (mapId, eventId) {
   this._morphed = false;
   this._morphMapId = mapId;
   this._morphEventId = eventId;
@@ -404,15 +415,17 @@ Game_Event.prototype.initEventMorpher = function(mapId, eventId) {
 };
 
 MageStudios.EventMorph.event = Game_Event.prototype.event;
-Game_Event.prototype.event = function() {
+Game_Event.prototype.event = function () {
   if (this._morphed) {
-    return MageStudios.PreloadedMaps[this._morphMapId].events[this._morphEventId];
+    return MageStudios.PreloadedMaps[this._morphMapId].events[
+      this._morphEventId
+    ];
   } else {
     return MageStudios.EventMorph.event.call(this);
   }
 };
 
-Game_Event.prototype.morphInto = function(mapId, eventId) {
+Game_Event.prototype.morphInto = function (mapId, eventId) {
   this._morphed = true;
   this._morphMapId = mapId;
   this._morphEventId = eventId;
@@ -423,7 +436,7 @@ Game_Event.prototype.morphInto = function(mapId, eventId) {
   //this.forceGraphicalUpdate();
 };
 
-Game_Event.prototype.removeMorph = function() {
+Game_Event.prototype.removeMorph = function () {
   $gameSystem.removePreservedEventMorph($gameMap.mapId(), this.eventId());
   this._morphed = false;
   this._pageIndex = -2;
@@ -433,24 +446,24 @@ Game_Event.prototype.removeMorph = function() {
   //this.forceGraphicalUpdate();
 };
 
-Game_Event.prototype.isEventMorphed = function() {
+Game_Event.prototype.isEventMorphed = function () {
   if (this._morphed === undefined) {
     this.initEventMorpher(this._mapId, this._eventId);
   }
   return this._morphed;
 };
 
-Game_Event.prototype.getEventMorphedData = function() {
+Game_Event.prototype.getEventMorphedData = function () {
   if (this._morphed === undefined) {
     this.initEventMorpher(this._mapId, this._eventId);
   }
   return {
     mapId: this._morphMapId,
-    eventId: this._morphEventId
-  }
+    eventId: this._morphEventId,
+  };
 };
 
-Game_Event.prototype.forceGraphicalUpdate = function() {
+Game_Event.prototype.forceGraphicalUpdate = function () {
   var spriteset = SceneManager._scene._spriteset;
   if (!spriteset) return;
   var sprites = spriteset._characterSprites;
@@ -464,18 +477,14 @@ Game_Event.prototype.forceGraphicalUpdate = function() {
   spriteset.update();
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.EventMorph.Game_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
+Game_Map.prototype.setup = function (mapId) {
   this.checkReloadForMorphedEvents(mapId);
   MageStudios.EventMorph.Game_Map_setup.call(this, mapId);
   this.processMorphedEvents();
 };
 
-Game_Map.prototype.checkReloadForMorphedEvents = function(mapId) {
+Game_Map.prototype.checkReloadForMorphedEvents = function (mapId) {
   this._recordedMorphedEvents = false;
   if ($gamePlayer && $gamePlayer._needsMapReload) {
     if (mapId === this.mapId() && $gamePlayer) {
@@ -484,7 +493,7 @@ Game_Map.prototype.checkReloadForMorphedEvents = function(mapId) {
   }
 };
 
-Game_Map.prototype.recordMorphedEvents = function() {
+Game_Map.prototype.recordMorphedEvents = function () {
   this._recordedMorphedEvents = true;
   this._recordedMorphedEventData = {};
   var events = this.events();
@@ -497,7 +506,7 @@ Game_Map.prototype.recordMorphedEvents = function() {
   }
 };
 
-Game_Map.prototype.processMorphedEvents = function() {
+Game_Map.prototype.processMorphedEvents = function () {
   if (!this._recordedMorphedEvents) return;
   for (var targetId in this._recordedMorphedEventData) {
     var data = this._recordedMorphedEventData[targetId];
@@ -505,7 +514,3 @@ Game_Map.prototype.processMorphedEvents = function() {
   }
   this._recordedMorphedEvents = false;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

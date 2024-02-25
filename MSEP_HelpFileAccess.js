@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Help File Access
-// MSEP_HelpFileAccess.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_HelpFileAccess = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Help = MageStudios.Help || {};
-MageStudios.Help.version = 1.00;
+MageStudios.Help.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Set the F1 key to open up an HTML help file when
  * pressued during your game.
  * @author Mage Studios Engine Plugins
@@ -95,9 +89,9 @@ MageStudios.Help.version = 1.00;
  *     Symbol: help
  *       Show: $gameSystem.isShowHelpCommand()
  *    Enabled: true
- *        Ext: 
+ *        Ext:
  *  Main Bind: this.commandHelp.bind(this)
- * Actor Bind: 
+ * Actor Bind:
  *
  * Insert the above setup within a Main Menu Manager slot. Provided you copy
  * the exact settings to where you need it, it will appear there while using
@@ -124,118 +118,101 @@ MageStudios.Help.version = 1.00;
  *   HideMenuHelpCommand
  *   - Will make the 'Help' command hidden in the main menu.
  */
-//=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_HelpFileAccess');
+MageStudios.Parameters = PluginManager.parameters("MSEP_HelpFileAccess");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.HelpFilePath = String(MageStudios.Parameters['Help File Path']);
-MageStudios.Param.HelpF1Key = eval(String(MageStudios.Parameters['Enable F1 Key']));
+MageStudios.Param.HelpFilePath = String(
+  MageStudios.Parameters["Help File Path"]
+);
+MageStudios.Param.HelpF1Key = eval(
+  String(MageStudios.Parameters["Enable F1 Key"])
+);
 
-MageStudios.Param.HelpCmd = String(MageStudios.Parameters['Help Command']);
-MageStudios.Param.HelpAutoAdd = eval(String(MageStudios.Parameters['Auto Add Menu']));
-MageStudios.Param.HelpShow = eval(String(MageStudios.Parameters['Show Command']));
-MageStudios.Param.HelpAutoPlace = String(MageStudios.Parameters['Auto Place Command']);
+MageStudios.Param.HelpCmd = String(MageStudios.Parameters["Help Command"]);
+MageStudios.Param.HelpAutoAdd = eval(
+  String(MageStudios.Parameters["Auto Add Menu"])
+);
+MageStudios.Param.HelpShow = eval(
+  String(MageStudios.Parameters["Show Command"])
+);
+MageStudios.Param.HelpAutoPlace = String(
+  MageStudios.Parameters["Auto Place Command"]
+);
 MageStudios.Param.HelpAutoPlace = eval(MageStudios.Param.HelpAutoPlace);
 
-//=============================================================================
-// Graphics
-//=============================================================================
-
 if (MageStudios.Param.HelpF1Key) {
-
-MageStudios.Help.Graphics_onKeyDown = Graphics._onKeyDown;
-Graphics._onKeyDown = function(event) {
-  MageStudios.Help.Graphics_onKeyDown.call(this, event);
-  if (!event.ctrlKey && !event.altKey && event.keyCode === 112) {
-    MageStudios.AccessHelpFile();
+  MageStudios.Help.Graphics_onKeyDown = Graphics._onKeyDown;
+  Graphics._onKeyDown = function (event) {
+    MageStudios.Help.Graphics_onKeyDown.call(this, event);
+    if (!event.ctrlKey && !event.altKey && event.keyCode === 112) {
+      MageStudios.AccessHelpFile();
+    }
   };
-};
-
-}; // MageStudios.Param.HelpF1Key
-
-//=============================================================================
-// Game_System
-//=============================================================================
+}
 
 MageStudios.Help.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.Help.Game_System_initialize.call(this);
   this.initHelp();
 };
 
-Game_System.prototype.initHelp = function() {
+Game_System.prototype.initHelp = function () {
   this._helpCommandShow = MageStudios.Param.HelpShow;
 };
 
-Game_System.prototype.isShowHelpCommand = function() {
+Game_System.prototype.isShowHelpCommand = function () {
   if (this._helpCommandShow === undefined) this.initHelp();
   return this._helpCommandShow;
 };
 
-Game_System.prototype.setShowHelpCommand = function(value) {
+Game_System.prototype.setShowHelpCommand = function (value) {
   if (this._helpCommandShow === undefined) this.initHelp();
   this._helpCommandShow = value;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.Help.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.Help.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'OpenHelp') {
+  if (command === "OpenHelp") {
     MageStudios.AccessHelpFile();
-  } else if (command === 'ShowMenuHelpCommand') {
+  } else if (command === "ShowMenuHelpCommand") {
     $gameSystem.setShowHelpCommand(true);
-  } else if (command === 'HideMenuHelpCommand') {
+  } else if (command === "HideMenuHelpCommand") {
     $gameSystem.setShowHelpCommand(false);
   }
 };
 
-//=============================================================================
-// Window_MenuCommand
-//=============================================================================
-
 MageStudios.Help.Window_MenuCommand_addOriginalCommands =
   Window_MenuCommand.prototype.addOriginalCommands;
-Window_MenuCommand.prototype.addOriginalCommands = function() {
+Window_MenuCommand.prototype.addOriginalCommands = function () {
   MageStudios.Help.Window_MenuCommand_addOriginalCommands.call(this);
   if (MageStudios.Param.HelpAutoAdd) this.addHelpCommand();
 };
 
-Window_MenuCommand.prototype.addHelpCommand = function() {
+Window_MenuCommand.prototype.addHelpCommand = function () {
   if (!MageStudios.Param.HelpAutoPlace) return;
   if (!$gameSystem.isShowHelpCommand()) return;
-  if (this.findSymbol('help') > -1) return;
+  if (this.findSymbol("help") > -1) return;
   var text = MageStudios.Param.HelpCmd;
-  this.addCommand(text, 'help', true);
+  this.addCommand(text, "help", true);
 };
-
-//=============================================================================
-// Scene_Menu
-//=============================================================================
 
 MageStudios.Help.Scene_Menu_createCommandWindow =
   Scene_Menu.prototype.createCommandWindow;
-Scene_Menu.prototype.createCommandWindow = function() {
+Scene_Menu.prototype.createCommandWindow = function () {
   MageStudios.Help.Scene_Menu_createCommandWindow.call(this);
-  this._commandWindow.setHandler('help', this.commandHelp.bind(this));
+  this._commandWindow.setHandler("help", this.commandHelp.bind(this));
 };
 
-Scene_Menu.prototype.commandHelp = function() {
+Scene_Menu.prototype.commandHelp = function () {
   MageStudios.AccessHelpFile();
   this._commandWindow.activate();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.AccessHelpFile = function() {
-  if ($gameTemp.isPlaytest()) console.log('Opening Help File...');
+MageStudios.AccessHelpFile = function () {
+  if ($gameTemp.isPlaytest()) console.log("Opening Help File...");
   TouchInput.clear();
   Input.clear();
   var url = this.getHelpFileUrl();
@@ -247,19 +224,17 @@ MageStudios.AccessHelpFile = function() {
   }
 };
 
-MageStudios.getHelpFileUrl = function() {
+MageStudios.getHelpFileUrl = function () {
   var url = MageStudios.Param.HelpFilePath;
   if (url.match(/http/i)) {
     return url;
   } else {
-    var path = window.location.pathname.replace(/(\/www|)\/[^\/]*$/,
-    '/' + MageStudios.Param.HelpFilePath);
+    var path = window.location.pathname.replace(
+      /(\/www|)\/[^\/]*$/,
+      "/" + MageStudios.Param.HelpFilePath
+    );
     if (path.match(/^\/([A-Z]\:)/)) path = path.slice(1);
     path = decodeURI(path);
     return path;
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Options Core
-// MSEP_OptionsCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_OptionsCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Options = MageStudios.Options || {};
-MageStudios.Options.version = 1.00;
+MageStudios.Options.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Expand the Options Menu into a more elegant looking menu
  * with more customization potential.
  * @author Mage Studios Engine Plugins
@@ -377,7 +371,7 @@ MageStudios.Options.version = 1.00;
  * @type struct<Options>[]
  * @desc The options used for this category.
  * @default ["{\"Name\":\"Option 1\",\"---Settings---\":\"\",\"HelpDesc\":\"\\\"<insert option description>\\\\n<option description line 2>\\\"\",\"Symbol\":\"Option1\",\"ShowHide\":\"\\\"show = true;\\\"\",\"Enable\":\"\\\"enabled = true;\\\"\",\"Ext\":\"\\\"ext = 0;\\\"\",\"---Functions---\":\"\",\"MakeCommandCode\":\"\\\"this.addCommand(name, symbol, enabled, ext);\\\"\",\"DrawItemCode\":\"\\\"var rect = this.itemRectForText(index);\\\\nvar statusWidth = this.statusWidth();\\\\nvar titleWidth = rect.width - statusWidth;\\\\nthis.resetTextColor();\\\\nthis.changePaintOpacity(this.isCommandEnabled(index));\\\\nthis.drawOptionsName(index);\\\\nthis.drawOptionsOnOff(index);\\\"\",\"ProcessOkCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, !value);\\\"\",\"CursorRightCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, true);\\\"\",\"CursorLeftCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, false);\\\"\",\"DefaultConfigCode\":\"\\\"ConfigManager[symbol] = false;\\\"\",\"SaveConfigCode\":\"\\\"config[symbol] = ConfigManager[symbol];\\\"\",\"LoadConfigCode\":\"\\\"ConfigManager[symbol] = !!config[symbol];\\\"\"}","{\"Name\":\"Option 2\",\"---Settings---\":\"\",\"HelpDesc\":\"\\\"<insert option description>\\\\n<option description line 2>\\\"\",\"Symbol\":\"Option2\",\"ShowHide\":\"\\\"show = true;\\\"\",\"Enable\":\"\\\"enabled = true;\\\"\",\"Ext\":\"\\\"ext = 0;\\\"\",\"---Functions---\":\"\",\"MakeCommandCode\":\"\\\"this.addCommand(name, symbol, enabled, ext);\\\"\",\"DrawItemCode\":\"\\\"var rect = this.itemRectForText(index);\\\\nvar statusWidth = this.statusWidth();\\\\nvar titleWidth = rect.width - statusWidth;\\\\nthis.resetTextColor();\\\\nthis.changePaintOpacity(this.isCommandEnabled(index));\\\\nthis.drawOptionsName(index);\\\\nthis.drawOptionsOnOff(index);\\\"\",\"ProcessOkCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, !value);\\\"\",\"CursorRightCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, true);\\\"\",\"CursorLeftCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, false);\\\"\",\"DefaultConfigCode\":\"\\\"ConfigManager[symbol] = false;\\\"\",\"SaveConfigCode\":\"\\\"config[symbol] = ConfigManager[symbol];\\\"\",\"LoadConfigCode\":\"\\\"ConfigManager[symbol] = !!config[symbol];\\\"\"}","{\"Name\":\"Option 3\",\"---Settings---\":\"\",\"HelpDesc\":\"\\\"<insert option description>\\\\n<option description line 2>\\\"\",\"Symbol\":\"Option3\",\"ShowHide\":\"\\\"show = true;\\\"\",\"Enable\":\"\\\"enabled = true;\\\"\",\"Ext\":\"\\\"ext = 0;\\\"\",\"---Functions---\":\"\",\"MakeCommandCode\":\"\\\"this.addCommand(name, symbol, enabled, ext);\\\"\",\"DrawItemCode\":\"\\\"var rect = this.itemRectForText(index);\\\\nvar statusWidth = this.statusWidth();\\\\nvar titleWidth = rect.width - statusWidth;\\\\nthis.resetTextColor();\\\\nthis.changePaintOpacity(this.isCommandEnabled(index));\\\\nthis.drawOptionsName(index);\\\\nthis.drawOptionsOnOff(index);\\\"\",\"ProcessOkCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, !value);\\\"\",\"CursorRightCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, true);\\\"\",\"CursorLeftCode\":\"\\\"var index = this.index();\\\\nvar symbol = this.commandSymbol(index);\\\\nvar value = this.getConfigValue(symbol);\\\\nthis.changeValue(symbol, false);\\\"\",\"DefaultConfigCode\":\"\\\"ConfigManager[symbol] = false;\\\"\",\"SaveConfigCode\":\"\\\"config[symbol] = ConfigManager[symbol];\\\"\",\"LoadConfigCode\":\"\\\"ConfigManager[symbol] = !!config[symbol];\\\"\"}"]
- * 
+ *
  */
 /* ----------------------------------------------------------------------------
  * Options Parameter Structure
@@ -404,7 +398,7 @@ MageStudios.Options.version = 1.00;
  * @desc Symbol used for this option when selected.
  * Make sure this is unique from other symbols.
  * @default <insert option symbol>
- * 
+ *
  * @param ShowHide
  * @text Show/Hide
  * @parent ---Settings---
@@ -481,469 +475,464 @@ MageStudios.Options.version = 1.00;
  * @type note
  * @desc The code used when loading the saved options configuration.
  * @default "ConfigManager[symbol] = !!config[symbol];"
- * 
+ *
  */
-//=============================================================================
 
 if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.5.0") {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_OptionsCore");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.OptionsAllCmd = String(
+    MageStudios.Parameters["AllCommand"]
+  );
+  MageStudios.Param.OptionsAllCmdHelp = String(
+    MageStudios.Parameters["AllHelpDesc"]
+  );
+  MageStudios.Param.OptionsExitCmd = String(
+    MageStudios.Parameters["ExitCommand"]
+  );
+  MageStudios.Param.OptionsExitCmdHelp = String(
+    MageStudios.Parameters["ExitHelpDesc"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_OptionsCore');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.OptionsCategoryWidth = Number(
+    MageStudios.Parameters["CategoryWidth"]
+  );
+  MageStudios.Param.OptionsStatusWidth = Number(
+    MageStudios.Parameters["StatusWidth"]
+  );
+  MageStudios.Param.OptionsVolumeOffset = Number(
+    MageStudios.Parameters["VolumeOffset"]
+  );
+  MageStudios.Param.OptionsWinToneOffset = Number(
+    MageStudios.Parameters["WindowToneOffset"]
+  );
 
-MageStudios.Param.OptionsAllCmd = String(MageStudios.Parameters['AllCommand']);
-MageStudios.Param.OptionsAllCmdHelp = String(MageStudios.Parameters['AllHelpDesc']);
-MageStudios.Param.OptionsExitCmd = String(MageStudios.Parameters['ExitCommand']);
-MageStudios.Param.OptionsExitCmdHelp = String(MageStudios.Parameters['ExitHelpDesc']);
+  MageStudios.SetupParameters = function () {
+    MageStudios.Param.OptionsSymbols = {};
+    var data = JSON.parse(MageStudios.Parameters["OptionsCategories"]);
+    var length = data.length;
 
-MageStudios.Param.OptionsCategoryWidth = Number(MageStudios.Parameters['CategoryWidth']);
-MageStudios.Param.OptionsStatusWidth = Number(MageStudios.Parameters['StatusWidth']);
-MageStudios.Param.OptionsVolumeOffset = Number(MageStudios.Parameters['VolumeOffset']);
-MageStudios.Param.OptionsWinToneOffset =
-  Number(MageStudios.Parameters['WindowToneOffset']);
+    for (var i = 0; i < length; ++i) {
+      data[i] = JSON.parse(data[i]);
+      data[i]["OptionsList"] = JSON.parse(data[i]["OptionsList"]);
+      var optionsLength = data[i]["OptionsList"].length;
 
-MageStudios.SetupParameters = function() {
-  MageStudios.Param.OptionsSymbols = {};
-  var data = JSON.parse(MageStudios.Parameters['OptionsCategories']);
-  var length = data.length;
-  // Options Categories
-  for (var i = 0; i < length; ++i) {
-    data[i] = JSON.parse(data[i]);
-    data[i]['OptionsList'] = JSON.parse(data[i]['OptionsList']);
-    var optionsLength = data[i]['OptionsList'].length;
-    // Options List
-    for (var j = 0; j < optionsLength; ++j) {
-      data[i]['OptionsList'][j] = JSON.parse(data[i]['OptionsList'][j]);
-      var settings = data[i]['OptionsList'][j];
-      var symbol = settings.Symbol;
+      for (var j = 0; j < optionsLength; ++j) {
+        data[i]["OptionsList"][j] = JSON.parse(data[i]["OptionsList"][j]);
+        var settings = data[i]["OptionsList"][j];
+        var symbol = settings.Symbol;
+        var name = symbol;
+        eval(JSON.parse(settings.DefaultConfigCode));
+        MageStudios.Param.OptionsSymbols[symbol] = {
+          SaveConfigCode: settings.SaveConfigCode,
+          LoadConfigCode: settings.LoadConfigCode,
+        };
+      }
+    }
+    MageStudios.Param.OptionsCategories = data;
+  };
+  MageStudios.SetupParameters();
+
+  ConfigManager.masterVolume = 100;
+  Object.defineProperty(ConfigManager, "masterVolume", {
+    get: function () {
+      return parseInt(AudioManager.masterVolume * 100);
+    },
+    set: function (value) {
+      AudioManager.masterVolume = value / 100;
+    },
+    configurable: true,
+  });
+
+  MageStudios.Options.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
+    var config = MageStudios.Options.ConfigManager_makeData.call(this);
+    for (var key in MageStudios.Param.OptionsSymbols) {
+      var setting = MageStudios.Param.OptionsSymbols[key];
+      var symbol = key;
       var name = symbol;
-      eval(JSON.parse(settings.DefaultConfigCode));
-      MageStudios.Param.OptionsSymbols[symbol] = {
-        SaveConfigCode: settings.SaveConfigCode,
-        LoadConfigCode: settings.LoadConfigCode
-      }
+      eval(JSON.parse(MageStudios.Param.OptionsSymbols[key].SaveConfigCode));
     }
-  }
-  MageStudios.Param.OptionsCategories = data;
-};
-MageStudios.SetupParameters();
+    return config;
+  };
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
+  MageStudios.Options.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
+    MageStudios.Options.ConfigManager_applyData.call(this, config);
+    for (var key in MageStudios.Param.OptionsSymbols) {
+      var setting = MageStudios.Param.OptionsSymbols[key];
+      var symbol = key;
+      var name = symbol;
+      eval(JSON.parse(MageStudios.Param.OptionsSymbols[key].LoadConfigCode));
+    }
+  };
 
-ConfigManager.masterVolume = 100;
-Object.defineProperty(ConfigManager, 'masterVolume', {
-    get: function() {
-        return parseInt(AudioManager.masterVolume * 100);
-    },
-    set: function(value) {
-        AudioManager.masterVolume = value / 100;
-    },
-    configurable: true
-});
-
-MageStudios.Options.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
-  var config = MageStudios.Options.ConfigManager_makeData.call(this);
-  for (var key in MageStudios.Param.OptionsSymbols) {
-    var setting = MageStudios.Param.OptionsSymbols[key];
-    var symbol = key;
-    var name = symbol;
-    eval(JSON.parse(MageStudios.Param.OptionsSymbols[key].SaveConfigCode));
-  }
-  return config;
-};
-
-MageStudios.Options.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
-  MageStudios.Options.ConfigManager_applyData.call(this, config);
-  for (var key in MageStudios.Param.OptionsSymbols) {
-    var setting = MageStudios.Param.OptionsSymbols[key];
-    var symbol = key;
-    var name = symbol;
-    eval(JSON.parse(MageStudios.Param.OptionsSymbols[key].LoadConfigCode));
-  }
-};
-
-//=============================================================================
-// Window_OptionsCategory
-//=============================================================================
-
-function Window_OptionsCategory() {
+  function Window_OptionsCategory() {
     this.initialize.apply(this, arguments);
-}
-
-Window_OptionsCategory.prototype = Object.create(Window_Command.prototype);
-Window_OptionsCategory.prototype.constructor = Window_OptionsCategory;
-
-Window_OptionsCategory.prototype.initialize = function(helpWin, optionsWin) {
-  var x = 0;
-  var y = helpWin.y + helpWin.height;
-  this._width = MageStudios.Param.OptionsCategoryWidth;
-  this._height = Graphics.boxHeight - y;
-  Window_Command.prototype.initialize.call(this, x, y);
-  this.setOptionsWindow(optionsWin);
-  this.setHelpWindow(helpWin);
-  this.refresh();
-  this.select(0);
-  this.activate();
-};
-
-Window_OptionsCategory.prototype.windowWidth = function() {
-  return this._width;
-};
-
-Window_OptionsCategory.prototype.windowHeight = function() {
-  return this._height;
-};
-
-Window_OptionsCategory.prototype.setOptionsWindow = function(optionsWindow) {
-  this._optionsWindow = optionsWindow;
-};
-
-Window_OptionsCategory.prototype.makeCommandList = function() {
-  this.addAllCommand();
-  this.addCategoryList();
-  this.addExitCommand();
-};
-
-Window_OptionsCategory.prototype.addCategoryList = function() {
-  var categories = MageStudios.Param.OptionsCategories;
-  var length = categories.length;
-  for (var i = 0; i < length; ++i) {
-    var category = categories[i];
-    var name = category.Name;
-    this.addCommand(name, 'category', true, category);
   }
-};
 
-Window_OptionsCategory.prototype.addAllCommand = function() {
-  if (!MageStudios.Param.OptionsAllCmd) return;
-  var data = {
-    HelpDesc: MageStudios.Param.OptionsAllCmdHelp,
-    OptionsList: []
-  }
-  for (var key in MageStudios.Param.OptionsCategories) {
-    var category = MageStudios.Param.OptionsCategories[key];
-    var list = category.OptionsList;
-    if (list) {
-      var length = list.length;
-      for (var i = 0; i < length; ++i) {
-        data.OptionsList.push(list[i]);
+  Window_OptionsCategory.prototype = Object.create(Window_Command.prototype);
+  Window_OptionsCategory.prototype.constructor = Window_OptionsCategory;
+
+  Window_OptionsCategory.prototype.initialize = function (helpWin, optionsWin) {
+    var x = 0;
+    var y = helpWin.y + helpWin.height;
+    this._width = MageStudios.Param.OptionsCategoryWidth;
+    this._height = Graphics.boxHeight - y;
+    Window_Command.prototype.initialize.call(this, x, y);
+    this.setOptionsWindow(optionsWin);
+    this.setHelpWindow(helpWin);
+    this.refresh();
+    this.select(0);
+    this.activate();
+  };
+
+  Window_OptionsCategory.prototype.windowWidth = function () {
+    return this._width;
+  };
+
+  Window_OptionsCategory.prototype.windowHeight = function () {
+    return this._height;
+  };
+
+  Window_OptionsCategory.prototype.setOptionsWindow = function (optionsWindow) {
+    this._optionsWindow = optionsWindow;
+  };
+
+  Window_OptionsCategory.prototype.makeCommandList = function () {
+    this.addAllCommand();
+    this.addCategoryList();
+    this.addExitCommand();
+  };
+
+  Window_OptionsCategory.prototype.addCategoryList = function () {
+    var categories = MageStudios.Param.OptionsCategories;
+    var length = categories.length;
+    for (var i = 0; i < length; ++i) {
+      var category = categories[i];
+      var name = category.Name;
+      this.addCommand(name, "category", true, category);
+    }
+  };
+
+  Window_OptionsCategory.prototype.addAllCommand = function () {
+    if (!MageStudios.Param.OptionsAllCmd) return;
+    var data = {
+      HelpDesc: MageStudios.Param.OptionsAllCmdHelp,
+      OptionsList: [],
+    };
+    for (var key in MageStudios.Param.OptionsCategories) {
+      var category = MageStudios.Param.OptionsCategories[key];
+      var list = category.OptionsList;
+      if (list) {
+        var length = list.length;
+        for (var i = 0; i < length; ++i) {
+          data.OptionsList.push(list[i]);
+        }
       }
     }
-  }
-  this.addCommand(MageStudios.Param.OptionsAllCmd, 'category', true, data);
-};
+    this.addCommand(MageStudios.Param.OptionsAllCmd, "category", true, data);
+  };
 
-Window_OptionsCategory.prototype.addExitCommand = function() {
-  if (!MageStudios.Param.OptionsExitCmd) return;
-  var data = {
-    HelpDesc: MageStudios.Param.OptionsExitCmdHelp,
-    OptionsList: []
-  }
-  this.addCommand(MageStudios.Param.OptionsExitCmd, 'cancel', true, data);
-};
+  Window_OptionsCategory.prototype.addExitCommand = function () {
+    if (!MageStudios.Param.OptionsExitCmd) return;
+    var data = {
+      HelpDesc: MageStudios.Param.OptionsExitCmdHelp,
+      OptionsList: [],
+    };
+    this.addCommand(MageStudios.Param.OptionsExitCmd, "cancel", true, data);
+  };
 
-Window_OptionsCategory.prototype.updateHelp = function() {
-  if (!this._helpWindow) return;
-  if (this.currentExt()) {
-    var data = this.currentExt();
-    this._helpWindow.setText(JSON.parse(data.HelpDesc));
-    if (data.OptionsList.length > 0) {
-      this._optionsWindow.makeCommandListFromData(data.OptionsList);
+  Window_OptionsCategory.prototype.updateHelp = function () {
+    if (!this._helpWindow) return;
+    if (this.currentExt()) {
+      var data = this.currentExt();
+      this._helpWindow.setText(JSON.parse(data.HelpDesc));
+      if (data.OptionsList.length > 0) {
+        this._optionsWindow.makeCommandListFromData(data.OptionsList);
+      } else {
+        this._optionsWindow.clearRefresh();
+      }
     } else {
-      this._optionsWindow.clearRefresh();
+      this._helpWindow.clear();
     }
-  } else {
-    this._helpWindow.clear();
-  }
-};
+  };
 
-Window_OptionsCategory.prototype.drawItem = function(index) {
-  var rect = this.itemRectForText(index);
-  var align = this.itemTextAlign();
-  this.resetTextColor();
-  this.changePaintOpacity(this.isCommandEnabled(index));
-  this.drawTextEx(this.commandName(index), rect.x, rect.y);
-};
+  Window_OptionsCategory.prototype.drawItem = function (index) {
+    var rect = this.itemRectForText(index);
+    var align = this.itemTextAlign();
+    this.resetTextColor();
+    this.changePaintOpacity(this.isCommandEnabled(index));
+    this.drawTextEx(this.commandName(index), rect.x, rect.y);
+  };
 
-//=============================================================================
-// Window_Options
-//=============================================================================
+  Window_Options.prototype.initialize = function () {
+    this._commandListData = undefined;
+    Window_Command.prototype.initialize.call(this, 0, 0);
+    this.deactivate();
+    this.deselect();
+  };
 
-Window_Options.prototype.initialize = function() {
-  this._commandListData = undefined;
-  Window_Command.prototype.initialize.call(this, 0, 0);
-  this.deactivate();
-  this.deselect();
-};
+  Window_Options.prototype.updatePlacement = function () {
+    this._placementUpdated = true;
+    this.x = MageStudios.Param.OptionsCategoryWidth;
+    this.y = this._helpWindow.y + this._helpWindow.height;
+  };
 
-Window_Options.prototype.updatePlacement = function() {
-  this._placementUpdated = true;
-  this.x = MageStudios.Param.OptionsCategoryWidth;
-  this.y = this._helpWindow.y + this._helpWindow.height;
-};
+  Window_Options.prototype.windowWidth = function () {
+    return Graphics.boxWidth - MageStudios.Param.OptionsCategoryWidth;
+  };
 
-Window_Options.prototype.windowWidth = function() {
-  return Graphics.boxWidth - MageStudios.Param.OptionsCategoryWidth;
-};
+  Window_Options.prototype.windowHeight = function () {
+    if (this._placementUpdated) {
+      return Graphics.boxHeight - this.y;
+    } else {
+      return Graphics.boxHeight - this.fittingHeight(2);
+    }
+  };
 
-Window_Options.prototype.windowHeight = function() {
-  if (this._placementUpdated) {
-    return Graphics.boxHeight - this.y;
-  } else {
-    return Graphics.boxHeight - this.fittingHeight(2);
-  }
-};
+  Window_Options.prototype.setHelpWindow = function (helpWindow) {
+    Window_Command.prototype.setHelpWindow.call(this, helpWindow);
+    this.updatePlacement();
+    this.refresh();
+  };
 
-Window_Options.prototype.setHelpWindow = function(helpWindow) {
-  Window_Command.prototype.setHelpWindow.call(this, helpWindow);
-  this.updatePlacement();
-  this.refresh();
-};
-
-Window_Options.prototype.clearRefresh = function() {
+  Window_Options.prototype.clearRefresh = function () {
     this.clearCommandList();
     this.createContents();
     Window_Selectable.prototype.refresh.call(this);
-};
+  };
 
-Window_Options.prototype.makeCommandList = function() {
-  if (!this._commandListData) return;
-  this._symbolData = {};
-  var data = this._commandListData;
-  var length = data.length;
-  for (var i = 0; i < length; ++i) {
-    this.processCommandData(data[i]);
-  }
-};
-
-Window_Options.prototype.statusWidth = function() {
-  return Math.min(MageStudios.Param.OptionsStatusWidth, this.contents.width / 2);
-};
-
-Window_Options.prototype.volumeOffset = function() {
-  return MageStudios.Param.OptionsVolumeOffset || 20;
-};
-
-Window_Options.prototype.windowToneOffset = function() {
-  return MageStudios.Param.OptionsWinToneOffset || 5;
-};
-
-Window_Options.prototype.makeCommandListFromData = function(data) {
-  if (!data) return;
-  this._commandListData = data;
-  this.refresh();
-};
-
-Window_Options.prototype.processCommandData = function(data) {
-  // Check if Shown
-  var show = false;
-  eval(JSON.parse(data.ShowHide));
-  if (!show) return;
-  // Add Command
-  var name = data.Name;
-  if (name === '<insert option name>') return;
-  if (name.match(/EVAL:[ ](.*)/i)){
-    var code = String(RegExp.$1);
-    try {
-      name = eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'CUSTOM OPTIONS NAME ERROR');
+  Window_Options.prototype.makeCommandList = function () {
+    if (!this._commandListData) return;
+    this._symbolData = {};
+    var data = this._commandListData;
+    var length = data.length;
+    for (var i = 0; i < length; ++i) {
+      this.processCommandData(data[i]);
     }
-  }
-  var symbol = data.Symbol;
-  if (symbol === '<insert option symbol>') symbol = name;
-  var enable = false;
-  var ext = 0;
-  eval(JSON.parse(data.Enable));
-  eval(JSON.parse(data.Ext));
-  eval(JSON.parse(data.MakeCommandCode));
-  // Save symbol data
-  this._symbolData[symbol] = {
-    DrawItemCode: data.DrawItemCode,
-    ProcessOkCode: data.ProcessOkCode,
-    CursorLeftCode: data.CursorLeftCode,
-    CursorRightCode: data.CursorRightCode,
-    HelpDesc: data.HelpDesc
-  }
-};
+  };
 
-MageStudios.Options.Window_Options_drawItem = Window_Options.prototype.drawItem;
-Window_Options.prototype.drawItem = function(index) {
-  var symbol = this.commandSymbol(index);
-  if (symbol) {
-    eval(JSON.parse(this._symbolData[symbol].DrawItemCode));
-  } else {
-    MageStudios.Options.Window_Options_drawItem.call(this, index);
-  }
-};
+  Window_Options.prototype.statusWidth = function () {
+    return Math.min(
+      MageStudios.Param.OptionsStatusWidth,
+      this.contents.width / 2
+    );
+  };
 
-Window_Options.prototype.drawOptionsName = function(index) {
-  var rect = this.itemRectForText(index);
-  var statusWidth = this.statusWidth();
-  var titleWidth = rect.width - statusWidth;
-  this.resetTextColor();
-  this.changePaintOpacity(this.isCommandEnabled(index));
-  this.drawTextEx(this.commandName(index), rect.x, rect.y);
-};
+  Window_Options.prototype.volumeOffset = function () {
+    return MageStudios.Param.OptionsVolumeOffset || 20;
+  };
 
-Window_Options.prototype.drawOptionsOnOff = function(index, onText, offText) {
-  onText = onText || 'ON';
-  offText = offText || 'OFF';
-  var rect = this.itemRectForText(index);
-  var statusWidth = this.statusWidth();
-  var halfStatusWidth = this.statusWidth() / 2;
-  var titleWidth = rect.width - statusWidth;
-  this.resetTextColor();
-  var symbol = this.commandSymbol(index);
-  var value = this.getConfigValue(symbol);
-  this.changePaintOpacity(!value);
-  this.drawText(offText, titleWidth, rect.y, halfStatusWidth, 'center');
-  this.changePaintOpacity(value);
-  this.drawText(onText, titleWidth + halfStatusWidth, rect.y, halfStatusWidth,
-    'center');
-};
+  Window_Options.prototype.windowToneOffset = function () {
+    return MageStudios.Param.OptionsWinToneOffset || 5;
+  };
 
-Window_Options.prototype.drawOptionsGauge = function(index, rate, c1, c2) {
-  var rect = this.itemRectForText(index);
-  var statusWidth = this.statusWidth();
-  var halfStatusWidth = this.statusWidth() / 2;
-  var titleWidth = rect.width - statusWidth;
-  this.drawGauge(titleWidth, rect.y, statusWidth, rate, c1, c2);
-};
+  Window_Options.prototype.makeCommandListFromData = function (data) {
+    if (!data) return;
+    this._commandListData = data;
+    this.refresh();
+  };
 
-MageStudios.Options.Window_Options_processOk = Window_Options.prototype.processOk;
-Window_Options.prototype.processOk = function() {
-  var symbol = this.commandSymbol(this.index());
-  if (symbol) {
-    eval(JSON.parse(this._symbolData[symbol].ProcessOkCode));
-  } else {
-    MageStudios.Options.Window_Options_processOk.call(this);
-  }
-};
+  Window_Options.prototype.processCommandData = function (data) {
+    var show = false;
+    eval(JSON.parse(data.ShowHide));
+    if (!show) return;
 
-MageStudios.Options.Window_Options_cursorLeft = Window_Options.prototype.cursorLeft;
-Window_Options.prototype.cursorLeft = function(wrap) {
-  var symbol = this.commandSymbol(this.index());
-  if (symbol) {
-    eval(JSON.parse(this._symbolData[symbol].CursorLeftCode));
-  } else {
-    MageStudios.Options.Window_Options_cursorLeft.call(this, wrap);
-  }
-};
-
-MageStudios.Options.Window_Options_cursorRight =
-  Window_Options.prototype.cursorRight;
-Window_Options.prototype.cursorRight = function(wrap) {
-  var symbol = this.commandSymbol(this.index());
-  if (symbol) {
-    eval(JSON.parse(this._symbolData[symbol].CursorRightCode));
-  } else {
-    MageStudios.Options.Window_Options_cursorRight.call(this, wrap);
-  }
-};
-
-Window_Options.prototype.changeWindowTone = function(symbol, value, color) {
-  var index = ['red', 'green', 'blue'].indexOf(color);
-  if (index < 0) return;
-  var tone = JsonEx.makeDeepCopy($gameSystem.windowTone());
-  var lastValue = tone[index];
-  tone[index] = value.clamp(-255, 255);
-  if (lastValue !== tone[index]) {
-    $gameSystem.setWindowTone(tone);
-    this.redrawItem(this.findSymbol(symbol));
-    SoundManager.playCursor();
-  }
-};
-
-Window_Options.prototype.updateHelp = function() {
-  if (!this._helpWindow) return;
-  if (this.index() < 0) return;
-  var symbol = this.commandSymbol(this.index());
-  if (this._symbolData && this._symbolData[symbol]) {
-    this._helpWindow.setText(JSON.parse(this._symbolData[symbol].HelpDesc));
-  } else {
-    this._helpWindow.clear();
-  }
-};
-
-//=============================================================================
-// Scene_Options
-//=============================================================================
-
-Scene_Options.prototype.create = function() {
-  Scene_MenuBase.prototype.create.call(this);
-  this.createHelpWindow();
-  this.createOptionsWindow();
-  this.createCategoryWindow();
-};
-
-MageStudios.Options.Scene_Options_createOptionsWindow =
-  Scene_Options.prototype.createOptionsWindow;
-Scene_Options.prototype.createOptionsWindow = function() {
-  MageStudios.Options.Scene_Options_createOptionsWindow.call(this);
-  this._optionsWindow.setHelpWindow(this._helpWindow);
-  this._optionsWindow.setHandler('cancel', this.onOptionsCancel.bind(this));
-};
-
-Scene_Options.prototype.createCategoryWindow = function() {
-  var helpWin = this._helpWindow;
-  var optionsWin = this._optionsWindow;
-  this._categoryWindow = new Window_OptionsCategory(helpWin, optionsWin);
-  this._categoryWindow.setHandler('cancel', this.popScene.bind(this));
-  this._categoryWindow.setHandler('category', this.onCategoryOk.bind(this));
-  this.addWindow(this._categoryWindow);
-};
-
-Scene_Options.prototype.onCategoryOk = function() {
-  this._optionsWindow.activate();
-  this._optionsWindow.select(0);
-};
-
-Scene_Options.prototype.onOptionsCancel = function() {
-  this._optionsWindow.deselect();
-  this._categoryWindow.activate();
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+    var name = data.Name;
+    if (name === "<insert option name>") return;
+    if (name.match(/EVAL:[ ](.*)/i)) {
+      var code = String(RegExp.$1);
+      try {
+        name = eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(e, formula, "CUSTOM OPTIONS NAME ERROR");
+      }
     }
-  }
-};
+    var symbol = data.Symbol;
+    if (symbol === "<insert option symbol>") symbol = name;
+    var enable = false;
+    var ext = 0;
+    eval(JSON.parse(data.Enable));
+    eval(JSON.parse(data.Ext));
+    eval(JSON.parse(data.MakeCommandCode));
 
-//=============================================================================
-// End of Main Functions
-//=============================================================================
+    this._symbolData[symbol] = {
+      DrawItemCode: data.DrawItemCode,
+      ProcessOkCode: data.ProcessOkCode,
+      CursorLeftCode: data.CursorLeftCode,
+      CursorRightCode: data.CursorRightCode,
+      HelpDesc: data.HelpDesc,
+    };
+  };
+
+  MageStudios.Options.Window_Options_drawItem =
+    Window_Options.prototype.drawItem;
+  Window_Options.prototype.drawItem = function (index) {
+    var symbol = this.commandSymbol(index);
+    if (symbol) {
+      eval(JSON.parse(this._symbolData[symbol].DrawItemCode));
+    } else {
+      MageStudios.Options.Window_Options_drawItem.call(this, index);
+    }
+  };
+
+  Window_Options.prototype.drawOptionsName = function (index) {
+    var rect = this.itemRectForText(index);
+    var statusWidth = this.statusWidth();
+    var titleWidth = rect.width - statusWidth;
+    this.resetTextColor();
+    this.changePaintOpacity(this.isCommandEnabled(index));
+    this.drawTextEx(this.commandName(index), rect.x, rect.y);
+  };
+
+  Window_Options.prototype.drawOptionsOnOff = function (
+    index,
+    onText,
+    offText
+  ) {
+    onText = onText || "ON";
+    offText = offText || "OFF";
+    var rect = this.itemRectForText(index);
+    var statusWidth = this.statusWidth();
+    var halfStatusWidth = this.statusWidth() / 2;
+    var titleWidth = rect.width - statusWidth;
+    this.resetTextColor();
+    var symbol = this.commandSymbol(index);
+    var value = this.getConfigValue(symbol);
+    this.changePaintOpacity(!value);
+    this.drawText(offText, titleWidth, rect.y, halfStatusWidth, "center");
+    this.changePaintOpacity(value);
+    this.drawText(
+      onText,
+      titleWidth + halfStatusWidth,
+      rect.y,
+      halfStatusWidth,
+      "center"
+    );
+  };
+
+  Window_Options.prototype.drawOptionsGauge = function (index, rate, c1, c2) {
+    var rect = this.itemRectForText(index);
+    var statusWidth = this.statusWidth();
+    var halfStatusWidth = this.statusWidth() / 2;
+    var titleWidth = rect.width - statusWidth;
+    this.drawGauge(titleWidth, rect.y, statusWidth, rate, c1, c2);
+  };
+
+  MageStudios.Options.Window_Options_processOk =
+    Window_Options.prototype.processOk;
+  Window_Options.prototype.processOk = function () {
+    var symbol = this.commandSymbol(this.index());
+    if (symbol) {
+      eval(JSON.parse(this._symbolData[symbol].ProcessOkCode));
+    } else {
+      MageStudios.Options.Window_Options_processOk.call(this);
+    }
+  };
+
+  MageStudios.Options.Window_Options_cursorLeft =
+    Window_Options.prototype.cursorLeft;
+  Window_Options.prototype.cursorLeft = function (wrap) {
+    var symbol = this.commandSymbol(this.index());
+    if (symbol) {
+      eval(JSON.parse(this._symbolData[symbol].CursorLeftCode));
+    } else {
+      MageStudios.Options.Window_Options_cursorLeft.call(this, wrap);
+    }
+  };
+
+  MageStudios.Options.Window_Options_cursorRight =
+    Window_Options.prototype.cursorRight;
+  Window_Options.prototype.cursorRight = function (wrap) {
+    var symbol = this.commandSymbol(this.index());
+    if (symbol) {
+      eval(JSON.parse(this._symbolData[symbol].CursorRightCode));
+    } else {
+      MageStudios.Options.Window_Options_cursorRight.call(this, wrap);
+    }
+  };
+
+  Window_Options.prototype.changeWindowTone = function (symbol, value, color) {
+    var index = ["red", "green", "blue"].indexOf(color);
+    if (index < 0) return;
+    var tone = JsonEx.makeDeepCopy($gameSystem.windowTone());
+    var lastValue = tone[index];
+    tone[index] = value.clamp(-255, 255);
+    if (lastValue !== tone[index]) {
+      $gameSystem.setWindowTone(tone);
+      this.redrawItem(this.findSymbol(symbol));
+      SoundManager.playCursor();
+    }
+  };
+
+  Window_Options.prototype.updateHelp = function () {
+    if (!this._helpWindow) return;
+    if (this.index() < 0) return;
+    var symbol = this.commandSymbol(this.index());
+    if (this._symbolData && this._symbolData[symbol]) {
+      this._helpWindow.setText(JSON.parse(this._symbolData[symbol].HelpDesc));
+    } else {
+      this._helpWindow.clear();
+    }
+  };
+
+  Scene_Options.prototype.create = function () {
+    Scene_MenuBase.prototype.create.call(this);
+    this.createHelpWindow();
+    this.createOptionsWindow();
+    this.createCategoryWindow();
+  };
+
+  MageStudios.Options.Scene_Options_createOptionsWindow =
+    Scene_Options.prototype.createOptionsWindow;
+  Scene_Options.prototype.createOptionsWindow = function () {
+    MageStudios.Options.Scene_Options_createOptionsWindow.call(this);
+    this._optionsWindow.setHelpWindow(this._helpWindow);
+    this._optionsWindow.setHandler("cancel", this.onOptionsCancel.bind(this));
+  };
+
+  Scene_Options.prototype.createCategoryWindow = function () {
+    var helpWin = this._helpWindow;
+    var optionsWin = this._optionsWindow;
+    this._categoryWindow = new Window_OptionsCategory(helpWin, optionsWin);
+    this._categoryWindow.setHandler("cancel", this.popScene.bind(this));
+    this._categoryWindow.setHandler("category", this.onCategoryOk.bind(this));
+    this.addWindow(this._categoryWindow);
+  };
+
+  Scene_Options.prototype.onCategoryOk = function () {
+    this._optionsWindow.activate();
+    this._optionsWindow.select(0);
+  };
+
+  Scene_Options.prototype.onOptionsCancel = function () {
+    this._optionsWindow.deselect();
+    this._categoryWindow.activate();
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_OptionsCore while your project files are lower than version ';
-text += '1.5.0.\n\nPlease visit this thread for instructions on how to update ';
-text += 'your project files to 1.5.0 or higher: \n\n';
-text += 'https://forums.rpgmakerweb.com/index.php';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-} // (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.5.0')
-//=============================================================================
-// End of File
-//=============================================================================
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_OptionsCore while your project files are lower than version ";
+  text +=
+    "1.5.0.\n\nPlease visit this thread for instructions on how to update ";
+  text += "your project files to 1.5.0 or higher: \n\n";
+  text += "https://forums.rpgmakerweb.com/index.php";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

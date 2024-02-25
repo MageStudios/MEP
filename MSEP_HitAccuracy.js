@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Hit Accuracy
-// MSEP_HitAccuracy.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_HitAccuracy = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.HA = MageStudios.HA || {};
-MageStudios.HA.version = 1.00;
+MageStudios.HA.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin alters the nature of hit accuracy for
  * RPG Maker MV by giving control to its formula.
  * @author Mage Studios Engine Plugins
@@ -127,138 +121,137 @@ MageStudios.HA.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_HitAccuracy');
+MageStudios.Parameters = PluginManager.parameters("MSEP_HitAccuracy");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.HAHitFormula = String(MageStudios.Parameters['Accuracy Formula']);
-MageStudios.Param.HAEvaFormula = String(MageStudios.Parameters['Evade Formula']);
+MageStudios.Param.HAHitFormula = String(
+  MageStudios.Parameters["Accuracy Formula"]
+);
+MageStudios.Param.HAEvaFormula = String(
+  MageStudios.Parameters["Evade Formula"]
+);
 
-MageStudios.Param.HAUserPhysical = String(MageStudios.Parameters['User Physical Hit']);
-MageStudios.Param.HAUserMagical = String(MageStudios.Parameters['User Magical Hit']);
-MageStudios.Param.HAUserCertain = String(MageStudios.Parameters['User Certain Hit']);
+MageStudios.Param.HAUserPhysical = String(
+  MageStudios.Parameters["User Physical Hit"]
+);
+MageStudios.Param.HAUserMagical = String(
+  MageStudios.Parameters["User Magical Hit"]
+);
+MageStudios.Param.HAUserCertain = String(
+  MageStudios.Parameters["User Certain Hit"]
+);
 
-MageStudios.Param.HATarPhysical = String(MageStudios.Parameters['Target Physical Evade']);
-MageStudios.Param.HATarMagical = String(MageStudios.Parameters['Target Magical Evade']);
-MageStudios.Param.HATarCertain = String(MageStudios.Parameters['Target Certain Evade']);
+MageStudios.Param.HATarPhysical = String(
+  MageStudios.Parameters["Target Physical Evade"]
+);
+MageStudios.Param.HATarMagical = String(
+  MageStudios.Parameters["Target Magical Evade"]
+);
+MageStudios.Param.HATarCertain = String(
+  MageStudios.Parameters["Target Certain Evade"]
+);
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.itemHit = function(target) {
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var skillHitRate = this.item().successRate * 0.01;
-    var userHitRate = this.userHitRate(target);
-    var targetEvadeRate = this.targetEvadeRate(target);
-    var code = MageStudios.Param.HAHitFormula;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM HIT FORMULA ERROR');
-      return false;
-    }
-};
-
-Game_Action.prototype.itemEva = function(target) {
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var skillHitRate = this.item().successRate * 0.01;
-    var userHitRate = this.userHitRate(target);
-    var targetEvadeRate = this.targetEvadeRate(target);
-    var code = MageStudios.Param.HAEvaFormula;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM EVA FORMULA ERROR');
-      return false;
-    }
-};
-
-Game_Action.prototype.userHitRate = function(target) {
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    if (this.isPhysical()) {
-      var code = MageStudios.Param.HAUserPhysical;
-    } else if (this.isMagical()) {
-      var code = MageStudios.Param.HAUserMagical;
-    } else {
-      var code = MageStudios.Param.HAUserCertain;
-    }
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM HIT RATE FORMULA ERROR');
-      return 0;
-    }
-};
-
-Game_Action.prototype.targetEvadeRate = function(target) {
-    var item = this.item();
-    var skill = this.item();
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    if (this.isPhysical()) {
-      var code = MageStudios.Param.HATarPhysical;
-    } else if (this.isMagical()) {
-      var code = MageStudios.Param.HATarMagical;
-    } else {
-      var code = MageStudios.Param.HATarCertain;
-    }
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM EVA RATE FORMULA ERROR');
-      return 0;
-    }
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+Game_Action.prototype.itemHit = function (target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var skillHitRate = this.item().successRate * 0.01;
+  var userHitRate = this.userHitRate(target);
+  var targetEvadeRate = this.targetEvadeRate(target);
+  var code = MageStudios.Param.HAHitFormula;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "CUSTOM HIT FORMULA ERROR");
+    return false;
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+Game_Action.prototype.itemEva = function (target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var skillHitRate = this.item().successRate * 0.01;
+  var userHitRate = this.userHitRate(target);
+  var targetEvadeRate = this.targetEvadeRate(target);
+  var code = MageStudios.Param.HAEvaFormula;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "CUSTOM EVA FORMULA ERROR");
+    return false;
+  }
+};
+
+Game_Action.prototype.userHitRate = function (target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  if (this.isPhysical()) {
+    var code = MageStudios.Param.HAUserPhysical;
+  } else if (this.isMagical()) {
+    var code = MageStudios.Param.HAUserMagical;
+  } else {
+    var code = MageStudios.Param.HAUserCertain;
+  }
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "CUSTOM HIT RATE FORMULA ERROR");
+    return 0;
+  }
+};
+
+Game_Action.prototype.targetEvadeRate = function (target) {
+  var item = this.item();
+  var skill = this.item();
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  if (this.isPhysical()) {
+    var code = MageStudios.Param.HATarPhysical;
+  } else if (this.isMagical()) {
+    var code = MageStudios.Param.HATarMagical;
+  } else {
+    var code = MageStudios.Param.HATarCertain;
+  }
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "CUSTOM EVA RATE FORMULA ERROR");
+    return 0;
+  }
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

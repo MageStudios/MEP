@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Lunatic Pack - Action Beginning and End Effects
-// MSEP_Z_ActionBeginEnd.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_Z_ActionBeginEnd = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunActBegEnd = MageStudios.LunActBegEnd || {};
-MageStudios.LunActBegEnd.version = 1.00;
+MageStudios.LunActBegEnd.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Lunatic Pack) Add additional effects that occur at the
  * beginning or end of an action.
  * @author Mage Studios Engine Plugins
@@ -31,7 +25,7 @@ MageStudios.LunActBegEnd.version = 1.00;
  * user after everything else has happened, removing debuffs, playing an
  * animation, or even absorbing a fraction of all the total damage directly
  * dealt by the action this turn. This Lunatic Pack provides a new batch of
- * effects that you can use to empower your items and skills, or to even 
+ * effects that you can use to empower your items and skills, or to even
  * globalize them as a result of states.
  *
  * *NOTE*: This plugin is best used with RPG Maker MV version 1.5.0+. You can
@@ -52,8 +46,8 @@ MageStudios.LunActBegEnd.version = 1.00;
  *   <timing Action: effect>
  *   - Most of this plugin's notetags will follow the above format. 'timing' is
  *   to be replaced with either 'Begin' or 'End' while 'effect' is to be
- *   replaced by the entries in the following EFFECT section below. 
- * 
+ *   replaced by the entries in the following EFFECT section below.
+ *
  *   Insert multiple notetag entries to give your skills/items more effects. If
  *   a multitude of effects are present, then the order they'll occur will be:
  *   skill/item first, state effects based off of their state priority order
@@ -63,7 +57,7 @@ MageStudios.LunActBegEnd.version = 1.00;
  *
  *   <Begin Action: effect>
  *   - If the timing is 'begin', then this effect will occur after the action's
- *   cost is used. 
+ *   cost is used.
  *
  *   <End Action: effect>
  *   - If the timing is 'end', it will occur after all action sequences are
@@ -131,7 +125,7 @@ MageStudios.LunActBegEnd.version = 1.00;
  *
  *   <End Action: Recoil x% Total MP Damage>
  *   - Can only work with end actions. Use the above format. Replace 'x' with
- *   the percentage of all total MP damage dealt directly by the user this 
+ *   the percentage of all total MP damage dealt directly by the user this
  *   action to self-damage as MP.
  *   SUGGESTED BY: Mage
  *
@@ -194,9 +188,9 @@ MageStudios.LunActBegEnd.version = 1.00;
  *
  * ---
  *
- * // ---------
- * // Animation
- * // ---------
+ *
+ *
+ *
  * if (data.match(/ANIMATION[ ](\d+)/i)) {
  *   var animationId = parseInt(RegExp.$1);
  *   var mirror = data.match(/MIRROR/i);
@@ -209,9 +203,9 @@ MageStudios.LunActBegEnd.version = 1.00;
  *
  * ...
  *
- * // -------------------------------
- * // Add new effects above this line
- * // -------------------------------
+ *
+ *
+ *
  * } else {
  *   skip = true;
  * }
@@ -274,417 +268,362 @@ MageStudios.LunActBegEnd.version = 1.00;
  * @type note
  * @desc LUNATIC MODE: This is the code used for each of the notetag
  * effects. Refer to the help file for variables used here.
- * @default "// ---------\n// Animation\n// ---------\nif (data.match(/ANIMATION[ ](\\d+)/i)) {\n  var animationId = parseInt(RegExp.$1);\n  var mirror = data.match(/MIRROR/i);\n  if (data.match(/DELAY[ ](\\d+)/i)) {\n    var delay = parseInt(RegExp.$1);\n  } else {\n    var delay = 0;\n  }\n  user.startAnimation(animationId, mirror, delay);\n\n// --------------\n// Flat Gain/Loss\n// --------------\n} else if (data.match(/([\\+\\-]\\d+)[ ]HP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainHp(value);\n\n} else if (data.match(/([\\+\\-]\\d+)[ ]MP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainMp(value);\n\n} else if (data.match(/([\\+\\-]\\d+)[ ]TP/i)) {\n  value = parseInt(RegExp.$1);\n  user.gainTp(value);\n\n// --------------------\n// Percentile Gain/Loss\n// --------------------\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]HP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.mhp * rate);\n  user.gainHp(value);\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]MP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.mmp * rate);\n  user.gainMp(value);\n\n} else if (data.match(/([\\+\\-]\\d+)([%％])[ ]TP/i)) {\n  rate = parseFloat(RegExp.$1) * 0.01;\n  value = Math.round(user.maxTp() * rate);\n  user.gainTp(value);\n\n// ------------------------\n// Add/Remove Buffs/Debuffs\n// ------------------------\n} else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var paramId = DataManager.getParamId(str);\n  if (data.match(/(\\d+)[ ]TURN/i)) {\n    var turns = parseInt(RegExp.$1);\n  } else {\n    var turns = 5;\n  }\n  if (paramId >= 0) {\n    user.addBuff(paramId, turns);\n  } else {\n    skip = true;\n  }\n\n} else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {\n  var str = String(RegExp.$1).toUpperCase();\n  var paramId = DataManager.getParamId(str);\n  if (paramId >= 0) {\n    user.removeBuff(paramId);\n  } else {\n    skip = true;\n  }\n\n// -----------------\n// Add/Remove States\n// -----------------\n} else if (data.match(/ADD STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  user.addState(stateId);\n\n} else if (data.match(/REMOVE STATE[ ](\\d+)/i)) {\n  var stateId = parseInt(RegExp.$1);\n  if (user.isStateAffected(stateId)) {\n    user.removeState(stateId);\n  } else {\n    skip = true;\n  }\n\n// ------------\n// Drain/Recoil\n// ------------\n} else if (data.match(/(\\d+)([%％])[ ]TOTAL HP[ ](?:DMG|DAMAGE)/i)) {\n  if (totalHpDamage !== 0) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    value = Math.round(totalHpDamage * rate);\n    if (data.match(/DRAIN/i)) {\n      user.gainHp(value);\n    } else if (data.match(/RECOIL/i)) {\n      user.gainHp(-value);\n    } else {\n      skip = true;\n    }\n  }\n\n} else if (data.match(/(\\d+)([%％])[ ]TOTAL MP[ ](?:DMG|DAMAGE)/i)) {\n  if (totalMpDamage !== 0) {\n    rate = parseFloat(RegExp.$1) * 0.01;\n    value = Math.round(totalMpDamage * rate);\n    if (data.match(/DRAIN/i)) {\n      user.gainMp(value);\n    } else if (data.match(/RECOIL/i)) {\n      user.gainMp(-value);\n    } else {\n      skip = true;\n    }\n  }\n\n// -------------------------------\n// Add new effects above this line\n// -------------------------------\n} else {\n  skip = true;\n}"
+ * @default "
  *
  */
-//=============================================================================
 
-MageStudios.PluginRequirements = function() {
+MageStudios.PluginRequirements = function () {
   return Imported.MSEP_BattleEngineCore;
 };
 
 if (MageStudios.PluginRequirements()) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_Z_ActionBeginEnd");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.LunActBegEndEffect = JSON.parse(
+    MageStudios.Parameters["Effect Code"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_Z_ActionBeginEnd');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.LunActBegEnd.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.LunActBegEnd.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.LunActBegEndEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
+    if (!MageStudios._loaded_MSEP_Z_ActionBeginEnd) {
+      this.processLunActBegEndNotetags1($dataSkills);
+      this.processLunActBegEndNotetags1($dataItems);
+      this.processLunActBegEndNotetags1($dataStates);
+      MageStudios._loaded_MSEP_Z_ActionBeginEnd = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.LunActBegEnd.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.LunActBegEnd.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processLunActBegEndNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_Z_ActionBeginEnd) {
-    this.processLunActBegEndNotetags1($dataSkills);
-    this.processLunActBegEndNotetags1($dataItems);
-    this.processLunActBegEndNotetags1($dataStates);
-    MageStudios._loaded_MSEP_Z_ActionBeginEnd = true;
-  }
-  
-  return true;
-};
+      obj.lunaticActionBegin = [];
+      obj.lunaticActionEnd = [];
 
-DataManager.processLunActBegEndNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.lunaticActionBegin = [];
-    obj.lunaticActionEnd = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(.*)[ ](?:ACTION|ACTIONS):[ ](.*)>/i)) {
-        var data1 = String(RegExp.$1);
-        var data2 = String(RegExp.$2);
-        if (data1.match(/BEGIN/i)) {
-          obj.lunaticActionBegin.push(data2);
-        } else if (data1.match(/END/i)) {
-          obj.lunaticActionEnd.push(data2);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(.*)[ ](?:ACTION|ACTIONS):[ ](.*)>/i)) {
+          var data1 = String(RegExp.$1);
+          var data2 = String(RegExp.$2);
+          if (data1.match(/BEGIN/i)) {
+            obj.lunaticActionBegin.push(data2);
+          } else if (data1.match(/END/i)) {
+            obj.lunaticActionEnd.push(data2);
+          }
         }
       }
     }
-  }
-};
+  };
 
-DataManager.getParamId = function(str) {
-  switch (str.toUpperCase()) {
-  case 'HP':
-  case 'MAXHP':
-  case 'MAX HP':
-    return 0;
-    break;
-  case 'MP':
-  case 'MAXMP':
-  case 'MAX MP':
-  case 'SP':
-  case 'MAXSP':
-  case 'MAX SP':
-    return 1;
-    break;
-  case 'ATK':
-  case 'STR':
-    return 2;
-    break;
-  case 'DEF':
-    return 3;
-    break;
-  case 'MAT':
-  case 'INT':
-  case 'SPI':
-    return 4;
-    break;
-  case 'MDF':
-  case 'RES':
-    return 5;
-    break;
-  case 'AGI':
-  case 'SPD':
-    return 6;
-    break;
-  case 'LUK':
-    return 7;
-    break;
-  default:
-    return -1;
-    break;
-  }
-};
+  DataManager.getParamId = function (str) {
+    switch (str.toUpperCase()) {
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
+        return 0;
+        break;
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
+        return 1;
+        break;
+      case "ATK":
+      case "STR":
+        return 2;
+        break;
+      case "DEF":
+        return 3;
+        break;
+      case "MAT":
+      case "INT":
+      case "SPI":
+        return 4;
+        break;
+      case "MDF":
+      case "RES":
+        return 5;
+        break;
+      case "AGI":
+      case "SPD":
+        return 6;
+        break;
+      case "LUK":
+        return 7;
+        break;
+      default:
+        return -1;
+        break;
+    }
+  };
 
-//=============================================================================
-// Game_Temp
-//=============================================================================
+  Game_Temp.prototype.clearLunaticActionValues = function () {
+    this._totalHpDamage = 0;
+    this._totalMpDamage = 0;
+  };
 
-Game_Temp.prototype.clearLunaticActionValues = function() {
-  this._totalHpDamage = 0;
-  this._totalMpDamage = 0;
-};
+  MageStudios.LunActBegEnd.Game_Battler_useItem =
+    Game_Battler.prototype.useItem;
+  Game_Battler.prototype.useItem = function (item) {
+    MageStudios.LunActBegEnd.Game_Battler_useItem.call(this, item);
+    $gameTemp.clearLunaticActionValues();
+    this.processLunaticBeginEndAction("begin");
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
+  MageStudios.LunActBegEnd.Game_Battler_performActionEnd =
+    Game_Battler.prototype.performActionEnd;
+  Game_Battler.prototype.performActionEnd = function () {
+    this.processLunaticBeginEndAction("end");
+    $gameTemp.clearLunaticActionValues();
+    MageStudios.LunActBegEnd.Game_Battler_performActionEnd.call(this);
+  };
 
-MageStudios.LunActBegEnd.Game_Battler_useItem = Game_Battler.prototype.useItem;
-Game_Battler.prototype.useItem = function(item) {
-  MageStudios.LunActBegEnd.Game_Battler_useItem.call(this, item);
-  $gameTemp.clearLunaticActionValues();
-  this.processLunaticBeginEndAction('begin');
-};
+  Game_Battler.prototype.processLunaticBeginEndAction = function (type) {
+    if (!$gameParty.inBattle()) return;
+    var action = BattleManager._action;
+    if (!action) return;
+    var item = action.item();
+    if (!item) return;
+    var effects = this.getLunaticBeginEndActionEffects(type, item);
+    action.processLunaticBeginEndActions(effects);
+  };
 
-MageStudios.LunActBegEnd.Game_Battler_performActionEnd =
-  Game_Battler.prototype.performActionEnd;
-Game_Battler.prototype.performActionEnd = function() {
-  this.processLunaticBeginEndAction('end');
-  $gameTemp.clearLunaticActionValues();
-  MageStudios.LunActBegEnd.Game_Battler_performActionEnd.call(this);
-};
-
-Game_Battler.prototype.processLunaticBeginEndAction = function(type) {
-  if (!$gameParty.inBattle()) return;
-  var action = BattleManager._action;
-  if (!action) return;
-  var item = action.item();
-  if (!item) return;
-  var effects = this.getLunaticBeginEndActionEffects(type, item);
-  action.processLunaticBeginEndActions(effects);
-};
-
-Game_Battler.prototype.getLunaticBeginEndActionEffects = function(type, item) {
-  var effects = [];
-  var states = this.states();
-  var length = states.length;
-  if (type === 'begin') {
-    effects = effects.concat(item.lunaticActionBegin);
-    for (var i = 0; i < length; ++i) {
-      var state = states[i];
-      if (state && state.lunaticActionBegin) {
-        effects = effects.concat(state.lunaticActionBegin);
+  Game_Battler.prototype.getLunaticBeginEndActionEffects = function (
+    type,
+    item
+  ) {
+    var effects = [];
+    var states = this.states();
+    var length = states.length;
+    if (type === "begin") {
+      effects = effects.concat(item.lunaticActionBegin);
+      for (var i = 0; i < length; ++i) {
+        var state = states[i];
+        if (state && state.lunaticActionBegin) {
+          effects = effects.concat(state.lunaticActionBegin);
+        }
+      }
+    } else if (type === "end") {
+      effects = effects.concat(item.lunaticActionEnd);
+      for (var i = 0; i < length; ++i) {
+        var state = states[i];
+        if (state && state.lunaticActionEnd) {
+          effects = effects.concat(state.lunaticActionEnd);
+        }
       }
     }
-  } else if (type === 'end') {
-    effects = effects.concat(item.lunaticActionEnd);
+    return effects;
+  };
+
+  MageStudios.LunActBegEnd.Game_Action_executeHpDamage =
+    Game_Action.prototype.executeHpDamage;
+  Game_Action.prototype.executeHpDamage = function (target, value) {
+    $gameTemp._totalHpDamage += value;
+    MageStudios.LunActBegEnd.Game_Action_executeHpDaMageStudios.call(
+      this,
+      target,
+      value
+    );
+  };
+
+  MageStudios.LunActBegEnd.Game_Action_executeMpDamage =
+    Game_Action.prototype.executeMpDamage;
+  Game_Action.prototype.executeMpDamage = function (target, value) {
+    $gameTemp._totalMpDamage += value;
+    MageStudios.LunActBegEnd.Game_Action_executeMpDaMageStudios.call(
+      this,
+      target,
+      value
+    );
+  };
+
+  MageStudios.LunActBegEnd.apply = Game_Action.prototype.apply;
+  Game_Action.prototype.apply = function (target) {
+    MageStudios.LunActBegEnd.apply.call(this, target);
+    if (target) $gameTemp._lastActionTarget = target;
+  };
+
+  Game_Action.prototype.processLunaticBeginEndActions = function (effects) {
+    var length = effects.length;
     for (var i = 0; i < length; ++i) {
-      var state = states[i];
-      if (state && state.lunaticActionEnd) {
-        effects = effects.concat(state.lunaticActionEnd);
+      var data = effects[i];
+      this.processLunaticBeginEndActionEval(data);
+    }
+    $gameTemp._lastActionTarget = undefined;
+  };
+
+  Game_Action.prototype.processLunaticBeginEndActionEval = function (data) {
+    var item = this.item();
+    var skill = this.item();
+    var isSkill = DataManager.isSkill(skill);
+    var isItem = DataManager.isSkill(item);
+    var user = this.subject();
+    var a = user;
+    var subject = user;
+    var target = $gameTemp._lastActionTarget || user;
+    var b = target;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+
+    var totalHpDamage = $gameTemp._totalHpDamage;
+    var totalMpDamage = $gameTemp._totalMpDamage;
+
+    var userPreviousResult = JsonEx.makeDeepCopy(user._result);
+    var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
+    var skip = false;
+    var value = 0;
+    var rate = 1;
+
+    a.clearResult();
+    b.clearResult();
+
+    var code = MageStudios.Param.LunActBegEndEffect;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(e, code, "LUNATIC ACTION BEGIN END ERROR");
+    }
+
+    if (skip) {
+      if (user.isDead()) user.performCollapse();
+      if (target.isDead()) target.performCollapse();
+      user._result = userPreviousResult;
+      target._result = targetPreviousResult;
+      return;
+    } else {
+      if (user.result() && user.result().hpDamage !== 0) {
+        user.startDamagePopup();
+      } else if (user.result() && user.result().mpDamage !== 0) {
+        user.startDamagePopup();
       }
     }
-  }
-  return effects;
-};
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.LunActBegEnd.Game_Action_executeHpDamage =
-  Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
-  $gameTemp._totalHpDamage += value;
-  MageStudios.LunActBegEnd.Game_Action_executeHpDaMageStudios.call(this, target, value);
-};
-
-MageStudios.LunActBegEnd.Game_Action_executeMpDamage =
-  Game_Action.prototype.executeMpDamage;
-Game_Action.prototype.executeMpDamage = function(target, value) {
-  $gameTemp._totalMpDamage += value;
-  MageStudios.LunActBegEnd.Game_Action_executeMpDaMageStudios.call(this, target, value);
-};
-
-MageStudios.LunActBegEnd.apply = Game_Action.prototype.apply;
-Game_Action.prototype.apply = function(target) {
-  MageStudios.LunActBegEnd.apply.call(this, target);
-  if (target) $gameTemp._lastActionTarget = target;
-};
-
-Game_Action.prototype.processLunaticBeginEndActions = function(effects) {
-  var length = effects.length;
-  for (var i = 0; i < length; ++i) {
-    var data = effects[i];
-    this.processLunaticBeginEndActionEval(data);
-  }
-  $gameTemp._lastActionTarget = undefined;
-};
-
-Game_Action.prototype.processLunaticBeginEndActionEval = function(data) {
-  var item = this.item();
-  var skill = this.item();
-  var isSkill = DataManager.isSkill(skill);
-  var isItem = DataManager.isSkill(item);
-  var user = this.subject();
-  var a = user;
-  var subject = user;
-  var target = $gameTemp._lastActionTarget || user;
-  var b = target;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-
-  var totalHpDamage = $gameTemp._totalHpDamage;
-  var totalMpDamage = $gameTemp._totalMpDamage;
-
-  var userPreviousResult = JsonEx.makeDeepCopy(user._result);
-  var targetPreviousResult = JsonEx.makeDeepCopy(target._result);
-  var skip = false;
-  var value = 0;
-  var rate = 1;
-
-  a.clearResult();
-  b.clearResult();
-
-  var code = MageStudios.Param.LunActBegEndEffect;
-  try {
-    eval(code)
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'LUNATIC ACTION BEGIN END ERROR');
-  }
-
-  if (skip) {
     if (user.isDead()) user.performCollapse();
     if (target.isDead()) target.performCollapse();
     user._result = userPreviousResult;
     target._result = targetPreviousResult;
-    return;
-  } else {
-    if (user.result() && user.result().hpDamage !== 0) {
-      user.startDamagePopup();
-    } else if (user.result() && user.result().mpDamage !== 0) {
-      user.startDamagePopup();
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
+  };
 
-  if (user.isDead()) user.performCollapse();
-  if (target.isDead()) target.performCollapse();
-  user._result = userPreviousResult;
-  target._result = targetPreviousResult;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
-  }
-};
-
-//=============================================================================
-// Default Effect Code
-//=============================================================================
-
-if (false) {
-
-// ---------
-// Animation
-// ---------
-if (data.match(/ANIMATION[ ](\d+)/i)) {
-  var animationId = parseInt(RegExp.$1);
-  var mirror = data.match(/MIRROR/i);
-  if (data.match(/DELAY[ ](\d+)/i)) {
-    var delay = parseInt(RegExp.$1);
-  } else {
-    var delay = 0;
-  }
-  user.startAnimation(animationId, mirror, delay);
-
-// --------------
-// Flat Gain/Loss
-// --------------
-} else if (data.match(/([\+\-]\d+)[ ]HP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainHp(value);
-
-} else if (data.match(/([\+\-]\d+)[ ]MP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainMp(value);
-
-} else if (data.match(/([\+\-]\d+)[ ]TP/i)) {
-  value = parseInt(RegExp.$1);
-  user.gainTp(value);
-
-// --------------------
-// Percentile Gain/Loss
-// --------------------
-} else if (data.match(/([\+\-]\d+)([%％])[ ]HP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.mhp * rate);
-  user.gainHp(value);
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]MP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.mmp * rate);
-  user.gainMp(value);
-
-} else if (data.match(/([\+\-]\d+)([%％])[ ]TP/i)) {
-  rate = parseFloat(RegExp.$1) * 0.01;
-  value = Math.round(user.maxTp() * rate);
-  user.gainTp(value);
-
-// ------------------------
-// Add/Remove Buffs/Debuffs
-// ------------------------
-} else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var paramId = DataManager.getParamId(str);
-  if (data.match(/(\d+)[ ]TURN/i)) {
-    var turns = parseInt(RegExp.$1);
-  } else {
-    var turns = 5;
-  }
-  if (paramId >= 0) {
-    user.addBuff(paramId, turns);
-  } else {
-    skip = true;
-  }
-
-} else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {
-  var str = String(RegExp.$1).toUpperCase();
-  var paramId = DataManager.getParamId(str);
-  if (paramId >= 0) {
-    user.removeBuff(paramId);
-  } else {
-    skip = true;
-  }
-
-// -----------------
-// Add/Remove States
-// -----------------
-} else if (data.match(/ADD STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  user.addState(stateId);
-
-} else if (data.match(/REMOVE STATE[ ](\d+)/i)) {
-  var stateId = parseInt(RegExp.$1);
-  if (user.isStateAffected(stateId)) {
-    user.removeState(stateId);
-  } else {
-    skip = true;
-  }
-
-// ------------
-// Drain/Recoil
-// ------------
-} else if (data.match(/(\d+)([%％])[ ]TOTAL HP[ ](?:DMG|DAMAGE)/i)) {
-  if (totalHpDamage !== 0) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    value = Math.round(totalHpDamage * rate);
-    if (data.match(/DRAIN/i)) {
+  if (false) {
+    if (data.match(/ANIMATION[ ](\d+)/i)) {
+      var animationId = parseInt(RegExp.$1);
+      var mirror = data.match(/MIRROR/i);
+      if (data.match(/DELAY[ ](\d+)/i)) {
+        var delay = parseInt(RegExp.$1);
+      } else {
+        var delay = 0;
+      }
+      user.startAnimation(animationId, mirror, delay);
+    } else if (data.match(/([\+\-]\d+)[ ]HP/i)) {
+      value = parseInt(RegExp.$1);
       user.gainHp(value);
-    } else if (data.match(/RECOIL/i)) {
-      user.gainHp(-value);
-    } else {
-      skip = true;
-    }
-  }
-
-} else if (data.match(/(\d+)([%％])[ ]TOTAL MP[ ](?:DMG|DAMAGE)/i)) {
-  if (totalMpDamage !== 0) {
-    rate = parseFloat(RegExp.$1) * 0.01;
-    value = Math.round(totalMpDamage * rate);
-    if (data.match(/DRAIN/i)) {
+    } else if (data.match(/([\+\-]\d+)[ ]MP/i)) {
+      value = parseInt(RegExp.$1);
       user.gainMp(value);
-    } else if (data.match(/RECOIL/i)) {
-      user.gainMp(-value);
+    } else if (data.match(/([\+\-]\d+)[ ]TP/i)) {
+      value = parseInt(RegExp.$1);
+      user.gainTp(value);
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]HP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.mhp * rate);
+      user.gainHp(value);
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]MP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.mmp * rate);
+      user.gainMp(value);
+    } else if (data.match(/([\+\-]\d+)([%％])[ ]TP/i)) {
+      rate = parseFloat(RegExp.$1) * 0.01;
+      value = Math.round(user.maxTp() * rate);
+      user.gainTp(value);
+    } else if (data.match(/ADD[ ](.*)[ ]BUFF/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var paramId = DataManager.getParamId(str);
+      if (data.match(/(\d+)[ ]TURN/i)) {
+        var turns = parseInt(RegExp.$1);
+      } else {
+        var turns = 5;
+      }
+      if (paramId >= 0) {
+        user.addBuff(paramId, turns);
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/REMOVE[ ](.*)[ ](?:BUFF|DEBUFF)/i)) {
+      var str = String(RegExp.$1).toUpperCase();
+      var paramId = DataManager.getParamId(str);
+      if (paramId >= 0) {
+        user.removeBuff(paramId);
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/ADD STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      user.addState(stateId);
+    } else if (data.match(/REMOVE STATE[ ](\d+)/i)) {
+      var stateId = parseInt(RegExp.$1);
+      if (user.isStateAffected(stateId)) {
+        user.removeState(stateId);
+      } else {
+        skip = true;
+      }
+    } else if (data.match(/(\d+)([%％])[ ]TOTAL HP[ ](?:DMG|DAMAGE)/i)) {
+      if (totalHpDamage !== 0) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        value = Math.round(totalHpDamage * rate);
+        if (data.match(/DRAIN/i)) {
+          user.gainHp(value);
+        } else if (data.match(/RECOIL/i)) {
+          user.gainHp(-value);
+        } else {
+          skip = true;
+        }
+      }
+    } else if (data.match(/(\d+)([%％])[ ]TOTAL MP[ ](?:DMG|DAMAGE)/i)) {
+      if (totalMpDamage !== 0) {
+        rate = parseFloat(RegExp.$1) * 0.01;
+        value = Math.round(totalMpDamage * rate);
+        if (data.match(/DRAIN/i)) {
+          user.gainMp(value);
+        } else if (data.match(/RECOIL/i)) {
+          user.gainMp(-value);
+        } else {
+          skip = true;
+        }
+      }
     } else {
       skip = true;
     }
   }
-
-// -------------------------------
-// Add new effects above this line
-// -------------------------------
 } else {
-  skip = true;
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_Z_ActionBeginEnd without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-
-}; // Default Effect Code
-
-//=============================================================================
-// End of File
-//=============================================================================
-} else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_Z_ActionBeginEnd without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // MageStudios.PluginRequirements

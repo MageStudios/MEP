@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Life Steal
-// MSEP_LifeSteal.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_LifeSteal = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LS = MageStudios.LS || {};
-MageStudios.LS.version = 1.00;
+MageStudios.LS.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Enables passive life steal traits without them being
  * active abilities but instead as passive traits.
  * @author Mage Studios Engine Plugins
@@ -161,7 +155,7 @@ MageStudios.LS.version = 1.00;
  *   <Custom HP Life Steal Rate>
  *    rate = user.hpRate();
  *   </Custom HP Life Steal Rate>
- *   
+ *
  *   <Custom MP Life Steal Rate>
  *    rate = user.hpRate();
  *   </Custom MP Life Steal Rate>
@@ -174,7 +168,7 @@ MageStudios.LS.version = 1.00;
  *   <Custom HP Life Steal Flat>
  *    flat = user.mhp;
  *   </Custom HP Life Steal Flat>
- *   
+ *
  *   <Custom MP Life Steal Flat>
  *    flat = user.mhp;
  *   </Custom MP Life Steal Flat>
@@ -260,27 +254,26 @@ MageStudios.LS.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_LifeSteal');
+MageStudios.Parameters = PluginManager.parameters("MSEP_LifeSteal");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.LSHPOver = eval(String(MageStudios.Parameters['Enable HP Overheal']));
-MageStudios.Param.LSMPOver = eval(String(MageStudios.Parameters['Enable MP Overheal']));
+MageStudios.Param.LSHPOver = eval(
+  String(MageStudios.Parameters["Enable HP Overheal"])
+);
+MageStudios.Param.LSMPOver = eval(
+  String(MageStudios.Parameters["Enable MP Overheal"])
+);
 
-MageStudios.Param.LSHPNeg = eval(String(MageStudios.Parameters['Negative HP LifeSteal']));
-MageStudios.Param.LSMPNeg = eval(String(MageStudios.Parameters['Negative MP LifeSteal']));
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.LSHPNeg = eval(
+  String(MageStudios.Parameters["Negative HP LifeSteal"])
+);
+MageStudios.Param.LSMPNeg = eval(
+  String(MageStudios.Parameters["Negative MP LifeSteal"])
+);
 
 MageStudios.LS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.LS.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_LifeSteal) {
     this.processLSNotetags1($dataActors);
@@ -296,7 +289,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processLSNotetags1 = function(group) {
+DataManager.processLSNotetags1 = function (group) {
   var noteA1 = /<(.*)[ ]LIFE STEAL[ ](.*):[ ]([\+\-]\d+)([%％])>/i;
   var noteA2 = /<(.*)[ ]LIFE STEAL[ ](.*):[ ]([\+\-]\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -324,10 +317,10 @@ DataManager.processLSNotetags1 = function(group) {
 
       allNull: false,
       hpNull: false,
-      mpNull: false
-    }
-    var evalMode = 'none';
-    var evalKey = '';
+      mpNull: false,
+    };
+    var evalMode = "none";
+    var evalKey = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -335,74 +328,74 @@ DataManager.processLSNotetags1 = function(group) {
         var type = String(RegExp.$1);
         var hit = String(RegExp.$2);
         var value = parseFloat(RegExp.$3) * 0.01;
-        this.makeLifeStealKey(obj, type, hit, 'Rate', value);
+        this.makeLifeStealKey(obj, type, hit, "Rate", value);
       } else if (line.match(noteA2)) {
         var type = String(RegExp.$1);
         var hit = String(RegExp.$2);
         var value = parseInt(RegExp.$3);
-        this.makeLifeStealKey(obj, type, hit, 'Flat', value);
+        this.makeLifeStealKey(obj, type, hit, "Flat", value);
       } else if (line.match(/<CUSTOM[ ](.*)[ ]LIFE STEAL[ ](.*)[ ](.*)>/i)) {
         var type = String(RegExp.$1).toLowerCase();
         var hit = String(RegExp.$2);
         var param = String(RegExp.$3);
         if (hit.match(/physical/i)) {
-          hit = 'Physical';
+          hit = "Physical";
         } else if (hit.match(/magical/i)) {
-          hit = 'Magical';
+          hit = "Magical";
         } else if (hit.match(/certain/i)) {
-          hit = 'Certain';
+          hit = "Certain";
         } else {
           continue;
         }
         if (param.match(/rate/i)) {
-          param = 'Rate';
+          param = "Rate";
         } else if (param.match(/flat/i)) {
-          param = 'Flat';
+          param = "Flat";
         } else {
           continue;
         }
-        evalMode = 'custom lifesteal';
-        evalKey = type + hit + param + 'Eval';
-        obj.lifeSteal[evalKey] = '';
+        evalMode = "custom lifesteal";
+        evalKey = type + hit + param + "Eval";
+        obj.lifeSteal[evalKey] = "";
       } else if (line.match(/<\/CUSTOM[ ](.*)[ ]LIFE STEAL[ ](.*)[ ](.*)>/i)) {
-        evalMode = 'none';
-        evalKey = '';
-      } else if (evalMode === 'custom lifesteal') {
-        obj.lifeSteal[evalKey] = obj.lifeSteal[evalKey] + line + '\n';
+        evalMode = "none";
+        evalKey = "";
+      } else if (evalMode === "custom lifesteal") {
+        obj.lifeSteal[evalKey] = obj.lifeSteal[evalKey] + line + "\n";
       } else if (line.match(/<GUARD LIFE STEAL>/i)) {
-        obj.lifeSteal['allGuard'] = true;
+        obj.lifeSteal["allGuard"] = true;
       } else if (line.match(/<GUARD HP LIFE STEAL>/i)) {
-        obj.lifeSteal['hpGuard'] = true;
+        obj.lifeSteal["hpGuard"] = true;
       } else if (line.match(/<GUARD MP LIFE STEAL>/i)) {
-        obj.lifeSteal['mpGuard'] = true;
+        obj.lifeSteal["mpGuard"] = true;
       } else if (line.match(/<CANCEL LIFE STEAL>/i)) {
-        obj.lifeSteal['allNull'] = true;
+        obj.lifeSteal["allNull"] = true;
       } else if (line.match(/<CANCEL HP LIFE STEAL>/i)) {
-        obj.lifeSteal['hpNull'] = true;
+        obj.lifeSteal["hpNull"] = true;
       } else if (line.match(/<CANCEL MP LIFE STEAL>/i)) {
-        obj.lifeSteal['mpNull'] = true;
+        obj.lifeSteal["mpNull"] = true;
       }
     }
   }
 };
 
-DataManager.makeLifeStealKey = function(obj, type, hit, param, value) {
-    type = type.toLowerCase();
-    if (!['hp', 'mp'].contains(type)) return;
-    if (hit.match(/physical/i)) {
-      hit = 'Physical';
-    } else if (hit.match(/magical/i)) {
-      hit = 'Magical';
-    } else if (hit.match(/certain/i)) {
-      hit = 'Certain';
-    } else {
-      return;
-    }
-    var key = type + hit + param;
-    obj.lifeSteal[key] = value;
+DataManager.makeLifeStealKey = function (obj, type, hit, param, value) {
+  type = type.toLowerCase();
+  if (!["hp", "mp"].contains(type)) return;
+  if (hit.match(/physical/i)) {
+    hit = "Physical";
+  } else if (hit.match(/magical/i)) {
+    hit = "Magical";
+  } else if (hit.match(/certain/i)) {
+    hit = "Certain";
+  } else {
+    return;
+  }
+  var key = type + hit + param;
+  obj.lifeSteal[key] = value;
 };
 
-DataManager.processLSNotetags2 = function(group) {
+DataManager.processLSNotetags2 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -410,419 +403,403 @@ DataManager.processLSNotetags2 = function(group) {
     obj.lifeSteal = {
       rate: 0,
       flat: 0,
-      
+
       allNull: false,
       hpNull: false,
-      mpNull: false
-    }
-    var evalMode = 'none';
-    var evalKey = '';
+      mpNull: false,
+    };
+    var evalMode = "none";
+    var evalKey = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(.*)[ ]LIFE STEAL:[ ](\d+)([%％])>/i)) {
         var type = String(RegExp.$1).toLowerCase();
         var value = parseFloat(RegExp.$2) * 0.01;
-        var key = type + 'Rate';
+        var key = type + "Rate";
         obj.lifeSteal[key] = value;
       } else if (line.match(/<(.*)[ ]LIFE STEAL:[ ](\d+)>/i)) {
         var type = String(RegExp.$1).toLowerCase();
         var value = parseInt(RegExp.$2);
-        var key = type + 'Flat';
+        var key = type + "Flat";
         obj.lifeSteal[key] = value;
       } else if (line.match(/<CUSTOM[ ](.*)[ ]LIFE STEAL[ ](.*)>/i)) {
         var type = String(RegExp.$1).toLowerCase();
         var param = String(RegExp.$2);
         if (param.match(/rate/i)) {
-          param = 'Rate';
+          param = "Rate";
         } else if (param.match(/flat/i)) {
-          param = 'Flat';
+          param = "Flat";
         } else {
           continue;
         }
-        evalMode = 'custom lifesteal';
-        evalKey = type + param + 'Eval';
-        obj.lifeSteal[evalKey] = '';
+        evalMode = "custom lifesteal";
+        evalKey = type + param + "Eval";
+        obj.lifeSteal[evalKey] = "";
       } else if (line.match(/<\/CUSTOM[ ](.*)[ ]LIFE STEAL[ ](.*)>/i)) {
-        evalMode = 'none';
-        evalKey = '';
-      } else if (evalMode === 'custom lifesteal') {
-        obj.lifeSteal[evalKey] = obj.lifeSteal[evalKey] + line + '\n';
+        evalMode = "none";
+        evalKey = "";
+      } else if (evalMode === "custom lifesteal") {
+        obj.lifeSteal[evalKey] = obj.lifeSteal[evalKey] + line + "\n";
       } else if (line.match(/<CANCEL LIFE STEAL>/i)) {
-        obj.lifeSteal['allNull'] = true;
+        obj.lifeSteal["allNull"] = true;
       } else if (line.match(/<CANCEL HP LIFE STEAL>/i)) {
-        obj.lifeSteal['hpNull'] = true;
+        obj.lifeSteal["hpNull"] = true;
       } else if (line.match(/<CANCEL MP LIFE STEAL>/i)) {
-        obj.lifeSteal['mpNull'] = true;
+        obj.lifeSteal["mpNull"] = true;
       }
     }
   }
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.lifeSteal = function(damage, type, target, rate, flat) {
-    if (!type) return;
-    rate = 1 - (rate || 0);
-    flat = flat || 0;
-    rate *= 1 - this.getLifeStealRate(type + 'Rate', target);
-    flat += this.getLifeStealFlat(type + 'Flat', target);
-    if (MageStudios.Param.LSHPNeg) {
-      var lifeSteal = Math.floor(damage * (1 - rate) + flat);
-    } else {
-      var lifeSteal = Math.max(0, Math.floor(damage * (1 - rate) + flat));
-    }
-    if (MageStudios.Param.LSHPOver) lifeSteal = Math.min(lifeSteal, damage);
-    if (lifeSteal <= 0) return;
-    this.gainHp(lifeSteal);
+Game_Battler.prototype.lifeSteal = function (damage, type, target, rate, flat) {
+  if (!type) return;
+  rate = 1 - (rate || 0);
+  flat = flat || 0;
+  rate *= 1 - this.getLifeStealRate(type + "Rate", target);
+  flat += this.getLifeStealFlat(type + "Flat", target);
+  if (MageStudios.Param.LSHPNeg) {
+    var lifeSteal = Math.floor(damage * (1 - rate) + flat);
+  } else {
+    var lifeSteal = Math.max(0, Math.floor(damage * (1 - rate) + flat));
+  }
+  if (MageStudios.Param.LSHPOver) lifeSteal = Math.min(lifeSteal, damage);
+  if (lifeSteal <= 0) return;
+  this.gainHp(lifeSteal);
 };
 
-Game_Battler.prototype.magicSteal = function(damage, type, target, rate, flat) {
-    if (!type) return;
-    rate = 1 - (rate || 0);
-    flat = flat || 0;
-    rate *= 1 - this.getLifeStealRate(type + 'Rate', target);
-    flat += this.getLifeStealFlat(type + 'Flat', target);
-    if (MageStudios.Param.LSMPNeg) {
-      var lifeSteal = Math.floor(damage * (1 - rate) + flat);
-    } else {
-      var lifeSteal = Math.max(0, Math.floor(damage * (1 - rate) + flat));
-    }
-    if (MageStudios.Param.LSMPOver) lifeSteal = Math.min(lifeSteal, damage);
-    if (lifeSteal <= 0) return;
-    this.gainMp(lifeSteal);
+Game_Battler.prototype.magicSteal = function (
+  damage,
+  type,
+  target,
+  rate,
+  flat
+) {
+  if (!type) return;
+  rate = 1 - (rate || 0);
+  flat = flat || 0;
+  rate *= 1 - this.getLifeStealRate(type + "Rate", target);
+  flat += this.getLifeStealFlat(type + "Flat", target);
+  if (MageStudios.Param.LSMPNeg) {
+    var lifeSteal = Math.floor(damage * (1 - rate) + flat);
+  } else {
+    var lifeSteal = Math.max(0, Math.floor(damage * (1 - rate) + flat));
+  }
+  if (MageStudios.Param.LSMPOver) lifeSteal = Math.min(lifeSteal, damage);
+  if (lifeSteal <= 0) return;
+  this.gainMp(lifeSteal);
 };
 
-Game_Battler.prototype.getLifeStealRate = function(type, target) {
-    rate = 1;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
-        rate *= (1 - obj.lifeSteal[type]);
-      }
-      if (obj && obj.lifeSteal && obj.lifeSteal[type + 'Eval']) {
-        var formula = obj.lifeSteal[type + 'Eval'];
-        rate *= (1 - this.getLifeStealRateEval(formula, target));
-      }
+Game_Battler.prototype.getLifeStealRate = function (type, target) {
+  rate = 1;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
+      rate *= 1 - obj.lifeSteal[type];
     }
-    return 1 - rate;
+    if (obj && obj.lifeSteal && obj.lifeSteal[type + "Eval"]) {
+      var formula = obj.lifeSteal[type + "Eval"];
+      rate *= 1 - this.getLifeStealRateEval(formula, target);
+    }
+  }
+  return 1 - rate;
 };
 
-Game_Battler.prototype.getLifeStealFlat = function(type, target) {
-    value = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
-        value += obj.lifeSteal[type];
-      }
-      if (obj && obj.lifeSteal && obj.lifeSteal[type + 'Eval']) {
-        var formula = obj.lifeSteal[type + 'Eval'];
-        value += this.getLifeStealFlatEval(formula, target);
-      }
+Game_Battler.prototype.getLifeStealFlat = function (type, target) {
+  value = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
+      value += obj.lifeSteal[type];
     }
-    return value;
-};
-
-Game_Battler.prototype.getLifeStealRateEval = function(formula, target) {
-    target = target || this;
-    var rate = 0;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      eval(formula);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'LIFE STEAL RATE FORMULA ERROR');
-    }
-    return rate;
-};
-
-Game_Battler.prototype.getLifeStealFlatEval = function(formula, target) {
-    target = target || this;
-    var flat = 0;
-    var a = this;
-    var user = this;
-    var subject = this;
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      eval(formula);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'LIFE STEAL FLAT FORMULA ERROR');
-    }
-    return flat;
-};
-
-Game_Battler.prototype.isLifeStealState = function(type) {
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) return true;
-    }
-    return false;
-};
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.getLifeStealRate = function(type, target) {
-    rate = 1 - Game_Battler.prototype.getLifeStealRate.call(this, type, target);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
-        rate *= (1 - obj.lifeSteal[type]);
-      }
-      if (obj && obj.lifeSteal && obj.lifeSteal[type + 'Eval']) {
-        var formula = obj.lifeSteal[type + 'Eval'];
-        rate *= (1 - this.getLifeStealRateEval(formula, target));
-      }
-    }
-    rate *= (1 - this.actor().lifeSteal[type]);
-    if (this.actor().lifeSteal[type + 'Eval']) {
-      var formula = this.actor().lifeSteal[type + 'Eval'];
-      rate *= (1 - this.getLifeStealRateEval(formula, target));
-    }
-    rate *= (1 - this.currentClass().lifeSteal[type]);
-    if (this.currentClass().lifeSteal[type + 'Eval']) {
-      var formula = this.currentClass().lifeSteal[type + 'Eval'];
-      rate *= (1 - this.getLifeStealRateEval(formula, target));
-    }
-    return 1 - rate;
-};
-
-Game_Actor.prototype.getLifeStealFlat = function(type, target) {
-    value = Game_Battler.prototype.getLifeStealFlat.call(this, type, target);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
-        value += obj.lifeSteal[type];
-      }
-      if (obj && obj.lifeSteal && obj.lifeSteal[type + 'Eval']) {
-        var formula = obj.lifeSteal[type + 'Eval'];
-        value += this.getLifeStealFlatEval(formula, target);
-      }
-    }
-    value += this.actor().lifeSteal[type];
-    if (this.actor().lifeSteal[type + 'Eval']) {
-      var formula = this.actor().lifeSteal[type + 'Eval'];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type + "Eval"]) {
+      var formula = obj.lifeSteal[type + "Eval"];
       value += this.getLifeStealFlatEval(formula, target);
     }
-    value += this.currentClass().lifeSteal[type];
-    if (this.currentClass().lifeSteal[type + 'Eval']) {
-      var formula = this.currentClass().lifeSteal[type + 'Eval'];
+  }
+  return value;
+};
+
+Game_Battler.prototype.getLifeStealRateEval = function (formula, target) {
+  target = target || this;
+  var rate = 0;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    eval(formula);
+  } catch (e) {
+    MageStudios.Util.displayError(e, formula, "LIFE STEAL RATE FORMULA ERROR");
+  }
+  return rate;
+};
+
+Game_Battler.prototype.getLifeStealFlatEval = function (formula, target) {
+  target = target || this;
+  var flat = 0;
+  var a = this;
+  var user = this;
+  var subject = this;
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    eval(formula);
+  } catch (e) {
+    MageStudios.Util.displayError(e, formula, "LIFE STEAL FLAT FORMULA ERROR");
+  }
+  return flat;
+};
+
+Game_Battler.prototype.isLifeStealState = function (type) {
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) return true;
+  }
+  return false;
+};
+
+Game_Actor.prototype.getLifeStealRate = function (type, target) {
+  rate = 1 - Game_Battler.prototype.getLifeStealRate.call(this, type, target);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
+      rate *= 1 - obj.lifeSteal[type];
+    }
+    if (obj && obj.lifeSteal && obj.lifeSteal[type + "Eval"]) {
+      var formula = obj.lifeSteal[type + "Eval"];
+      rate *= 1 - this.getLifeStealRateEval(formula, target);
+    }
+  }
+  rate *= 1 - this.actor().lifeSteal[type];
+  if (this.actor().lifeSteal[type + "Eval"]) {
+    var formula = this.actor().lifeSteal[type + "Eval"];
+    rate *= 1 - this.getLifeStealRateEval(formula, target);
+  }
+  rate *= 1 - this.currentClass().lifeSteal[type];
+  if (this.currentClass().lifeSteal[type + "Eval"]) {
+    var formula = this.currentClass().lifeSteal[type + "Eval"];
+    rate *= 1 - this.getLifeStealRateEval(formula, target);
+  }
+  return 1 - rate;
+};
+
+Game_Actor.prototype.getLifeStealFlat = function (type, target) {
+  value = Game_Battler.prototype.getLifeStealFlat.call(this, type, target);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) {
+      value += obj.lifeSteal[type];
+    }
+    if (obj && obj.lifeSteal && obj.lifeSteal[type + "Eval"]) {
+      var formula = obj.lifeSteal[type + "Eval"];
       value += this.getLifeStealFlatEval(formula, target);
     }
-    return value;
+  }
+  value += this.actor().lifeSteal[type];
+  if (this.actor().lifeSteal[type + "Eval"]) {
+    var formula = this.actor().lifeSteal[type + "Eval"];
+    value += this.getLifeStealFlatEval(formula, target);
+  }
+  value += this.currentClass().lifeSteal[type];
+  if (this.currentClass().lifeSteal[type + "Eval"]) {
+    var formula = this.currentClass().lifeSteal[type + "Eval"];
+    value += this.getLifeStealFlatEval(formula, target);
+  }
+  return value;
 };
 
-Game_Actor.prototype.isLifeStealState = function(type) {
-    if (Game_Battler.prototype.isLifeStealState.call(this, type)) return true;
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.lifeSteal && obj.lifeSteal[type]) return true;
+Game_Actor.prototype.isLifeStealState = function (type) {
+  if (Game_Battler.prototype.isLifeStealState.call(this, type)) return true;
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.lifeSteal && obj.lifeSteal[type]) return true;
+  }
+  if (this.actor().lifeSteal[type]) return true;
+  if (this.currentClass().lifeSteal[type]) return true;
+  return false;
+};
+
+Game_Enemy.prototype.getLifeStealRate = function (type, target) {
+  rate = 1 - Game_Battler.prototype.getLifeStealRate.call(this, type, target);
+  rate *= 1 - this.enemy().lifeSteal[type];
+  if (this.enemy().lifeSteal[type + "Eval"]) {
+    var formula = this.enemy().lifeSteal[type + "Eval"];
+    rate *= 1 - this.getLifeStealRateEval(formula, target);
+  }
+  return 1 - rate;
+};
+
+Game_Enemy.prototype.getLifeStealFlat = function (type, target) {
+  value = Game_Battler.prototype.getLifeStealFlat.call(this, type, target);
+  value += this.enemy().lifeSteal[type];
+  if (this.enemy().lifeSteal[type + "Eval"]) {
+    var formula = this.enemy().lifeSteal[type + "Eval"];
+    value += this.getLifeStealFlatEval(formula, target);
+  }
+  return value;
+};
+
+Game_Enemy.prototype.isLifeStealState = function (type) {
+  if (Game_Battler.prototype.isLifeStealState.call(this, type)) return true;
+  if (this.enemy().lifeSteal[type]) return true;
+  return false;
+};
+
+MageStudios.LS.Game_Action_executeHpDamage =
+  Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function (target, value) {
+  MageStudios.LS.Game_Action_executeHpDaMageStudios.call(this, target, value);
+  var damage = target._result.hpDamage;
+  this.performLifeSteal(damage, target, value);
+};
+
+MageStudios.LS.Game_Action_executeMpDamage =
+  Game_Action.prototype.executeMpDamage;
+Game_Action.prototype.executeMpDamage = function (target, value) {
+  MageStudios.LS.Game_Action_executeMpDaMageStudios.call(this, target, value);
+  var damage = target._result.mpDamage;
+  this.performLifeSteal(damage, target, value);
+};
+
+Game_Action.prototype.canLifeStealHp = function (damage, target, value) {
+  if (this.item().lifeSteal) {
+    if (this.item().lifeSteal["allNull"]) return false;
+    if (this.item().lifeSteal["hpNull"]) return false;
+  }
+  if (this.subject().isLifeStealState("allNull")) return false;
+  if (this.subject().isLifeStealState("hpNull")) return false;
+  if (target.isLifeStealState("allGuard")) return false;
+  if (target.isLifeStealState("hpGuard")) return false;
+  return damage > 0;
+};
+
+Game_Action.prototype.canLifeStealMp = function (damage, target, value) {
+  if (this.item().lifeSteal) {
+    if (this.item().lifeSteal["allNull"]) return false;
+    if (this.item().lifeSteal["mpNull"]) return false;
+  }
+  if (this.subject().isLifeStealState("allNull")) return false;
+  if (this.subject().isLifeStealState("mpNull")) return false;
+  if (target.isLifeStealState("allGuard")) return false;
+  if (target.isLifeStealState("mpGuard")) return false;
+  return damage > 0;
+};
+
+Game_Action.prototype.performLifeSteal = function (damage, target, value) {
+  this.performHpLifeSteal(damage, target, value);
+  this.performMpLifeSteal(damage, target, value);
+};
+
+Game_Action.prototype.performHpLifeSteal = function (damage, target, value) {
+  if (this.canLifeStealHp(damage, target, value)) {
+    var rate = this.getLifeStealRate(target, value, "hp");
+    var flat = this.getLifeStealFlat(target, value, "hp");
+    if (this.isPhysical()) {
+      this.subject().lifeSteal(damage, "hpPhysical", target, rate, flat);
+    } else if (this.isMagical()) {
+      this.subject().lifeSteal(damage, "hpMagical", target, rate, flat);
+    } else if (this.isCertainHit()) {
+      this.subject().lifeSteal(damage, "hpCertain", target, rate, flat);
     }
-    if (this.actor().lifeSteal[type]) return true;
-    if (this.currentClass().lifeSteal[type]) return true;
-    return false;
+  }
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.getLifeStealRate = function(type, target) {
-    rate = 1 - Game_Battler.prototype.getLifeStealRate.call(this, type, target);
-    rate *= (1 - this.enemy().lifeSteal[type]);
-    if (this.enemy().lifeSteal[type + 'Eval']) {
-      var formula = this.enemy().lifeSteal[type + 'Eval'];
-      rate *= (1 - this.getLifeStealRateEval(formula, target));
+Game_Action.prototype.performMpLifeSteal = function (damage, target, value) {
+  if (this.canLifeStealMp(damage, target, value)) {
+    var rate = this.getLifeStealRate(target, value, "mp");
+    var flat = this.getLifeStealFlat(target, value, "mp");
+    if (this.isPhysical()) {
+      this.subject().magicSteal(damage, "mpPhysical", target, rate, flat);
+    } else if (this.isMagical()) {
+      this.subject().magicSteal(damage, "mpMagical", target, rate, flat);
+    } else if (this.isCertainHit()) {
+      this.subject().magicSteal(damage, "mpCertain", target, rate, flat);
     }
-    return 1 - rate;
+  }
 };
 
-Game_Enemy.prototype.getLifeStealFlat = function(type, target) {
-    value = Game_Battler.prototype.getLifeStealFlat.call(this, type, target);
-    value += this.enemy().lifeSteal[type];
-    if (this.enemy().lifeSteal[type + 'Eval']) {
-      var formula = this.enemy().lifeSteal[type + 'Eval'];
-      value += this.getLifeStealFlatEval(formula, target);
-    }
-    return value;
+Game_Action.prototype.getLifeStealRate = function (target, value, type) {
+  var rate = 1;
+  if (this.item().lifeSteal[type + "Rate"]) {
+    rate *= 1 - this.item().lifeSteal[type + "Rate"];
+  }
+  if (this.item().lifeSteal[type + "RateEval"]) {
+    var formula = this.item().lifeSteal[type + "RateEval"];
+    rate *= 1 - this.getLifeStealRateEval(formula, target, value);
+  }
+  return 1 - rate;
 };
 
-Game_Enemy.prototype.isLifeStealState = function(type) {
-    if (Game_Battler.prototype.isLifeStealState.call(this, type)) return true;
-    if (this.enemy().lifeSteal[type]) return true;
-    return false;
+Game_Action.prototype.getLifeStealFlat = function (target, value, type) {
+  var flat = 0;
+  if (this.item().lifeSteal[type + "Flat"]) {
+    flat += this.item().lifeSteal[type + "Flat"];
+  }
+  if (this.item().lifeSteal[type + "RateFlat"]) {
+    var formula = this.item().lifeSteal[type + "RateFlat"];
+    flat += this.getLifeStealFlatEval(formula, target, value);
+  }
+  return flat;
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.LS.Game_Action_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
-    MageStudios.LS.Game_Action_executeHpDaMageStudios.call(this, target, value);
-    var damage = target._result.hpDamage;
-    this.performLifeSteal(damage, target, value);
+Game_Action.prototype.getLifeStealRateEval = function (formula, target, value) {
+  var rate = 0;
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var damage = value;
+  var item = this.item();
+  var skill = this.item();
+  try {
+    eval(formula);
+  } catch (e) {
+    MageStudios.Util.displayError(e, formula, "LIFE STEAL RATE FORMULA ERROR");
+  }
+  return rate;
 };
 
-MageStudios.LS.Game_Action_executeMpDamage = Game_Action.prototype.executeMpDamage;
-Game_Action.prototype.executeMpDamage = function(target, value) {
-    MageStudios.LS.Game_Action_executeMpDaMageStudios.call(this, target, value);
-    var damage = target._result.mpDamage;
-    this.performLifeSteal(damage, target, value);
+Game_Action.prototype.getLifeStealFlatEval = function (formula, target, value) {
+  var flat = 0;
+  var a = this.subject();
+  var user = this.subject();
+  var subject = this.subject();
+  var b = target;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var damage = value;
+  var item = this.item();
+  var skill = this.item();
+  try {
+    eval(formula);
+  } catch (e) {
+    MageStudios.Util.displayError(e, formula, "LIFE STEAL FLAT FORMULA ERROR");
+  }
+  return flat;
 };
-
-Game_Action.prototype.canLifeStealHp = function(damage, target, value) {
-    if (this.item().lifeSteal) {
-      if (this.item().lifeSteal['allNull']) return false;
-      if (this.item().lifeSteal['hpNull']) return false;
-    }
-    if (this.subject().isLifeStealState('allNull')) return false;
-    if (this.subject().isLifeStealState('hpNull')) return false;
-    if (target.isLifeStealState('allGuard')) return false;
-    if (target.isLifeStealState('hpGuard')) return false;
-    return damage > 0;
-};
-
-Game_Action.prototype.canLifeStealMp = function(damage, target, value) {
-    if (this.item().lifeSteal) {
-      if (this.item().lifeSteal['allNull']) return false;
-      if (this.item().lifeSteal['mpNull']) return false;
-    }
-    if (this.subject().isLifeStealState('allNull')) return false;
-    if (this.subject().isLifeStealState('mpNull')) return false;
-    if (target.isLifeStealState('allGuard')) return false;
-    if (target.isLifeStealState('mpGuard')) return false;
-    return damage > 0;
-};
-
-Game_Action.prototype.performLifeSteal = function(damage, target, value) {
-    this.performHpLifeSteal(damage, target, value);
-    this.performMpLifeSteal(damage, target, value);
-};
-
-Game_Action.prototype.performHpLifeSteal = function(damage, target, value) {
-    if (this.canLifeStealHp(damage, target, value)) {
-      var rate = this.getLifeStealRate(target, value, 'hp');
-      var flat = this.getLifeStealFlat(target, value, 'hp');
-      if (this.isPhysical()) {
-        this.subject().lifeSteal(damage, 'hpPhysical', target, rate, flat);
-      } else if (this.isMagical()) {
-        this.subject().lifeSteal(damage, 'hpMagical', target, rate, flat);
-      } else if (this.isCertainHit()) {
-        this.subject().lifeSteal(damage, 'hpCertain', target, rate, flat);
-      }
-    }
-};
-
-Game_Action.prototype.performMpLifeSteal = function(damage, target, value) {
-    if (this.canLifeStealMp(damage, target, value)) {
-      var rate = this.getLifeStealRate(target, value, 'mp');
-      var flat = this.getLifeStealFlat(target, value, 'mp');
-      if (this.isPhysical()) {
-        this.subject().magicSteal(damage, 'mpPhysical', target, rate, flat);
-      } else if (this.isMagical()) {
-        this.subject().magicSteal(damage, 'mpMagical', target, rate, flat);
-      } else if (this.isCertainHit()) {
-        this.subject().magicSteal(damage, 'mpCertain', target, rate, flat);
-      }
-    }
-};
-
-Game_Action.prototype.getLifeStealRate = function(target, value, type) {
-    var rate = 1;
-    if (this.item().lifeSteal[type + 'Rate']) {
-      rate *= 1 - this.item().lifeSteal[type + 'Rate'];
-    }
-    if (this.item().lifeSteal[type + 'RateEval']) {
-      var formula = this.item().lifeSteal[type + 'RateEval'];
-      rate *= 1 - this.getLifeStealRateEval(formula, target, value);
-    }
-    return 1 - rate;
-};
-
-Game_Action.prototype.getLifeStealFlat = function(target, value, type) {
-    var flat = 0;
-    if (this.item().lifeSteal[type + 'Flat']) {
-      flat += this.item().lifeSteal[type + 'Flat'];
-    }
-    if (this.item().lifeSteal[type + 'RateFlat']) {
-      var formula = this.item().lifeSteal[type + 'RateFlat'];
-      flat += this.getLifeStealFlatEval(formula, target, value);
-    }
-    return flat;
-};
-
-Game_Action.prototype.getLifeStealRateEval = function(formula, target, value) {
-    var rate = 0;
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var damage = value;
-    var item = this.item();
-    var skill = this.item();
-    try {
-      eval(formula);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'LIFE STEAL RATE FORMULA ERROR');
-    }
-    return rate;
-};
-
-Game_Action.prototype.getLifeStealFlatEval = function(formula, target, value) {
-    var flat = 0;
-    var a = this.subject();
-    var user = this.subject();
-    var subject = this.subject();
-    var b = target;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var damage = value;
-    var item = this.item();
-    var skill = this.item();
-    try {
-      eval(formula);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'LIFE STEAL FLAT FORMULA ERROR');
-    }
-    return flat;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

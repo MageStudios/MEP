@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Damage Core
-// MSEP_DamageCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_DamageCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.DMG = MageStudios.DMG || {};
-MageStudios.DMG.version = 1.00;
+MageStudios.DMG.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Expand the control you have over the game's damage
  * calculation with more features and effects.
  * @author Mage Studios Engine Plugins
@@ -59,17 +53,17 @@ MageStudios.DMG.version = 1.00;
  * @param Damage Step 3
  * @parent ---Damage Steps---
  * @desc This is the next step in the damage flow.
- * @default 
+ * @default
  *
  * @param Damage Step 4
  * @parent ---Damage Steps---
  * @desc This is the next step in the damage flow.
- * @default 
+ * @default
  *
  * @param Damage Step 5
  * @parent ---Damage Steps---
  * @desc This is the next step in the damage flow.
- * @default 
+ * @default
  *
  * @param Damage Step 6
  * @parent ---Damage Steps---
@@ -89,7 +83,7 @@ MageStudios.DMG.version = 1.00;
  * @param Damage Step 9
  * @parent ---Damage Steps---
  * @desc This is the next step in the damage flow.
- * @default 
+ * @default
  *
  * @param Damage Step 10
  * @parent ---Damage Steps---
@@ -804,54 +798,51 @@ MageStudios.DMG.version = 1.00;
  * Usage Example: reset damage modifiers
  *=============================================================================
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_DamageCore');
+MageStudios.Parameters = PluginManager.parameters("MSEP_DamageCore");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.DMGEnableCap = eval(String(MageStudios.Parameters['Enable Cap']));
-MageStudios.Param.DMGMaxDamage = Number(MageStudios.Parameters['Maximum Damage']);
-MageStudios.Param.DMGMaxHealing = Number(MageStudios.Parameters['Maximum Healing']);
+MageStudios.Param.DMGEnableCap = eval(
+  String(MageStudios.Parameters["Enable Cap"])
+);
+MageStudios.Param.DMGMaxDamage = Number(
+  MageStudios.Parameters["Maximum Damage"]
+);
+MageStudios.Param.DMGMaxHealing = Number(
+  MageStudios.Parameters["Maximum Healing"]
+);
 
-MageStudios.SetupParameters = function() {
-  MageStudios.DMG.DamageFlow = '';
+MageStudios.SetupParameters = function () {
+  MageStudios.DMG.DamageFlow = "";
   for (var i = 1; i <= 100; ++i) {
-    var param = 'Damage Step ' + i;
-    MageStudios.DMG.DamageFlow += String(MageStudios.Parameters[param]) + '\n';
+    var param = "Damage Step " + i;
+    MageStudios.DMG.DamageFlow += String(MageStudios.Parameters[param]) + "\n";
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.DMG.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-    if (!MageStudios.DMG.DataManager_isDatabaseLoaded.call(this)) return false;
-    if (!MageStudios._loaded_MSEP_DamageCore) {
-      this.processDMGNotetags1($dataSkills);
-      this.processDMGNotetags1($dataItems);
-      this.processDMGNotetags2($dataActors);
-      this.processDMGNotetags2($dataClasses);
-      this.processDMGNotetags2($dataEnemies);
-      this.processDMGNotetags2($dataWeapons);
-      this.processDMGNotetags2($dataArmors);
-      this.processDMGNotetags2($dataStates);
-      MageStudios._loaded_MSEP_DamageCore = true;
-    }
-		return true;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.DMG.DataManager_isDatabaseLoaded.call(this)) return false;
+  if (!MageStudios._loaded_MSEP_DamageCore) {
+    this.processDMGNotetags1($dataSkills);
+    this.processDMGNotetags1($dataItems);
+    this.processDMGNotetags2($dataActors);
+    this.processDMGNotetags2($dataClasses);
+    this.processDMGNotetags2($dataEnemies);
+    this.processDMGNotetags2($dataWeapons);
+    this.processDMGNotetags2($dataArmors);
+    this.processDMGNotetags2($dataStates);
+    MageStudios._loaded_MSEP_DamageCore = true;
+  }
+  return true;
 };
 
-DataManager.processDMGNotetags1 = function(group) {
+DataManager.processDMGNotetags1 = function (group) {
   var noteD1 = /<(?:DAMAGE CAP|HEAL CAP|HEALING CAP):[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		var notedata = obj.note.split(/[\r\n]+/);
+    var obj = group[n];
+    var notedata = obj.note.split(/[\r\n]+/);
 
     var damageFormulaMode = false;
     obj.daMageStudios.custom = false;
@@ -859,7 +850,7 @@ DataManager.processDMGNotetags1 = function(group) {
     obj.damageCap = undefined;
 
     for (var i = 0; i < notedata.length; i++) {
-			var line = notedata[i];
+      var line = notedata[i];
       if (line.match(/<(?:BREAK DAMAGE CAP|BYPASS DAMAGE CAP)>/i)) {
         obj.breakDamageCap = true;
         obj.damageCap = undefined;
@@ -867,34 +858,34 @@ DataManager.processDMGNotetags1 = function(group) {
         obj.damageCap = parseInt(RegExp.$1);
         obj.breakDamageCap = false;
       } else if (line.match(/<(?:DAMAGE FORMULA)>/i)) {
-				damageFormulaMode = true;
-        obj.daMageStudios.formula = '';
+        damageFormulaMode = true;
+        obj.daMageStudios.formula = "";
         obj.daMageStudios.custom = true;
-			} else if (line.match(/<\/(?:DAMAGE FORMULA)>/i)) {
-				damageFormulaMode = false;
-			} else if (damageFormulaMode) {
-        obj.daMageStudios.formula = obj.daMageStudios.formula + line + '\n';
+      } else if (line.match(/<\/(?:DAMAGE FORMULA)>/i)) {
+        damageFormulaMode = false;
+      } else if (damageFormulaMode) {
+        obj.daMageStudios.formula = obj.daMageStudios.formula + line + "\n";
       }
-		}
-	}
+    }
+  }
 };
 
-DataManager.processDMGNotetags2 = function(group) {
+DataManager.processDMGNotetags2 = function (group) {
   var noteD1 = /<(?:BREAK DAMAGE CAP|BYPASS DAMAGE CAP)>/i;
   var noteD2 = /<(?:DAMAGE CAP):[ ](\d+)>/i;
   var noteD3 = /<(?:HEAL CAP|HEALING CAP):[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		var notedata = obj.note.split(/[\r\n]+/);
+    var obj = group[n];
+    var notedata = obj.note.split(/[\r\n]+/);
 
     obj.breakDamageCap = undefined;
     obj.damageCap = undefined;
     obj.healCap = undefined;
 
-		for (var i = 0; i < notedata.length; i++) {
-			var line = notedata[i];
-			if (line.match(noteD1)) {
-				obj.breakDamageCap = true;
+    for (var i = 0; i < notedata.length; i++) {
+      var line = notedata[i];
+      if (line.match(noteD1)) {
+        obj.breakDamageCap = true;
         obj.damageCap = undefined;
         obj.healCap = undefined;
       } else if (line.match(noteD2)) {
@@ -904,300 +895,286 @@ DataManager.processDMGNotetags2 = function(group) {
         obj.healCap = parseInt(RegExp.$1) * -1;
         obj.breakDamageCap = undefined;
       }
-		}
-	}
+    }
+  }
 };
-
-//=============================================================================
-// BattleManager
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
-MageStudios.DMG.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-  BattleManager.processActionSequence = function(actionName, actionArgs) {
-    // BYPASS DAMAGE CAP
-    if (actionName === 'BYPASS DAMAGE CAP') {
+  MageStudios.DMG.BattleManager_processActionSequence =
+    BattleManager.processActionSequence;
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (actionName === "BYPASS DAMAGE CAP") {
       return this.actionBypassDamageCap();
     }
-    // DAMAGE CAP, HEALING CAP
-    if (actionName === 'DAMAGE CAP' || actionName === 'HEALING CAP') {
+
+    if (actionName === "DAMAGE CAP" || actionName === "HEALING CAP") {
       return this.actionDamageCap(actionArgs);
     }
-    // DAMAGE RATE
-    if (actionName === 'DAMAGE RATE') {
+
+    if (actionName === "DAMAGE RATE") {
       return this.actionDamageRate(actionArgs);
     }
-    // FLAT DAMAGE
-    if (actionName === 'FLAT DAMAGE') {
+
+    if (actionName === "FLAT DAMAGE") {
       return this.actionFlatDamage(actionArgs);
     }
-    // FLAT GLOBAL
-    if (actionName === 'FLAT GLOBAL') {
+
+    if (actionName === "FLAT GLOBAL") {
       return this.actionFlatGlobal(actionArgs);
     }
-    // FLAT HEAL
-    if (actionName === 'FLAT HEAL') {
+
+    if (actionName === "FLAT HEAL") {
       return this.actionFlatHeal(actionArgs);
     }
-    // GLOBAL RATE
-    if (actionName === 'GLOBAL RATE') {
+
+    if (actionName === "GLOBAL RATE") {
       return this.actionGlobalRate(actionArgs);
     }
-    // HEAL RATE
-    if (actionName === 'HEAL RATE') {
+
+    if (actionName === "HEAL RATE") {
       return this.actionHealRate(actionArgs);
     }
-    // RESET DAMAGE CAP
-    if (actionName === 'RESET DAMAGE CAP') {
+
+    if (actionName === "RESET DAMAGE CAP") {
       return this.actionResetDamageCap();
     }
-    // RESET DAMAGE MODIFIERS
-    if (actionName === 'RESET DAMAGE MODIFIERS') {
+
+    if (actionName === "RESET DAMAGE MODIFIERS") {
       return this.actionResetDamageModifiers();
     }
-    return MageStudios.DMG.BattleManager_processActionSequence.call(this,
-      actionName, actionArgs);
+    return MageStudios.DMG.BattleManager_processActionSequence.call(
+      this,
+      actionName,
+      actionArgs
+    );
   };
+}
+
+BattleManager.actionBypassDamageCap = function () {
+  $gameSystem.actSeqBypassDamageCap();
+  return true;
 };
 
-BattleManager.actionBypassDamageCap = function() {
-    $gameSystem.actSeqBypassDamageCap();
+BattleManager.actionDamageCap = function (actionArgs) {
+  if (!actionArgs) return;
+  if (actionArgs[0]) {
+    var value = parseInt(actionArgs[0]);
+    $gameSystem.setActSeqDamageCap(value);
+  }
+  return true;
+};
+
+BattleManager.actionDamageRate = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
+  } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
+    var value = parseFloat(RegExp.$1 * 0.01);
+  } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
+    var value = parseFloat(String(RegExp.$1) + "." + String(RegExp.$1));
+  } else {
     return true;
+  }
+  $gameSystem._damageRate = value;
+  return true;
 };
 
-BattleManager.actionDamageCap = function(actionArgs) {
-    if (!actionArgs) return;
-    if (actionArgs[0]) {
-      var value = parseInt(actionArgs[0]);
-      $gameSystem.setActSeqDamageCap(value);
-    }
+BattleManager.actionFlatDamage = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
+  } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else if (actionArgs[0].match(/(\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else {
     return true;
+  }
+  $gameSystem._flatDamage = value;
+  return true;
 };
 
-BattleManager.actionDamageRate = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
-    } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
-      var value = parseFloat(RegExp.$1 * 0.01);
-    } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
-      var value = parseFloat(String(RegExp.$1) + '.' + String(RegExp.$1));
-    } else {
-      return true;
-    }
-    $gameSystem._damageRate = value;
+BattleManager.actionFlatGlobal = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
+  } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else if (actionArgs[0].match(/(\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else {
     return true;
+  }
+  $gameSystem._flatDamage = value;
+  $gameSystem._flatHeal = value;
+  return true;
 };
 
-BattleManager.actionFlatDamage = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
-    } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else if (actionArgs[0].match(/(\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else {
-      return true;
-    }
-    $gameSystem._flatDamage = value;
+BattleManager.actionFlatHeal = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
+  } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else if (actionArgs[0].match(/(\d+)/i)) {
+    var value = parseInt(RegExp.$1);
+  } else {
     return true;
+  }
+  $gameSystem._flatHeal = value;
+  return true;
 };
 
-BattleManager.actionFlatGlobal = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
-    } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else if (actionArgs[0].match(/(\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else {
-      return true;
-    }
-    $gameSystem._flatDamage = value;
-    $gameSystem._flatHeal = value;
+BattleManager.actionGlobalRate = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
+  } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
+    var value = parseFloat(RegExp.$1 * 0.01);
+  } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
+    var value = parseFloat(String(RegExp.$1) + "." + String(RegExp.$1));
+  } else {
     return true;
+  }
+  $gameSystem._damageRate = value;
+  $gameSystem._healRate = value;
+  return true;
 };
 
-BattleManager.actionFlatHeal = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseInt($gameVariables.value(parseInt(RegExp.$1)));
-    } else if (actionArgs[0].match(/([\+\-]\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else if (actionArgs[0].match(/(\d+)/i)) {
-      var value = parseInt(RegExp.$1);
-    } else {
-      return true;
-    }
-    $gameSystem._flatHeal = value;
+BattleManager.actionHealRate = function (actionArgs) {
+  if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
+    var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
+  } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
+    var value = parseFloat(RegExp.$1 * 0.01);
+  } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
+    var value = parseFloat(String(RegExp.$1) + "." + String(RegExp.$1));
+  } else {
     return true;
+  }
+  $gameSystem._healRate = value;
+  return true;
 };
 
-BattleManager.actionGlobalRate = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
-    } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
-      var value = parseFloat(RegExp.$1 * 0.01);
-    } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
-      var value = parseFloat(String(RegExp.$1) + '.' + String(RegExp.$1));
-    } else {
-      return true;
-    }
-    $gameSystem._damageRate = value;
-    $gameSystem._healRate = value;
-    return true;
+BattleManager.actionResetDamageCap = function () {
+  $gameSystem.resetActSeqDamageCap();
+  return true;
 };
 
-BattleManager.actionHealRate = function(actionArgs) {
-    if (actionArgs[0].match(/(?:VARIABLE|VAR)[ ](\d+)/i)) {
-      var value = parseFloat($gameVariables.value(parseInt(RegExp.$1)) * 0.01);
-    } else if (actionArgs[0].match(/(\d+)([%％])/i)) {
-      var value = parseFloat(RegExp.$1 * 0.01);
-    } else if (actionArgs[0].match(/(\d+).(\d+)/i)) {
-      var value = parseFloat(String(RegExp.$1) + '.' + String(RegExp.$1));
-    } else {
-      return true;
-    }
-    $gameSystem._healRate = value;
-    return true;
+BattleManager.actionResetDamageModifiers = function () {
+  $gameSystem.resetDamageSettings();
+  return true;
 };
-
-BattleManager.actionResetDamageCap = function() {
-    $gameSystem.resetActSeqDamageCap();
-    return true;
-};
-
-BattleManager.actionResetDamageModifiers = function() {
-    $gameSystem.resetDamageSettings();
-    return true;
-};
-
-//=============================================================================
-// Game_System
-//=============================================================================
 
 MageStudios.DMG.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.DMG.Game_System_initialize.call(this);
-    this.resetActSeqDamageCap();
-    this.resetDamageSettings();
+Game_System.prototype.initialize = function () {
+  MageStudios.DMG.Game_System_initialize.call(this);
+  this.resetActSeqDamageCap();
+  this.resetDamageSettings();
 };
 
-Game_System.prototype.resetActSeqDamageCap = function() {
-    this._actSeqBypassDamageCap = false;
-    this._actSeqDamageCap = undefined;
+Game_System.prototype.resetActSeqDamageCap = function () {
+  this._actSeqBypassDamageCap = false;
+  this._actSeqDamageCap = undefined;
 };
 
-Game_System.prototype.actSeqBypassDamageCap = function() {
-    this._actSeqBypassDamageCap = true;
+Game_System.prototype.actSeqBypassDamageCap = function () {
+  this._actSeqBypassDamageCap = true;
 };
 
-Game_System.prototype.getActSeqBypassDamageCap = function() {
-    return this._actSeqBypassDamageCap;
+Game_System.prototype.getActSeqBypassDamageCap = function () {
+  return this._actSeqBypassDamageCap;
 };
 
-Game_System.prototype.setActSeqDamageCap = function(value) {
-    this._actSeqDamageCap = value;
+Game_System.prototype.setActSeqDamageCap = function (value) {
+  this._actSeqDamageCap = value;
 };
 
-Game_System.prototype.getActSeqDamageCap = function() {
-    return this._actSeqDamageCap;
+Game_System.prototype.getActSeqDamageCap = function () {
+  return this._actSeqDamageCap;
 };
 
-Game_System.prototype.resetDamageSettings = function() {
-    this._damageRate = 1.0;
-    this._flatDamage = 0;
-    this._healRate = 1.0;
-    this._flatHeal = 0;
-    this._defaultDamageCap = MageStudios.Param.DMGEnableCap;
+Game_System.prototype.resetDamageSettings = function () {
+  this._damageRate = 1.0;
+  this._flatDamage = 0;
+  this._healRate = 1.0;
+  this._flatHeal = 0;
+  this._defaultDamageCap = MageStudios.Param.DMGEnableCap;
 };
 
-Game_System.prototype.damageRate = function() {
-    if (this._damageRate === undefined) this.resetDamageSettings();
-    return this._damageRate;
+Game_System.prototype.damageRate = function () {
+  if (this._damageRate === undefined) this.resetDamageSettings();
+  return this._damageRate;
 };
 
-Game_System.prototype.flatDamage = function() {
-    if (this._flatDamage === undefined) this.resetDamageSettings();
-    return this._flatDamage;
+Game_System.prototype.flatDamage = function () {
+  if (this._flatDamage === undefined) this.resetDamageSettings();
+  return this._flatDamage;
 };
 
-Game_System.prototype.healRate = function() {
-    if (this._healRate === undefined) this.resetDamageSettings();
-    return this._healRate;
+Game_System.prototype.healRate = function () {
+  if (this._healRate === undefined) this.resetDamageSettings();
+  return this._healRate;
 };
 
-Game_System.prototype.flatHeal = function() {
-    if (this._flatHeal === undefined) this.resetDamageSettings();
-    return this._flatHeal;
+Game_System.prototype.flatHeal = function () {
+  if (this._flatHeal === undefined) this.resetDamageSettings();
+  return this._flatHeal;
 };
 
-Game_System.prototype.isDamageCapped = function() {
-    return this._defaultDamageCap;
+Game_System.prototype.isDamageCapped = function () {
+  return this._defaultDamageCap;
 };
 
-Game_System.prototype.maximumDamage = function() {
-    if (this._newDamageCap !== undefined) return this._newDamageCap;
-    return MageStudios.Param.DMGMaxDamage;
+Game_System.prototype.maximumDamage = function () {
+  if (this._newDamageCap !== undefined) return this._newDamageCap;
+  return MageStudios.Param.DMGMaxDamage;
 };
 
-Game_System.prototype.maximumHealing = function() {
-    if (this._newHealingCap !== undefined) return this._newHealingCap;
-    return MageStudios.Param.DMGMaxHealing * -1;
+Game_System.prototype.maximumHealing = function () {
+  if (this._newHealingCap !== undefined) return this._newHealingCap;
+  return MageStudios.Param.DMGMaxHealing * -1;
 };
 
-Game_System.prototype.setNewDamageCap = function(value, damage) {
-    if (damage) {
-      this._newDamageCap = value;
-    } else {
-      this._newHealingCap = value * -1;
-    }
+Game_System.prototype.setNewDamageCap = function (value, damage) {
+  if (damage) {
+    this._newDamageCap = value;
+  } else {
+    this._newHealingCap = value * -1;
+  }
 };
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
 
 MageStudios.DMG.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-    MageStudios.DMG.Game_BattlerBase_refresh.call(this);
-    this.resetDMGTempValues();
+Game_BattlerBase.prototype.refresh = function () {
+  MageStudios.DMG.Game_BattlerBase_refresh.call(this);
+  this.resetDMGTempValues();
 };
 
-Game_BattlerBase.prototype.resetDMGTempValues = function() {
-    this._isDMGCapped = undefined;
-    this._maximumDamage = undefined;
-    this._maximumHealing = undefined;
+Game_BattlerBase.prototype.resetDMGTempValues = function () {
+  this._isDMGCapped = undefined;
+  this._maximumDamage = undefined;
+  this._maximumHealing = undefined;
 };
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
 
 MageStudios.DMG.Game_Battler_performActionEnd =
-    Game_Battler.prototype.performActionEnd;
-Game_Battler.prototype.performActionEnd = function() {
-    MageStudios.DMG.Game_Battler_performActionEnd.call(this);
-    $gameSystem.resetDamageSettings();
+  Game_Battler.prototype.performActionEnd;
+Game_Battler.prototype.performActionEnd = function () {
+  MageStudios.DMG.Game_Battler_performActionEnd.call(this);
+  $gameSystem.resetDamageSettings();
 };
 
-Game_Battler.prototype.isDamageCapped = function() {
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state && state.breakDamageCap) return this._isDMGCapped = false;
-    }
-    return this._isDMGCapped = $gameSystem.isDamageCapped();
+Game_Battler.prototype.isDamageCapped = function () {
+  for (var i = 0; i < this.states().length; ++i) {
+    var state = this.states()[i];
+    if (state && state.breakDamageCap) return (this._isDMGCapped = false);
+  }
+  return (this._isDMGCapped = $gameSystem.isDamageCapped());
 };
 
-Game_Battler.prototype.maximumDamage = function() {
-    var value = $gameSystem.maximumDamage();
-    for (var i = 0; i < this.states().length; ++i) {
-      var state = this.states()[i];
-      if (state && state.damageCap) value = Math.max(value, state.damageCap);
-    }
-    return value;
+Game_Battler.prototype.maximumDamage = function () {
+  var value = $gameSystem.maximumDamage();
+  for (var i = 0; i < this.states().length; ++i) {
+    var state = this.states()[i];
+    if (state && state.damageCap) value = Math.max(value, state.damageCap);
+  }
+  return value;
 };
 
-Game_Battler.prototype.maximumHealing = function() {
+Game_Battler.prototype.maximumHealing = function () {
   var value = $gameSystem.maximumHealing();
   for (var i = 0; i < this.states().length; ++i) {
     var state = this.states()[i];
@@ -1206,86 +1183,74 @@ Game_Battler.prototype.maximumHealing = function() {
   return value;
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.isDamageCapped = function() {
+Game_Actor.prototype.isDamageCapped = function () {
   if (this._isDMGCapped !== undefined) return this._isDMGCapped;
-  if (this.actor().breakDamageCap) return this._isDMGCapped = false;
-  if (this.currentClass().breakDamageCap) return this._isDMGCapped = false;
+  if (this.actor().breakDamageCap) return (this._isDMGCapped = false);
+  if (this.currentClass().breakDamageCap) return (this._isDMGCapped = false);
   for (var i = 0; i < this.equips().length; ++i) {
     var equip = this.equips()[i];
-    if (equip && equip.breakDamageCap) return this._isDMGCapped = false;
+    if (equip && equip.breakDamageCap) return (this._isDMGCapped = false);
   }
   return Game_Battler.prototype.isDamageCapped.call(this);
 };
 
-Game_Actor.prototype.maximumDamage = function() {
-    if (this._maximumDamage !== undefined) return this._maximumDamage;
-    var value = Game_Battler.prototype.maximumDaMageStudios.call(this);
-    if (this.actor().damageCap) {
-      value = Math.max(value, this.actor().damageCap);
-    }
-    if (this.currentClass().damageCap) {
-      value = Math.max(value, this.currentClass().damageCap);
-    }
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.damageCap) value = Math.max(value, equip.damageCap);
-    }
-    return this._maximumDamage = value;
+Game_Actor.prototype.maximumDamage = function () {
+  if (this._maximumDamage !== undefined) return this._maximumDamage;
+  var value = Game_Battler.prototype.maximumDaMageStudios.call(this);
+  if (this.actor().damageCap) {
+    value = Math.max(value, this.actor().damageCap);
+  }
+  if (this.currentClass().damageCap) {
+    value = Math.max(value, this.currentClass().damageCap);
+  }
+  for (var i = 0; i < this.equips().length; ++i) {
+    var equip = this.equips()[i];
+    if (equip && equip.damageCap) value = Math.max(value, equip.damageCap);
+  }
+  return (this._maximumDamage = value);
 };
 
-Game_Actor.prototype.maximumHealing = function() {
-    if (this._maximumHealing !== undefined) return this._maximumHealing;
-    var value = Game_Battler.prototype.maximumHealing.call(this);
-    if (this.actor().healCap) {
-      value = Math.min(value, this.actor().healCap);
-    }
-    if (this.currentClass().healCap) {
-      value = Math.min(value, this.currentClass().healCap);
-    }
-    for (var i = 0; i < this.equips().length; ++i) {
-      var equip = this.equips()[i];
-      if (equip && equip.healCap) value = Math.min(value, equip.healCap);
-    }
-    return this._maximumHealing = value;
+Game_Actor.prototype.maximumHealing = function () {
+  if (this._maximumHealing !== undefined) return this._maximumHealing;
+  var value = Game_Battler.prototype.maximumHealing.call(this);
+  if (this.actor().healCap) {
+    value = Math.min(value, this.actor().healCap);
+  }
+  if (this.currentClass().healCap) {
+    value = Math.min(value, this.currentClass().healCap);
+  }
+  for (var i = 0; i < this.equips().length; ++i) {
+    var equip = this.equips()[i];
+    if (equip && equip.healCap) value = Math.min(value, equip.healCap);
+  }
+  return (this._maximumHealing = value);
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.isDamageCapped = function() {
+Game_Enemy.prototype.isDamageCapped = function () {
   if (this._isDMGCapped !== undefined) return this._isDMGCapped;
-  if (this.enemy().breakDamageCap) return this._isDMGCapped = false;
+  if (this.enemy().breakDamageCap) return (this._isDMGCapped = false);
   return Game_Battler.prototype.isDamageCapped.call(this);
 };
 
-Game_Enemy.prototype.maximumDamage = function() {
-    if (this._maximumDamage !== undefined) return this._maximumDamage;
-    var value = Game_Battler.prototype.maximumDaMageStudios.call(this);
-    if (this.enemy().damageCap) {
-      value = Math.max(value, this.enemy().damageCap);
-    }
-    return this._maximumDamage = value;
+Game_Enemy.prototype.maximumDamage = function () {
+  if (this._maximumDamage !== undefined) return this._maximumDamage;
+  var value = Game_Battler.prototype.maximumDaMageStudios.call(this);
+  if (this.enemy().damageCap) {
+    value = Math.max(value, this.enemy().damageCap);
+  }
+  return (this._maximumDamage = value);
 };
 
-Game_Enemy.prototype.maximumHealing = function() {
-    if (this._maximumHealing !== undefined) return this._maximumHealing;
-    var value = Game_Battler.prototype.maximumHealing.call(this);
-    if (this.enemy().healCap) {
-      value = Math.min(value, this.enemy().healCap);
-    }
-    return this._maximumHealing = value;
+Game_Enemy.prototype.maximumHealing = function () {
+  if (this._maximumHealing !== undefined) return this._maximumHealing;
+  var value = Game_Battler.prototype.maximumHealing.call(this);
+  if (this.enemy().healCap) {
+    value = Math.min(value, this.enemy().healCap);
+  }
+  return (this._maximumHealing = value);
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-Game_Action.prototype.makeDamageValue = function(target, critical) {
+Game_Action.prototype.makeDamageValue = function (target, critical) {
   var item = this.item();
   var a = this.subject();
   var b = target;
@@ -1297,12 +1262,16 @@ Game_Action.prototype.makeDamageValue = function(target, critical) {
   try {
     eval(MageStudios.DMG.DamageFlow);
   } catch (e) {
-    MageStudios.Util.displayError(e, MageStudios.DMG.DamageFlow, 'DAMAGE FLOW ERROR');
+    MageStudios.Util.displayError(
+      e,
+      MageStudios.DMG.DamageFlow,
+      "DAMAGE FLOW ERROR"
+    );
   }
   return Math.round(value);
 };
 
-Game_Action.prototype.evalDamageFormula = function(target) {
+Game_Action.prototype.evalDamageFormula = function (target) {
   try {
     var item = this.item();
     var a = this.subject();
@@ -1311,7 +1280,7 @@ Game_Action.prototype.evalDamageFormula = function(target) {
     var subject = this.subject();
     var s = $gameSwitches._data;
     var v = $gameVariables._data;
-    var sign = ([3, 4].contains(item.daMageStudios.type) ? -1 : 1);
+    var sign = [3, 4].contains(item.daMageStudios.type) ? -1 : 1;
     var value = 0;
     if (item.daMageStudios.custom) {
       eval(item.daMageStudios.formula);
@@ -1322,163 +1291,165 @@ Game_Action.prototype.evalDamageFormula = function(target) {
     return value;
   } catch (e) {
     if (item.daMageStudios.custom) {
-      MageStudios.Util.displayError(e, item.daMageStudios.custom, 'DAMAGE FORMULA ERROR');
+      MageStudios.Util.displayError(
+        e,
+        item.daMageStudios.custom,
+        "DAMAGE FORMULA ERROR"
+      );
     } else {
-      MageStudios.Util.displayError(e, item.daMageStudios.formula, 'DAMAGE FORMULA ERROR');
+      MageStudios.Util.displayError(
+        e,
+        item.daMageStudios.formula,
+        "DAMAGE FORMULA ERROR"
+      );
     }
     return 0;
   }
 };
 
-Game_Action.prototype.modifyCritical = function(critical, baseDamage, target) {
-    return critical;
+Game_Action.prototype.modifyCritical = function (critical, baseDamage, target) {
+  return critical;
 };
 
-Game_Action.prototype.modifyBaseDamage = function(value, baseDamage, target) {
-    return baseDamage;
+Game_Action.prototype.modifyBaseDamage = function (value, baseDamage, target) {
+  return baseDamage;
 };
 
-Game_Action.prototype.applyDamageRate = function(value, baseDamage, target) {
-    value *= $gameSystem.damageRate();
+Game_Action.prototype.applyDamageRate = function (value, baseDamage, target) {
+  value *= $gameSystem.damageRate();
+  value = Math.max(0, value);
+  return value;
+};
+
+Game_Action.prototype.applyHealRate = function (value, baseDamage, target) {
+  value *= $gameSystem.healRate();
+  value *= target.rec;
+  value = Math.min(0, value);
+  return value;
+};
+
+Game_Action.prototype.applyCriticalRate = function (value, baseDamage, target) {
+  value = this.applyCritical(value);
+  return value;
+};
+
+Game_Action.prototype.applyPhysicalRate = function (value, baseDamage, target) {
+  value *= target.pdr;
+  return value;
+};
+
+Game_Action.prototype.applyFlatPhysical = function (value, baseDamage, target) {
+  return value;
+};
+
+Game_Action.prototype.applyMagicalRate = function (value, baseDamage, target) {
+  value *= target.mdr;
+  return value;
+};
+
+Game_Action.prototype.applyFlatMagical = function (value, baseDamage, target) {
+  return value;
+};
+
+Game_Action.prototype.applyFlatDamage = function (value, baseDamage, target) {
+  value += $gameSystem.flatDamage();
+  return value;
+};
+
+Game_Action.prototype.applyFlatHeal = function (value, baseDamage, target) {
+  value -= $gameSystem.flatHeal();
+  return value;
+};
+
+Game_Action.prototype.applyFlatCritical = function (value, baseDamage, target) {
+  return value;
+};
+
+Game_Action.prototype.applyFlatGlobal = function (value, baseDamage, target) {
+  return value;
+};
+
+Game_Action.prototype.applyMinimumDamage = function (
+  value,
+  baseDamage,
+  target
+) {
+  if (baseDamage > 0) {
     value = Math.max(0, value);
-    return value;
-};
-
-Game_Action.prototype.applyHealRate = function(value, baseDamage, target) {
-    value *= $gameSystem.healRate();
-    value *= target.rec;
+  } else if (baseDamage < 0) {
     value = Math.min(0, value);
-    return value;
-};
-
-Game_Action.prototype.applyCriticalRate = function(value, baseDamage, target) {
-    value = this.applyCritical(value);
-    return value;
-};
-
-Game_Action.prototype.applyPhysicalRate = function(value, baseDamage, target) {
-    value *= target.pdr;
-    return value;
-};
-
-Game_Action.prototype.applyFlatPhysical = function(value, baseDamage, target) {
-    return value;
-};
-
-Game_Action.prototype.applyMagicalRate = function(value, baseDamage, target) {
-    value *= target.mdr;
-    return value;
-};
-
-Game_Action.prototype.applyFlatMagical = function(value, baseDamage, target) {
-    return value;
-};
-
-Game_Action.prototype.applyFlatDamage = function(value, baseDamage, target) {
-    value += $gameSystem.flatDamage();
-    return value;
-};
-
-Game_Action.prototype.applyFlatHeal = function(value, baseDamage, target) {
-    value -= $gameSystem.flatHeal();
-    return value;
-};
-
-Game_Action.prototype.applyFlatCritical = function(value, baseDamage, target) {
-    return value;
-};
-
-Game_Action.prototype.applyFlatGlobal = function(value, baseDamage, target) {
-    return value;
-};
-
-Game_Action.prototype.applyMinimumDamage = function(value, baseDamage, target) {
-    if (baseDamage > 0) {
-      value = Math.max(0, value);
-    } else if (baseDamage < 0) {
-      value = Math.min(0, value);
+  }
+  if (this.isDamageCapped()) {
+    if ($gameSystem.getActSeqDamageCap() !== undefined) {
+      var min = $gameSystem.getActSeqDamageCap() * -1;
+      var max = $gameSystem.getActSeqDamageCap();
+    } else if (this.item().damageCap) {
+      var min = this.item().damageCap * -1;
+      var max = this.item().damageCap;
+    } else {
+      var min = this.subject().maximumHealing();
+      var max = this.subject().maximumDamage();
     }
-    if (this.isDamageCapped()) {
-      if ($gameSystem.getActSeqDamageCap() !== undefined) {
-        var min = $gameSystem.getActSeqDamageCap() * -1;
-        var max = $gameSystem.getActSeqDamageCap();
-      } else if (this.item().damageCap) {
-        var min = this.item().damageCap * -1;
-        var max = this.item().damageCap;
-      } else {
-        var min = this.subject().maximumHealing();
-        var max = this.subject().maximumDamage();
-      }
-      value = value.clamp(min, max);
-    }
-    return value;
+    value = value.clamp(min, max);
+  }
+  return value;
 };
 
-Game_Action.prototype.isDamageCapped = function() {
-    var item = this.item();
-    if ($gameSystem.getActSeqBypassDamageCap()) return false;
-    if ($gameSystem.getActSeqDamageCap() !== undefined) return true;
-    if (item.damageCap !== undefined) return true;
-    if (item.breakDamageCap) return false;
-    return this.subject().isDamageCapped();
+Game_Action.prototype.isDamageCapped = function () {
+  var item = this.item();
+  if ($gameSystem.getActSeqBypassDamageCap()) return false;
+  if ($gameSystem.getActSeqDamageCap() !== undefined) return true;
+  if (item.damageCap !== undefined) return true;
+  if (item.breakDamageCap) return false;
+  return this.subject().isDamageCapped();
 };
 
-MageStudios.DMG.Game_Action_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
+MageStudios.DMG.Game_Action_executeHpDamage =
+  Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function (target, value) {
   value = this.applyMinimumDamage(value, value, target);
   MageStudios.DMG.Game_Action_executeHpDaMageStudios.call(this, target, value);
 };
 
-MageStudios.DMG.Game_Action_executeMpDamage = Game_Action.prototype.executeMpDamage;
-Game_Action.prototype.executeMpDamage = function(target, value) {
+MageStudios.DMG.Game_Action_executeMpDamage =
+  Game_Action.prototype.executeMpDamage;
+Game_Action.prototype.executeMpDamage = function (target, value) {
   value = this.applyMinimumDamage(value, value, target);
   MageStudios.DMG.Game_Action_executeMpDaMageStudios.call(this, target, value);
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.DMG.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    MageStudios.DMG.Game_Interpreter_pluginCommand.call(this, command, args)
-    if (command === 'SetDamageCap') this.setDamageCap(args);
-		if (command === 'SetHealingCap') this.setHealingCap(args);
-    if (command === 'EnableDamageCap') this.setDefaultDamageCap(true);
-    if (command === 'DisableDamageCap') this.setDefaultDamageCap(false);
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.DMG.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "SetDamageCap") this.setDamageCap(args);
+  if (command === "SetHealingCap") this.setHealingCap(args);
+  if (command === "EnableDamageCap") this.setDefaultDamageCap(true);
+  if (command === "DisableDamageCap") this.setDefaultDamageCap(false);
 };
 
-Game_Interpreter.prototype.setDamageCap = function(args) {
-    $gameSystem.setNewDamageCap(parseInt(args[0]), true);
+Game_Interpreter.prototype.setDamageCap = function (args) {
+  $gameSystem.setNewDamageCap(parseInt(args[0]), true);
 };
 
-Game_Interpreter.prototype.setHealingCap = function(args) {
-    $gameSystem.setNewDamageCap(parseInt(args[0]), false);
+Game_Interpreter.prototype.setHealingCap = function (args) {
+  $gameSystem.setNewDamageCap(parseInt(args[0]), false);
 };
 
-Game_Interpreter.prototype.setDefaultDamageCap = function(value) {
-    $gameSystem._defaultDamageCap = value;
+Game_Interpreter.prototype.setDefaultDamageCap = function (value) {
+  $gameSystem._defaultDamageCap = value;
 };
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

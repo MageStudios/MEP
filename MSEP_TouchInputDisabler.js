@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Touch Input Disabler
-// MSEP_TouchInputDisabler.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_TouchInputDisabler = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.TID = MageStudios.TID || {};
-MageStudios.TID.version = 1.00;
+MageStudios.TID.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Sometimes, we just want to disable mouse and touch input
  * for our games.
  * @author Mage Studios Engine Plugins
@@ -112,100 +106,82 @@ MageStudios.TID.version = 1.00;
  * @default false
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_TouchInputDisabler');
+MageStudios.Parameters = PluginManager.parameters("MSEP_TouchInputDisabler");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.InputDisabler = {
-  Press: eval(String(MageStudios.Parameters['Press Check'])),
-  Trigger: eval(String(MageStudios.Parameters['Trigger Check'])),
-  Repeat: eval(String(MageStudios.Parameters['Repeat Check'])),
-  LongPress: eval(String(MageStudios.Parameters['Long Press Check'])),
-  Cancel: eval(String(MageStudios.Parameters['Cancel Check'])),
-  Move: eval(String(MageStudios.Parameters['Move Check'])),
-  Release: eval(String(MageStudios.Parameters['Release Check'])),
-  Wheel: eval(String(MageStudios.Parameters['Wheel Check'])),
-  MapMove: eval(String(MageStudios.Parameters['Map Move Check'])),
-}
-
-//=============================================================================
-// TouchInput
-//=============================================================================
+  Press: eval(String(MageStudios.Parameters["Press Check"])),
+  Trigger: eval(String(MageStudios.Parameters["Trigger Check"])),
+  Repeat: eval(String(MageStudios.Parameters["Repeat Check"])),
+  LongPress: eval(String(MageStudios.Parameters["Long Press Check"])),
+  Cancel: eval(String(MageStudios.Parameters["Cancel Check"])),
+  Move: eval(String(MageStudios.Parameters["Move Check"])),
+  Release: eval(String(MageStudios.Parameters["Release Check"])),
+  Wheel: eval(String(MageStudios.Parameters["Wheel Check"])),
+  MapMove: eval(String(MageStudios.Parameters["Map Move Check"])),
+};
 
 MageStudios.TID.TouchInput_isPressed = TouchInput.isPressed;
-TouchInput.isPressed = function() {
+TouchInput.isPressed = function () {
   if (!MageStudios.Param.InputDisabler.Press) return false;
   return MageStudios.TID.TouchInput_isPressed.call(this);
 };
 
 MageStudios.TID.TouchInput_isTriggered = TouchInput.isTriggered;
-TouchInput.isTriggered = function() {
+TouchInput.isTriggered = function () {
   if (!MageStudios.Param.InputDisabler.Trigger) return false;
   return MageStudios.TID.TouchInput_isTriggered.call(this);
 };
 
 MageStudios.TID.TouchInput_isRepeated = TouchInput.isRepeated;
-TouchInput.isRepeated = function() {
+TouchInput.isRepeated = function () {
   if (!MageStudios.Param.InputDisabler.Repeat) return false;
   return MageStudios.TID.TouchInput_isRepeated.call(this);
 };
 
 MageStudios.TID.TouchInput_isLongPressed = TouchInput.isLongPressed;
-TouchInput.isLongPressed = function() {
+TouchInput.isLongPressed = function () {
   if (!MageStudios.Param.InputDisabler.LongPress) return false;
   return MageStudios.TID.TouchInput_isLongPressed.call(this);
 };
 
 MageStudios.TID.TouchInput_isCancelled = TouchInput.isCancelled;
-TouchInput.isCancelled = function() {
+TouchInput.isCancelled = function () {
   if (!MageStudios.Param.InputDisabler.Cancel) return false;
   return MageStudios.TID.TouchInput_isCancelled.call(this);
 };
 
 MageStudios.TID.TouchInput_isMoved = TouchInput.isMoved;
-TouchInput.isMoved = function() {
+TouchInput.isMoved = function () {
   if (!MageStudios.Param.InputDisabler.Move) return false;
   return MageStudios.TID.TouchInput_isMoved.call(this);
 };
 
 MageStudios.TID.TouchInput_isReleased = TouchInput.isReleased;
-TouchInput.isReleased = function() {
+TouchInput.isReleased = function () {
   if (!MageStudios.Param.InputDisabler.Release) return false;
   return MageStudios.TID.TouchInput_isReleased.call(this);
 };
 
-Object.defineProperty(TouchInput, 'wheelX', {
-  get: function() {
+Object.defineProperty(TouchInput, "wheelX", {
+  get: function () {
     if (!MageStudios.Param.InputDisabler.Wheel) return 0;
     return this._wheelX;
   },
-  configurable: true
+  configurable: true,
 });
 
-Object.defineProperty(TouchInput, 'wheelY', {
-  get: function() {
+Object.defineProperty(TouchInput, "wheelY", {
+  get: function () {
     if (!MageStudios.Param.InputDisabler.Wheel) return 0;
     return this._wheelY;
   },
-  configurable: true
+  configurable: true,
 });
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.TID.Scene_Map_processMapTouch =
-  Scene_Map.prototype.processMapTouch;
-Scene_Map.prototype.processMapTouch = function() {
+MageStudios.TID.Scene_Map_processMapTouch = Scene_Map.prototype.processMapTouch;
+Scene_Map.prototype.processMapTouch = function () {
   if (!MageStudios.Param.InputDisabler.MapMove) return;
   MageStudios.TID.Scene_Map_processMapTouch.call(this);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

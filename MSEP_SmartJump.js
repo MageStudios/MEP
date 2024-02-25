@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Smart Jump
-// MSEP_SmartJump.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SmartJump = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Jump = MageStudios.Jump || {};
-MageStudios.Jump.version = 1.00
+MageStudios.Jump.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Adds a plugin command that enables smart jumping
  * where the player cannot jump into illegal areas.
  * @author Mage Studios Engine Plugins
@@ -122,60 +116,55 @@ MageStudios.Jump.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_SmartJump');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SmartJump");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.JumpIllegalRegion = String(MageStudios.Parameters['Illegal Regions']);
-MageStudios.Param.JumpEqualRegion = String(MageStudios.Parameters['Equal Regions']);
+MageStudios.Param.JumpIllegalRegion = String(
+  MageStudios.Parameters["Illegal Regions"]
+);
+MageStudios.Param.JumpEqualRegion = String(
+  MageStudios.Parameters["Equal Regions"]
+);
 
-MageStudios.createSmartJumpRegions = function() {
-    var regions = MageStudios.Param.JumpIllegalRegion.split(' ');
-    var length = regions.length;
-    MageStudios.Param.JumpIllegalRegion = [];
-    for (var i = 0; i < length; ++i) {
-      MageStudios.Param.JumpIllegalRegion[i] = parseInt(regions[i]);
-    }
+MageStudios.createSmartJumpRegions = function () {
+  var regions = MageStudios.Param.JumpIllegalRegion.split(" ");
+  var length = regions.length;
+  MageStudios.Param.JumpIllegalRegion = [];
+  for (var i = 0; i < length; ++i) {
+    MageStudios.Param.JumpIllegalRegion[i] = parseInt(regions[i]);
+  }
 
-    var data = JSON.parse(MageStudios.Parameters['Illegal Regions List'] || '[]');
-    var length = data.length;
-    for (var i = 0; i < length; ++i) {
-      MageStudios.Param.JumpIllegalRegion.push(parseInt(data[i]));
-    }
+  var data = JSON.parse(MageStudios.Parameters["Illegal Regions List"] || "[]");
+  var length = data.length;
+  for (var i = 0; i < length; ++i) {
+    MageStudios.Param.JumpIllegalRegion.push(parseInt(data[i]));
+  }
 
-    var regions = MageStudios.Param.JumpEqualRegion.split(' ');
-    var length = regions.length;
-    MageStudios.Param.JumpEqualRegion = [];
-    for (var i = 0; i < length; ++i) {
-      MageStudios.Param.JumpEqualRegion[i] = parseInt(regions[i]);
-    }
+  var regions = MageStudios.Param.JumpEqualRegion.split(" ");
+  var length = regions.length;
+  MageStudios.Param.JumpEqualRegion = [];
+  for (var i = 0; i < length; ++i) {
+    MageStudios.Param.JumpEqualRegion[i] = parseInt(regions[i]);
+  }
 
-    var data = JSON.parse(MageStudios.Parameters['Equal Regions List'] || '[]');
-    var length = data.length;
-    for (var i = 0; i < length; ++i) {
-      MageStudios.Param.JumpEqualRegion.push(parseInt(data[i]));
-    }
+  var data = JSON.parse(MageStudios.Parameters["Equal Regions List"] || "[]");
+  var length = data.length;
+  for (var i = 0; i < length; ++i) {
+    MageStudios.Param.JumpEqualRegion.push(parseInt(data[i]));
+  }
 };
 
 MageStudios.createSmartJumpRegions();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.Jump.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-    if (!MageStudios.Jump.DataManager_isDatabaseLoaded.call(this)) return false;
-    this.processJumpNotetags1($dataTilesets);
-    return true;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.Jump.DataManager_isDatabaseLoaded.call(this)) return false;
+  this.processJumpNotetags1($dataTilesets);
+  return true;
 };
 
-DataManager.processJumpNotetags1 = function(group) {
+DataManager.processJumpNotetags1 = function (group) {
   var note1a = /<(?:ILLEGAL JUMP):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
   var note1b = /<(?:ILLEGAL JUMP):[ ](\d+)[ ](?:THROUGH|to)[ ](\d+)>/i;
   for (var n = 1; n < group.length; n++) {
@@ -187,18 +176,20 @@ DataManager.processJumpNotetags1 = function(group) {
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(note1a)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         obj.illegalJumpTag = obj.illegalJumpTag.concat(array);
       } else if (line.match(note1b)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         obj.illegalJumpTag = obj.illegalJumpTag.concat(range);
       }
     }
   }
 };
 
-DataManager.processJumpNotetags2 = function(obj) {
+DataManager.processJumpNotetags2 = function (obj) {
   var notedata = obj.note.split(/[\r\n]+/);
   obj.illegalJump = false;
   for (var i = 0; i < notedata.length; i++) {
@@ -209,186 +200,166 @@ DataManager.processJumpNotetags2 = function(obj) {
   }
 };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
-Game_CharacterBase.prototype.smartJump = function(distance) {
-    if (distance === 0) return this.jump(0, 0);
-    this.setupSmartJump(this.getSmartJumpDistance(distance));
+Game_CharacterBase.prototype.smartJump = function (distance) {
+  if (distance === 0) return this.jump(0, 0);
+  this.setupSmartJump(this.getSmartJumpDistance(distance));
 };
 
-Game_CharacterBase.prototype.setupSmartJump = function(distance) {
-    if (this._direction === 2) {
-      this.jump(0, distance);
-    } else if (this._direction === 4) {
-      this.jump(-distance, 0);
-    } else if (this._direction === 6) {
-      this.jump(distance, 0);
-    } else if (this._direction === 8) {
-      this.jump(0, -distance);
-    }
+Game_CharacterBase.prototype.setupSmartJump = function (distance) {
+  if (this._direction === 2) {
+    this.jump(0, distance);
+  } else if (this._direction === 4) {
+    this.jump(-distance, 0);
+  } else if (this._direction === 6) {
+    this.jump(distance, 0);
+  } else if (this._direction === 8) {
+    this.jump(0, -distance);
+  }
 };
 
-Game_CharacterBase.prototype.getSmartJumpDistance = function(distance) {
-    if (this._direction === 2) {
-      for (var i = 0; i < distance; ++i) {
-        if (this.isSmartJumpIllegalRegion(this.x, this.y + i + 1)) {
-          distance = i;
-          break;
-        }
-      }
-    } else if (this._direction === 4) {
-      for (var i = 0; i < distance; ++i) {
-        if (this.isSmartJumpIllegalRegion(this.x - i - 1, this.y)) {
-          distance = i;
-          break;
-        }
-      }
-    } else if (this._direction === 6) {
-      for (var i = 0; i < distance; ++i) {
-        if (this.isSmartJumpIllegalRegion(this.x + i + 1, this.y)) {
-          distance = i;
-          break;
-        }
-      }
-    } else if (this._direction === 8) {
-      for (var i = 0; i < distance; ++i) {
-        if (this.isSmartJumpIllegalRegion(this.x, this.y - i - 1)) {
-          distance = i;
-          break;
-        }
+Game_CharacterBase.prototype.getSmartJumpDistance = function (distance) {
+  if (this._direction === 2) {
+    for (var i = 0; i < distance; ++i) {
+      if (this.isSmartJumpIllegalRegion(this.x, this.y + i + 1)) {
+        distance = i;
+        break;
       }
     }
-    return this.calcSmartJumpDistance(distance);
+  } else if (this._direction === 4) {
+    for (var i = 0; i < distance; ++i) {
+      if (this.isSmartJumpIllegalRegion(this.x - i - 1, this.y)) {
+        distance = i;
+        break;
+      }
+    }
+  } else if (this._direction === 6) {
+    for (var i = 0; i < distance; ++i) {
+      if (this.isSmartJumpIllegalRegion(this.x + i + 1, this.y)) {
+        distance = i;
+        break;
+      }
+    }
+  } else if (this._direction === 8) {
+    for (var i = 0; i < distance; ++i) {
+      if (this.isSmartJumpIllegalRegion(this.x, this.y - i - 1)) {
+        distance = i;
+        break;
+      }
+    }
+  }
+  return this.calcSmartJumpDistance(distance);
 };
 
-Game_CharacterBase.prototype.isSmartJumpIllegalRegion = function(x, y) {
-    if (x < 0 || y < 0) return true;
-    if (x > $gameMap.width() - 1 || y > $gameMap.height() - 1) return true;
-    if (this.isThrough()) return false;
-    var regionId = $gameMap.regionId(x, y);
-    if (MageStudios.Param.JumpEqualRegion.contains(regionId)) {
-      if (this.regionId() === regionId) return false;
-    }
-    if (regionId > 0 && MageStudios.Param.JumpIllegalRegion.contains(regionId)) {
-      return true;
-    }
-    var tileset = $gameMap.tileset();
-    if (tileset && tileset.illegalJumpTag.contains($gameMap.terrainTag(x, y))) {
-      return true;
-    }
-    var events = $gameMap.eventsXy(x, y);
-    var length = events.length;
-    for (var i = 0; i < length; ++i) {
-      var ev = events[i];
-      if (!ev) continue;
-      if (ev.isThrough()) continue;
-      if (ev.isSmartJumpBlocked()) return true;
-    }
-    return false;
+Game_CharacterBase.prototype.isSmartJumpIllegalRegion = function (x, y) {
+  if (x < 0 || y < 0) return true;
+  if (x > $gameMap.width() - 1 || y > $gameMap.height() - 1) return true;
+  if (this.isThrough()) return false;
+  var regionId = $gameMap.regionId(x, y);
+  if (MageStudios.Param.JumpEqualRegion.contains(regionId)) {
+    if (this.regionId() === regionId) return false;
+  }
+  if (regionId > 0 && MageStudios.Param.JumpIllegalRegion.contains(regionId)) {
+    return true;
+  }
+  var tileset = $gameMap.tileset();
+  if (tileset && tileset.illegalJumpTag.contains($gameMap.terrainTag(x, y))) {
+    return true;
+  }
+  var events = $gameMap.eventsXy(x, y);
+  var length = events.length;
+  for (var i = 0; i < length; ++i) {
+    var ev = events[i];
+    if (!ev) continue;
+    if (ev.isThrough()) continue;
+    if (ev.isSmartJumpBlocked()) return true;
+  }
+  return false;
 };
 
-Game_CharacterBase.prototype.calcSmartJumpDistance = function(distance) {
-    var max = distance;
-    var value = 0;
-    if (this._direction === 2) {
-      for (var i = 0; i < max; ++i) {
-        if (this.isSmartJumpValid(this.x, this.y + max - i)) {
-          value = max - i;
-          break;
-        }
-      }
-    } else if (this._direction === 4) {
-      for (var i = 0; i < max; ++i) {
-        if (this.isSmartJumpValid(this.x - max + i, this.y)) {
-          value = max - i;
-          break;
-        }
-      }
-    } else if (this._direction === 6) {
-      for (var i = 0; i < max; ++i) {
-        if (this.isSmartJumpValid(this.x + max - i, this.y)) {
-          value = max - i;
-          break;
-        }
-      }
-    } else if (this._direction === 8) {
-      for (var i = 0; i < max; ++i) {
-        if (this.isSmartJumpValid(this.x, this.y - max + i)) {
-          value = max - i;
-          break;
-        }
+Game_CharacterBase.prototype.calcSmartJumpDistance = function (distance) {
+  var max = distance;
+  var value = 0;
+  if (this._direction === 2) {
+    for (var i = 0; i < max; ++i) {
+      if (this.isSmartJumpValid(this.x, this.y + max - i)) {
+        value = max - i;
+        break;
       }
     }
-    return value;
+  } else if (this._direction === 4) {
+    for (var i = 0; i < max; ++i) {
+      if (this.isSmartJumpValid(this.x - max + i, this.y)) {
+        value = max - i;
+        break;
+      }
+    }
+  } else if (this._direction === 6) {
+    for (var i = 0; i < max; ++i) {
+      if (this.isSmartJumpValid(this.x + max - i, this.y)) {
+        value = max - i;
+        break;
+      }
+    }
+  } else if (this._direction === 8) {
+    for (var i = 0; i < max; ++i) {
+      if (this.isSmartJumpValid(this.x, this.y - max + i)) {
+        value = max - i;
+        break;
+      }
+    }
+  }
+  return value;
 };
 
-Game_CharacterBase.prototype.isSmartJumpValid = function(x, y) {
-    if (this.isThrough()) return true;
-    var events = $gameMap.eventsXyNt(x, y);
-    var length = events.length;
-    var regionId = $gameMap.regionId(x, y);
-    if (MageStudios.Param.JumpEqualRegion.contains(regionId)) {
-      if (this.regionId() !== regionId) return false;
-    }
-    for (var i = 0; i < length; ++i) {
-      var ev = events[i];
-      if (!ev) continue;
-      if (ev.isThrough()) continue;
-      if (ev.isNormalPriority()) return false;
-      if (ev.isSmartJumpBlocked()) return false;
-    }
-    var regionId = $gameMap.regionId(x, y);
-    if (regionId > 0 && MageStudios.Param.JumpEqualRegion.contains(regionId)) {
-      if (this.regionId() === regionId) return true;
-    }
-    return $gameMap.isPassable(x, y, this._direction);
+Game_CharacterBase.prototype.isSmartJumpValid = function (x, y) {
+  if (this.isThrough()) return true;
+  var events = $gameMap.eventsXyNt(x, y);
+  var length = events.length;
+  var regionId = $gameMap.regionId(x, y);
+  if (MageStudios.Param.JumpEqualRegion.contains(regionId)) {
+    if (this.regionId() !== regionId) return false;
+  }
+  for (var i = 0; i < length; ++i) {
+    var ev = events[i];
+    if (!ev) continue;
+    if (ev.isThrough()) continue;
+    if (ev.isNormalPriority()) return false;
+    if (ev.isSmartJumpBlocked()) return false;
+  }
+  var regionId = $gameMap.regionId(x, y);
+  if (regionId > 0 && MageStudios.Param.JumpEqualRegion.contains(regionId)) {
+    if (this.regionId() === regionId) return true;
+  }
+  return $gameMap.isPassable(x, y, this._direction);
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
+MageStudios.Jump.Game_Event_setupPageSettings =
+  Game_Event.prototype.setupPageSettings;
+Game_Event.prototype.setupPageSettings = function () {
+  MageStudios.Jump.Game_Event_setupPageSettings.call(this);
+  DataManager.processJumpNotetags2(this.event());
+};
 
-MageStudios.Jump.Game_Event_setupPageSettings = 
-    Game_Event.prototype.setupPageSettings;
-Game_Event.prototype.setupPageSettings = function() {
-    MageStudios.Jump.Game_Event_setupPageSettings.call(this);
+Game_Event.prototype.isSmartJumpBlocked = function () {
+  if (this.event().illegalJump === undefined) {
     DataManager.processJumpNotetags2(this.event());
+  }
+  return this.event().illegalJump;
 };
-
-Game_Event.prototype.isSmartJumpBlocked = function() {
-    if (this.event().illegalJump === undefined) {
-      DataManager.processJumpNotetags2(this.event());
-    }
-    return this.event().illegalJump;
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.Jump.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.Jump.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'SmartJump') {
+  if (command === "SmartJump") {
     $gamePlayer.smartJump(parseInt(args[0]));
   }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.getRange = function(n, m) {
-    var result = [];
-    for (var i = n; i <= m; ++i) result.push(i);
-    return result;
+MageStudios.Util.getRange = function (n, m) {
+  var result = [];
+  for (var i = n; i <= m; ++i) result.push(i);
+  return result;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

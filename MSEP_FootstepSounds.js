@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Footstep Sounds
-// MSEP_FootstepSounds.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_FootstepSounds = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Footsteps = MageStudios.Footsteps || {};
-MageStudios.Footsteps.version = 1.00;
+MageStudios.Footsteps.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Set footstep sounds to play when the player and/or
  * events walk over specific tiles.
  * @author Mage Studios Engine Plugins + Chickie Collaboration
@@ -219,39 +213,32 @@ MageStudios.Footsteps.version = 1.00;
  *   DisableFootsteps
  *   - Turns off footstep sounds.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_FootstepSounds');
+MageStudios.Parameters = PluginManager.parameters("MSEP_FootstepSounds");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.Footsteps = {
-  defaultSound:   String(MageStudios.Parameters['Default Sound']),
-  defaultVolume:  Number(MageStudios.Parameters['Default Volume']),
-  defaultPitch:   Number(MageStudios.Parameters['Default Pitch']),
+  defaultSound: String(MageStudios.Parameters["Default Sound"]),
+  defaultVolume: Number(MageStudios.Parameters["Default Volume"]),
+  defaultPitch: Number(MageStudios.Parameters["Default Pitch"]),
 
-  PlayerEnable:   eval(String(MageStudios.Parameters['Player Enable'])),
-  PlayerVolume:   parseFloat(MageStudios.Parameters['Player Volume']),
-  PlayerPitch:    parseFloat(MageStudios.Parameters['Player Pitch']),
+  PlayerEnable: eval(String(MageStudios.Parameters["Player Enable"])),
+  PlayerVolume: parseFloat(MageStudios.Parameters["Player Volume"]),
+  PlayerPitch: parseFloat(MageStudios.Parameters["Player Pitch"]),
 
-  EventEnable:    eval(String(MageStudios.Parameters['Event Enable'])),
-  EventVolume:    parseFloat(MageStudios.Parameters['Event Volume']),
-  DistanceVolume: parseFloat(MageStudios.Parameters['Distance Volume']),
-  EventPitch:     parseFloat(MageStudios.Parameters['Event Pitch']),
-  DistancePitch:  parseFloat(MageStudios.Parameters['Distance Pitch']),
-  DistancePan:    parseInt(MageStudios.Parameters['Distance Pan'])
+  EventEnable: eval(String(MageStudios.Parameters["Event Enable"])),
+  EventVolume: parseFloat(MageStudios.Parameters["Event Volume"]),
+  DistanceVolume: parseFloat(MageStudios.Parameters["Distance Volume"]),
+  EventPitch: parseFloat(MageStudios.Parameters["Event Pitch"]),
+  DistancePitch: parseFloat(MageStudios.Parameters["Distance Pitch"]),
+  DistancePan: parseInt(MageStudios.Parameters["Distance Pan"]),
 };
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.Footsteps.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.Footsteps.DataManager_isDatabaseLoaded.call(this)) return false;
+MageStudios.Footsteps.DataManager_isDatabaseLoaded =
+  DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.Footsteps.DataManager_isDatabaseLoaded.call(this))
+    return false;
   if (!MageStudios._loaded_MSEP_FootstepSounds) {
     this.processFootstepNotetags($dataTilesets);
     MageStudios._loaded_MSEP_FootstepSounds = true;
@@ -259,30 +246,30 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processFootstepNotetags = function(group) {
+DataManager.processFootstepNotetags = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.terrainTagFootstepSounds = {
       0: [
-        MageStudios.Param.Footsteps.defaultSound, 
-        MageStudios.Param.Footsteps.defaultVolume, 
-        MageStudios.Param.Footsteps.defaultPitch
-      ]
+        MageStudios.Param.Footsteps.defaultSound,
+        MageStudios.Param.Footsteps.defaultVolume,
+        MageStudios.Param.Footsteps.defaultPitch,
+      ],
     };
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<TERRAIN[ ]TAG[ ](\d+)[ ]FOOTSTEP SOUND:[ ](.*)>/i)) {
         var tagId = parseInt(RegExp.$1).clamp(1, 7);
-        var footstepData = String(RegExp.$2).split(',');
+        var footstepData = String(RegExp.$2).split(",");
         footstepData[0] = footstepData[0].trim();
-        footstepData[1] = footstepData[1] ||
-          MageStudios.Param.Footsteps.defaultVolume;
+        footstepData[1] =
+          footstepData[1] || MageStudios.Param.Footsteps.defaultVolume;
         footstepData[1] = parseInt(footstepData[1]);
-        footstepData[2] = footstepData[2] ||
-          MageStudios.Param.Footsteps.defaultPitch;
+        footstepData[2] =
+          footstepData[2] || MageStudios.Param.Footsteps.defaultPitch;
         footstepData[2] = parseInt(footstepData[2]);
         obj.terrainTagFootstepSounds[tagId] = footstepData;
       }
@@ -290,15 +277,15 @@ DataManager.processFootstepNotetags = function(group) {
   }
 };
 
-DataManager.processMapFootstepNotetags = function() {
+DataManager.processMapFootstepNotetags = function () {
   if (!$dataMap) return;
 
   $dataMap.regionFootstepSounds = {
     0: [
-      MageStudios.Param.Footsteps.defaultSound, 
-      MageStudios.Param.Footsteps.defaultVolume, 
-      MageStudios.Param.Footsteps.defaultPitch
-    ]
+      MageStudios.Param.Footsteps.defaultSound,
+      MageStudios.Param.Footsteps.defaultVolume,
+      MageStudios.Param.Footsteps.defaultPitch,
+    ],
   };
 
   if (!$dataMap.note) return;
@@ -307,96 +294,86 @@ DataManager.processMapFootstepNotetags = function() {
     var line = notedata[i];
     if (line.match(/<REGION[ ](\d+)[ ]FOOTSTEP SOUND:[ ](.*)>/i)) {
       var regionId = parseInt(RegExp.$1).clamp(0, 255);
-      var footstepData = String(RegExp.$2).split(',');
+      var footstepData = String(RegExp.$2).split(",");
       footstepData[0] = footstepData[0].trim();
-      footstepData[1] = footstepData[1] || MageStudios.Param.Footsteps.defaultVolume;
+      footstepData[1] =
+        footstepData[1] || MageStudios.Param.Footsteps.defaultVolume;
       footstepData[1] = parseInt(footstepData[1]);
-      footstepData[2] = footstepData[2] || MageStudios.Param.Footsteps.defaultPitch;
+      footstepData[2] =
+        footstepData[2] || MageStudios.Param.Footsteps.defaultPitch;
       footstepData[2] = parseInt(footstepData[2]);
       $dataMap.regionFootstepSounds[regionId] = footstepData;
     }
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.Footsteps.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.Footsteps.Game_System_initialize.call(this);
   this.initFootstepSettings();
 };
 
-Game_System.prototype.initFootstepSettings = function() {
+Game_System.prototype.initFootstepSettings = function () {
   this._footstepsEnabled = true;
 };
 
-Game_System.prototype.canHearFootsteps = function() {
+Game_System.prototype.canHearFootsteps = function () {
   if (this._footstepsEnabled === undefined) this.initFootstepSettings();
   return this._footstepsEnabled;
 };
 
-Game_System.prototype.setHearFootsteps = function(value) {
+Game_System.prototype.setHearFootsteps = function (value) {
   if (this._footstepsEnabled === undefined) this.initFootstepSettings();
   this._footstepsEnabled = value;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.Footsteps.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.Footsteps.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'EnableFootsteps') {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.Footsteps.Game_Interpreter_pluginCommand.call(
+    this,
+    command,
+    args
+  );
+  if (command === "EnableFootsteps") {
     $gameSystem.setHearFootsteps(true);
-  } else if (command === 'DisableFootsteps') {
+  } else if (command === "DisableFootsteps") {
     $gameSystem.setHearFootsteps(false);
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.FootstepsGame_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
+Game_Map.prototype.setup = function (mapId) {
   if ($dataMap) DataManager.processMapFootstepNotetags();
   MageStudios.FootstepsGame_Map_setup.call(this, mapId);
 };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
 MageStudios.Footsteps.Game_CharacterBase_increaseSteps =
   Game_CharacterBase.prototype.increaseSteps;
-Game_CharacterBase.prototype.increaseSteps = function() {
+Game_CharacterBase.prototype.increaseSteps = function () {
   MageStudios.Footsteps.Game_CharacterBase_increaseSteps.call(this);
   if (this !== $gamePlayer) {
     this.processFootstepSound();
   }
 };
 
-Game_CharacterBase.prototype.canPlayFootsteps = function() {
+Game_CharacterBase.prototype.canPlayFootsteps = function () {
   if (!$gameSystem.canHearFootsteps()) return false;
   if (this._canPlayFootsteps !== undefined) return this._canPlayFootsteps;
   this._canPlayFootsteps = MageStudios.Param.Footsteps.EventEnable;
   return this._canPlayFootsteps;
 };
 
-Game_CharacterBase.prototype.processFootstepSound = function() {
+Game_CharacterBase.prototype.processFootstepSound = function () {
   if (this.canPlayFootsteps() && $gameSystem.canHearFootsteps()) {
     var player = $gamePlayer;
     var distance = $gameMap.distance(this.x, this.y, player.x, player.y);
@@ -407,10 +384,10 @@ Game_CharacterBase.prototype.processFootstepSound = function() {
     var pan = 0;
     pan -= $gameMap.deltaX(this.x, player.x);
     this.playFootstepSound(volume, pitch, pan);
-  };
+  }
 };
 
-Game_CharacterBase.prototype.playFootstepSound = function(volume, pitch, pan) {
+Game_CharacterBase.prototype.playFootstepSound = function (volume, pitch, pan) {
   if (volume <= 0) return;
   if (pitch <= 0) return;
   if (!$dataMap) return;
@@ -427,7 +404,7 @@ Game_CharacterBase.prototype.playFootstepSound = function(volume, pitch, pan) {
   } else if (this.y === 8) {
     y -= 1;
   }
-  var regionId = $gameMap.regionId(x, y)
+  var regionId = $gameMap.regionId(x, y);
   var terrainTag = $gameMap.terrainTag(x, y);
   if (regionId > 0) {
     var footstepData = $dataMap.regionFootstepSounds[regionId];
@@ -437,45 +414,37 @@ Game_CharacterBase.prototype.playFootstepSound = function(volume, pitch, pan) {
   }
   if (!footstepData) footstepData = $dataMap.regionFootstepSounds[0];
   var se = {
-    name:   footstepData[0],
+    name: footstepData[0],
     volume: footstepData[1] * volume,
-    pitch:  footstepData[2] * pitch,
-    pan:    pan.clamp(-100, 100)
+    pitch: footstepData[2] * pitch,
+    pan: pan.clamp(-100, 100),
   };
   AudioManager.playSe(se);
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
 MageStudios.Footsteps.Game_Player_increaseSteps =
   Game_Player.prototype.increaseSteps;
-Game_Player.prototype.increaseSteps = function() {
+Game_Player.prototype.increaseSteps = function () {
   MageStudios.Footsteps.Game_Player_increaseSteps.call(this);
   this.processFootstepSound();
 };
 
-Game_Player.prototype.canPlayFootsteps = function() {
+Game_Player.prototype.canPlayFootsteps = function () {
   if (!$gameSystem.canHearFootsteps()) return false;
   if (!this.isNormal()) return false;
   return MageStudios.Param.Footsteps.PlayerEnable;
 };
 
-Game_Player.prototype.processFootstepSound = function() {
+Game_Player.prototype.processFootstepSound = function () {
   if (this.canPlayFootsteps()) {
     var volume = MageStudios.Param.Footsteps.PlayerVolume || 0;
     var pitch = MageStudios.Param.Footsteps.PlayerPitch || 0;
     var pan = 0;
     this.playFootstepSound(volume, pitch, pan);
-  };
+  }
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
-Game_Event.prototype.canPlayFootsteps = function() {
+Game_Event.prototype.canPlayFootsteps = function () {
   if (!$gameSystem.canHearFootsteps()) return false;
   if (this._canPlayFootsteps !== undefined) return this._canPlayFootsteps;
   this._canPlayFootsteps = MageStudios.Param.Footsteps.EventEnable;
@@ -484,15 +453,7 @@ Game_Event.prototype.canPlayFootsteps = function() {
   return this._canPlayFootsteps;
 };
 
-//=============================================================================
-// Game_Follower
-//=============================================================================
-
-Game_Follower.prototype.canPlayFootsteps = function() {
+Game_Follower.prototype.canPlayFootsteps = function () {
   if (!this.isVisible()) return false;
   return Game_Character.prototype.canPlayFootsteps.call(this);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

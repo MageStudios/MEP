@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Save Extension - New Game+
-// MSEP_X_NewGamePlus.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_NewGamePlus = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.NGP = MageStudios.NGP || {};
-MageStudios.NGP.version = 1.00;
+MageStudios.NGP.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_SaveCore.js) Allow your players to have
  * a New Game+ mode that allows carrying over save data.
  * @author Mage Studios Engine Plugins
@@ -235,350 +229,359 @@ MageStudios.NGP.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_SaveCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_NewGamePlus");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.NGPCmdText = String(MageStudios.Parameters["Command Text"]);
+  MageStudios.Param.NGPCmdHelp = String(MageStudios.Parameters["Command Help"]);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_NewGamePlus');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.NGPCmdText = String(MageStudios.Parameters['Command Text']);
-MageStudios.Param.NGPCmdHelp = String(MageStudios.Parameters['Command Help']);
-
-MageStudios.NGP.ConvertArray = function(str) {
-    var data = str.split(',');
+  MageStudios.NGP.ConvertArray = function (str) {
+    var data = str.split(",");
     var result = [];
     var length = data.length;
     for (var i = 0; i < length; ++i) {
       var line = data[i].trim();
       if (line.match(/(\d+)[ ](?:THROUGH|to)[ ](\d+)/i)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-          parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         result = result.concat(range);
       } else if (line.match(/(\d+)/i)) {
         result.push(parseInt(RegExp.$1));
       }
     }
     return result;
-};
+  };
 
-MageStudios.Param.NGPSwitches = String(MageStudios.Parameters['Carried Switches']);
-MageStudios.Param.NGPSwitches = MageStudios.NGP.ConvertArray(MageStudios.Param.NGPSwitches);
-MageStudios.Param.NGPVariables = String(MageStudios.Parameters['Carried Variables']);
-MageStudios.Param.NGPVariables = MageStudios.NGP.ConvertArray(MageStudios.Param.NGPVariables);
-MageStudios.Param.NGPPlaytime = eval(String(MageStudios.Parameters['Playtime']));
-MageStudios.Param.NGPSaveCnt = eval(String(MageStudios.Parameters['Save Count']));
-MageStudios.Param.NGPStepCnt = eval(String(MageStudios.Parameters['Step Count']));
-MageStudios.Param.NGPBattleCnt = eval(String(MageStudios.Parameters['Battle Count']));
-MageStudios.Param.NGPVictoryCnt = eval(String(MageStudios.Parameters['Victory Count']));
-MageStudios.Param.NGPEscapeCnt = eval(String(MageStudios.Parameters['Escape Count']));
+  MageStudios.Param.NGPSwitches = String(
+    MageStudios.Parameters["Carried Switches"]
+  );
+  MageStudios.Param.NGPSwitches = MageStudios.NGP.ConvertArray(
+    MageStudios.Param.NGPSwitches
+  );
+  MageStudios.Param.NGPVariables = String(
+    MageStudios.Parameters["Carried Variables"]
+  );
+  MageStudios.Param.NGPVariables = MageStudios.NGP.ConvertArray(
+    MageStudios.Param.NGPVariables
+  );
+  MageStudios.Param.NGPPlaytime = eval(
+    String(MageStudios.Parameters["Playtime"])
+  );
+  MageStudios.Param.NGPSaveCnt = eval(
+    String(MageStudios.Parameters["Save Count"])
+  );
+  MageStudios.Param.NGPStepCnt = eval(
+    String(MageStudios.Parameters["Step Count"])
+  );
+  MageStudios.Param.NGPBattleCnt = eval(
+    String(MageStudios.Parameters["Battle Count"])
+  );
+  MageStudios.Param.NGPVictoryCnt = eval(
+    String(MageStudios.Parameters["Victory Count"])
+  );
+  MageStudios.Param.NGPEscapeCnt = eval(
+    String(MageStudios.Parameters["Escape Count"])
+  );
 
-MageStudios.Param.NGPActorWhole = eval(String(MageStudios.Parameters['Copy Actor']));
-MageStudios.Param.NGPActorExp = eval(String(MageStudios.Parameters['EXP']));
-MageStudios.Param.NGPActorJp = eval(String(MageStudios.Parameters['JP']));
-MageStudios.Param.NGPActorSkills = eval(String(MageStudios.Parameters['Skills']));
+  MageStudios.Param.NGPActorWhole = eval(
+    String(MageStudios.Parameters["Copy Actor"])
+  );
+  MageStudios.Param.NGPActorExp = eval(String(MageStudios.Parameters["EXP"]));
+  MageStudios.Param.NGPActorJp = eval(String(MageStudios.Parameters["JP"]));
+  MageStudios.Param.NGPActorSkills = eval(
+    String(MageStudios.Parameters["Skills"])
+  );
 
-MageStudios.Param.NGPPartyGold = eval(String(MageStudios.Parameters['Gold']));
-MageStudios.Param.NGPPartyItems = eval(String(MageStudios.Parameters['Items']));
-MageStudios.Param.NGPPartyWeapons = eval(String(MageStudios.Parameters['Weapons']));
-MageStudios.Param.NGPPartyArmors = eval(String(MageStudios.Parameters['Armors']));
+  MageStudios.Param.NGPPartyGold = eval(String(MageStudios.Parameters["Gold"]));
+  MageStudios.Param.NGPPartyItems = eval(
+    String(MageStudios.Parameters["Items"])
+  );
+  MageStudios.Param.NGPPartyWeapons = eval(
+    String(MageStudios.Parameters["Weapons"])
+  );
+  MageStudios.Param.NGPPartyArmors = eval(
+    String(MageStudios.Parameters["Armors"])
+  );
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  MageStudios.NGP.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.NGP.DataManager_isDatabaseLoaded.call(this)) return false;
 
-MageStudios.NGP.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.NGP.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_NewGamePlus) {
+      this.processNGPNotetags1($dataActors);
+      this.processNGPNotetags1($dataItems);
+      this.processNGPNotetags1($dataWeapons);
+      this.processNGPNotetags1($dataArmors);
+      MageStudios._loaded_MSEP_X_NewGamePlus = true;
+    }
 
-  if (!MageStudios._loaded_MSEP_X_NewGamePlus) {
-    this.processNGPNotetags1($dataActors);
-    this.processNGPNotetags1($dataItems);
-    this.processNGPNotetags1($dataWeapons);
-    this.processNGPNotetags1($dataArmors);
-    MageStudios._loaded_MSEP_X_NewGamePlus = true;
-  }
-  
-  return true;
-};
+    return true;
+  };
 
-DataManager.processNGPNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processNGPNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.newGamePlusCarryOver = true;
+      obj.newGamePlusCarryOver = true;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<NO NEW GAME\+ CARRY OVER>/i)) {
-        obj.newGamePlusCarryOver = false;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<NO NEW GAME\+ CARRY OVER>/i)) {
+          obj.newGamePlusCarryOver = false;
+        }
       }
     }
-  }
-};
-
-MageStudios.NGP.DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
-DataManager.makeSavefileInfo = function() {
-  var info = MageStudios.NGP.DataManager_makeSavefileInfo.call(this);
-  info.newGamePlus = $gameSystem.isNewGamePlusEnabled();
-  return info;
-};
-
-DataManager.startNewGamePlus = function() {
-  this.prepareNewGamePlusData();
-  this.setupNewGame();
-  this.carryOverNewGamePlusData();
-};
-
-DataManager.prepareNewGamePlusData = function() {
-  var length = $gameActors._data.length;
-  for (var i = 0; i < length; ++i) {
-    var actor = $gameActors._data[i];
-    if (actor) actor.clearEquipments();
-  }
-  this._ngpData = {
-      switches:   JsonEx.makeDeepCopy($gameSwitches._data),
-     variables:   JsonEx.makeDeepCopy($gameVariables._data),
-         loops:   $gameSystem.getNewGamePlusLoops(),
-      playtime:   $gameSystem._framesOnSave,
-     savecount:   $gameSystem.saveCount(),
-     stepcount:   $gameParty.steps(),
-   battlecount:   $gameSystem._battleCount,
-  victorycount:   $gameSystem._winCount,
-   escapecount:   $gameSystem._escapeCount,
-        actors:   JsonEx.makeDeepCopy($gameActors._data),
-          gold:   $gameParty._gold,
-         items:   JsonEx.makeDeepCopy($gameParty._items),
-       weapons:   JsonEx.makeDeepCopy($gameParty._weapons),
-        armors:   JsonEx.makeDeepCopy($gameParty._armors)
   };
-  if (Imported.MSEP_ItemCore) {
-    if (MageStudios.Param.ItemMaxItems > 0) {
-      this._ngpData.dataItems = JsonEx.makeDeepCopy($dataItems);
+
+  MageStudios.NGP.DataManager_makeSavefileInfo = DataManager.makeSavefileInfo;
+  DataManager.makeSavefileInfo = function () {
+    var info = MageStudios.NGP.DataManager_makeSavefileInfo.call(this);
+    info.newGamePlus = $gameSystem.isNewGamePlusEnabled();
+    return info;
+  };
+
+  DataManager.startNewGamePlus = function () {
+    this.prepareNewGamePlusData();
+    this.setupNewGame();
+    this.carryOverNewGamePlusData();
+  };
+
+  DataManager.prepareNewGamePlusData = function () {
+    var length = $gameActors._data.length;
+    for (var i = 0; i < length; ++i) {
+      var actor = $gameActors._data[i];
+      if (actor) actor.clearEquipments();
     }
-    if (MageStudios.Param.ItemMaxWeapons > 0) {
-      this._ngpData.dataWeapons = JsonEx.makeDeepCopy($dataWeapons);
+    this._ngpData = {
+      switches: JsonEx.makeDeepCopy($gameSwitches._data),
+      variables: JsonEx.makeDeepCopy($gameVariables._data),
+      loops: $gameSystem.getNewGamePlusLoops(),
+      playtime: $gameSystem._framesOnSave,
+      savecount: $gameSystem.saveCount(),
+      stepcount: $gameParty.steps(),
+      battlecount: $gameSystem._battleCount,
+      victorycount: $gameSystem._winCount,
+      escapecount: $gameSystem._escapeCount,
+      actors: JsonEx.makeDeepCopy($gameActors._data),
+      gold: $gameParty._gold,
+      items: JsonEx.makeDeepCopy($gameParty._items),
+      weapons: JsonEx.makeDeepCopy($gameParty._weapons),
+      armors: JsonEx.makeDeepCopy($gameParty._armors),
+    };
+    if (Imported.MSEP_ItemCore) {
+      if (MageStudios.Param.ItemMaxItems > 0) {
+        this._ngpData.dataItems = JsonEx.makeDeepCopy($dataItems);
+      }
+      if (MageStudios.Param.ItemMaxWeapons > 0) {
+        this._ngpData.dataWeapons = JsonEx.makeDeepCopy($dataWeapons);
+      }
+      if (MageStudios.Param.ItemMaxArmors > 0) {
+        this._ngpData.dataArmors = JsonEx.makeDeepCopy($dataArmors);
+      }
+      this._ngpData.dmItems = JsonEx.makeDeepCopy(this._independentItems);
+      this._ngpData.dmWeapons = JsonEx.makeDeepCopy(this._independentWeapons);
+      this._ngpData.dmArmors = JsonEx.makeDeepCopy(this._independentArmors);
     }
-    if (MageStudios.Param.ItemMaxArmors > 0) {
-      this._ngpData.dataArmors = JsonEx.makeDeepCopy($dataArmors);
+  };
+
+  DataManager.carryOverNewGamePlusData = function () {
+    this.carryOverNewGamePlusSwitches();
+    this.carryOverNewGamePlusVariables();
+    this.carryOverNewGamePlusSystemData();
+    this.carryOverNewGamePlusActors();
+    this.carryOverNewGamePlusPartyData();
+  };
+
+  DataManager.carryOverNewGamePlusSwitches = function () {
+    var length = MageStudios.Param.NGPSwitches.length;
+    for (var i = 0; i < length; ++i) {
+      var id = MageStudios.Param.NGPSwitches[i];
+      if (id <= 0) continue;
+      $gameSwitches.setValue(id, this._ngpData.switches[id]);
     }
-    this._ngpData.dmItems = JsonEx.makeDeepCopy(this._independentItems);
-    this._ngpData.dmWeapons = JsonEx.makeDeepCopy(this._independentWeapons);
-    this._ngpData.dmArmors = JsonEx.makeDeepCopy(this._independentArmors);
-  }
-};
+  };
 
-DataManager.carryOverNewGamePlusData = function() {
-  this.carryOverNewGamePlusSwitches();
-  this.carryOverNewGamePlusVariables();
-  this.carryOverNewGamePlusSystemData();
-  this.carryOverNewGamePlusActors();
-  this.carryOverNewGamePlusPartyData();
-};
-
-DataManager.carryOverNewGamePlusSwitches = function() {
-  var length = MageStudios.Param.NGPSwitches.length;
-  for (var i = 0; i < length; ++i) {
-    var id = MageStudios.Param.NGPSwitches[i];
-    if (id <= 0) continue;
-    $gameSwitches.setValue(id, this._ngpData.switches[id]);
-  }
-};
-
-DataManager.carryOverNewGamePlusVariables = function() {
-  var length = MageStudios.Param.NGPVariables.length;
-  for (var i = 0; i < length; ++i) {
-    var id = MageStudios.Param.NGPVariables[i];
-    if (id <= 0) continue;
-    $gameVariables.setValue(id, this._ngpData.variables[id]);
-  }
-};
-
-DataManager.carryOverNewGamePlusSystemData = function() {
-  $gameSystem.setNewGamePlusLoops(this._ngpData.loops + 1);
-  $gameSystem.setNewGamePlusLoaded(true);
-  // Playtime
-  if (MageStudios.Param.NGPPlaytime) {
-    $gameSystem._framesOnSave = this._ngpData.playtime;
-    Graphics.frameCount = this._ngpData.playtime;
-  }
-  // Save Count
-  if (MageStudios.Param.NGPSaveCnt) {
-    $gameSystem._saveCount = this._ngpData.savecount;
-  }
-  // Step Count
-  if (MageStudios.Param.NGPStepCnt) {
-    $gameParty._steps = this._ngpData.stepcount;
-  }
-  // Battle Count
-  if (MageStudios.Param.NGPBattleCnt) {
-    $gameSystem._battleCount = this._ngpData.battlecount;
-  }
-  // Victory Count
-  if (MageStudios.Param.NGPVictoryCnt) {
-    $gameSystem._winCount = this._ngpData.victorycount;
-  }
-  // Escape Count
-  if (MageStudios.Param.NGPEscapeCnt) {
-    $gameSystem._escapeCount = this._ngpData.escapecount;
-  }
-};
-
-DataManager.carryOverNewGamePlusActors = function() {
-  var length = $gameActors._data.length;
-  for (var id = 0; id < length; ++id) {
-    var actor = $gameActors.actor(id);
-    if (actor) {
-      actor = this.copyNewGamePlusActorData(actor, id);
-      actor.newGamePlusRefresh();
+  DataManager.carryOverNewGamePlusVariables = function () {
+    var length = MageStudios.Param.NGPVariables.length;
+    for (var i = 0; i < length; ++i) {
+      var id = MageStudios.Param.NGPVariables[i];
+      if (id <= 0) continue;
+      $gameVariables.setValue(id, this._ngpData.variables[id]);
     }
-  }
-};
+  };
 
-DataManager.copyNewGamePlusActorData = function(actor, id) {
-  if (!actor.actor().newGamePlusCarryOver) return actor;
-  // Copy Actor
-  if (MageStudios.Param.NGPActorWhole) {
-    $gameActors._data[id] = JsonEx.makeDeepCopy(this._ngpData.actors[id]);
-    actor = $gameActors._data[id];
-  }
-  // EXP
-  if (MageStudios.Param.NGPActorExp) {
-    actor._exp = JsonEx.makeDeepCopy(this._ngpData.actors[id]._exp);
-    actor.newGamePlusAdjustLevel();
-  } else {
-    actor._exp = {};
-    actor.initExp();
-  }
-  // JP
-  if (Imported.MSEP_JobPoints) {
-    if (MageStudios.Param.NGPActorJp) {
-      actor._jp = JsonEx.makeDeepCopy(this._ngpData.actors[id]._jp);
+  DataManager.carryOverNewGamePlusSystemData = function () {
+    $gameSystem.setNewGamePlusLoops(this._ngpData.loops + 1);
+    $gameSystem.setNewGamePlusLoaded(true);
+
+    if (MageStudios.Param.NGPPlaytime) {
+      $gameSystem._framesOnSave = this._ngpData.playtime;
+      Graphics.frameCount = this._ngpData.playtime;
+    }
+
+    if (MageStudios.Param.NGPSaveCnt) {
+      $gameSystem._saveCount = this._ngpData.savecount;
+    }
+
+    if (MageStudios.Param.NGPStepCnt) {
+      $gameParty._steps = this._ngpData.stepcount;
+    }
+
+    if (MageStudios.Param.NGPBattleCnt) {
+      $gameSystem._battleCount = this._ngpData.battlecount;
+    }
+
+    if (MageStudios.Param.NGPVictoryCnt) {
+      $gameSystem._winCount = this._ngpData.victorycount;
+    }
+
+    if (MageStudios.Param.NGPEscapeCnt) {
+      $gameSystem._escapeCount = this._ngpData.escapecount;
+    }
+  };
+
+  DataManager.carryOverNewGamePlusActors = function () {
+    var length = $gameActors._data.length;
+    for (var id = 0; id < length; ++id) {
+      var actor = $gameActors.actor(id);
+      if (actor) {
+        actor = this.copyNewGamePlusActorData(actor, id);
+        actor.newGamePlusRefresh();
+      }
+    }
+  };
+
+  DataManager.copyNewGamePlusActorData = function (actor, id) {
+    if (!actor.actor().newGamePlusCarryOver) return actor;
+
+    if (MageStudios.Param.NGPActorWhole) {
+      $gameActors._data[id] = JsonEx.makeDeepCopy(this._ngpData.actors[id]);
+      actor = $gameActors._data[id];
+    }
+
+    if (MageStudios.Param.NGPActorExp) {
+      actor._exp = JsonEx.makeDeepCopy(this._ngpData.actors[id]._exp);
+      actor.newGamePlusAdjustLevel();
     } else {
-      actor.initJp();
+      actor._exp = {};
+      actor.initExp();
     }
-  }
-  // Skill
-  if (MageStudios.Param.NGPActorSkills){
-    actor._skills = JsonEx.makeDeepCopy(this._ngpData.actors[id]._skills);
-  } else {
-    actor.initSkills();
-  }
-  return actor;
-};
 
-DataManager.carryOverNewGamePlusPartyData = function() {
-  // Gold
-  if (MageStudios.Param.NGPPartyGold) {
-    $gameParty._gold = this._ngpData.gold;
-  }
-  // Items
-  if (MageStudios.Param.NGPPartyItems) {
-    $gameParty._items = this._ngpData.items;
-  }
-  // Items
-  if (MageStudios.Param.NGPPartyWeapons) {
-    $gameParty._weapons = this._ngpData.weapons;
-  }
-  // Items
-  if (MageStudios.Param.NGPPartyArmors) {
-    $gameParty._armors = this._ngpData.armors;
-  }
-  // Item Core Independent Items
-  if (Imported.MSEP_ItemCore) {
-    if (MageStudios.Param.ItemMaxItems > 0) {
-      $dataItems = JsonEx.makeDeepCopy(this._ngpData.dataItems);
+    if (Imported.MSEP_JobPoints) {
+      if (MageStudios.Param.NGPActorJp) {
+        actor._jp = JsonEx.makeDeepCopy(this._ngpData.actors[id]._jp);
+      } else {
+        actor.initJp();
+      }
     }
-    if (MageStudios.Param.ItemMaxWeapons > 0) {
-      $dataWeapons = JsonEx.makeDeepCopy(this._ngpData.dataWeapons);
+
+    if (MageStudios.Param.NGPActorSkills) {
+      actor._skills = JsonEx.makeDeepCopy(this._ngpData.actors[id]._skills);
+    } else {
+      actor.initSkills();
     }
-    if (MageStudios.Param.ItemMaxArmors > 0) {
-      $dataArmors = JsonEx.makeDeepCopy(this._ngpData.dataArmors);
+    return actor;
+  };
+
+  DataManager.carryOverNewGamePlusPartyData = function () {
+    if (MageStudios.Param.NGPPartyGold) {
+      $gameParty._gold = this._ngpData.gold;
     }
-    this._independentItems = JsonEx.makeDeepCopy(this._ngpData.dmItems);
-    this._independentWeapons = JsonEx.makeDeepCopy(this._ngpData.dmWeapons);
-    this._independentArmors = JsonEx.makeDeepCopy(this._ngpData.dmArmors);
-  }
-  $gameParty.removeNewGamePlusNoCarryOverItems();
-};
 
-//=============================================================================
-// Game_System
-//=============================================================================
+    if (MageStudios.Param.NGPPartyItems) {
+      $gameParty._items = this._ngpData.items;
+    }
 
-MageStudios.NGP.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-  MageStudios.NGP.Game_System_initialize.call(this);
-  this.initNewGamePlusSettings();
-};
+    if (MageStudios.Param.NGPPartyWeapons) {
+      $gameParty._weapons = this._ngpData.weapons;
+    }
 
-Game_System.prototype.initNewGamePlusSettings = function() {
-  this._newGamePlusEnabled = false;
-  this._newGamePlusLoops = 0;
-  this._newGamePlusLoaded = false;
-};
+    if (MageStudios.Param.NGPPartyArmors) {
+      $gameParty._armors = this._ngpData.armors;
+    }
 
-Game_System.prototype.isNewGamePlusEnabled = function() {
-  if (this._newGamePlusEnabled === undefined) this.initNewGamePlusSettings();
-  return this._newGamePlusEnabled;
-};
+    if (Imported.MSEP_ItemCore) {
+      if (MageStudios.Param.ItemMaxItems > 0) {
+        $dataItems = JsonEx.makeDeepCopy(this._ngpData.dataItems);
+      }
+      if (MageStudios.Param.ItemMaxWeapons > 0) {
+        $dataWeapons = JsonEx.makeDeepCopy(this._ngpData.dataWeapons);
+      }
+      if (MageStudios.Param.ItemMaxArmors > 0) {
+        $dataArmors = JsonEx.makeDeepCopy(this._ngpData.dataArmors);
+      }
+      this._independentItems = JsonEx.makeDeepCopy(this._ngpData.dmItems);
+      this._independentWeapons = JsonEx.makeDeepCopy(this._ngpData.dmWeapons);
+      this._independentArmors = JsonEx.makeDeepCopy(this._ngpData.dmArmors);
+    }
+    $gameParty.removeNewGamePlusNoCarryOverItems();
+  };
 
-Game_System.prototype.setNewGamePlusEnabled = function(value) {
-  if (this._newGamePlusEnabled === undefined) this.initNewGamePlusSettings();
-  this._newGamePlusEnabled = value;
-};
+  MageStudios.NGP.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    MageStudios.NGP.Game_System_initialize.call(this);
+    this.initNewGamePlusSettings();
+  };
 
-Game_System.prototype.getNewGamePlusLoops = function() {
-  if (this._newGamePlusLoops === undefined) this.initNewGamePlusSettings();
-  return this._newGamePlusLoops;
-};
+  Game_System.prototype.initNewGamePlusSettings = function () {
+    this._newGamePlusEnabled = false;
+    this._newGamePlusLoops = 0;
+    this._newGamePlusLoaded = false;
+  };
 
-Game_System.prototype.setNewGamePlusLoops = function(value) {
-  if (this._newGamePlusLoops === undefined) this.initNewGamePlusSettings();
-  this._newGamePlusLoops = value;
-};
+  Game_System.prototype.isNewGamePlusEnabled = function () {
+    if (this._newGamePlusEnabled === undefined) this.initNewGamePlusSettings();
+    return this._newGamePlusEnabled;
+  };
 
-Game_System.prototype.isNewGamePlusLoaded = function() {
-  if (this._newGamePlusLoaded === undefined) this.initNewGamePlusSettings();
-  return this._newGamePlusLoaded;
-};
+  Game_System.prototype.setNewGamePlusEnabled = function (value) {
+    if (this._newGamePlusEnabled === undefined) this.initNewGamePlusSettings();
+    this._newGamePlusEnabled = value;
+  };
 
-Game_System.prototype.setNewGamePlusLoaded = function(value) {
-  if (this._newGamePlusLoaded === undefined) this.initNewGamePlusSettings();
-  this._newGamePlusLoaded = value;
-};
+  Game_System.prototype.getNewGamePlusLoops = function () {
+    if (this._newGamePlusLoops === undefined) this.initNewGamePlusSettings();
+    return this._newGamePlusLoops;
+  };
 
-//=============================================================================
-// Game_Actors
-//=============================================================================
+  Game_System.prototype.setNewGamePlusLoops = function (value) {
+    if (this._newGamePlusLoops === undefined) this.initNewGamePlusSettings();
+    this._newGamePlusLoops = value;
+  };
 
-Game_Actor.prototype.newGamePlusAdjustLevel = function() {
+  Game_System.prototype.isNewGamePlusLoaded = function () {
+    if (this._newGamePlusLoaded === undefined) this.initNewGamePlusSettings();
+    return this._newGamePlusLoaded;
+  };
+
+  Game_System.prototype.setNewGamePlusLoaded = function (value) {
+    if (this._newGamePlusLoaded === undefined) this.initNewGamePlusSettings();
+    this._newGamePlusLoaded = value;
+  };
+
+  Game_Actor.prototype.newGamePlusAdjustLevel = function () {
     while (!this.isMaxLevel() && this.currentExp() >= this.nextLevelExp()) {
       this.levelUp();
     }
     while (this.currentExp() < this.currentLevelExp()) {
       this.levelDown();
     }
-};
+  };
 
-Game_Actor.prototype.newGamePlusRefresh = function() {
+  Game_Actor.prototype.newGamePlusRefresh = function () {
     var actor = $dataActors[this._actorId];
     this._classId = actor.classId;
-    this.initEquips(actor.equips)
+    this.initEquips(actor.equips);
     this.refresh();
     this.recoverAll();
-};
+  };
 
-//=============================================================================
-// Game_Party
-//=============================================================================
-
-Game_Party.prototype.removeNewGamePlusNoCarryOverItems = function() {
+  Game_Party.prototype.removeNewGamePlusNoCarryOverItems = function () {
     var group = $gameParty.allItems();
     var length = group.length;
     for (var i = 0; i < length; ++i) {
@@ -592,86 +595,66 @@ Game_Party.prototype.removeNewGamePlusNoCarryOverItems = function() {
       var num = $gameParty.numItems(item);
       $gameParty.loseItem(item, num);
     }
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.NGP.Game_Interpreter_pluginCommand =
+  MageStudios.NGP.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.NGP.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'EnableNewGamePlus') {
-    $gameSystem.setNewGamePlusEnabled(true);
-  } else if (command === 'DisableNewGamePlus') {
-    $gameSystem.setNewGamePlusEnabled(false);
-  }
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.NGP.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "EnableNewGamePlus") {
+      $gameSystem.setNewGamePlusEnabled(true);
+    } else if (command === "DisableNewGamePlus") {
+      $gameSystem.setNewGamePlusEnabled(false);
+    }
+  };
 
-//=============================================================================
-// Window_SaveAction
-//=============================================================================
-
-MageStudios.NGP.Window_SaveAction_getCommandName =
+  MageStudios.NGP.Window_SaveAction_getCommandName =
     Window_SaveAction.prototype.getCommandName;
-Window_SaveAction.prototype.getCommandName = function(type) {
-    if (type === 'load' && this.isNewGamePlus()) {
+  Window_SaveAction.prototype.getCommandName = function (type) {
+    if (type === "load" && this.isNewGamePlus()) {
       return MageStudios.Param.NGPCmdText;
     }
     return MageStudios.NGP.Window_SaveAction_getCommandName.call(this, type);
-};
+  };
 
-MageStudios.NGP.Window_SaveAction_updateHelp = 
+  MageStudios.NGP.Window_SaveAction_updateHelp =
     Window_SaveAction.prototype.updateHelp;
-Window_SaveAction.prototype.updateHelp = function() {
-    if (this.currentSymbol() === 'load' && this.isNewGamePlus()) {
+  Window_SaveAction.prototype.updateHelp = function () {
+    if (this.currentSymbol() === "load" && this.isNewGamePlus()) {
       var text = MageStudios.Param.NGPCmdHelp;
       this._helpWindow.setText(text);
     } else {
       MageStudios.NGP.Window_SaveAction_updateHelp.call(this);
     }
-};
+  };
 
-Window_SaveAction.prototype.isNewGamePlus = function() {
+  Window_SaveAction.prototype.isNewGamePlus = function () {
     var id = this.savefileId();
     var data = DataManager.loadSavefileInfo(id);
-    return (data && data.newGamePlus);
-};
+    return data && data.newGamePlus;
+  };
 
-//=============================================================================
-// Scene_File
-//=============================================================================
-
-MageStudios.NGP.Scene_File_onLoadSuccess = Scene_File.prototype.onLoadSuccess;
-Scene_File.prototype.onLoadSuccess = function() {
+  MageStudios.NGP.Scene_File_onLoadSuccess = Scene_File.prototype.onLoadSuccess;
+  Scene_File.prototype.onLoadSuccess = function () {
     if (this._actionWindow.isNewGamePlus()) {
       this.startNewGamePlus();
     } else {
       MageStudios.NGP.Scene_File_onLoadSuccess.call(this);
     }
-};
+  };
 
-Scene_File.prototype.startNewGamePlus = function() {
+  Scene_File.prototype.startNewGamePlus = function () {
     SoundManager.playLoad();
     DataManager.startNewGamePlus();
     this.fadeOutAll();
     SceneManager.goto(Scene_Map);
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.getRange = function(n, m) {
+  MageStudios.Util.getRange = function (n, m) {
     var result = [];
     for (var i = n; i <= m; ++i) result.push(i);
     return result;
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Save Core
-// MSEP_SaveCore.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SaveCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Save = MageStudios.Save || {};
-MageStudios.Save.version = 1.00;
+MageStudios.Save.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Alter the save menu for a more aesthetic layout
  * and take control over the file system's rules.
  * @author Mage Studios Engine Plugins
@@ -49,7 +43,7 @@ MageStudios.Save.version = 1.00;
  * @desc Return to the previous scene after saving?
  * NO - false     YES - true     Default: true
  * @default false
- * 
+ *
  * @param Auto New Index
  * @parent ---General---
  * @type boolean
@@ -479,69 +473,115 @@ MageStudios.Save.version = 1.00;
  * save files without clashing with any other RPG Maker MV games players may
  * have played.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_SaveCore');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SaveCore");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.SaveMaxFiles = Number(MageStudios.Parameters['Max Files']);
-MageStudios.Param.SaveIconSaved = Number(MageStudios.Parameters['Saved Icon']);
-MageStudios.Param.SaveIconEmpty = Number(MageStudios.Parameters['Empty Icon']);
-MageStudios.Param.SavePop = eval(String(MageStudios.Parameters['Return After Saving']));
-MageStudios.Param.SaveAutoIndex = eval(String(MageStudios.Parameters['Auto New Index']));
+MageStudios.Param.SaveMaxFiles = Number(MageStudios.Parameters["Max Files"]);
+MageStudios.Param.SaveIconSaved = Number(MageStudios.Parameters["Saved Icon"]);
+MageStudios.Param.SaveIconEmpty = Number(MageStudios.Parameters["Empty Icon"]);
+MageStudios.Param.SavePop = eval(
+  String(MageStudios.Parameters["Return After Saving"])
+);
+MageStudios.Param.SaveAutoIndex = eval(
+  String(MageStudios.Parameters["Auto New Index"])
+);
 
-MageStudios.Param.SaveCmdLoad = String(MageStudios.Parameters['Load Command']);
-MageStudios.Param.SaveCmdSave = String(MageStudios.Parameters['Save Command']);
-MageStudios.Param.SaveCmdDelete = String(MageStudios.Parameters['Delete Command']);
+MageStudios.Param.SaveCmdLoad = String(MageStudios.Parameters["Load Command"]);
+MageStudios.Param.SaveCmdSave = String(MageStudios.Parameters["Save Command"]);
+MageStudios.Param.SaveCmdDelete = String(
+  MageStudios.Parameters["Delete Command"]
+);
 
-MageStudios.Param.SaveHelpSelect = String(MageStudios.Parameters['Select Help']);
-MageStudios.Param.SaveLoadSelect = String(MageStudios.Parameters['Load Help']);
-MageStudios.Param.SaveSaveSelect = String(MageStudios.Parameters['Save Help']);
-MageStudios.Param.SaveDeleteSelect = String(MageStudios.Parameters['Delete Help']);
+MageStudios.Param.SaveHelpSelect = String(
+  MageStudios.Parameters["Select Help"]
+);
+MageStudios.Param.SaveLoadSelect = String(MageStudios.Parameters["Load Help"]);
+MageStudios.Param.SaveSaveSelect = String(MageStudios.Parameters["Save Help"]);
+MageStudios.Param.SaveDeleteSelect = String(
+  MageStudios.Parameters["Delete Help"]
+);
 
 MageStudios.Param.SaveDeleteSound = {
-  name:   String(MageStudios.Parameters['Delete Filename']),
-  volume: Number(MageStudios.Parameters['Delete Volume']),
-  pitch:  Number(MageStudios.Parameters['Delete Pitch']),
-  pan:    Number(MageStudios.Parameters['Delete Pan'])
+  name: String(MageStudios.Parameters["Delete Filename"]),
+  volume: Number(MageStudios.Parameters["Delete Volume"]),
+  pitch: Number(MageStudios.Parameters["Delete Pitch"]),
+  pan: Number(MageStudios.Parameters["Delete Pan"]),
 };
 
-MageStudios.Param.SaveInfoTitle = String(MageStudios.Parameters['Show Game Title']);
+MageStudios.Param.SaveInfoTitle = String(
+  MageStudios.Parameters["Show Game Title"]
+);
 MageStudios.Param.SaveInfoTitle = eval(MageStudios.Param.SaveInfoTitle);
-MageStudios.Param.SaveInfoInvalid = String(MageStudios.Parameters['Invalid Game Text']);
-MageStudios.Param.SaveInfoEmpty = String(MageStudios.Parameters['Empty Game Text']);
-MageStudios.Param.SaveMapDisplayName = String(MageStudios.Parameters['Map Display Name']);
-MageStudios.Param.SaveMapDisplayName = eval(MageStudios.Param.SaveMapDisplayName);
-MageStudios.Param.SaveInfoPartyType = Number(MageStudios.Parameters['Party Display']);
-MageStudios.Param.SaveInfoPartyType = MageStudios.Param.SaveInfoPartyType.clamp(0, 3);
-MageStudios.Param.SaveInfoPartyY = String(MageStudios.Parameters['Party Y Position']);
-MageStudios.Param.SaveInfoActorName = String(MageStudios.Parameters['Show Actor Names']);
+MageStudios.Param.SaveInfoInvalid = String(
+  MageStudios.Parameters["Invalid Game Text"]
+);
+MageStudios.Param.SaveInfoEmpty = String(
+  MageStudios.Parameters["Empty Game Text"]
+);
+MageStudios.Param.SaveMapDisplayName = String(
+  MageStudios.Parameters["Map Display Name"]
+);
+MageStudios.Param.SaveMapDisplayName = eval(
+  MageStudios.Param.SaveMapDisplayName
+);
+MageStudios.Param.SaveInfoPartyType = Number(
+  MageStudios.Parameters["Party Display"]
+);
+MageStudios.Param.SaveInfoPartyType = MageStudios.Param.SaveInfoPartyType.clamp(
+  0,
+  3
+);
+MageStudios.Param.SaveInfoPartyY = String(
+  MageStudios.Parameters["Party Y Position"]
+);
+MageStudios.Param.SaveInfoActorName = String(
+  MageStudios.Parameters["Show Actor Names"]
+);
 MageStudios.Param.SaveInfoActorName = eval(MageStudios.Param.SaveInfoActorName);
-MageStudios.Param.SaveInfoActorNameSz = Number(MageStudios.Parameters['Name Font Size']);
-MageStudios.Param.SaveInfoActorLv = String(MageStudios.Parameters['Show Actor Level']);
+MageStudios.Param.SaveInfoActorNameSz = Number(
+  MageStudios.Parameters["Name Font Size"]
+);
+MageStudios.Param.SaveInfoActorLv = String(
+  MageStudios.Parameters["Show Actor Level"]
+);
 MageStudios.Param.SaveInfoActorLv = eval(MageStudios.Param.SaveInfoActorLv);
-MageStudios.Param.SaveInfoActorLvSz = Number(MageStudios.Parameters['Level Font Size']);
-MageStudios.Param.SaveInfoActorLvFmt = String(MageStudios.Parameters['Level Format']);
-MageStudios.Param.SaveInfoDataSz = Number(MageStudios.Parameters['Data Font Size']);
-MageStudios.Param.SaveInfoDataCol1 = String(MageStudios.Parameters['Data Column 1']);
-MageStudios.Param.SaveInfoDataCol1 = MageStudios.Param.SaveInfoDataCol1.split(',');
-MageStudios.Param.SaveInfoDataCol2 = String(MageStudios.Parameters['Data Column 2']);
-MageStudios.Param.SaveInfoDataCol2 = MageStudios.Param.SaveInfoDataCol2.split(',');
-MageStudios.Param.SaveInfoDataCol3 = String(MageStudios.Parameters['Data Column 3']);
-MageStudios.Param.SaveInfoDataCol3 = MageStudios.Param.SaveInfoDataCol3.split(',');
-MageStudios.Param.SaveInfoDataCol4 = String(MageStudios.Parameters['Data Column 4']);
-MageStudios.Param.SaveInfoDataCol4 = MageStudios.Param.SaveInfoDataCol4.split(',');
+MageStudios.Param.SaveInfoActorLvSz = Number(
+  MageStudios.Parameters["Level Font Size"]
+);
+MageStudios.Param.SaveInfoActorLvFmt = String(
+  MageStudios.Parameters["Level Format"]
+);
+MageStudios.Param.SaveInfoDataSz = Number(
+  MageStudios.Parameters["Data Font Size"]
+);
+MageStudios.Param.SaveInfoDataCol1 = String(
+  MageStudios.Parameters["Data Column 1"]
+);
+MageStudios.Param.SaveInfoDataCol1 =
+  MageStudios.Param.SaveInfoDataCol1.split(",");
+MageStudios.Param.SaveInfoDataCol2 = String(
+  MageStudios.Parameters["Data Column 2"]
+);
+MageStudios.Param.SaveInfoDataCol2 =
+  MageStudios.Param.SaveInfoDataCol2.split(",");
+MageStudios.Param.SaveInfoDataCol3 = String(
+  MageStudios.Parameters["Data Column 3"]
+);
+MageStudios.Param.SaveInfoDataCol3 =
+  MageStudios.Param.SaveInfoDataCol3.split(",");
+MageStudios.Param.SaveInfoDataCol4 = String(
+  MageStudios.Parameters["Data Column 4"]
+);
+MageStudios.Param.SaveInfoDataCol4 =
+  MageStudios.Param.SaveInfoDataCol4.split(",");
 
-MageStudios.trimSaveDataColumns = function(array) {
+MageStudios.trimSaveDataColumns = function (array) {
   var length = array.length;
   for (var i = 0; i < length; ++i) {
     array[i] = array[i].trim();
   }
-  if (length === 1 && array[0] === '') array.splice(0);
+  if (length === 1 && array[0] === "") array.splice(0);
 };
 
 MageStudios.trimSaveDataColumns(MageStudios.Param.SaveInfoDataCol1);
@@ -549,72 +589,99 @@ MageStudios.trimSaveDataColumns(MageStudios.Param.SaveInfoDataCol2);
 MageStudios.trimSaveDataColumns(MageStudios.Param.SaveInfoDataCol3);
 MageStudios.trimSaveDataColumns(MageStudios.Param.SaveInfoDataCol4);
 
-MageStudios.Param.SaveVocabLocation = String(MageStudios.Parameters['Map Location']);
-MageStudios.Param.SaveVocabPlaytime = String(MageStudios.Parameters['Playtime']);
-MageStudios.Param.SaveVocabSaveCount = String(MageStudios.Parameters['Save Count']);
-MageStudios.Param.SaveVocabGoldCount = String(MageStudios.Parameters['Gold Count']);
+MageStudios.Param.SaveVocabLocation = String(
+  MageStudios.Parameters["Map Location"]
+);
+MageStudios.Param.SaveVocabPlaytime = String(
+  MageStudios.Parameters["Playtime"]
+);
+MageStudios.Param.SaveVocabSaveCount = String(
+  MageStudios.Parameters["Save Count"]
+);
+MageStudios.Param.SaveVocabGoldCount = String(
+  MageStudios.Parameters["Gold Count"]
+);
 
-MageStudios.Param.SaveTechSaveMode = String(MageStudios.Parameters['Save Mode']).trim();
-MageStudios.Param.SaveTechSaveMode = MageStudios.Param.SaveTechSaveMode.toLowerCase();
-MageStudios.Param.SaveTechLocalConfig = String(MageStudios.Parameters['Local Config']);
-MageStudios.Param.SaveTechLocalGlobal = String(MageStudios.Parameters['Local Global']);
-MageStudios.Param.SaveTechLocalSave = String(MageStudios.Parameters['Local Save']);
-MageStudios.Param.SaveTechWebConfig = String(MageStudios.Parameters['Web Config']);
-MageStudios.Param.SaveTechWebGlobal = String(MageStudios.Parameters['Web Global']);
-MageStudios.Param.SaveTechWebSave = String(MageStudios.Parameters['Web Save']);
+MageStudios.Param.SaveTechSaveMode = String(
+  MageStudios.Parameters["Save Mode"]
+).trim();
+MageStudios.Param.SaveTechSaveMode =
+  MageStudios.Param.SaveTechSaveMode.toLowerCase();
+MageStudios.Param.SaveTechLocalConfig = String(
+  MageStudios.Parameters["Local Config"]
+);
+MageStudios.Param.SaveTechLocalGlobal = String(
+  MageStudios.Parameters["Local Global"]
+);
+MageStudios.Param.SaveTechLocalSave = String(
+  MageStudios.Parameters["Local Save"]
+);
+MageStudios.Param.SaveTechWebConfig = String(
+  MageStudios.Parameters["Web Config"]
+);
+MageStudios.Param.SaveTechWebGlobal = String(
+  MageStudios.Parameters["Web Global"]
+);
+MageStudios.Param.SaveTechWebSave = String(MageStudios.Parameters["Web Save"]);
 
-MageStudios.Param.SaveConfirmLoad = String(MageStudios.Parameters['Load Confirmation']);
+MageStudios.Param.SaveConfirmLoad = String(
+  MageStudios.Parameters["Load Confirmation"]
+);
 MageStudios.Param.SaveConfirmLoad = eval(MageStudios.Param.SaveConfirmLoad);
-MageStudios.Param.SaveConfirmLoadTx = String(MageStudios.Parameters['Load Text']);
-MageStudios.Param.SaveConfirmSave = String(MageStudios.Parameters['Save Confirmation']);
+MageStudios.Param.SaveConfirmLoadTx = String(
+  MageStudios.Parameters["Load Text"]
+);
+MageStudios.Param.SaveConfirmSave = String(
+  MageStudios.Parameters["Save Confirmation"]
+);
 MageStudios.Param.SaveConfirmSave = eval(MageStudios.Param.SaveConfirmSave);
-MageStudios.Param.SaveConfirmSaveTx = String(MageStudios.Parameters['Save Text']);
-MageStudios.Param.SaveConfirmDel = String(MageStudios.Parameters['Delete Confirmation']);
+MageStudios.Param.SaveConfirmSaveTx = String(
+  MageStudios.Parameters["Save Text"]
+);
+MageStudios.Param.SaveConfirmDel = String(
+  MageStudios.Parameters["Delete Confirmation"]
+);
 MageStudios.Param.SaveConfirmDel = eval(MageStudios.Param.SaveConfirmDel);
-MageStudios.Param.SaveConfirmDelTx = String(MageStudios.Parameters['Delete Text']);
-MageStudios.Param.SaveConfirmYes = String(MageStudios.Parameters['Confirm Yes']);
-MageStudios.Param.SaveConfirmNo = String(MageStudios.Parameters['Confirm No']);
+MageStudios.Param.SaveConfirmDelTx = String(
+  MageStudios.Parameters["Delete Text"]
+);
+MageStudios.Param.SaveConfirmYes = String(
+  MageStudios.Parameters["Confirm Yes"]
+);
+MageStudios.Param.SaveConfirmNo = String(MageStudios.Parameters["Confirm No"]);
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.maxSavefiles = function() {
-    return MageStudios.Param.SaveMaxFiles;
+DataManager.maxSavefiles = function () {
+  return MageStudios.Param.SaveMaxFiles;
 };
 
 MageStudios.Save.DataManager_selectSavefileForNewGame =
-    DataManager.selectSavefileForNewGame;
-DataManager.selectSavefileForNewGame = function() {
-    MageStudios.Save.DataManager_selectSavefileForNewGame.call(this);
-    if (MageStudios.Param.SaveAutoIndex) return;
-    this._lastAccessedId = 1;
+  DataManager.selectSavefileForNewGame;
+DataManager.selectSavefileForNewGame = function () {
+  MageStudios.Save.DataManager_selectSavefileForNewGame.call(this);
+  if (MageStudios.Param.SaveAutoIndex) return;
+  this._lastAccessedId = 1;
 };
 
 MageStudios.Save.DataManager_makeSaveContents = DataManager.makeSaveContents;
-DataManager.makeSaveContents = function() {
+DataManager.makeSaveContents = function () {
   var contents = MageStudios.Save.DataManager_makeSaveContents.call(this);
   contents.map.locationDisplayName = $dataMap.displayName;
   return contents;
 };
 
-//=============================================================================
-// StorageManager
-//=============================================================================
-
 MageStudios.Save.StorageManager_isLocalMode = StorageManager.isLocalMode;
-StorageManager.isLocalMode = function() {
-  if (MageStudios.Param.SaveTechSaveMode === 'local') {
+StorageManager.isLocalMode = function () {
+  if (MageStudios.Param.SaveTechSaveMode === "local") {
     if (!Utils.isNwjs()) return false;
     return true;
-  } else if (MageStudios.Param.SaveTechSaveMode === 'web') {
+  } else if (MageStudios.Param.SaveTechSaveMode === "web") {
     return false;
   } else {
     return MageStudios.Save.StorageManager_isLocalMode.call(this);
   }
 };
 
-StorageManager.localFilePath = function(savefileId) {
+StorageManager.localFilePath = function (savefileId) {
   var name;
   if (savefileId < 0) {
     name = MageStudios.Param.SaveTechLocalConfig;
@@ -627,8 +694,9 @@ StorageManager.localFilePath = function(savefileId) {
 };
 
 MageStudios.Save.StorageManager_webStorageKey = StorageManager.webStorageKey;
-StorageManager.webStorageKey = function(savefileId) {
-  if (!$dataSystem) return MageStudios.Save.StorageManager_webStorageKey.call(this);
+StorageManager.webStorageKey = function (savefileId) {
+  if (!$dataSystem)
+    return MageStudios.Save.StorageManager_webStorageKey.call(this);
   var title = $dataSystem.gameTitle;
   this.loadConfig();
   if (savefileId < 0) {
@@ -640,211 +708,189 @@ StorageManager.webStorageKey = function(savefileId) {
   }
 };
 
-StorageManager.loadConfig = function() {
+StorageManager.loadConfig = function () {
   if (this._configLoaded) return;
   this._configLoaded = true;
   ConfigManager.load();
 };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
 MageStudios.Save.BattleManager_setBattleTest = BattleManager.setBattleTest;
-BattleManager.setBattleTest = function(battleTest) {
-    MageStudios.Save.BattleManager_setBattleTest.call(this, battleTest);
-    if (battleTest) StorageManager.loadConfig();
+BattleManager.setBattleTest = function (battleTest) {
+  MageStudios.Save.BattleManager_setBattleTest.call(this, battleTest);
+  if (battleTest) StorageManager.loadConfig();
 };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-Window_Base.prototype.drawSvActor = function(actor, x, y) {
-    var filename = actor.battlerName();
-    var bitmap = ImageManager.loadSvActor(filename);
-    var pw = bitmap.width / 9;
-    var ph = bitmap.height / 6;
-    var sx = 0;
-    var sy = 0;
-    this.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
+Window_Base.prototype.drawSvActor = function (actor, x, y) {
+  var filename = actor.battlerName();
+  var bitmap = ImageManager.loadSvActor(filename);
+  var pw = bitmap.width / 9;
+  var ph = bitmap.height / 6;
+  var sx = 0;
+  var sy = 0;
+  this.contents.blt(bitmap, sx, sy, pw, ph, x - pw / 2, y - ph);
 };
 
-Window_Base.prototype.textWidthEx = function(text) {
-    return this.drawTextEx(text, 0, this.contents.height);
+Window_Base.prototype.textWidthEx = function (text) {
+  return this.drawTextEx(text, 0, this.contents.height);
 };
 
-//=============================================================================
-// Window_MenuCommand
-//=============================================================================
-
-Window_MenuCommand.prototype.isSaveEnabled = function() {
-    if (DataManager.isEventTest()) return false;
-    return true;
+Window_MenuCommand.prototype.isSaveEnabled = function () {
+  if (DataManager.isEventTest()) return false;
+  return true;
 };
 
-//=============================================================================
-// Window_SavefileList
-//=============================================================================
-
-Window_SavefileList.prototype.itemHeight = function() {
-    return this.lineHeight();
+Window_SavefileList.prototype.itemHeight = function () {
+  return this.lineHeight();
 };
 
-Window_SavefileList.prototype.drawItem = function(index) {
-    var id = index + 1;
-    var valid = DataManager.isThisGameFile(id);
-    var rect = this.itemRect(index);
-    this.resetTextColor();
-    //if (this._mode === 'load') this.changePaintOpacity(valid);
-    this.changePaintOpacity(valid);
-    var icon = valid ? MageStudios.Param.SaveIconSaved : MageStudios.Param.SaveIconEmpty;
-    this.drawIcon(icon, rect.x + 2, rect.y + 2);
-    this.drawFileId(id, rect.x + Window_Base._iconWidth + 4, rect.y);
+Window_SavefileList.prototype.drawItem = function (index) {
+  var id = index + 1;
+  var valid = DataManager.isThisGameFile(id);
+  var rect = this.itemRect(index);
+  this.resetTextColor();
+  //if (this._mode === 'load') this.changePaintOpacity(valid);
+  this.changePaintOpacity(valid);
+  var icon = valid
+    ? MageStudios.Param.SaveIconSaved
+    : MageStudios.Param.SaveIconEmpty;
+  this.drawIcon(icon, rect.x + 2, rect.y + 2);
+  this.drawFileId(id, rect.x + Window_Base._iconWidth + 4, rect.y);
 };
 
-Window_SavefileList.prototype.playOkSound = function() {
-    Window_Selectable.prototype.playOkSound.call(this);
+Window_SavefileList.prototype.playOkSound = function () {
+  Window_Selectable.prototype.playOkSound.call(this);
 };
-
-//=============================================================================
-// Window_SaveAction
-//=============================================================================
 
 function Window_SaveAction() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_SaveAction.prototype = Object.create(Window_HorzCommand.prototype);
 Window_SaveAction.prototype.constructor = Window_SaveAction;
 
-Window_SaveAction.prototype.initialize = function(x, y, mode) {
-    this._width = Graphics.boxWidth - x;
-    this._currentFile = 0;
-    this._mode = mode;
-    Window_HorzCommand.prototype.initialize.call(this, x, y);
-    this.deactivate();
-    this.deselect();
+Window_SaveAction.prototype.initialize = function (x, y, mode) {
+  this._width = Graphics.boxWidth - x;
+  this._currentFile = 0;
+  this._mode = mode;
+  Window_HorzCommand.prototype.initialize.call(this, x, y);
+  this.deactivate();
+  this.deselect();
 };
 
-Window_SaveAction.prototype.windowWidth = function() {
-    return this._width;
+Window_SaveAction.prototype.windowWidth = function () {
+  return this._width;
 };
 
-Window_SaveAction.prototype.maxCols = function() {
-    return 3;
+Window_SaveAction.prototype.maxCols = function () {
+  return 3;
 };
 
-Window_SaveAction.prototype.savefileId = function() {
-    return SceneManager._scene._listWindow.index() + 1;
+Window_SaveAction.prototype.savefileId = function () {
+  return SceneManager._scene._listWindow.index() + 1;
 };
 
-Window_SaveAction.prototype.makeCommandList = function() {
-    var id = this.savefileId();
-    var enabled = DataManager.isThisGameFile(id);
-    var valid = DataManager.loadSavefileInfo(id);
-    this.addCommand(this.getCommandName('load'), 'load', valid);
-    this.addCommand(this.getCommandName('save'), 'save', this.isSaveEnabled());
-    this.addCommand(this.getCommandName('delete'), 'delete', enabled);
+Window_SaveAction.prototype.makeCommandList = function () {
+  var id = this.savefileId();
+  var enabled = DataManager.isThisGameFile(id);
+  var valid = DataManager.loadSavefileInfo(id);
+  this.addCommand(this.getCommandName("load"), "load", valid);
+  this.addCommand(this.getCommandName("save"), "save", this.isSaveEnabled());
+  this.addCommand(this.getCommandName("delete"), "delete", enabled);
 };
 
-Window_SaveAction.prototype.getCommandName = function(type) {
-    if (type === 'load') {
-      return MageStudios.Param.SaveCmdLoad;
-    } else if (type === 'save') {
-      return MageStudios.Param.SaveCmdSave;
-    } else {
-      return MageStudios.Param.SaveCmdDelete;
-    }
+Window_SaveAction.prototype.getCommandName = function (type) {
+  if (type === "load") {
+    return MageStudios.Param.SaveCmdLoad;
+  } else if (type === "save") {
+    return MageStudios.Param.SaveCmdSave;
+  } else {
+    return MageStudios.Param.SaveCmdDelete;
+  }
 };
 
-Window_SaveAction.prototype.isSaveEnabled = function() {
-    if (this._mode !== 'save') return false;
-    return $gameSystem.isSaveEnabled();
+Window_SaveAction.prototype.isSaveEnabled = function () {
+  if (this._mode !== "save") return false;
+  return $gameSystem.isSaveEnabled();
 };
 
-Window_SaveAction.prototype.update = function() {
-    Window_HorzCommand.prototype.update.call(this);
-    if (this.savefileId() !== this._currentFile) this.updateIndex();
+Window_SaveAction.prototype.update = function () {
+  Window_HorzCommand.prototype.update.call(this);
+  if (this.savefileId() !== this._currentFile) this.updateIndex();
 };
 
-Window_SaveAction.prototype.updateIndex = function() {
-    this._currentFile = this.savefileId();
-    this.refresh();
+Window_SaveAction.prototype.updateIndex = function () {
+  this._currentFile = this.savefileId();
+  this.refresh();
 };
 
-Window_SaveAction.prototype.playOkSound = function() {
-};
+Window_SaveAction.prototype.playOkSound = function () {};
 
-Window_SaveAction.prototype.updateHelp = function() {
-    var text = '';
-    if (this.currentSymbol() === 'load') {
-      text = MageStudios.Param.SaveLoadSelect;
-    } else if (this.currentSymbol() === 'save') {
-      text = MageStudios.Param.SaveSaveSelect;
-    } else if (this.currentSymbol() === 'delete') {
-      text = MageStudios.Param.SaveDeleteSelect;
-    }
-    this._helpWindow.setText(text);
+Window_SaveAction.prototype.updateHelp = function () {
+  var text = "";
+  if (this.currentSymbol() === "load") {
+    text = MageStudios.Param.SaveLoadSelect;
+  } else if (this.currentSymbol() === "save") {
+    text = MageStudios.Param.SaveSaveSelect;
+  } else if (this.currentSymbol() === "delete") {
+    text = MageStudios.Param.SaveDeleteSelect;
+  }
+  this._helpWindow.setText(text);
 };
-
-//=============================================================================
-// Window_SaveInfo
-//=============================================================================
 
 function Window_SaveInfo() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_SaveInfo.prototype = Object.create(Window_Base.prototype);
 Window_SaveInfo.prototype.constructor = Window_SaveInfo;
 
-Window_SaveInfo.prototype.initialize = function(x, y, width, height, mode) {
+Window_SaveInfo.prototype.initialize = function (x, y, width, height, mode) {
   this._currentFile = 0;
   this._waitTime = 0;
   this._mode = mode;
   Window_Base.prototype.initialize.call(this, x, y, width, height);
 };
 
-Window_SaveInfo.prototype.resetFontSettings = function() {
+Window_SaveInfo.prototype.resetFontSettings = function () {
   Window_Base.prototype.resetFontSettings.call(this);
-  if (this._drawLevel) this.contents.fontSize = MageStudios.Param.SaveInfoActorLvSz;
+  if (this._drawLevel)
+    this.contents.fontSize = MageStudios.Param.SaveInfoActorLvSz;
   if (this._drawData) this.contents.fontSize = MageStudios.Param.SaveInfoDataSz;
 };
 
-Window_SaveInfo.prototype.savefileId = function() {
+Window_SaveInfo.prototype.savefileId = function () {
   return SceneManager._scene._listWindow.index() + 1;
 };
 
-Window_SaveInfo.prototype.drawDarkRect = function(dx, dy, dw, dh) {
+Window_SaveInfo.prototype.drawDarkRect = function (dx, dy, dw, dh) {
   var color = this.gaugeBackColor();
   this.changePaintOpacity(false);
   this.contents.fillRect(dx + 1, dy + 1, dw - 2, dh - 2, color);
   this.changePaintOpacity(true);
 };
 
-Window_SaveInfo.prototype.update = function() {
+Window_SaveInfo.prototype.update = function () {
   Window_Base.prototype.update.call(this);
   if (this.savefileId() !== this._currentFile) this.updateIndex();
   if (this._waitTime > 0) this.updateTimer();
 };
 
-Window_SaveInfo.prototype.systemColorEx = function() {
-    if (Imported.MSEP_CoreEngine) {
-      return '\\c[' + MageStudios.Param.ColorSystem + ']';
-    } else {
-      return '\\c[16]';
-    }
+Window_SaveInfo.prototype.systemColorEx = function () {
+  if (Imported.MSEP_CoreEngine) {
+    return "\\c[" + MageStudios.Param.ColorSystem + "]";
+  } else {
+    return "\\c[16]";
+  }
 };
 
-Window_SaveInfo.prototype.updateIndex = function() {
+Window_SaveInfo.prototype.updateIndex = function () {
   var id = this.savefileId();
   this._currentFile = id;
   this._waitTime = 30;
   this.contents.clear();
 };
 
-Window_SaveInfo.prototype.updateTimer = function() {
+Window_SaveInfo.prototype.updateTimer = function () {
   this._waitTime -= 1;
   if (this._waitTime > 0) return;
   var id = this.savefileId();
@@ -853,7 +899,7 @@ Window_SaveInfo.prototype.updateTimer = function() {
   this.refresh();
 };
 
-Window_SaveInfo.prototype.refresh = function() {
+Window_SaveInfo.prototype.refresh = function () {
   this.contents.clear();
   this.resetFontSettings();
   var dy = 0;
@@ -863,17 +909,17 @@ Window_SaveInfo.prototype.refresh = function() {
   this.drawContents(dy);
 };
 
-Window_SaveInfo.prototype.drawGameTitle = function(dy) {
+Window_SaveInfo.prototype.drawGameTitle = function (dy) {
   if (!MageStudios.Param.SaveInfoTitle) return dy;
   if (!this._info) return dy;
   if (!this._info.title) return dy;
   this.resetFontSettings();
   var text = this._info.title;
-  this.drawText(text, 0, dy, this.contents.width, 'center');
+  this.drawText(text, 0, dy, this.contents.width, "center");
   return dy + this.lineHeight();
 };
 
-Window_SaveInfo.prototype.drawInvalidText = function(dy) {
+Window_SaveInfo.prototype.drawInvalidText = function (dy) {
   this.drawDarkRect(0, dy, this.contents.width, this.contents.height - dy);
   dy = (this.contents.height - dy - this.lineHeight()) / 2;
   if (this._info) {
@@ -882,10 +928,10 @@ Window_SaveInfo.prototype.drawInvalidText = function(dy) {
     var text = MageStudios.Param.SaveInfoEmpty;
   }
   this.changeTextColor(this.systemColor());
-  this.drawText(text, 0, dy, this.contents.width, 'center');
+  this.drawText(text, 0, dy, this.contents.width, "center");
 };
 
-Window_SaveInfo.prototype.drawContents = function(dy) {
+Window_SaveInfo.prototype.drawContents = function (dy) {
   if (!this._saveContents) {
     return setTimeout(this.drawContents.bind(this, dy), 50);
   }
@@ -896,11 +942,11 @@ Window_SaveInfo.prototype.drawContents = function(dy) {
   this.drawColumnData(dy);
 };
 
-Window_SaveInfo.prototype.drawPartyGraphics = function(dy) {
+Window_SaveInfo.prototype.drawPartyGraphics = function (dy) {
   if (MageStudios.Param.SaveInfoPartyType === 0) return dy;
   dy = eval(MageStudios.Param.SaveInfoPartyY);
   var length = this._saveContents.party.maxBattleMembers();
-  var dw = this.contents.width / length;;
+  var dw = this.contents.width / length;
   dw = Math.floor(dw);
   var dx = Math.floor(dw / 2);
   for (var i = 0; i < length; ++i) {
@@ -928,37 +974,37 @@ Window_SaveInfo.prototype.drawPartyGraphics = function(dy) {
   return dy;
 };
 
-Window_SaveInfo.prototype.drawCharacter = function(name, index, x, y) {
-    var bitmap = ImageManager.loadCharacter(name);
-    if (bitmap.width <= 0) {
-      return setTimeout(this.drawCharacter.bind(this, name, index, x, y), 50);
-    }
-    Window_Base.prototype.drawCharacter.call(this, name, index, x, y);
+Window_SaveInfo.prototype.drawCharacter = function (name, index, x, y) {
+  var bitmap = ImageManager.loadCharacter(name);
+  if (bitmap.width <= 0) {
+    return setTimeout(this.drawCharacter.bind(this, name, index, x, y), 50);
+  }
+  Window_Base.prototype.drawCharacter.call(this, name, index, x, y);
 };
 
-Window_SaveInfo.prototype.drawFace = function(name, index, x, y, w, h) {
-    var bitmap = ImageManager.loadFace(name);
-    if (bitmap.width <= 0) {
-      return setTimeout(this.drawFace.bind(this, name, index, x, y, w, h), 50);
-    }
-    Window_Base.prototype.drawFace.call(this, name, index, x, y, w, h);
+Window_SaveInfo.prototype.drawFace = function (name, index, x, y, w, h) {
+  var bitmap = ImageManager.loadFace(name);
+  if (bitmap.width <= 0) {
+    return setTimeout(this.drawFace.bind(this, name, index, x, y, w, h), 50);
+  }
+  Window_Base.prototype.drawFace.call(this, name, index, x, y, w, h);
 };
 
-Window_SaveInfo.prototype.drawSvActor = function(actor, x, y) {
-    var filename = actor.battlerName();
-    var bitmap = ImageManager.loadSvActor(filename);
-    if (bitmap.width <= 0) {
-      return setTimeout(this.drawSvActor.bind(this, actor, x, y), 50);
-    }
-    Window_Base.prototype.drawSvActor.call(this, actor, x, y);
+Window_SaveInfo.prototype.drawSvActor = function (actor, x, y) {
+  var filename = actor.battlerName();
+  var bitmap = ImageManager.loadSvActor(filename);
+  if (bitmap.width <= 0) {
+    return setTimeout(this.drawSvActor.bind(this, actor, x, y), 50);
+  }
+  Window_Base.prototype.drawSvActor.call(this, actor, x, y);
 };
 
-Window_SaveInfo.prototype.drawPartyNames = function(dy) {
+Window_SaveInfo.prototype.drawPartyNames = function (dy) {
   if (!MageStudios.Param.SaveInfoActorName) return dy;
   this.resetFontSettings();
   this.contents.fontSize = MageStudios.Param.SaveInfoActorNameSz;
   var length = this._saveContents.party.maxBattleMembers();
-  var dw = this.contents.width / length;;
+  var dw = this.contents.width / length;
   dw = Math.floor(dw);
   var dx = 0;
   for (var i = 0; i < length; ++i) {
@@ -966,18 +1012,18 @@ Window_SaveInfo.prototype.drawPartyNames = function(dy) {
     var member = this._saveContents.actors._data[actorId];
     if (member) {
       var name = member._name;
-      this.drawText(name, dx, dy, dw, 'center');
+      this.drawText(name, dx, dy, dw, "center");
     }
-    dx += dw
+    dx += dw;
   }
-  return dy += this.lineHeight();
+  return (dy += this.lineHeight());
 };
 
-Window_SaveInfo.prototype.drawPartyLevels = function(dy) {
+Window_SaveInfo.prototype.drawPartyLevels = function (dy) {
   if (!MageStudios.Param.SaveInfoActorLv) return dy;
   this._drawLevel = true;
   var length = this._saveContents.party.maxBattleMembers();
-  var dw = this.contents.width / length;;
+  var dw = this.contents.width / length;
   dw = Math.floor(dw);
   var dx = 0;
   var fmt = MageStudios.Param.SaveInfoActorLvFmt;
@@ -991,359 +1037,352 @@ Window_SaveInfo.prototype.drawPartyLevels = function(dy) {
       var dif = Math.floor(Math.max(0, dw - tw) / 2);
       this.drawTextEx(text, dx + dif, dy);
     }
-    dx += dw
+    dx += dw;
   }
   this._drawLevel = false;
-  return dy += this.lineHeight();
+  return (dy += this.lineHeight());
 };
 
-Window_SaveInfo.prototype.drawColumnData = function(dy) {
-    var totalColumns = 0;
-    var drawnArrays = [];
-    if (MageStudios.Param.SaveInfoDataCol1.length > 0) {
-      totalColumns += 1;
-      drawnArrays.push(MageStudios.Param.SaveInfoDataCol1);
-    }
-    if (MageStudios.Param.SaveInfoDataCol2.length > 0) {
-      totalColumns += 1;
-      drawnArrays.push(MageStudios.Param.SaveInfoDataCol2);
-    }
-    if (MageStudios.Param.SaveInfoDataCol3.length > 0) {
-      totalColumns += 1;
-      drawnArrays.push(MageStudios.Param.SaveInfoDataCol3);
-    }
-    if (MageStudios.Param.SaveInfoDataCol4.length > 0) {
-      totalColumns += 1;
-      drawnArrays.push(MageStudios.Param.SaveInfoDataCol4);
-    }
-    if (totalColumns <= 0) return;
-    var dw = Math.floor(this.contents.width / totalColumns);
-    var dif = totalColumns > 1 ? this.textPadding() : 0;
-    for (var i = 0; i < totalColumns; ++i) {
-      var column = drawnArrays[i];
-      var dx = i * dw;
-      this.drawColumn(column, dx, dy, dw - dif);
-    }
+Window_SaveInfo.prototype.drawColumnData = function (dy) {
+  var totalColumns = 0;
+  var drawnArrays = [];
+  if (MageStudios.Param.SaveInfoDataCol1.length > 0) {
+    totalColumns += 1;
+    drawnArrays.push(MageStudios.Param.SaveInfoDataCol1);
+  }
+  if (MageStudios.Param.SaveInfoDataCol2.length > 0) {
+    totalColumns += 1;
+    drawnArrays.push(MageStudios.Param.SaveInfoDataCol2);
+  }
+  if (MageStudios.Param.SaveInfoDataCol3.length > 0) {
+    totalColumns += 1;
+    drawnArrays.push(MageStudios.Param.SaveInfoDataCol3);
+  }
+  if (MageStudios.Param.SaveInfoDataCol4.length > 0) {
+    totalColumns += 1;
+    drawnArrays.push(MageStudios.Param.SaveInfoDataCol4);
+  }
+  if (totalColumns <= 0) return;
+  var dw = Math.floor(this.contents.width / totalColumns);
+  var dif = totalColumns > 1 ? this.textPadding() : 0;
+  for (var i = 0; i < totalColumns; ++i) {
+    var column = drawnArrays[i];
+    var dx = i * dw;
+    this.drawColumn(column, dx, dy, dw - dif);
+  }
 };
 
-Window_SaveInfo.prototype.drawColumn = function(column, dx, dy, dw) {
-    var length = column.length;
-    var tp = this.textPadding();
-    for (var i = 0; i < length; ++i) {
-      this.resetFontSettings();
-      this.contents.fontSize = MageStudios.Param.SaveInfoDataSz;
-      var data = column[i];
-      if (data.toUpperCase().trim() !== 'EMPTY') {
-        this.drawDarkRect(dx, dy, dw, this.lineHeight());
-        this.drawData(data, dx + tp, dy, dw - tp * 2);
-      }
-      dy += this.lineHeight();
+Window_SaveInfo.prototype.drawColumn = function (column, dx, dy, dw) {
+  var length = column.length;
+  var tp = this.textPadding();
+  for (var i = 0; i < length; ++i) {
+    this.resetFontSettings();
+    this.contents.fontSize = MageStudios.Param.SaveInfoDataSz;
+    var data = column[i];
+    if (data.toUpperCase().trim() !== "EMPTY") {
+      this.drawDarkRect(dx, dy, dw, this.lineHeight());
+      this.drawData(data, dx + tp, dy, dw - tp * 2);
     }
+    dy += this.lineHeight();
+  }
 };
 
-Window_SaveInfo.prototype.drawData = function(data, dx, dy, dw) {
-  if (data.toUpperCase().trim() === 'NULL') {
+Window_SaveInfo.prototype.drawData = function (data, dx, dy, dw) {
+  if (data.toUpperCase().trim() === "NULL") {
     return;
-  } else if (data.toUpperCase().trim() === 'LOCATION') {
+  } else if (data.toUpperCase().trim() === "LOCATION") {
     this.drawLocation(dx, dy, dw);
-  } else if (data.toUpperCase().trim() === 'PLAYTIME') {
+  } else if (data.toUpperCase().trim() === "PLAYTIME") {
     this.drawPlaytime(dx, dy, dw);
-  } else if (data.toUpperCase().trim() === 'SAVE COUNT') {
+  } else if (data.toUpperCase().trim() === "SAVE COUNT") {
     this.drawSaveCount(dx, dy, dw);
-  } else if (data.toUpperCase().trim() === 'GOLD COUNT') {
+  } else if (data.toUpperCase().trim() === "GOLD COUNT") {
     this.drawGoldCount(dx, dy, dw);
   } else if (data.match(/VARIABLE[ ](\d+)/i)) {
     this.drawVariable(parseInt(RegExp.$1), dx, dy, dw);
   } else if (data.match(/(.*)[ ]TEXT:(.*)/i)) {
     this.drawDataText(String(RegExp.$1), String(RegExp.$2), dx, dy, dw);
   } else if (data.match(/TEXT:(.*)/i)) {
-    this.drawDataText('left', String(RegExp.$1), dx, dy, dw);
+    this.drawDataText("left", String(RegExp.$1), dx, dy, dw);
   }
 };
 
-Window_SaveInfo.prototype.drawLocation = function(dx, dy, dw) {
-    var id = this._saveContents.map._mapId;
-    if (MageStudios.Param.SaveMapDisplayName) {
-      var text = this._saveContents.map.locationDisplayName || '';
-      if (text.length <= 0 && $dataMapInfos[id]) text = $dataMapInfos[id].name;
-    } else if ($dataMapInfos[id]) {
-      var text = $dataMapInfos[id].name;
-    } else {
-      var text = '';
-    }
-    if (MageStudios.Param.SaveVocabLocation.length > 0) {
-      this.changeTextColor(this.systemColor());
-      this.drawText(MageStudios.Param.SaveVocabLocation, dx, dy, dw, 'left');
-      this.changeTextColor(this.normalColor());
-      this.drawText(text, dx, dy, dw, 'right');
-    } else {
-      this.drawText(text, dx, dy, dw, 'center');
-    }
+Window_SaveInfo.prototype.drawLocation = function (dx, dy, dw) {
+  var id = this._saveContents.map._mapId;
+  if (MageStudios.Param.SaveMapDisplayName) {
+    var text = this._saveContents.map.locationDisplayName || "";
+    if (text.length <= 0 && $dataMapInfos[id]) text = $dataMapInfos[id].name;
+  } else if ($dataMapInfos[id]) {
+    var text = $dataMapInfos[id].name;
+  } else {
+    var text = "";
+  }
+  if (MageStudios.Param.SaveVocabLocation.length > 0) {
+    this.changeTextColor(this.systemColor());
+    this.drawText(MageStudios.Param.SaveVocabLocation, dx, dy, dw, "left");
+    this.changeTextColor(this.normalColor());
+    this.drawText(text, dx, dy, dw, "right");
+  } else {
+    this.drawText(text, dx, dy, dw, "center");
+  }
 };
 
-Window_SaveInfo.prototype.drawPlaytime = function(dx, dy, dw) {
-    if (!this._info.playtime) return;
-    var text = this._info.playtime;
-    if (MageStudios.Param.SaveVocabPlaytime.length > 0) {
-      this.changeTextColor(this.systemColor());
-      this.drawText(MageStudios.Param.SaveVocabPlaytime, dx, dy, dw, 'left');
-      this.changeTextColor(this.normalColor());
-      this.drawText(text, dx, dy, dw, 'right');
-    } else {
-      this.drawText(text, dx, dy, dw, 'center');
-    }
+Window_SaveInfo.prototype.drawPlaytime = function (dx, dy, dw) {
+  if (!this._info.playtime) return;
+  var text = this._info.playtime;
+  if (MageStudios.Param.SaveVocabPlaytime.length > 0) {
+    this.changeTextColor(this.systemColor());
+    this.drawText(MageStudios.Param.SaveVocabPlaytime, dx, dy, dw, "left");
+    this.changeTextColor(this.normalColor());
+    this.drawText(text, dx, dy, dw, "right");
+  } else {
+    this.drawText(text, dx, dy, dw, "center");
+  }
 };
 
-Window_SaveInfo.prototype.drawSaveCount = function(dx, dy, dw) {
-    var text = MageStudios.Util.toGroup(this._saveContents.system._saveCount);
-    if (MageStudios.Param.SaveVocabSaveCount.length > 0) {
-      this.changeTextColor(this.systemColor());
-      this.drawText(MageStudios.Param.SaveVocabSaveCount, dx, dy, dw, 'left');
-      this.changeTextColor(this.normalColor());
-      this.drawText(text, dx, dy, dw, 'right');
-    } else {
-      this.drawText(text, dx, dy, dw, 'center');
-    }
+Window_SaveInfo.prototype.drawSaveCount = function (dx, dy, dw) {
+  var text = MageStudios.Util.toGroup(this._saveContents.system._saveCount);
+  if (MageStudios.Param.SaveVocabSaveCount.length > 0) {
+    this.changeTextColor(this.systemColor());
+    this.drawText(MageStudios.Param.SaveVocabSaveCount, dx, dy, dw, "left");
+    this.changeTextColor(this.normalColor());
+    this.drawText(text, dx, dy, dw, "right");
+  } else {
+    this.drawText(text, dx, dy, dw, "center");
+  }
 };
 
-Window_SaveInfo.prototype.drawGoldCount = function(dx, dy, dw) {
-    var text = MageStudios.Util.toGroup(this._saveContents.party._gold);
-    if (MageStudios.Param.SaveVocabGoldCount.length > 0) {
-      this.changeTextColor(this.systemColor());
-      var fmt = MageStudios.Param.SaveVocabGoldCount;
-      this.drawText(fmt.format(TextManager.currencyUnit), dx, dy, dw, 'left');
-      this.changeTextColor(this.normalColor());
-      
-      this.drawText(text, dx, dy, dw, 'right');
-    } else {
-      var fmt = '\\c[0]%1' + this.systemColorEx() + '%2';
-      var ftext = fmt.format(text, TextManager.currencyUnit);
-      this._drawData = true;
-      var fw = this.textWidthEx(ftext);
-      dx += Math.max(0, Math.floor((dw - fw) / 2));
-      this.drawTextEx(ftext, dx, dy);
-      this._drawData = false;
-    }
-};
+Window_SaveInfo.prototype.drawGoldCount = function (dx, dy, dw) {
+  var text = MageStudios.Util.toGroup(this._saveContents.party._gold);
+  if (MageStudios.Param.SaveVocabGoldCount.length > 0) {
+    this.changeTextColor(this.systemColor());
+    var fmt = MageStudios.Param.SaveVocabGoldCount;
+    this.drawText(fmt.format(TextManager.currencyUnit), dx, dy, dw, "left");
+    this.changeTextColor(this.normalColor());
 
-Window_SaveInfo.prototype.drawVariable = function(id, dx, dy, dw) {
-    var varName = $dataSystem.variables[id];
-    varName = varName.replace(/<<(.*?)>>/i, '');
-    var text = MageStudios.Util.toGroup(this._saveContents.variables.value(id));
-    var diff = Math.max(0, (this.standardFontSize() - 
-      this.contents.fontSize) / 2);
-    if (varName.length > 0) {
-      this._drawData = true;
-      this.changeTextColor(this.systemColor());
-      dy += diff;
-      this.drawTextEx(this.systemColorEx() + varName, dx, dy, dw, 'left');
-      dy -= diff;
-      this.changeTextColor(this.normalColor());
-      this._drawData = false;
-      this.drawText(text, dx, dy, dw, 'right');
-    } else {
-      this.drawText(text, dx, dy, dw, 'center');
-    }
-};
-
-Window_SaveInfo.prototype.drawDataText = function(align, text, dx, dy, dw) {
+    this.drawText(text, dx, dy, dw, "right");
+  } else {
+    var fmt = "\\c[0]%1" + this.systemColorEx() + "%2";
+    var ftext = fmt.format(text, TextManager.currencyUnit);
     this._drawData = true;
-    dy += Math.max(0, (this.standardFontSize() - this.contents.fontSize) / 2);
-    var align = align.toLowerCase().trim();
-    var text = text.trim();
-    if (align === 'left') {
-      this.drawTextEx(text, dx, dy);
-    } else if (align === 'right') {
-      var tw = this.textWidthEx(text);
-      this.drawTextEx(text, dx + dw - tw, dy);
-    } else {
-      var tw = this.textWidthEx(text);
-      this.drawTextEx(text, dx + (dw - tw) / 2, dy);
-    }
+    var fw = this.textWidthEx(ftext);
+    dx += Math.max(0, Math.floor((dw - fw) / 2));
+    this.drawTextEx(ftext, dx, dy);
     this._drawData = false;
+  }
 };
 
-//=============================================================================
-// Window_SaveConfirm
-//=============================================================================
+Window_SaveInfo.prototype.drawVariable = function (id, dx, dy, dw) {
+  var varName = $dataSystem.variables[id];
+  varName = varName.replace(/<<(.*?)>>/i, "");
+  var text = MageStudios.Util.toGroup(this._saveContents.variables.value(id));
+  var diff = Math.max(
+    0,
+    (this.standardFontSize() - this.contents.fontSize) / 2
+  );
+  if (varName.length > 0) {
+    this._drawData = true;
+    this.changeTextColor(this.systemColor());
+    dy += diff;
+    this.drawTextEx(this.systemColorEx() + varName, dx, dy, dw, "left");
+    dy -= diff;
+    this.changeTextColor(this.normalColor());
+    this._drawData = false;
+    this.drawText(text, dx, dy, dw, "right");
+  } else {
+    this.drawText(text, dx, dy, dw, "center");
+  }
+};
+
+Window_SaveInfo.prototype.drawDataText = function (align, text, dx, dy, dw) {
+  this._drawData = true;
+  dy += Math.max(0, (this.standardFontSize() - this.contents.fontSize) / 2);
+  var align = align.toLowerCase().trim();
+  var text = text.trim();
+  if (align === "left") {
+    this.drawTextEx(text, dx, dy);
+  } else if (align === "right") {
+    var tw = this.textWidthEx(text);
+    this.drawTextEx(text, dx + dw - tw, dy);
+  } else {
+    var tw = this.textWidthEx(text);
+    this.drawTextEx(text, dx + (dw - tw) / 2, dy);
+  }
+  this._drawData = false;
+};
 
 function Window_SaveConfirm() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_SaveConfirm.prototype = Object.create(Window_Command.prototype);
 Window_SaveConfirm.prototype.constructor = Window_SaveConfirm;
 
-Window_SaveConfirm.prototype.initialize = function() {
-    Window_Command.prototype.initialize.call(this, 0, 0);
-    this.openness = 0;
+Window_SaveConfirm.prototype.initialize = function () {
+  Window_Command.prototype.initialize.call(this, 0, 0);
+  this.openness = 0;
 };
 
-Window_SaveConfirm.prototype.makeCommandList = function() {
-    this.addCommand(MageStudios.Param.SaveConfirmYes, 'confirm');
-    this.addCommand(MageStudios.Param.SaveConfirmNo, 'cancel');
+Window_SaveConfirm.prototype.makeCommandList = function () {
+  this.addCommand(MageStudios.Param.SaveConfirmYes, "confirm");
+  this.addCommand(MageStudios.Param.SaveConfirmNo, "cancel");
 };
 
-Window_SaveConfirm.prototype.setData = function(text) {
-    this._text = text;
-    var ww = this.textWidthEx(this._text) + this.standardPadding() * 2;
-    ww += this.textPadding() * 2;
-    this.width = ww;
-    this.refresh();
-    this.x = (Graphics.boxWidth - this.width) / 2;
-    this.y = (Graphics.boxHeight - this.height) / 2;
-    this.drawTextEx(this._text, this.textPadding(), 0);
+Window_SaveConfirm.prototype.setData = function (text) {
+  this._text = text;
+  var ww = this.textWidthEx(this._text) + this.standardPadding() * 2;
+  ww += this.textPadding() * 2;
+  this.width = ww;
+  this.refresh();
+  this.x = (Graphics.boxWidth - this.width) / 2;
+  this.y = (Graphics.boxHeight - this.height) / 2;
+  this.drawTextEx(this._text, this.textPadding(), 0);
 };
 
-Window_SaveConfirm.prototype.itemTextAlign = function() {
-    return 'center';
+Window_SaveConfirm.prototype.itemTextAlign = function () {
+  return "center";
 };
 
-Window_SaveConfirm.prototype.windowHeight = function() {
-    return this.fittingHeight(3);
+Window_SaveConfirm.prototype.windowHeight = function () {
+  return this.fittingHeight(3);
 };
 
-Window_SaveConfirm.prototype.itemRect = function(index) {
-    var rect = Window_Selectable.prototype.itemRect.call(this, index);
-    rect.y += this.lineHeight();
-    return rect;
+Window_SaveConfirm.prototype.itemRect = function (index) {
+  var rect = Window_Selectable.prototype.itemRect.call(this, index);
+  rect.y += this.lineHeight();
+  return rect;
 };
 
-//=============================================================================
-// Scene_File
-//=============================================================================
-
-Scene_File.prototype.terminate = function() {
-    Scene_MenuBase.prototype.terminate.call(this);
-    if (this._loadSuccess) $gameSystem.onAfterLoad();
+Scene_File.prototype.terminate = function () {
+  Scene_MenuBase.prototype.terminate.call(this);
+  if (this._loadSuccess) $gameSystem.onAfterLoad();
 };
 
-Scene_Load.prototype.terminate = function() {
-    Scene_File.prototype.terminate.call(this);
+Scene_Load.prototype.terminate = function () {
+  Scene_File.prototype.terminate.call(this);
 };
 
-Scene_File.prototype.create = function() {
-    Scene_MenuBase.prototype.create.call(this);
-    DataManager.loadAllSavefileImages();
-    this.createHelpWindow();
-    this.createListWindow();
-    this.createActionWindow();
-    this.createInfoWindow();
-    this.createConfirmWindow();
+Scene_File.prototype.create = function () {
+  Scene_MenuBase.prototype.create.call(this);
+  DataManager.loadAllSavefileImages();
+  this.createHelpWindow();
+  this.createListWindow();
+  this.createActionWindow();
+  this.createInfoWindow();
+  this.createConfirmWindow();
 };
 
-Scene_File.prototype.createHelpWindow = function() {
-    this._helpWindow = new Window_Help(2);
-    this._helpWindow.setText(MageStudios.Param.SaveHelpSelect);
-    this.addWindow(this._helpWindow);
+Scene_File.prototype.createHelpWindow = function () {
+  this._helpWindow = new Window_Help(2);
+  this._helpWindow.setText(MageStudios.Param.SaveHelpSelect);
+  this.addWindow(this._helpWindow);
 };
 
-Scene_File.prototype.createListWindow = function() {
-    var x = 0;
-    var y = this._helpWindow.height;
-    var width = 240;
-    var height = Graphics.boxHeight - y;
-    this._listWindow = new Window_SavefileList(x, y, width, height);
-    this.addWindow(this._listWindow);
-    this._listWindow.setHandler('ok',     this.onSavefileOk.bind(this));
-    this._listWindow.setHandler('cancel', this.popScene.bind(this));
-    this._listWindow.select(this.firstSavefileIndex());
-    this._listWindow.setTopRow(this.firstSavefileIndex() - 2);
-    this._listWindow.setMode(this.mode());
-    this._listWindow.refresh();
-    
+Scene_File.prototype.createListWindow = function () {
+  var x = 0;
+  var y = this._helpWindow.height;
+  var width = 240;
+  var height = Graphics.boxHeight - y;
+  this._listWindow = new Window_SavefileList(x, y, width, height);
+  this.addWindow(this._listWindow);
+  this._listWindow.setHandler("ok", this.onSavefileOk.bind(this));
+  this._listWindow.setHandler("cancel", this.popScene.bind(this));
+  this._listWindow.select(this.firstSavefileIndex());
+  this._listWindow.setTopRow(this.firstSavefileIndex() - 2);
+  this._listWindow.setMode(this.mode());
+  this._listWindow.refresh();
 };
 
-Scene_File.prototype.createActionWindow = function() {
-    var x = this._listWindow.width;
-    var y = this._listWindow.y;
-    this._actionWindow = new Window_SaveAction(x, y, this.mode());
-    this.addWindow(this._actionWindow);
-    this._actionWindow.setHelpWindow(this._helpWindow);
-    this._actionWindow.setHandler('load', this.onActionLoad.bind(this));
-    this._actionWindow.setHandler('save', this.onActionSave.bind(this));
-    this._actionWindow.setHandler('delete', this.onActionDelete.bind(this));
-    this._actionWindow.setHandler('cancel', this.onActionCancel.bind(this));
+Scene_File.prototype.createActionWindow = function () {
+  var x = this._listWindow.width;
+  var y = this._listWindow.y;
+  this._actionWindow = new Window_SaveAction(x, y, this.mode());
+  this.addWindow(this._actionWindow);
+  this._actionWindow.setHelpWindow(this._helpWindow);
+  this._actionWindow.setHandler("load", this.onActionLoad.bind(this));
+  this._actionWindow.setHandler("save", this.onActionSave.bind(this));
+  this._actionWindow.setHandler("delete", this.onActionDelete.bind(this));
+  this._actionWindow.setHandler("cancel", this.onActionCancel.bind(this));
 };
 
-Scene_File.prototype.createInfoWindow = function() {
-    var x = this._actionWindow.x;
-    var y = this._actionWindow.y + this._actionWindow.height;
-    var width = Graphics.boxWidth - x;
-    var height = Graphics.boxHeight - y;
-    this._infoWindow = new Window_SaveInfo(x, y, width, height, this.mode());
-    this.addWindow(this._infoWindow);
+Scene_File.prototype.createInfoWindow = function () {
+  var x = this._actionWindow.x;
+  var y = this._actionWindow.y + this._actionWindow.height;
+  var width = Graphics.boxWidth - x;
+  var height = Graphics.boxHeight - y;
+  this._infoWindow = new Window_SaveInfo(x, y, width, height, this.mode());
+  this.addWindow(this._infoWindow);
 };
 
-Scene_File.prototype.createConfirmWindow = function() {
-    this._confirmWindow = new Window_SaveConfirm();
-    var win = this._confirmWindow;
-    win.setHandler('confirm', this.onConfirmOk.bind(this));
-    win.setHandler('cancel',  this.onConfirmCancel.bind(this));
-    this.addWindow(this._confirmWindow);
+Scene_File.prototype.createConfirmWindow = function () {
+  this._confirmWindow = new Window_SaveConfirm();
+  var win = this._confirmWindow;
+  win.setHandler("confirm", this.onConfirmOk.bind(this));
+  win.setHandler("cancel", this.onConfirmCancel.bind(this));
+  this.addWindow(this._confirmWindow);
 };
 
-Scene_File.prototype.onSavefileOk = function() {
-    this._actionWindow.activate();
-    if (this.mode() === 'load') {
-      this._actionWindow.select(0);
-    } else if (this.mode() === 'save') {
-      this._actionWindow.select(1);
-    }
+Scene_File.prototype.onSavefileOk = function () {
+  this._actionWindow.activate();
+  if (this.mode() === "load") {
+    this._actionWindow.select(0);
+  } else if (this.mode() === "save") {
+    this._actionWindow.select(1);
+  }
 };
 
-Scene_Save.prototype.onSavefileOk = function() {
-    Scene_File.prototype.onSavefileOk.call(this);
+Scene_Save.prototype.onSavefileOk = function () {
+  Scene_File.prototype.onSavefileOk.call(this);
 };
 
-Scene_Load.prototype.onSavefileOk = function() {
-    Scene_File.prototype.onSavefileOk.call(this);
+Scene_Load.prototype.onSavefileOk = function () {
+  Scene_File.prototype.onSavefileOk.call(this);
 };
 
-Scene_File.prototype.onActionLoad = function() {
-    if (MageStudios.Param.SaveConfirmLoad) {
-      this.startConfirmWindow(MageStudios.Param.SaveConfirmLoadTx);
-    } else {
-      this.performActionLoad();
-    }
+Scene_File.prototype.onActionLoad = function () {
+  if (MageStudios.Param.SaveConfirmLoad) {
+    this.startConfirmWindow(MageStudios.Param.SaveConfirmLoadTx);
+  } else {
+    this.performActionLoad();
+  }
 };
 
-Scene_File.prototype.performActionLoad = function() {
-    if (DataManager.loadGame(this.savefileId())) {
-        this.onLoadSuccess();
-    } else {
-        this.onLoadFailure();
-    }
+Scene_File.prototype.performActionLoad = function () {
+  if (DataManager.loadGame(this.savefileId())) {
+    this.onLoadSuccess();
+  } else {
+    this.onLoadFailure();
+  }
 };
 
-Scene_File.prototype.onLoadSuccess = function() {
-    SoundManager.playLoad();
-    this.fadeOutAll();
-    this.reloadMapIfUpdated();
-    SceneManager.goto(Scene_Map);
-    this._loadSuccess = true;
+Scene_File.prototype.onLoadSuccess = function () {
+  SoundManager.playLoad();
+  this.fadeOutAll();
+  this.reloadMapIfUpdated();
+  SceneManager.goto(Scene_Map);
+  this._loadSuccess = true;
 };
 
-Scene_Load.prototype.onLoadSuccess = function() {
-    Scene_File.prototype.onLoadSuccess.call(this);
+Scene_Load.prototype.onLoadSuccess = function () {
+  Scene_File.prototype.onLoadSuccess.call(this);
 };
 
-Scene_File.prototype.onLoadFailure = function() {
-    SoundManager.playBuzzer();
-    this.onActionCancel();
+Scene_File.prototype.onLoadFailure = function () {
+  SoundManager.playBuzzer();
+  this.onActionCancel();
 };
 
-Scene_Load.prototype.onLoadFailure = function() {
-    Scene_File.prototype.onLoadFailure.call(this);
+Scene_Load.prototype.onLoadFailure = function () {
+  Scene_File.prototype.onLoadFailure.call(this);
 };
 
-Scene_File.prototype.reloadMapIfUpdated = function() {
+Scene_File.prototype.reloadMapIfUpdated = function () {
   if ($gameSystem.versionId() === $dataSystem.versionId) return;
   $gamePlayer.reserveTransfer($gameMap.mapId(), $gamePlayer.x, $gamePlayer.y);
   $gamePlayer.requestMapReload();
 };
 
-Scene_File.prototype.onActionSave = function() {
+Scene_File.prototype.onActionSave = function () {
   var id = this.savefileId();
   if (MageStudios.Param.SaveConfirmSave && StorageManager.exists(id)) {
     this.startConfirmWindow(MageStudios.Param.SaveConfirmSaveTx);
@@ -1352,106 +1391,98 @@ Scene_File.prototype.onActionSave = function() {
   }
 };
 
-Scene_File.prototype.performActionSave = function() {
-    $gameSystem.onBeforeSave();
-    if (DataManager.saveGame(this.savefileId())) {
-      this.onSaveSuccess();
-    } else {
-      this.onSaveFailure();
-    }
+Scene_File.prototype.performActionSave = function () {
+  $gameSystem.onBeforeSave();
+  if (DataManager.saveGame(this.savefileId())) {
+    this.onSaveSuccess();
+  } else {
+    this.onSaveFailure();
+  }
 };
 
-Scene_File.prototype.onSaveSuccess = function() {
-    SoundManager.playSave();
-    StorageManager.cleanBackup(this.savefileId());
-    if (MageStudios.Param.SavePop) {
-      this.popScene();
-    } else {
-      this._listWindow.refresh();
-      this._actionWindow._currentFile = this.savefileId() - 1;
-      this._infoWindow._currentFile = this.savefileId() - 1;
-      this.onActionCancel();
-    }
-};
-
-Scene_Save.prototype.onSaveSuccess = function() {
-    Scene_File.prototype.onSaveSuccess.call(this);
-};
-
-Scene_File.prototype.onSaveFailure = function() {
-    SoundManager.playBuzzer();
-    this.onActionCancel();
-};
-
-Scene_Save.prototype.onSaveFailure = function() {
-    Scene_File.prototype.onSaveFailure.call(this);
-};
-
-Scene_File.prototype.onActionDelete = function() {
-    if (MageStudios.Param.SaveConfirmDel) {
-      this.startConfirmWindow(MageStudios.Param.SaveConfirmDelTx);
-    } else {
-      this.performActionDelete();
-    }
-};
-
-Scene_File.prototype.performActionDelete = function() {
-    AudioManager.playSe(MageStudios.Param.SaveDeleteSound);
-    StorageManager.remove(this.savefileId());
-    this.onActionCancel();
+Scene_File.prototype.onSaveSuccess = function () {
+  SoundManager.playSave();
+  StorageManager.cleanBackup(this.savefileId());
+  if (MageStudios.Param.SavePop) {
+    this.popScene();
+  } else {
     this._listWindow.refresh();
     this._actionWindow._currentFile = this.savefileId() - 1;
     this._infoWindow._currentFile = this.savefileId() - 1;
+    this.onActionCancel();
+  }
 };
 
-Scene_File.prototype.onActionCancel = function() {
-    this._actionWindow.deselect();
-    this._listWindow.activate();
-    this._helpWindow.setText(MageStudios.Param.SaveHelpSelect);
+Scene_Save.prototype.onSaveSuccess = function () {
+  Scene_File.prototype.onSaveSuccess.call(this);
 };
 
-Scene_File.prototype.startConfirmWindow = function(text) {
-    SoundManager.playOk();
-    this._confirmWindow.setData(text);
-    this._confirmWindow.open();
-    this._confirmWindow.activate();
-    this._confirmWindow.select(0);
+Scene_File.prototype.onSaveFailure = function () {
+  SoundManager.playBuzzer();
+  this.onActionCancel();
 };
 
-Scene_File.prototype.onConfirmOk = function() {
-    this._confirmWindow.deactivate();
-    this._confirmWindow.close();
-    if (this._actionWindow.currentSymbol() === 'load') {
-      setTimeout(this.performActionLoad.bind(this), 200);
-    } else if (this._actionWindow.currentSymbol() === 'save') {
-      setTimeout(this.performActionSave.bind(this), 200);
-    } else if (this._actionWindow.currentSymbol() === 'delete') {
-      setTimeout(this.performActionDelete.bind(this), 200);
-    } else {
-      this.onConfirmCancel();
-    }
+Scene_Save.prototype.onSaveFailure = function () {
+  Scene_File.prototype.onSaveFailure.call(this);
 };
 
-Scene_File.prototype.onConfirmCancel = function() {
-    var index = this._actionWindow.index();
-    this._confirmWindow.deactivate();
-    this._confirmWindow.close();
-    this.onSavefileOk();
-    this._actionWindow.select(index);
+Scene_File.prototype.onActionDelete = function () {
+  if (MageStudios.Param.SaveConfirmDel) {
+    this.startConfirmWindow(MageStudios.Param.SaveConfirmDelTx);
+  } else {
+    this.performActionDelete();
+  }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+Scene_File.prototype.performActionDelete = function () {
+  AudioManager.playSe(MageStudios.Param.SaveDeleteSound);
+  StorageManager.remove(this.savefileId());
+  this.onActionCancel();
+  this._listWindow.refresh();
+  this._actionWindow._currentFile = this.savefileId() - 1;
+  this._infoWindow._currentFile = this.savefileId() - 1;
+};
+
+Scene_File.prototype.onActionCancel = function () {
+  this._actionWindow.deselect();
+  this._listWindow.activate();
+  this._helpWindow.setText(MageStudios.Param.SaveHelpSelect);
+};
+
+Scene_File.prototype.startConfirmWindow = function (text) {
+  SoundManager.playOk();
+  this._confirmWindow.setData(text);
+  this._confirmWindow.open();
+  this._confirmWindow.activate();
+  this._confirmWindow.select(0);
+};
+
+Scene_File.prototype.onConfirmOk = function () {
+  this._confirmWindow.deactivate();
+  this._confirmWindow.close();
+  if (this._actionWindow.currentSymbol() === "load") {
+    setTimeout(this.performActionLoad.bind(this), 200);
+  } else if (this._actionWindow.currentSymbol() === "save") {
+    setTimeout(this.performActionSave.bind(this), 200);
+  } else if (this._actionWindow.currentSymbol() === "delete") {
+    setTimeout(this.performActionDelete.bind(this), 200);
+  } else {
+    this.onConfirmCancel();
+  }
+};
+
+Scene_File.prototype.onConfirmCancel = function () {
+  var index = this._actionWindow.index();
+  this._confirmWindow.deactivate();
+  this._confirmWindow.close();
+  this.onSavefileOk();
+  this._actionWindow.select(index);
+};
 
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}

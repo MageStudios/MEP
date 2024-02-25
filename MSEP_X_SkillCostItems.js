@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Skill Core Extension - Skill Cost Items
-// MSEP_X_SkillCostItems.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_SkillCostItems = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SCI = MageStudios.SCI || {};
-MageStudios.SCI.version = 1.00;
+MageStudios.SCI.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_SkillCore.js) Skills can now have an
  * item cost attached to them.
  * @author Mage Studios Engine Plugins
@@ -108,7 +102,7 @@ MageStudios.SCI.version = 1.00;
  * ============================================================================
  *
  * To enable skills to utilize items as costs, use the following notetags:
- * 
+ *
  * Skill Notetags:
  *   <Item x Cost: y>
  *   <Weapon x Cost: y>
@@ -257,7 +251,7 @@ MageStudios.SCI.version = 1.00;
  *
  * Version 1.02:
  * - Updated for RPG Maker MV version 1.1.0.
- * 
+ *
  * Version 1.01:
  * - Fixed a bug that would display the wrong cost amount for multiple items.
  * - Shifted item icon cost 2 pixels down to match the skill icon Y level.
@@ -265,178 +259,176 @@ MageStudios.SCI.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_SkillCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_SkillCostItems");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.SCICostStyle = Number(MageStudios.Parameters["Cost Style"]);
+  MageStudios.Param.SCIFontSize = Number(MageStudios.Parameters["Font Size"]);
+  MageStudios.Param.SCIAmountFmt = String(
+    MageStudios.Parameters["Amount Format"]
+  );
+  MageStudios.Param.SCIYBuffer = Number(
+    MageStudios.Parameters["Amount Y Buffer"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_SkillCostItems');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.SCIGauge1 = Number(MageStudios.Parameters["Gauge Color 1"]);
+  MageStudios.Param.SCIGauge2 = Number(MageStudios.Parameters["Gauge Color 2"]);
+  MageStudios.Param.SCIDisplayName = eval(
+    String(MageStudios.Parameters["Display Name"])
+  );
+  MageStudios.Param.SCIDisplayColor = Number(
+    MageStudios.Parameters["Text Color"]
+  );
 
-MageStudios.Param.SCICostStyle = Number(MageStudios.Parameters['Cost Style']);
-MageStudios.Param.SCIFontSize = Number(MageStudios.Parameters['Font Size']);
-MageStudios.Param.SCIAmountFmt = String(MageStudios.Parameters['Amount Format']);
-MageStudios.Param.SCIYBuffer = Number(MageStudios.Parameters['Amount Y Buffer']);
+  MageStudios.SCI.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.SCI.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_SkillCostItems) {
+      this.processSCINotetagsI($dataItems);
+      this.processSCINotetagsW($dataWeapons);
+      this.processSCINotetagsA($dataArmors);
+      this.processSCINotetags1($dataSkills);
+      this.processSCINotetags2($dataActors);
+      this.processSCINotetags2($dataClasses);
+      this.processSCINotetags2($dataEnemies);
+      this.processSCINotetags2($dataWeapons);
+      this.processSCINotetags2($dataArmors);
+      this.processSCINotetags2($dataStates);
+      this.processSCINotetags3($dataItems);
+      this.processSCINotetags3($dataWeapons);
+      this.processSCINotetags3($dataArmors);
+      MageStudios._loaded_MSEP_X_SkillCostItems = true;
+    }
+    return true;
+  };
 
-MageStudios.Param.SCIGauge1 = Number(MageStudios.Parameters['Gauge Color 1']);
-MageStudios.Param.SCIGauge2 = Number(MageStudios.Parameters['Gauge Color 2']);
-MageStudios.Param.SCIDisplayName = eval(String(MageStudios.Parameters['Display Name']));
-MageStudios.Param.SCIDisplayColor = Number(MageStudios.Parameters['Text Color']);
+  DataManager.processSCINotetagsI = function (group) {
+    if (MageStudios.ItemIdRef) return;
+    MageStudios.ItemIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  DataManager.processSCINotetagsW = function (group) {
+    if (MageStudios.WeaponIdRef) return;
+    MageStudios.WeaponIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-MageStudios.SCI.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.SCI.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_SkillCostItems) {
-    this.processSCINotetagsI($dataItems);
-    this.processSCINotetagsW($dataWeapons);
-    this.processSCINotetagsA($dataArmors);
-    this.processSCINotetags1($dataSkills);
-    this.processSCINotetags2($dataActors);
-    this.processSCINotetags2($dataClasses);
-    this.processSCINotetags2($dataEnemies);
-    this.processSCINotetags2($dataWeapons);
-    this.processSCINotetags2($dataArmors);
-    this.processSCINotetags2($dataStates);
-    this.processSCINotetags3($dataItems);
-    this.processSCINotetags3($dataWeapons);
-    this.processSCINotetags3($dataArmors);
-    MageStudios._loaded_MSEP_X_SkillCostItems = true;
-  }
-  return true;
-};
+  DataManager.processSCINotetagsA = function (group) {
+    if (MageStudios.ArmorIdRef) return;
+    MageStudios.ArmorIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-DataManager.processSCINotetagsI = function(group) {
-  if (MageStudios.ItemIdRef) return;
-  MageStudios.ItemIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+  DataManager.processSCINotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processSCINotetagsW = function(group) {
-  if (MageStudios.WeaponIdRef) return;
-  MageStudios.WeaponIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+      obj.useItemCost = [];
+      obj.useWeaponCost = [];
+      obj.useArmorCost = [];
+      var evalMode = "none";
+      var evalLine = "";
 
-DataManager.processSCINotetagsA = function(group) {
-  if (MageStudios.ArmorIdRef) return;
-  MageStudios.ArmorIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processSCINotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.useItemCost = [];
-    obj.useWeaponCost = [];
-    obj.useArmorCost = [];
-    var evalMode = 'none';
-    var evalLine = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
-        var item = $dataItems[parseInt(RegExp.$1)];
-        var cost = parseInt(RegExp.$2);
-        this.processSCIObjItemCost(obj, item, cost, '');
-      } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
-        var item = $dataWeapons[parseInt(RegExp.$1)];
-        var cost = parseInt(RegExp.$2);
-        this.processSCIObjItemCost(obj, item, cost, '');
-      } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
-        var item = $dataArmors[parseInt(RegExp.$1)];
-        var cost = parseInt(RegExp.$2);
-        this.processSCIObjItemCost(obj, item, cost, '');
-      } else if (line.match(/<ITEM COST:[ ](\d+)[ ](.*)>/i)) {
-        var cost = parseInt(RegExp.$1);
-        var name = String(RegExp.$2).toUpperCase();
-        if (MageStudios.ItemIdRef[name]) {
-          var id = MageStudios.ItemIdRef[name];
-          var item = $dataItems[id];
-        } else if (MageStudios.WeaponIdRef[name]) {
-          var id = MageStudios.WeaponIdRef[name];
-          var item = $dataWeapons[id];
-        } else if (MageStudios.ArmorIdRef[name]) {
-          var id = MageStudios.ArmorIdRef[name];
-          var item = $dataArmors[id];
-        } else {
-          continue;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
+          var item = $dataItems[parseInt(RegExp.$1)];
+          var cost = parseInt(RegExp.$2);
+          this.processSCIObjItemCost(obj, item, cost, "");
+        } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
+          var item = $dataWeapons[parseInt(RegExp.$1)];
+          var cost = parseInt(RegExp.$2);
+          this.processSCIObjItemCost(obj, item, cost, "");
+        } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ](\d+)>/i)) {
+          var item = $dataArmors[parseInt(RegExp.$1)];
+          var cost = parseInt(RegExp.$2);
+          this.processSCIObjItemCost(obj, item, cost, "");
+        } else if (line.match(/<ITEM COST:[ ](\d+)[ ](.*)>/i)) {
+          var cost = parseInt(RegExp.$1);
+          var name = String(RegExp.$2).toUpperCase();
+          if (MageStudios.ItemIdRef[name]) {
+            var id = MageStudios.ItemIdRef[name];
+            var item = $dataItems[id];
+          } else if (MageStudios.WeaponIdRef[name]) {
+            var id = MageStudios.WeaponIdRef[name];
+            var item = $dataWeapons[id];
+          } else if (MageStudios.ArmorIdRef[name]) {
+            var id = MageStudios.ArmorIdRef[name];
+            var item = $dataArmors[id];
+          } else {
+            continue;
+          }
+          this.processSCIObjItemCost(obj, item, cost, "");
+        } else if (line.match(/<CUSTOM ITEM[ ](\d+)[ ]COST>/i)) {
+          evalMode = "custom item cost";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM ITEM[ ](\d+)[ ]COST>/i)) {
+          var item = $dataItems[parseInt(RegExp.$1)];
+          this.processSCIObjItemCost(obj, item, 0, evalLine);
+          evalMode = "none";
+          evalLine = "";
+        } else if (line.match(/<CUSTOM WEAPON[ ](\d+)[ ]COST>/i)) {
+          evalMode = "custom item cost";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM WEAPON[ ](\d+)[ ]COST>/i)) {
+          var item = $dataWeapons[parseInt(RegExp.$1)];
+          this.processSCIObjItemCost(obj, item, 0, evalLine);
+          evalMode = "none";
+          evalLine = "";
+        } else if (line.match(/<CUSTOM ARMOR[ ](\d+)[ ]COST>/i)) {
+          evalMode = "custom item cost";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM ARMOR[ ](\d+)[ ]COST>/i)) {
+          var item = $dataArmors[parseInt(RegExp.$1)];
+          this.processSCIObjItemCost(obj, item, 0, evalLine);
+          evalMode = "none";
+          evalLine = "";
+        } else if (line.match(/<CUSTOM ITEM COST:[ ](.*)>/i)) {
+          evalMode = "custom item cost";
+          evalLine = "";
+        } else if (line.match(/<\/CUSTOM ITEM COST:[ ](.*)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (MageStudios.ItemIdRef[name]) {
+            var id = MageStudios.ItemIdRef[name];
+            var item = $dataItems[id];
+          } else if (MageStudios.WeaponIdRef[name]) {
+            var id = MageStudios.WeaponIdRef[name];
+            var item = $dataWeapons[id];
+          } else if (MageStudios.ArmorIdRef[name]) {
+            var id = MageStudios.ArmorIdRef[name];
+            var item = $dataArmors[id];
+          } else {
+            evalMode = "none";
+            evalLine = "";
+            continue;
+          }
+          this.processSCIObjItemCost(obj, item, 0, evalLine);
+          evalMode = "none";
+          evalLine = "";
+        } else if (evalMode === "custom item cost") {
+          evalLine = evalLine + line + "\n";
         }
-        this.processSCIObjItemCost(obj, item, cost, '');
-      } else if (line.match(/<CUSTOM ITEM[ ](\d+)[ ]COST>/i)) {
-        evalMode = 'custom item cost';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM ITEM[ ](\d+)[ ]COST>/i)) {
-        var item = $dataItems[parseInt(RegExp.$1)];
-        this.processSCIObjItemCost(obj, item, 0, evalLine);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (line.match(/<CUSTOM WEAPON[ ](\d+)[ ]COST>/i)) {
-        evalMode = 'custom item cost';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM WEAPON[ ](\d+)[ ]COST>/i)) {
-        var item = $dataWeapons[parseInt(RegExp.$1)];
-        this.processSCIObjItemCost(obj, item, 0, evalLine);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (line.match(/<CUSTOM ARMOR[ ](\d+)[ ]COST>/i)) {
-        evalMode = 'custom item cost';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM ARMOR[ ](\d+)[ ]COST>/i)) {
-        var item = $dataArmors[parseInt(RegExp.$1)];
-        this.processSCIObjItemCost(obj, item, 0, evalLine);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (line.match(/<CUSTOM ITEM COST:[ ](.*)>/i)) {
-        evalMode = 'custom item cost';
-        evalLine = '';
-      } else if (line.match(/<\/CUSTOM ITEM COST:[ ](.*)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (MageStudios.ItemIdRef[name]) {
-          var id = MageStudios.ItemIdRef[name];
-          var item = $dataItems[id];
-        } else if (MageStudios.WeaponIdRef[name]) {
-          var id = MageStudios.WeaponIdRef[name];
-          var item = $dataWeapons[id];
-        } else if (MageStudios.ArmorIdRef[name]) {
-          var id = MageStudios.ArmorIdRef[name];
-          var item = $dataArmors[id];
-        } else {
-          evalMode = 'none';
-          evalLine = '';
-          continue;
-        }
-        this.processSCIObjItemCost(obj, item, 0, evalLine);
-        evalMode = 'none';
-        evalLine = '';
-      } else if (evalMode === 'custom item cost') {
-        evalLine = evalLine + line + '\n';
       }
     }
-  }
-};
+  };
 
-DataManager.processSCIObjItemCost = function(obj, item, cost, code) {
+  DataManager.processSCIObjItemCost = function (obj, item, cost, code) {
     if (!item) return;
     if (Imported.MSEP_ItemCore && this.isIndependent(item)) return;
     var arr = [item.id, cost, code];
@@ -447,183 +439,179 @@ DataManager.processSCIObjItemCost = function(obj, item, cost, code) {
     } else if (this.isArmor(item)) {
       obj.useArmorCost.push(arr);
     }
-};
+  };
 
-DataManager.processSCINotetags2 = function(group) {
-  var note1 = /<(?:SWAP GAUGE|gauge)[ ](\d+):[ ](.*)>/i;
-  var note2 = /<(?:SWAP GAUGE ICON|swap gauge icon)[ ](\d+):[ ](.*)>/i;
-  var noteR1 = /<REPLACE[ ](.*)[ ](\d+)[ ]COST:[ ](.*)[ ](\d+)>/i;
-  var noteR2 = /<REPLACE[ ](.*)[ ]COST:[ ](.*)>/i;
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processSCINotetags2 = function (group) {
+    var note1 = /<(?:SWAP GAUGE|gauge)[ ](\d+):[ ](.*)>/i;
+    var note2 = /<(?:SWAP GAUGE ICON|swap gauge icon)[ ](\d+):[ ](.*)>/i;
+    var noteR1 = /<REPLACE[ ](.*)[ ](\d+)[ ]COST:[ ](.*)[ ](\d+)>/i;
+    var noteR2 = /<REPLACE[ ](.*)[ ]COST:[ ](.*)>/i;
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.itemGaugeColor1 = MageStudios.Param.SCIGauge1
-    obj.itemGaugeColor2 = MageStudios.Param.SCIGauge2
-    obj.useItemCostSet = {};
-    obj.useWeaponCostSet = {};
-    obj.useArmorCostSet = {};
-    obj.useItemCostRate = {};
-    obj.useWeaponCostRate = {};
-    obj.useArmorCostRate = {};
-    obj.replaceItemCost = {};
+      obj.itemGaugeColor1 = MageStudios.Param.SCIGauge1;
+      obj.itemGaugeColor2 = MageStudios.Param.SCIGauge2;
+      obj.useItemCostSet = {};
+      obj.useWeaponCostSet = {};
+      obj.useArmorCostSet = {};
+      obj.useItemCostRate = {};
+      obj.useWeaponCostRate = {};
+      obj.useArmorCostRate = {};
+      obj.replaceItemCost = {};
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(note1)) {
-        var gauge = parseInt(RegExp.$1);
-        var text = String(RegExp.$2).toUpperCase();
-        if (text.match(/(?:ITEM|WEAPON|ARMOR)[ ](\d+)/i)) {
-          if (gauge === 1) obj.gauge1 = text;
-          if (gauge === 2) obj.gauge2 = text;
-          if (gauge === 3) obj.gauge3 = text;
-        } else if (text.match(/(?:ITEM|WEAPON|ARMOR)[ ](.*)/i)) {
-          var name = String(RegExp.$1).toUpperCase();
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(note1)) {
+          var gauge = parseInt(RegExp.$1);
+          var text = String(RegExp.$2).toUpperCase();
+          if (text.match(/(?:ITEM|WEAPON|ARMOR)[ ](\d+)/i)) {
+            if (gauge === 1) obj.gauge1 = text;
+            if (gauge === 2) obj.gauge2 = text;
+            if (gauge === 3) obj.gauge3 = text;
+          } else if (text.match(/(?:ITEM|WEAPON|ARMOR)[ ](.*)/i)) {
+            var name = String(RegExp.$1).toUpperCase();
+            if (MageStudios.ItemIdRef[name]) {
+              var id = MageStudios.ItemIdRef[name];
+            } else if (MageStudios.WeaponIdRef[name]) {
+              var id = MageStudios.WeaponIdRef[name];
+            } else if (MageStudios.ArmorIdRef[name]) {
+              var id = MageStudios.ArmorIdRef[name];
+            }
+            var text = "ITEM " + id;
+            if (gauge === 1) obj.gauge1 = text;
+            if (gauge === 2) obj.gauge2 = text;
+            if (gauge === 3) obj.gauge3 = text;
+          }
+        } else if (line.match(note2)) {
+          var gauge = parseInt(RegExp.$1);
+          var icon = parseInt(RegExp.$2);
+          if (gauge === 1) obj.gaugeIcon1 = icon;
+          if (gauge === 2) obj.gaugeIcon2 = icon;
+          if (gauge === 3) obj.gaugeIcon3 = icon;
+        } else if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
+          obj.useItemCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
+          obj.useWeaponCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
+          obj.useArmorCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
+        } else if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
+          var value = parseFloat(RegExp.$2) * 0.01;
+          obj.useItemCostRate[parseInt(RegExp.$1)] = value;
+        } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
+          var value = parseFloat(RegExp.$2) * 0.01;
+          obj.useWeaponCostRate[parseInt(RegExp.$1)] = value;
+        } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
+          var value = parseFloat(RegExp.$2) * 0.01;
+          obj.useArmorCostRate[parseInt(RegExp.$1)] = value;
+        } else if (line.match(/<ITEM COST:[ ]([\+\-]\d+)[ ](.*)>/i)) {
+          var value = parseInt(RegExp.$1);
+          var name = String(RegExp.$2).toUpperCase();
           if (MageStudios.ItemIdRef[name]) {
             var id = MageStudios.ItemIdRef[name];
+            obj.useItemCostSet[id] = value;
           } else if (MageStudios.WeaponIdRef[name]) {
             var id = MageStudios.WeaponIdRef[name];
+            obj.useWeaponCostSet[id] = value;
           } else if (MageStudios.ArmorIdRef[name]) {
             var id = MageStudios.ArmorIdRef[name];
+            obj.useArmorCostSet[id] = value;
           }
-          var text = 'ITEM ' + id;
-          if (gauge === 1) obj.gauge1 = text;
-          if (gauge === 2) obj.gauge2 = text;
-          if (gauge === 3) obj.gauge3 = text;
+        } else if (line.match(/<ITEM COST:[ ](\d+)([%％])[ ](.*)>/i)) {
+          var value = parseFloat(RegExp.$1) * 0.01;
+          var name = String(RegExp.$3).toUpperCase();
+          if (MageStudios.ItemIdRef[name]) {
+            var id = MageStudios.ItemIdRef[name];
+            obj.useItemCostRate[id] = value;
+          } else if (MageStudios.WeaponIdRef[name]) {
+            var id = MageStudios.WeaponIdRef[name];
+            obj.useWeaponCostRate[id] = value;
+          } else if (MageStudios.ArmorIdRef[name]) {
+            var id = MageStudios.ArmorIdRef[name];
+            obj.useArmorCostRate[id] = value;
+          }
+        } else if (line.match(noteR1)) {
+          var type1 = String(RegExp.$1).toUpperCase();
+          var id1 = parseInt(RegExp.$2);
+          var type2 = String(RegExp.$3).toUpperCase();
+          var id2 = parseInt(RegExp.$4);
+          if (!["ITEM", "WEAPON", "ARMOR"].contains(type1)) continue;
+          if (!["ITEM", "WEAPON", "ARMOR"].contains(type2)) continue;
+          obj.replaceItemCost[type1 + " " + id1] = type2 + " " + id2;
+        } else if (line.match(noteR2)) {
+          var name1 = String(RegExp.$1).toUpperCase();
+          var name2 = String(RegExp.$2).toUpperCase();
+          if (MageStudios.ItemIdRef[name1]) {
+            var id = MageStudios.ItemIdRef[name1];
+            var type1 = "ITEM " + id;
+          } else if (MageStudios.WeaponIdRef[name1]) {
+            var id = MageStudios.WeaponIdRef[name1];
+            var type1 = "WEAPON " + id;
+          } else if (MageStudios.ArmorIdRef[name1]) {
+            var id = MageStudios.ArmorIdRef[name1];
+            var type1 = "ARMOR " + id;
+          } else {
+            continue;
+          }
+          if (MageStudios.ItemIdRef[name2]) {
+            var id = MageStudios.ItemIdRef[name2];
+            var type2 = "ITEM " + id;
+          } else if (MageStudios.WeaponIdRef[name2]) {
+            var id = MageStudios.WeaponIdRef[name2];
+            var type2 = "WEAPON " + id;
+          } else if (MageStudios.ArmorIdRef[name2]) {
+            var id = MageStudios.ArmorIdRef[name2];
+            var type2 = "ARMOR " + id;
+          } else {
+            continue;
+          }
+          obj.replaceItemCost[type1] = type2;
         }
-      } else if (line.match(note2)) {
-        var gauge = parseInt(RegExp.$1);
-        var icon = parseInt(RegExp.$2);
-        if (gauge === 1) obj.gaugeIcon1 = icon;
-        if (gauge === 2) obj.gaugeIcon2 = icon;
-        if (gauge === 3) obj.gaugeIcon3 = icon;
-      } else if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
-        obj.useItemCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
-        obj.useWeaponCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ]([\+\-]\d+)>/i)) {
-        obj.useArmorCostSet[parseInt(RegExp.$1)] = parseInt(RegExp.$2);
-      } else if (line.match(/<ITEM[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
-        var value = parseFloat(RegExp.$2) * 0.01;
-        obj.useItemCostRate[parseInt(RegExp.$1)] = value;
-      } else if (line.match(/<WEAPON[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
-        var value = parseFloat(RegExp.$2) * 0.01;
-        obj.useWeaponCostRate[parseInt(RegExp.$1)] = value;
-      } else if (line.match(/<ARMOR[ ](\d+)[ ]COST:[ ](\d+)([%％])>/i)) {
-        var value = parseFloat(RegExp.$2) * 0.01;
-        obj.useArmorCostRate[parseInt(RegExp.$1)] = value;
-      } else if (line.match(/<ITEM COST:[ ]([\+\-]\d+)[ ](.*)>/i)) {
-        var value = parseInt(RegExp.$1);
-        var name = String(RegExp.$2).toUpperCase();
-        if (MageStudios.ItemIdRef[name]) {
-          var id = MageStudios.ItemIdRef[name];
-          obj.useItemCostSet[id] = value;
-        } else if (MageStudios.WeaponIdRef[name]) {
-          var id = MageStudios.WeaponIdRef[name];
-          obj.useWeaponCostSet[id] = value;
-        } else if (MageStudios.ArmorIdRef[name]) {
-          var id = MageStudios.ArmorIdRef[name];
-          obj.useArmorCostSet[id] = value;
-        }
-      } else if (line.match(/<ITEM COST:[ ](\d+)([%％])[ ](.*)>/i)) {
-        var value = parseFloat(RegExp.$1) * 0.01;
-        var name = String(RegExp.$3).toUpperCase();
-        if (MageStudios.ItemIdRef[name]) {
-          var id = MageStudios.ItemIdRef[name];
-          obj.useItemCostRate[id] = value;
-        } else if (MageStudios.WeaponIdRef[name]) {
-          var id = MageStudios.WeaponIdRef[name];
-          obj.useWeaponCostRate[id] = value;
-        } else if (MageStudios.ArmorIdRef[name]) {
-          var id = MageStudios.ArmorIdRef[name];
-          obj.useArmorCostRate[id] = value;
-        }
-      } else if (line.match(noteR1)) {
-        var type1 = String(RegExp.$1).toUpperCase();
-        var id1 = parseInt(RegExp.$2);
-        var type2 = String(RegExp.$3).toUpperCase();
-        var id2 = parseInt(RegExp.$4);
-        if (!['ITEM', 'WEAPON', 'ARMOR'].contains(type1)) continue;
-        if (!['ITEM', 'WEAPON', 'ARMOR'].contains(type2)) continue;
-        obj.replaceItemCost[type1 + ' ' + id1] = type2 + ' ' + id2;
-      } else if (line.match(noteR2)) {
-        var name1 = String(RegExp.$1).toUpperCase();
-        var name2 = String(RegExp.$2).toUpperCase();
-        if (MageStudios.ItemIdRef[name1]) {
-          var id = MageStudios.ItemIdRef[name1];
-          var type1 = 'ITEM ' + id;
-        } else if (MageStudios.WeaponIdRef[name1]) {
-          var id = MageStudios.WeaponIdRef[name1];
-          var type1 = 'WEAPON ' + id;
-        } else if (MageStudios.ArmorIdRef[name1]) {
-          var id = MageStudios.ArmorIdRef[name1];
-          var type1 = 'ARMOR ' + id;
-        } else {
-          continue;
-        }
-        if (MageStudios.ItemIdRef[name2]) {
-          var id = MageStudios.ItemIdRef[name2];
-          var type2 = 'ITEM ' + id;
-        } else if (MageStudios.WeaponIdRef[name2]) {
-          var id = MageStudios.WeaponIdRef[name2];
-          var type2 = 'WEAPON ' + id;
-        } else if (MageStudios.ArmorIdRef[name2]) {
-          var id = MageStudios.ArmorIdRef[name2];
-          var type2 = 'ARMOR ' + id;
-        } else {
-          continue;
-        }
-        obj.replaceItemCost[type1] = type2;
       }
     }
-  }
-};
+  };
 
-DataManager.processSCINotetags3 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processSCINotetags3 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.itemGaugeColor1 = MageStudios.Param.SCIGauge1
-    obj.itemGaugeColor2 = MageStudios.Param.SCIGauge2
-    obj.itemGaugeText = MageStudios.Param.SCIDisplayName ? obj.name : '';
-    obj.itemGaugeTextColor = MageStudios.Param.SCIDisplayColor;
+      obj.itemGaugeColor1 = MageStudios.Param.SCIGauge1;
+      obj.itemGaugeColor2 = MageStudios.Param.SCIGauge2;
+      obj.itemGaugeText = MageStudios.Param.SCIDisplayName ? obj.name : "";
+      obj.itemGaugeTextColor = MageStudios.Param.SCIDisplayColor;
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:ITEM GAUGE COLOR 1):[ ](\d+)>/i)) {
-        obj.itemGaugeColor1 = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:ITEM GAUGE COLOR 2):[ ](\d+)>/i)) {
-        obj.itemGaugeColor2 = parseInt(RegExp.$1);
-      } else if (line.match(/<(?:ITEM GAUGE TEXT):[ ](.*)>/i)) {
-        obj.itemGaugeText = String(RegExp.$1);
-      } else if (line.match(/<(?:ITEM GAUGE TEXT COLOR):[ ](\d+)>/i)) {
-        obj.itemGaugeTextColor = parseInt(RegExp.$1);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:ITEM GAUGE COLOR 1):[ ](\d+)>/i)) {
+          obj.itemGaugeColor1 = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:ITEM GAUGE COLOR 2):[ ](\d+)>/i)) {
+          obj.itemGaugeColor2 = parseInt(RegExp.$1);
+        } else if (line.match(/<(?:ITEM GAUGE TEXT):[ ](.*)>/i)) {
+          obj.itemGaugeText = String(RegExp.$1);
+        } else if (line.match(/<(?:ITEM GAUGE TEXT COLOR):[ ](\d+)>/i)) {
+          obj.itemGaugeTextColor = parseInt(RegExp.$1);
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.SCI.Game_BattlerBase_canPaySkillCost =
+  MageStudios.SCI.Game_BattlerBase_canPaySkillCost =
     Game_BattlerBase.prototype.canPaySkillCost;
-Game_BattlerBase.prototype.canPaySkillCost = function(skill) {
+  Game_BattlerBase.prototype.canPaySkillCost = function (skill) {
     if (!this.canPaySkillItemCost(skill)) return;
     return MageStudios.SCI.Game_BattlerBase_canPaySkillCost.call(this, skill);
-};
+  };
 
-Game_BattlerBase.prototype.canPaySkillItemCost = function(skill) {
+  Game_BattlerBase.prototype.canPaySkillItemCost = function (skill) {
     return true;
-};
+  };
 
-Game_BattlerBase.prototype.skillItemCost = function(skill) {
+  Game_BattlerBase.prototype.skillItemCost = function (skill) {
     return [];
-};
+  };
 
-Game_BattlerBase.prototype.combineSkillItemCostEntries = function(array) {
+  Game_BattlerBase.prototype.combineSkillItemCostEntries = function (array) {
     var objData = [];
     var amtData = [];
     for (var i = 0; i < array.length; ++i) {
@@ -644,9 +632,9 @@ Game_BattlerBase.prototype.combineSkillItemCostEntries = function(array) {
       data.push([objData[i], amtData[i]]);
     }
     return data;
-};
+  };
 
-Game_BattlerBase.prototype.extractSkillItemCost = function(array, type) {
+  Game_BattlerBase.prototype.extractSkillItemCost = function (array, type) {
     var data = [];
     var max = array.length;
     for (var i = 0; i < max; ++i) {
@@ -670,10 +658,14 @@ Game_BattlerBase.prototype.extractSkillItemCost = function(array, type) {
       data.push([item, cost]);
     }
     return data;
-};
+  };
 
-Game_BattlerBase.prototype.applySkillItemCostEval = function(item, cost, code) {
-    if (code === '') return cost;
+  Game_BattlerBase.prototype.applySkillItemCostEval = function (
+    item,
+    cost,
+    code
+  ) {
+    if (code === "") return cost;
     var a = this;
     var user = this;
     var subject = this;
@@ -682,18 +674,21 @@ Game_BattlerBase.prototype.applySkillItemCostEval = function(item, cost, code) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'APPLY SKILL ITEM COST ERROR');
+      MageStudios.Util.displayError(e, code, "APPLY SKILL ITEM COST ERROR");
     }
     return cost;
-};
+  };
 
-Game_BattlerBase.prototype.applySkillItemCostModifier = function(item, cost) {
+  Game_BattlerBase.prototype.applySkillItemCostModifier = function (
+    item,
+    cost
+  ) {
     cost *= this.getSkillItemCostRate(item);
     cost += this.getSkillItemCostSet(item);
     return Math.floor(Math.max(0, cost));
-};
+  };
 
-Game_BattlerBase.prototype.getSkillItemCostRate = function(item) {
+  Game_BattlerBase.prototype.getSkillItemCostRate = function (item) {
     var rate = 1;
     var max = this.states().length;
     for (var i = 0; i < max; ++i) {
@@ -702,9 +697,9 @@ Game_BattlerBase.prototype.getSkillItemCostRate = function(item) {
       rate *= this.getSkillItemCostObjRate(item, state);
     }
     return rate;
-};
+  };
 
-Game_BattlerBase.prototype.getSkillItemCostObjRate = function(item, obj) {
+  Game_BattlerBase.prototype.getSkillItemCostObjRate = function (item, obj) {
     if (!item) return 1;
     if (!obj) return 1;
     if (DataManager.isItem(item) && obj.useItemCostRate) {
@@ -715,9 +710,9 @@ Game_BattlerBase.prototype.getSkillItemCostObjRate = function(item, obj) {
       return obj.useArmorCostRate[item.id] || 1;
     }
     return 1;
-};
+  };
 
-Game_BattlerBase.prototype.getSkillItemCostSet = function(item) {
+  Game_BattlerBase.prototype.getSkillItemCostSet = function (item) {
     var bonus = 0;
     var max = this.states().length;
     for (var i = 0; i < max; ++i) {
@@ -726,9 +721,9 @@ Game_BattlerBase.prototype.getSkillItemCostSet = function(item) {
       bonus += this.getSkillItemCostObjSet(item, state);
     }
     return bonus;
-};
+  };
 
-Game_BattlerBase.prototype.getSkillItemCostObjSet = function(item, obj) {
+  Game_BattlerBase.prototype.getSkillItemCostObjSet = function (item, obj) {
     if (!item) return 0;
     if (!obj) return 0;
     if (DataManager.isItem(item) && obj.useItemCostSet) {
@@ -739,16 +734,16 @@ Game_BattlerBase.prototype.getSkillItemCostObjSet = function(item, obj) {
       return obj.useArmorCostSet[item.id] || 0;
     }
     return 0;
-};
+  };
 
-MageStudios.SCI.Game_BattlerBase_paySkillCost = 
+  MageStudios.SCI.Game_BattlerBase_paySkillCost =
     Game_BattlerBase.prototype.paySkillCost;
-Game_BattlerBase.prototype.paySkillCost = function(skill) {
+  Game_BattlerBase.prototype.paySkillCost = function (skill) {
     MageStudios.SCI.Game_BattlerBase_paySkillCost.call(this, skill);
     this.paySkillItemCost(skill);
-};
+  };
 
-Game_BattlerBase.prototype.paySkillItemCost = function(skill) {
+  Game_BattlerBase.prototype.paySkillItemCost = function (skill) {
     var array = this.skillItemCost(skill);
     var max = array.length;
     for (var i = 0; i < max; ++i) {
@@ -756,29 +751,31 @@ Game_BattlerBase.prototype.paySkillItemCost = function(skill) {
       var cost = array[i][1];
       this.payIndividualSkillItemCost(item, cost);
     }
-};
+  };
 
-Game_BattlerBase.prototype.payIndividualSkillItemCost = function(item, cost) {
-};
+  Game_BattlerBase.prototype.payIndividualSkillItemCost = function (
+    item,
+    cost
+  ) {};
 
-Game_BattlerBase.prototype.numItems = function(item) {
+  Game_BattlerBase.prototype.numItems = function (item) {
     return $gameParty.maxItems(item);
-};
+  };
 
-Game_BattlerBase.prototype.maxItems = function(item) {
+  Game_BattlerBase.prototype.maxItems = function (item) {
     return $gameParty.maxItems(item);
-};
+  };
 
-Game_BattlerBase.prototype.applySkillItemReplace = function(item) {
-    var type = '';
-    if (DataManager.isItem(item)) type = 'ITEM ' + item.id;
-    if (DataManager.isWeapon(item)) type = 'WEAPON ' + item.id;
-    if (DataManager.isArmor(item)) type = 'ARMOR ' + item.id;
+  Game_BattlerBase.prototype.applySkillItemReplace = function (item) {
+    var type = "";
+    if (DataManager.isItem(item)) type = "ITEM " + item.id;
+    if (DataManager.isWeapon(item)) type = "WEAPON " + item.id;
+    if (DataManager.isArmor(item)) type = "ARMOR " + item.id;
     var substitute = this.makeSkillItemReplace(type);
     return substitute || item;
-};
+  };
 
-Game_BattlerBase.prototype.makeSkillItemReplace = function(type) {
+  Game_BattlerBase.prototype.makeSkillItemReplace = function (type) {
     var max = this.states().length;
     for (var i = 0; i < max; ++i) {
       var state = this.states()[i];
@@ -787,16 +784,16 @@ Game_BattlerBase.prototype.makeSkillItemReplace = function(type) {
       }
     }
     return null;
-};
+  };
 
-Game_BattlerBase.prototype.hasSkillItemReplace = function(obj, type) {
+  Game_BattlerBase.prototype.hasSkillItemReplace = function (obj, type) {
     if (obj.replaceItemCost) {
       return obj.replaceItemCost[type];
     }
     return false;
-};
+  };
 
-Game_BattlerBase.prototype.getSkillItemReplace = function(obj, type) {
+  Game_BattlerBase.prototype.getSkillItemReplace = function (obj, type) {
     if (obj.replaceItemCost) {
       var text = obj.replaceItemCost[type];
       if (text.match(/ITEM[ ](\d+)/i)) {
@@ -808,13 +805,9 @@ Game_BattlerBase.prototype.getSkillItemReplace = function(obj, type) {
       }
     }
     return null;
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.canPaySkillItemCost = function(skill) {
+  Game_Actor.prototype.canPaySkillItemCost = function (skill) {
     var array = this.skillItemCost(skill);
     var max = array.length;
     for (var i = 0; i < max; ++i) {
@@ -823,30 +816,30 @@ Game_Actor.prototype.canPaySkillItemCost = function(skill) {
       if (this.numItems(item) < cost) return false;
     }
     return Game_BattlerBase.prototype.canPaySkillItemCost.call(this, skill);
-};
+  };
 
-Game_Actor.prototype.skillItemCost = function(skill) {
+  Game_Actor.prototype.skillItemCost = function (skill) {
     var array = Game_BattlerBase.prototype.skillItemCost.call(this, skill);
     array = array.concat(this.extractSkillItemCost(skill.useItemCost, 0));
     array = array.concat(this.extractSkillItemCost(skill.useWeaponCost, 1));
     array = array.concat(this.extractSkillItemCost(skill.useArmorCost, 2));
     array = this.combineSkillItemCostEntries(array);
     return array;
-};
+  };
 
-Game_Actor.prototype.payIndividualSkillItemCost = function(item, cost) {
+  Game_Actor.prototype.payIndividualSkillItemCost = function (item, cost) {
     $gameParty.loseItem(item, cost, false);
-};
+  };
 
-Game_Actor.prototype.numItems = function(item) {
+  Game_Actor.prototype.numItems = function (item) {
     return $gameParty.numItems(item);
-};
+  };
 
-Game_Actor.prototype.maxItems = function(item) {
+  Game_Actor.prototype.maxItems = function (item) {
     return $gameParty.maxItems(item);
-};
+  };
 
-Game_Actor.prototype.getSkillItemCostRate = function(item) {
+  Game_Actor.prototype.getSkillItemCostRate = function (item) {
     var rate = Game_Battler.prototype.getSkillItemCostRate.call(this, item);
     rate *= this.getSkillItemCostObjRate(item, this.actor());
     rate *= this.getSkillItemCostObjRate(item, this.currentClass());
@@ -857,9 +850,9 @@ Game_Actor.prototype.getSkillItemCostRate = function(item) {
       rate *= this.getSkillItemCostObjRate(item, equip);
     }
     return rate;
-};
+  };
 
-Game_Actor.prototype.getSkillItemCostSet = function(item) {
+  Game_Actor.prototype.getSkillItemCostSet = function (item) {
     var bonus = Game_Battler.prototype.getSkillItemCostSet.call(this, item);
     bonus += this.getSkillItemCostObjSet(item, this.actor());
     bonus += this.getSkillItemCostObjSet(item, this.currentClass());
@@ -870,9 +863,9 @@ Game_Actor.prototype.getSkillItemCostSet = function(item) {
       bonus += this.getSkillItemCostObjSet(item, equip);
     }
     return bonus;
-};
+  };
 
-Game_Actor.prototype.makeSkillItemReplace = function(type) {
+  Game_Actor.prototype.makeSkillItemReplace = function (type) {
     var state = Game_Battler.prototype.makeSkillItemReplace.call(this, type);
     if (state) return state;
     var max = this.equips().length;
@@ -889,40 +882,36 @@ Game_Actor.prototype.makeSkillItemReplace = function(type) {
       return this.getSkillItemReplace(this.actor(), type);
     }
     return null;
-};
+  };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-MageStudios.SCI.Window_Base_drawActorHp = Window_Base.prototype.drawActorHp;
-Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
+  MageStudios.SCI.Window_Base_drawActorHp = Window_Base.prototype.drawActorHp;
+  Window_Base.prototype.drawActorHp = function (actor, x, y, width) {
     if (actor.gauge1().match(/(?:ITEM|WEAPON|ARMOR)[ ](\d+)/i)) {
       this.drawItemGaugeSwap(actor, 1, x, y, width);
     } else {
       MageStudios.SCI.Window_Base_drawActorHp.call(this, actor, x, y, width);
     }
-};
+  };
 
-MageStudios.SCI.Window_Base_drawActorMp = Window_Base.prototype.drawActorMp;
-Window_Base.prototype.drawActorMp = function(actor, x, y, width) {
+  MageStudios.SCI.Window_Base_drawActorMp = Window_Base.prototype.drawActorMp;
+  Window_Base.prototype.drawActorMp = function (actor, x, y, width) {
     if (actor.gauge2().match(/(?:ITEM|WEAPON|ARMOR)[ ](\d+)/i)) {
       this.drawItemGaugeSwap(actor, 2, x, y, width);
     } else {
       MageStudios.SCI.Window_Base_drawActorMp.call(this, actor, x, y, width);
     }
-};
+  };
 
-MageStudios.SCI.Window_Base_drawActorTp = Window_Base.prototype.drawActorTp;
-Window_Base.prototype.drawActorTp = function(actor, x, y, width) {
+  MageStudios.SCI.Window_Base_drawActorTp = Window_Base.prototype.drawActorTp;
+  Window_Base.prototype.drawActorTp = function (actor, x, y, width) {
     if (actor.gauge3().match(/(?:ITEM|WEAPON|ARMOR)[ ](\d+)/i)) {
       this.drawItemGaugeSwap(actor, 3, x, y, width);
     } else {
       MageStudios.SCI.Window_Base_drawActorTp.call(this, actor, x, y, width);
     }
-};
+  };
 
-Window_Base.prototype.drawItemGaugeSwap = function(actor, id, wx, wy, ww) {
+  Window_Base.prototype.drawItemGaugeSwap = function (actor, id, wx, wy, ww) {
     ww = ww || 186;
     if (id === 1) text = actor.gauge1();
     if (id === 2) text = actor.gauge2();
@@ -949,12 +938,12 @@ Window_Base.prototype.drawItemGaugeSwap = function(actor, id, wx, wy, ww) {
     var max = actor.maxItems(item);
     var color = this.normalColor();
     this.drawCurrentAndMax(cur, max, wx, wy, ww, color, color);
-};
+  };
 
-Window_Base.prototype.drawItemGaugeName = function(actor, item, wx, wy, ww) {
+  Window_Base.prototype.drawItemGaugeName = function (actor, item, wx, wy, ww) {
     ww -= this.textWidth(MageStudios.Util.toGroup(actor.numItems(item)));
     ww -= this.textWidth(MageStudios.Util.toGroup(actor.maxItems(item)));
-    ww -= this.textWidth('/');
+    ww -= this.textWidth("/");
     var text = item.itemGaugeText;
     for (;;) {
       var nameWidth = this.textWidth(text);
@@ -967,31 +956,34 @@ Window_Base.prototype.drawItemGaugeName = function(actor, item, wx, wy, ww) {
     }
     this.changeTextColor(this.textColor(item.itemGaugeTextColor));
     this.drawText(text, wx, wy, ww);
-};
+  };
 
-Window_Base.prototype.drawItemGaugeMain = function(actor, item, wx, wy, ww) {
+  Window_Base.prototype.drawItemGaugeMain = function (actor, item, wx, wy, ww) {
     var color1 = this.textColor(item.itemGaugeColor1);
     var color2 = this.textColor(item.itemGaugeColor2);
     var rate = actor.numItems(item) / actor.maxItems(item);
     this.drawGauge(wx, wy, ww, rate, color1, color2);
-};
+  };
 
-Window_Base.prototype.drawItemGaugeIcon = function(icon, wx, wy) {
+  Window_Base.prototype.drawItemGaugeIcon = function (icon, wx, wy) {
     this.drawIcon(icon, wx, wy);
     return Window_Base._iconWidth + 4;
-};
+  };
 
-//=============================================================================
-// Window_SkillList
-//=============================================================================
-
-MageStudios.SCI.Window_SkillList_drawTpCost = Window_SkillList.prototype.drawTpCost;
-Window_SkillList.prototype.drawTpCost = function(skill, wx, wy, dw) {
+  MageStudios.SCI.Window_SkillList_drawTpCost =
+    Window_SkillList.prototype.drawTpCost;
+  Window_SkillList.prototype.drawTpCost = function (skill, wx, wy, dw) {
     dw = this.drawSkillItemCost(skill, wx, wy, dw);
-    return MageStudios.SCI.Window_SkillList_drawTpCost.call(this, skill, wx, wy, dw);
-};
+    return MageStudios.SCI.Window_SkillList_drawTpCost.call(
+      this,
+      skill,
+      wx,
+      wy,
+      dw
+    );
+  };
 
-Window_SkillList.prototype.drawSkillItemCost = function(skill, wx, wy, dw) {
+  Window_SkillList.prototype.drawSkillItemCost = function (skill, wx, wy, dw) {
     if (MageStudios.Param.SCICostStyle === 0) return dw;
     var array = this._actor.skillItemCost(skill);
     var max = array.length;
@@ -1007,9 +999,15 @@ Window_SkillList.prototype.drawSkillItemCost = function(skill, wx, wy, dw) {
     var returnWidth = dw - MageStudios.Param.SCCCostPadding;
     this.resetFontSettings();
     return returnWidth;
-};
+  };
 
-Window_SkillList.prototype.drawSoloItemCost = function(item, cost, wx, wy, dw) {
+  Window_SkillList.prototype.drawSoloItemCost = function (
+    item,
+    cost,
+    wx,
+    wy,
+    dw
+  ) {
     var x = wx + dw - Window_Base._iconWidth;
     this.drawIcon(item.iconIndex, x, wy + 2);
     var amt1 = MageStudios.Util.toGroup(cost);
@@ -1018,41 +1016,33 @@ Window_SkillList.prototype.drawSoloItemCost = function(item, cost, wx, wy, dw) {
     var text = fmt.format(amt1, amt2);
     if (MageStudios.Param.SCICostStyle === 1) {
       var iconWidth = Window_Base._iconWidth + 4;
-      this.drawText(text, wx, wy + MageStudios.Param.SCIYBuffer, dw, 'right');
+      this.drawText(text, wx, wy + MageStudios.Param.SCIYBuffer, dw, "right");
       dw -= Math.max(iconWidth, this.textWidth(text));
     } else if (MageStudios.Param.SCICostStyle === 2) {
       var iconWidth = Window_Base._iconWidth;
       dw -= iconWidth;
-      this.drawText(text, wx, wy + MageStudios.Param.SCIYBuffer, dw, 'right');
+      this.drawText(text, wx, wy + MageStudios.Param.SCIYBuffer, dw, "right");
       dw -= this.textWidth(text);
     }
     return dw;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
   }
-};
 
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+}

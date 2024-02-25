@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Overkill Bonus
-// MSEP_OverkillBonus.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_OverkillBonus = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.OKB = MageStudios.OKB || {};
-MageStudios.OKB.version = 1.00;
+MageStudios.OKB.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Extra rewards (EXP, Gold, Items) for overkilling
  * enemies in battle.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
@@ -170,7 +164,7 @@ MageStudios.OKB.version = 1.00;
  *   --------------------------------------------------------------------------
  *
  *   <Custom Overkill Effect>
- *    // Insert any code you want here
+ *
  *   </Custom Overkill Effect>
  *
  *   - This code will run when the enemy is overkilled and collapses. The
@@ -194,72 +188,59 @@ MageStudios.OKB.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.setupParameters = function() {
-  var parameters = PluginManager.parameters('MSEP_OverkillBonus');
+MageStudios.setupParameters = function () {
+  var parameters = PluginManager.parameters("MSEP_OverkillBonus");
   this.Param = this.Param || {};
-  this.Param.OverkillFormula = String(parameters['Overkill Formula']);
-  this.Param.OverkillAniId = Number(parameters['Overkill Animation']);
-  this.Param.OverkillExpRate = Number(parameters['EXP Bonus Rate']);
-  this.Param.OverkillExpFlat = Number(parameters['EXP Bonus Flat']);
-  this.Param.OverkillGoldRate = Number(parameters['Gold Bonus Rate']);
-  this.Param.OverkillGoldFlat = Number(parameters['Gold Bonus Flat']);
-  this.Param.OverkillDropRate = Number(parameters['Drop Bonus Rate']);
+  this.Param.OverkillFormula = String(parameters["Overkill Formula"]);
+  this.Param.OverkillAniId = Number(parameters["Overkill Animation"]);
+  this.Param.OverkillExpRate = Number(parameters["EXP Bonus Rate"]);
+  this.Param.OverkillExpFlat = Number(parameters["EXP Bonus Flat"]);
+  this.Param.OverkillGoldRate = Number(parameters["Gold Bonus Rate"]);
+  this.Param.OverkillGoldFlat = Number(parameters["Gold Bonus Flat"]);
+  this.Param.OverkillDropRate = Number(parameters["Drop Bonus Rate"]);
 };
 
-MageStudios.setupParameters(); // Setup Parameters
+MageStudios.setupParameters();
 
-//=============================================================================
-// DataManager
-// ----------------------------------------------------------------------------
-// Notetags added by Mage
-//=============================================================================
-
-MageStudios.OKB.DataManager_isDatabaseLoaded = 
-  DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.OKB.DataManager_isDatabaseLoaded.call(this)) 
-    return false;
+MageStudios.OKB.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.OKB.DataManager_isDatabaseLoaded.call(this)) return false;
 
   if (!MageStudios._loaded_MSEP_OverkillBonus) {
     this.processOverkillBonusNotetags1($dataEnemies);
     MageStudios._loaded_MSEP_OverkillBonus = true;
   }
-  
+
   return true;
 };
 
-DataManager.processOverkillBonusNotetags1 = function(group) {
+DataManager.processOverkillBonusNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.overkillFormula = 'requirement = ' + MageStudios.Param.OverkillFormula;
+    obj.overkillFormula = "requirement = " + MageStudios.Param.OverkillFormula;
     obj.overkillAnimationId = MageStudios.Param.OverkillAniId;
     obj.overkillExpRate = MageStudios.Param.OverkillExpRate;
     obj.overkillExpFlat = MageStudios.Param.OverkillExpFlat;
     obj.overkillGoldRate = MageStudios.Param.OverkillGoldRate;
     obj.overkillGoldFlat = MageStudios.Param.OverkillGoldFlat;
     obj.overkillDropRate = MageStudios.Param.OverkillDropRate;
-    obj.overkillEffect = '';
-    var evalMode = 'none';
+    obj.overkillEffect = "";
+    var evalMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<OVERKILL REQUIREMENT:[ ](.*)>/i)) {
-        obj.overkillFormula = 'requirement = ' + String(RegExp.$1);
+        obj.overkillFormula = "requirement = " + String(RegExp.$1);
       } else if (line.match(/<OVERKILL REQUIREMENT FORMULA>/i)) {
-        evalMode = 'overkill formula';
-        obj.overkillFormula = '';
+        evalMode = "overkill formula";
+        obj.overkillFormula = "";
       } else if (line.match(/<\/OVERKILL REQUIREMENT FORMULA>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'overkill formula') {
-        obj.overkillFormula += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "overkill formula") {
+        obj.overkillFormula += line + "\n";
       } else if (line.match(/<OVERKILL ANIMATION:[ ](\d+)>/i)) {
         obj.overkillAnimationId = parseInt(RegExp.$1);
       } else if (line.match(/<OVERKILL EXP RATE:[ ](\d+)([%％])>/i)) {
@@ -273,39 +254,32 @@ DataManager.processOverkillBonusNotetags1 = function(group) {
       } else if (line.match(/<OVERKILL DROP RATE:[ ](\d+)([%％])>/i)) {
         obj.overkillDropRate = parseFloat(RegExp.$1) * 0.01;
       } else if (line.match(/<CUSTOM OVERKILL EFFECT>/i)) {
-        evalMode = 'custom overkill effect';
+        evalMode = "custom overkill effect";
       } else if (line.match(/<\/CUSTOM OVERKILL EFFECT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom overkill effect') {
-        obj.overkillEffect += line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom overkill effect") {
+        obj.overkillEffect += line + "\n";
       }
     }
   }
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
-MageStudios.OKB.Game_Action_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
+MageStudios.OKB.Game_Action_executeHpDamage =
+  Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function (target, value) {
   MageStudios.OKB.Game_Action_executeHpDaMageStudios.call(this, target, value);
   if (target.isEnemy() && (target.hp < 1 || target.isDead())) {
     target.checkOverkill();
   }
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
 MageStudios.OKB.Game_Enemy_setup = Game_Enemy.prototype.setup;
-Game_Enemy.prototype.setup = function(enemyId, x, y) {
+Game_Enemy.prototype.setup = function (enemyId, x, y) {
   MageStudios.OKB.Game_Enemy_setup.call(this, enemyId, x, y);
   this.setOverkill(false);
 };
 
-Game_Enemy.prototype.checkOverkill = function() {
+Game_Enemy.prototype.checkOverkill = function () {
   var result = this._result;
   if (result) {
     var dmg = this._result.hpDamage;
@@ -316,7 +290,7 @@ Game_Enemy.prototype.checkOverkill = function() {
   }
 };
 
-Game_Enemy.prototype.overkillRequirement = function() {
+Game_Enemy.prototype.overkillRequirement = function () {
   if (this._overkillRequirement) {
     return this._overkillRequirement;
   }
@@ -335,19 +309,20 @@ Game_Enemy.prototype.overkillRequirement = function() {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'OVERKILL FORMULA ERROR');
+    MageStudios.Util.displayError(e, code, "OVERKILL FORMULA ERROR");
   }
 
   this._overkillRequirement = requirement;
   return this._overkillRequirement;
 };
 
-Game_Enemy.prototype.setOverkill = function(status) {
+Game_Enemy.prototype.setOverkill = function (status) {
   this._overkill = status;
 };
 
-MageStudios.OKB.Game_Enemy_performCollapse = Game_Enemy.prototype.performCollapse;
-Game_Enemy.prototype.performCollapse = function() {
+MageStudios.OKB.Game_Enemy_performCollapse =
+  Game_Enemy.prototype.performCollapse;
+Game_Enemy.prototype.performCollapse = function () {
   if (this.isOverkilled()) {
     this.performOverkillCollapse();
   }
@@ -357,15 +332,15 @@ Game_Enemy.prototype.performCollapse = function() {
   }
 };
 
-Game_Enemy.prototype.overkillAnimationId = function() {
+Game_Enemy.prototype.overkillAnimationId = function () {
   return this.enemy().overkillAnimationId;
 };
 
-Game_Enemy.prototype.performOverkillCollapse = function() {
+Game_Enemy.prototype.performOverkillCollapse = function () {
   this.startAnimation(this.overkillAnimationId());
 };
 
-Game_Enemy.prototype.performOverkillEffect = function() {
+Game_Enemy.prototype.performOverkillEffect = function () {
   var user = this;
   var a = this;
   var b = this;
@@ -379,16 +354,16 @@ Game_Enemy.prototype.performOverkillEffect = function() {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'OVERKILL EFFECT ERROR');
+    MageStudios.Util.displayError(e, code, "OVERKILL EFFECT ERROR");
   }
 };
 
-Game_Enemy.prototype.isOverkilled = function() {
+Game_Enemy.prototype.isOverkilled = function () {
   return this._overkill;
 };
 
 MageStudios.OKB.Game_Enemy_exp = Game_Enemy.prototype.exp;
-Game_Enemy.prototype.exp = function() {
+Game_Enemy.prototype.exp = function () {
   var exp = MageStudios.OKB.Game_Enemy_exp.call(this);
   if (this.isOverkilled()) {
     exp *= this.enemy().overkillExpRate;
@@ -398,7 +373,7 @@ Game_Enemy.prototype.exp = function() {
 };
 
 MageStudios.OKB.Game_Enemy_gold = Game_Enemy.prototype.gold;
-Game_Enemy.prototype.gold = function() {
+Game_Enemy.prototype.gold = function () {
   var gold = MageStudios.OKB.Game_Enemy_gold.call(this);
   if (this.isOverkilled()) {
     gold *= this.enemy().overkillGoldRate;
@@ -408,7 +383,7 @@ Game_Enemy.prototype.gold = function() {
 };
 
 MageStudios.OKB.Game_Enemy_dropItemRate = Game_Enemy.prototype.dropItemRate;
-Game_Enemy.prototype.dropItemRate = function() {
+Game_Enemy.prototype.dropItemRate = function () {
   var dropRate = MageStudios.OKB.Game_Enemy_dropItemRate.call(this);
   if (this.isOverkilled()) {
     dropRate *= this.enemy().overkillDropRate;
@@ -416,47 +391,31 @@ Game_Enemy.prototype.dropItemRate = function() {
   return dropRate;
 };
 
-//=============================================================================
-// Compatibility Stuff
-// ----------------------------------------------------------------------------
-// MSEP_ExtraEnemyDrops
-//=============================================================================
-
 if (Imported.MSEP_ExtraEnemyDrops) {
+  MageStudios.OKB.DropManager_meetsLineCondition =
+    DropManager.meetsLineCondition;
+  DropManager.meetsLineCondition = function (line) {
+    if (line.match(/IS OVERKILL/i)) {
+      return this.conditionIsOverkilled(line);
+    }
+    return MageStudios.OKB.DropManager_meetsLineCondition.call(this, line);
+  };
 
-MageStudios.OKB.DropManager_meetsLineCondition = DropManager.meetsLineCondition;
-DropManager.meetsLineCondition = function(line) {
-  // IS OVERKILL
-  if (line.match(/IS OVERKILL/i)) {
-    return this.conditionIsOverkilled(line);
-  }
-  return MageStudios.OKB.DropManager_meetsLineCondition.call(this, line);
-};
-
-DropManager.conditionIsOverkilled = function(line) {
-  return this._enemy.isOverkilled();
-};
-
-}; // Imported.MSEP_ExtraEnemyDrops
-
-//=============================================================================
-// Utilities
-//=============================================================================
+  DropManager.conditionIsOverkilled = function (line) {
+    return this._enemy.isOverkilled();
+  };
+}
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

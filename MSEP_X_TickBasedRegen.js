@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Extension Plugin - Tick Based Regeneration
-// MSEP_X_TickBasedRegen.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_TickBasedRegen = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.TBR = MageStudios.TBR || {};
-MageStudios.TBR.version = 1.00;
+MageStudios.TBR.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore)
  * Tick-Based Battle system regeneration.
  * @author Mage Studios Engine Plugins
@@ -75,56 +69,49 @@ MageStudios.TBR.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore && Imported.MSEP_BuffsStatesCore) {
+  MageStudios.Param.BECTimeStates = "true";
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Param.BECTimeStates = 'true';
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-MageStudios.TBR.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
+  MageStudios.TBR.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
+  Game_BattlerBase.prototype.refresh = function () {
     this._cacheStatesLength = undefined;
     this._cacheStatesIndex = [];
     MageStudios.TBR.Game_BattlerBase_refresh.call(this);
-};
+  };
 
-MageStudios.TBR.Game_BattlerBase_traitObjects =
+  MageStudios.TBR.Game_BattlerBase_traitObjects =
     Game_BattlerBase.prototype.traitObjects;
-Game_BattlerBase.prototype.traitObjects = function() {
+  Game_BattlerBase.prototype.traitObjects = function () {
     if ($gameTemp._tickBasedTraits) return [];
     return MageStudios.TBR.Game_BattlerBase_traitObjects.call(this);
-};
+  };
 
-MageStudios.TBR.Game_Battler_regenerateHp = Game_Battler.prototype.regenerateHp;
-Game_Battler.prototype.regenerateHp = function() {
+  MageStudios.TBR.Game_Battler_regenerateHp =
+    Game_Battler.prototype.regenerateHp;
+  Game_Battler.prototype.regenerateHp = function () {
     if (BattleManager.timeBasedStates()) $gameTemp._tickBasedTraits = true;
     MageStudios.TBR.Game_Battler_regenerateHp.call(this);
     $gameTemp._tickBasedTraits = undefined;
-};
+  };
 
-MageStudios.TBR.Game_Battler_regenerateMp = Game_Battler.prototype.regenerateMp;
-Game_Battler.prototype.regenerateMp = function() {
+  MageStudios.TBR.Game_Battler_regenerateMp =
+    Game_Battler.prototype.regenerateMp;
+  Game_Battler.prototype.regenerateMp = function () {
     if (BattleManager.timeBasedStates()) $gameTemp._tickBasedTraits = true;
     MageStudios.TBR.Game_Battler_regenerateMp.call(this);
     $gameTemp._tickBasedTraits = undefined;
-};
+  };
 
-MageStudios.TBR.Game_Battler_regenerateTp = Game_Battler.prototype.regenerateTp;
-Game_Battler.prototype.regenerateTp = function() {
+  MageStudios.TBR.Game_Battler_regenerateTp =
+    Game_Battler.prototype.regenerateTp;
+  Game_Battler.prototype.regenerateTp = function () {
     if (BattleManager.timeBasedStates()) $gameTemp._tickBasedTraits = true;
     MageStudios.TBR.Game_Battler_regenerateTp.call(this);
     $gameTemp._tickBasedTraits = undefined;
-};
+  };
 
-Game_BattlerBase.prototype.updateStateTicks = function() {
+  Game_BattlerBase.prototype.updateStateTicks = function () {
     if (this.isDead()) return;
     var needRefresh = false;
     var length = this._cacheStatesLength || this.states().length;
@@ -165,10 +152,9 @@ Game_BattlerBase.prototype.updateStateTicks = function() {
       }
     }
     if (needRefresh) this.refresh();
+  };
 
-};
-
-Game_BattlerBase.prototype.updateStateTickRegen = function(state) {
+  Game_BattlerBase.prototype.updateStateTickRegen = function (state) {
     this.clearResult();
     this.regenerateHpTick(state);
     this.regenerateMpTick(state);
@@ -177,9 +163,13 @@ Game_BattlerBase.prototype.updateStateTickRegen = function(state) {
     this.clearResult();
     this.regenerateStateEffects(state.id);
     this.clearResult();
-};
+  };
 
-Game_BattlerBase.prototype.getStateTickTraits = function(state, code, dataId) {
+  Game_BattlerBase.prototype.getStateTickTraits = function (
+    state,
+    code,
+    dataId
+  ) {
     var length = state.traits.length;
     var value = 0;
     for (var i = 0; i < length; ++i) {
@@ -189,9 +179,9 @@ Game_BattlerBase.prototype.getStateTickTraits = function(state, code, dataId) {
       }
     }
     return value;
-};
+  };
 
-Game_BattlerBase.prototype.regenerateHpTick = function(state) {
+  Game_BattlerBase.prototype.regenerateHpTick = function (state) {
     var rate = this.getStateTickTraits(state, 22, 7);
     var value = Math.floor(this.mhp * rate);
     value = Math.max(value, -this.maxSlipDamage());
@@ -201,9 +191,9 @@ Game_BattlerBase.prototype.regenerateHpTick = function(state) {
       this.startDamagePopup();
       this.clearResult();
     }
-};
+  };
 
-Game_BattlerBase.prototype.regenerateMpTick = function(state) {
+  Game_BattlerBase.prototype.regenerateMpTick = function (state) {
     var rate = this.getStateTickTraits(state, 22, 8);
     var value = Math.floor(this.mmp * rate);
     if (value !== 0) {
@@ -212,49 +202,42 @@ Game_BattlerBase.prototype.regenerateMpTick = function(state) {
       this.startDamagePopup();
       this.clearResult();
     }
-};
+  };
 
-Game_BattlerBase.prototype.regenerateTpTick = function(state) {
+  Game_BattlerBase.prototype.regenerateTpTick = function (state) {
     var rate = this.getStateTickTraits(state, 22, 9);
     var value = Math.floor(this.maxTp() * rate);
     if (value !== 0) this.gainSilentTp(value);
-};
+  };
 
-MageStudios.TBR.Game_BattlerBase_resetStateCounts =
+  MageStudios.TBR.Game_BattlerBase_resetStateCounts =
     Game_BattlerBase.prototype.resetStateCounts;
-Game_BattlerBase.prototype.resetStateCounts = function(stateId) {
+  Game_BattlerBase.prototype.resetStateCounts = function (stateId) {
     MageStudios.TBR.Game_BattlerBase_resetStateCounts.call(this, stateId);
     var state = $dataStates[stateId];
     if (state && state.reapplyRules !== 0) {
       this._cachePassiveTicks = this._cachePassiveTicks || {};
       this._cachePassiveTicks[stateId] = MageStudios.Param.BECTurnTime;
     }
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.TBR.Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-Game_Battler.prototype.onBattleStart = function() {
+  MageStudios.TBR.Game_Battler_onBattleStart =
+    Game_Battler.prototype.onBattleStart;
+  Game_Battler.prototype.onBattleStart = function () {
     this._cachePassiveTicks = {};
     MageStudios.TBR.Game_Battler_onBattleStart.call(this);
-};
+  };
 
-MageStudios.TBR.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
-Game_Battler.prototype.onBattleEnd = function() {
+  MageStudios.TBR.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
+  Game_Battler.prototype.onBattleEnd = function () {
     this._cachePassiveTicks = {};
     MageStudios.TBR.Game_Battler_onBattleEnd.call(this);
-};
+  };
 
-MageStudios.TBR.Game_Battler_onRegenerateStateEffects =
+  MageStudios.TBR.Game_Battler_onRegenerateStateEffects =
     Game_Battler.prototype.onRegenerateStateEffects;
-Game_Battler.prototype.onRegenerateStateEffects = function() {
+  Game_Battler.prototype.onRegenerateStateEffects = function () {
     if (BattleManager.timeBasedStates()) return;
     MageStudios.TBR.Game_Battler_onRegenerateStateEffects.call(this);
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

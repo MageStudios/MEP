@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Auto Switch
-// MSEP_AutoSwitch.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_AutoSwitches = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AutoSwitch = MageStudios.AutoSwitch || {};
-MageStudios.AutoSwitch.version = 1.00;
+MageStudios.AutoSwitch.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc When playtesting, this will cause a particular
  * switch to always be ON for testing purposes.
  * @author Mage Studios Engine Plugins
@@ -74,41 +68,28 @@ MageStudios.AutoSwitch.version = 1.00;
  * on a certain type of browser.
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_AutoSwitches');
+MageStudios.Parameters = PluginManager.parameters("MSEP_AutoSwitches");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AutoSwitches = {
-  battle: Number(MageStudios.Parameters['Battle Switch']),
-  btest: Number(MageStudios.Parameters['Battle Test Switch']),
-  dash: Number(MageStudios.Parameters['Dash Switch']),
-  debug: Number(MageStudios.Parameters['Debug Switch']),
-  mobile: Number(MageStudios.Parameters['Mobile Switch']),
-  mobileChrome: Number(MageStudios.Parameters['Mobile Chrome Switch']),
-  mobileSafari: Number(MageStudios.Parameters['Mobile Safari Switch']),
-  nonLocal: Number(MageStudios.Parameters['Non-Local Switch'])
+  battle: Number(MageStudios.Parameters["Battle Switch"]),
+  btest: Number(MageStudios.Parameters["Battle Test Switch"]),
+  dash: Number(MageStudios.Parameters["Dash Switch"]),
+  debug: Number(MageStudios.Parameters["Debug Switch"]),
+  mobile: Number(MageStudios.Parameters["Mobile Switch"]),
+  mobileChrome: Number(MageStudios.Parameters["Mobile Chrome Switch"]),
+  mobileSafari: Number(MageStudios.Parameters["Mobile Safari Switch"]),
+  nonLocal: Number(MageStudios.Parameters["Non-Local Switch"]),
 };
 
-//=============================================================================
-// Utils
-//=============================================================================
-
-Utils.isMobileChrome = function() {
-    var agent = navigator.userAgent;
-    return agent.match(/Chrome/);
+Utils.isMobileChrome = function () {
+  var agent = navigator.userAgent;
+  return agent.match(/Chrome/);
 };
-
-//=============================================================================
-// Game_Switches
-//=============================================================================
 
 MageStudios.AutoSwitch.Game_Switches_value = Game_Switches.prototype.value;
-Game_Switches.prototype.value = function(switchId) {
+Game_Switches.prototype.value = function (switchId) {
   if (switchId === MageStudios.Param.AutoSwitches.battle) {
     return this.battleAutoSwitch();
   } else if (switchId === MageStudios.Param.AutoSwitches.btest) {
@@ -130,38 +111,34 @@ Game_Switches.prototype.value = function(switchId) {
   }
 };
 
-Game_Switches.prototype.battleAutoSwitch = function() {
+Game_Switches.prototype.battleAutoSwitch = function () {
   return $gameParty.inBattle();
 };
 
-Game_Switches.prototype.battleTestAutoSwitch = function() {
+Game_Switches.prototype.battleTestAutoSwitch = function () {
   return BattleManager.isBattleTest();
 };
 
-Game_Switches.prototype.dashAutoSwitch = function() {
+Game_Switches.prototype.dashAutoSwitch = function () {
   return $gamePlayer.isDashing();
 };
 
-Game_Switches.prototype.debugAutoSwitch = function() {
-  return Utils.isNwjs() && Utils.isOptionValid('test');
+Game_Switches.prototype.debugAutoSwitch = function () {
+  return Utils.isNwjs() && Utils.isOptionValid("test");
 };
 
-Game_Switches.prototype.mobileAutoSwitch = function() {
+Game_Switches.prototype.mobileAutoSwitch = function () {
   return Utils.isMobileDevice();
 };
 
-Game_Switches.prototype.mobileChromeAutoSwitch = function() {
+Game_Switches.prototype.mobileChromeAutoSwitch = function () {
   return Utils.isMobileChrome();
 };
 
-Game_Switches.prototype.mobileSafariAutoSwitch = function() {
+Game_Switches.prototype.mobileSafariAutoSwitch = function () {
   return Utils.isMobileSafari();
 };
 
-Game_Switches.prototype.nonLocalAutoSwitch = function() {
+Game_Switches.prototype.nonLocalAutoSwitch = function () {
   return !Utils.isNwjs();
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

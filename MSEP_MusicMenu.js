@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Music Menu
-// MSEP_MusicMenu.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MusicMenu = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MusicMenu = MageStudios.MusicMenu || {};
-MageStudios.MusicMenu.version = 1.00;
+MageStudios.MusicMenu.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Access and play music from a menu! Players can unlock
  * songs from in the game as they play.
  * @author Mage Studios Engine Plugins + Chickie Collaboration
@@ -648,7 +642,7 @@ MageStudios.MusicMenu.version = 1.00;
  * player will be able to play any songs previously encountered within the game
  * that you allow them to be able to play. You can set the filename, display
  * name of the song, the volume, pitch, pan, and even the help description for
- * when the song will be replayed. 
+ * when the song will be replayed.
  *
  * This is a collaboration plugin by Chickie and Mage to ensure compatibility
  * with the Mage Studios Engine Plugins library.
@@ -705,9 +699,9 @@ MageStudios.MusicMenu.version = 1.00;
  *     Symbol: musicMenu
  *       Show: $gameSwitches.value(Insert a Switch ID to show this command)
  *    Enabled: $gameSwitches.value(Insert a Switch ID to enable this command)
- *        Ext: 
+ *        Ext:
  *  Main Bind: this.commandMusicMenu.bind(this)
- * Actor Bind: 
+ * Actor Bind:
  *
  * Insert the above setup within a Main Menu Manager slot. Provided you copy
  * the exact settings to where you need it, it will appear there while using
@@ -754,42 +748,40 @@ MageStudios.MusicMenu.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_MusicMenu');
+MageStudios.Parameters = PluginManager.parameters("MSEP_MusicMenu");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.MusicMenuIcon = Number(MageStudios.Parameters['Music Icon']);
-MageStudios.Param.MusicMenuHiddenName = String(MageStudios.Parameters['Hidden Name']);
-MageStudios.Param.MusicMenuHiddenHelp = String(MageStudios.Parameters['Hidden Help']);
+MageStudios.Param.MusicMenuIcon = Number(MageStudios.Parameters["Music Icon"]);
+MageStudios.Param.MusicMenuHiddenName = String(
+  MageStudios.Parameters["Hidden Name"]
+);
+MageStudios.Param.MusicMenuHiddenHelp = String(
+  MageStudios.Parameters["Hidden Help"]
+);
 
-MageStudios.SetupMusicMenuParameters = function() {
-  MageStudios.Param.MusicMenuSongFilenameList = [''];
-  MageStudios.Param.MusicMenuSongList = [['']];
+MageStudios.SetupMusicMenuParameters = function () {
+  MageStudios.Param.MusicMenuSongFilenameList = [""];
+  MageStudios.Param.MusicMenuSongList = [[""]];
   for (var i = 1; i < 101; i++) {
-    var paramName = 'Song ' + i + ' Data';
+    var paramName = "Song " + i + " Data";
     var paramStr = String(MageStudios.Parameters[paramName]);
-    var paramData = paramStr.split(';')
+    var paramData = paramStr.split(";");
     MageStudios.Param.MusicMenuSongList.push(paramData);
     MageStudios.Param.MusicMenuSongFilenameList.push(paramData[0]);
   }
-}
+};
 
 MageStudios.SetupMusicMenuParameters();
 
-//=============================================================================
-// AudioManager
-//=============================================================================
-
 MageStudios.MusicMenu.AudioManager_playBgm = AudioManager.playBgm;
-AudioManager.playBgm = function(bgm, pos) {
+AudioManager.playBgm = function (bgm, pos) {
   MageStudios.MusicMenu.AudioManager_playBgm.call(this, bgm, pos);
   var bgmName = bgm.name;
-  if (bgmName && MageStudios.Param.MusicMenuSongFilenameList.contains(bgmName)) {
+  if (
+    bgmName &&
+    MageStudios.Param.MusicMenuSongFilenameList.contains(bgmName)
+  ) {
     if ($gameSystem) {
       var index = MageStudios.Param.MusicMenuSongFilenameList.indexOf(bgmName);
       $gameSystem.unlockMusicMenuSong(index);
@@ -797,29 +789,25 @@ AudioManager.playBgm = function(bgm, pos) {
   }
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.MusicMenu.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.MusicMenu.Game_System_initialize.call(this);
   this.initMusicMenuSettings();
 };
 
-Game_System.prototype.initMusicMenuSettings = function() {
+Game_System.prototype.initMusicMenuSettings = function () {
   this._unlockedMusicMenuSongs = [];
   this._unlockAllMusicMenuSongs = false;
 };
 
-Game_System.prototype.getUnlockedMusicMenuSongs = function() {
+Game_System.prototype.getUnlockedMusicMenuSongs = function () {
   if (this._unlockedMusicMenuSongs === undefined) {
     this.initMusicMenuSettings();
   }
   return this._unlockedMusicMenuSongs;
 };
 
-Game_System.prototype.unlockMusicMenuSong = function(id) {
+Game_System.prototype.unlockMusicMenuSong = function (id) {
   if (this._unlockedMusicMenuSongs === undefined) {
     this.initMusicMenuSettings();
   }
@@ -830,7 +818,7 @@ Game_System.prototype.unlockMusicMenuSong = function(id) {
   }
 };
 
-Game_System.prototype.isUnlockedMusicMenuSong = function(id) {
+Game_System.prototype.isUnlockedMusicMenuSong = function (id) {
   if (this._unlockedMusicMenuSongs === undefined) {
     this.initMusicMenuSettings();
   }
@@ -840,38 +828,38 @@ Game_System.prototype.isUnlockedMusicMenuSong = function(id) {
   return this._unlockedMusicMenuSongs.contains(id);
 };
 
-Game_System.prototype.unlockAllMusicMenuSongs = function(value) {
+Game_System.prototype.unlockAllMusicMenuSongs = function (value) {
   if (this._unlockedMusicMenuSongs === undefined) {
     this.initMusicMenuSettings();
   }
   this._unlockAllMusicMenuSongs = value;
 };
 
-Game_System.prototype.isUnlockedAllMusicMenuSongs = function() {
+Game_System.prototype.isUnlockedAllMusicMenuSongs = function () {
   if (this._unlockedMusicMenuSongs === undefined) {
     this.initMusicMenuSettings();
   }
   return this._unlockAllMusicMenuSongs;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.MusicMenu.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.MusicMenu.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'GoToMusicMenu') {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.MusicMenu.Game_Interpreter_pluginCommand.call(
+    this,
+    command,
+    args
+  );
+  if (command === "GoToMusicMenu") {
     SceneManager.push(Scene_MusicMenu);
   }
-  if (command === 'AllMusicMenuSongs') {
+  if (command === "AllMusicMenuSongs") {
     $gameSystem.unlockAllMusicMenuSongs(true);
   }
-  if (command === 'NormalMusicMenuSongs') {
+  if (command === "NormalMusicMenuSongs") {
     $gameSystem.unlockAllMusicMenuSongs(false);
   }
-  if (command === 'UnlockMusicMenuSong') {
+  if (command === "UnlockMusicMenuSong") {
     for (var i = 0; i < args.length; i++) {
       var songId = args[i];
       if (songId > 0) {
@@ -881,32 +869,28 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
   }
 };
 
-//=============================================================================
-// Window_MusicMenuList
-//=============================================================================
-
 function Window_MusicMenuList() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_MusicMenuList.prototype = Object.create(Window_Command.prototype);
 Window_MusicMenuList.prototype.constructor = Window_MusicMenuList;
 
-Window_MusicMenuList.prototype.initialize = function(helpWindow) {
+Window_MusicMenuList.prototype.initialize = function (helpWindow) {
   this._helpWindow = helpWindow;
   Window_Command.prototype.initialize.call(this, 0, helpWindow.height);
   this.setHelpWindow(helpWindow);
 };
 
-Window_MusicMenuList.prototype.windowWidth = function() {
+Window_MusicMenuList.prototype.windowWidth = function () {
   return Graphics.boxWidth;
 };
 
-Window_MusicMenuList.prototype.windowHeight = function() {
+Window_MusicMenuList.prototype.windowHeight = function () {
   return Graphics.boxHeight - this._helpWindow.height;
 };
 
-Window_MusicMenuList.prototype.makeCommandList = function() {
+Window_MusicMenuList.prototype.makeCommandList = function () {
   var array = MageStudios.Param.MusicMenuSongList;
   var length = array.length;
   for (var i = 0; i < length; ++i) {
@@ -917,8 +901,8 @@ Window_MusicMenuList.prototype.makeCommandList = function() {
         volume: data[2],
         pitch: data[3],
         pan: data[4],
-        description: ''
-      }
+        description: "",
+      };
       if ($gameSystem.isUnlockedMusicMenuSong(i)) {
         var name = data[1].trim();
         ext.description = data[5].trim();
@@ -928,16 +912,16 @@ Window_MusicMenuList.prototype.makeCommandList = function() {
         ext.description = MageStudios.Param.MusicMenuHiddenHelp.trim();
         var enabled = false;
       }
-      this.addCommand(name, 'playsong', enabled, ext);
+      this.addCommand(name, "playsong", enabled, ext);
     }
   }
 };
 
-Window_MusicMenuList.prototype.updateHelp = function() {
+Window_MusicMenuList.prototype.updateHelp = function () {
   this.setHelpWindowItem(this.currentExt());
 };
 
-Window_MusicMenuList.prototype.drawItem = function(index) {
+Window_MusicMenuList.prototype.drawItem = function (index) {
   var rect = this.itemRectForText(index);
   var align = this.itemTextAlign();
   this.resetTextColor();
@@ -948,17 +932,9 @@ Window_MusicMenuList.prototype.drawItem = function(index) {
   this.drawText(name, rect.x + ibw, rect.y, rect.width - ibw, align);
 };
 
-//=============================================================================
-// Scene_Menu
-//=============================================================================
-
-Scene_Menu.prototype.commandMusicMenu = function() {
+Scene_Menu.prototype.commandMusicMenu = function () {
   SceneManager.push(Scene_MusicMenu);
 };
-
-//=============================================================================
-// Scene_MusicMenu
-//=============================================================================
 
 function Scene_MusicMenu() {
   this.initialize.apply(this, arguments);
@@ -967,24 +943,24 @@ function Scene_MusicMenu() {
 Scene_MusicMenu.prototype = Object.create(Scene_MenuBase.prototype);
 Scene_MusicMenu.prototype.constructor = Scene_MusicMenu;
 
-Scene_MusicMenu.prototype.initialize = function() {
+Scene_MusicMenu.prototype.initialize = function () {
   Scene_MenuBase.prototype.initialize.call(this);
 };
 
-Scene_MusicMenu.prototype.create = function() {
+Scene_MusicMenu.prototype.create = function () {
   Scene_MenuBase.prototype.create.call(this);
   this.saveBgmAndBgs();
-  AudioManager.fadeOutBgm(1)
+  AudioManager.fadeOutBgm(1);
   this.createHelpWindow();
   this.createMusicListWindow();
 };
 
-Scene_MusicMenu.prototype.saveBgmAndBgs = function() {
+Scene_MusicMenu.prototype.saveBgmAndBgs = function () {
   this._mapBgm = AudioManager.saveBgm();
   this._mapBgs = AudioManager.saveBgs();
 };
 
-Scene_MusicMenu.prototype.replayBgmAndBgs = function() {
+Scene_MusicMenu.prototype.replayBgmAndBgs = function () {
   if (this._mapBgm) {
     AudioManager.replayBgm(this._mapBgm);
   } else {
@@ -995,24 +971,20 @@ Scene_MusicMenu.prototype.replayBgmAndBgs = function() {
   }
 };
 
-Scene_MusicMenu.prototype.createMusicListWindow = function() {
+Scene_MusicMenu.prototype.createMusicListWindow = function () {
   this._musicListWindow = new Window_MusicMenuList(this._helpWindow);
   this.addWindow(this._musicListWindow);
-  this._musicListWindow.setHandler('cancel', this.exitScene.bind(this));
-  this._musicListWindow.setHandler('playsong', this.playSong.bind(this));
+  this._musicListWindow.setHandler("cancel", this.exitScene.bind(this));
+  this._musicListWindow.setHandler("playsong", this.playSong.bind(this));
 };
 
-Scene_MusicMenu.prototype.exitScene = function() {
+Scene_MusicMenu.prototype.exitScene = function () {
   this.replayBgmAndBgs();
   this.popScene();
 };
 
-Scene_MusicMenu.prototype.playSong = function() {
+Scene_MusicMenu.prototype.playSong = function () {
   var songData = this._musicListWindow.currentExt();
   AudioManager.playBgm(songData);
   this._musicListWindow.activate();
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

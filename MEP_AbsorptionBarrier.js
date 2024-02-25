@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Absorption Barrier
-// MSEP_AbsorptionBarrier.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_AbsorptionBarrier = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ABR = MageStudios.ABR || {};
-MageStudios.ABR.version = 1.00;
+MageStudios.ABR.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Battlers can be surrounded by an absorption barrier
  * that would mitigate damage dealt to HP.
  * @author Mage Studios Engine Plugins
@@ -93,7 +87,7 @@ MageStudios.ABR.version = 1.00;
  * ============================================================================
  *
  * The Absorption Barrier is a new mechanic added for battle. Barrier Points, a
- * new type of stat, provide a layer of protection for battlers. Any direct 
+ * new type of stat, provide a layer of protection for battlers. Any direct
  * damage that would normally be done to HP would be dealt to the battler's
  * Barrier Points first, mitigating any real damage dealt to the battler.
  * Any remaining damage is then dealt to the battler.
@@ -168,7 +162,7 @@ MageStudios.ABR.version = 1.00;
  * Turn 1 - 100 Barrier Points
  * Turn 2 - 200 Barrier Points
  * Turn 3 - 300 Barrier Points
- * 
+ *
  * Right now, the user has 600 Barrier Points total. After the Regeneration
  * Phase, it will become this:
  *
@@ -423,35 +417,36 @@ MageStudios.ABR.version = 1.00;
  *   battler.updateBarrierTurns()
  *   - Makes the battler's Barrier Points update their turns.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_AbsorptionBarrier');
+MageStudios.Parameters = PluginManager.parameters("MSEP_AbsorptionBarrier");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.ABRState = Number(MageStudios.Parameters['Barrier State']);
-MageStudios.Param.ABRColor1 = Number(MageStudios.Parameters['Barrier Color 1']);
-MageStudios.Param.ABRColor2 = Number(MageStudios.Parameters['Barrier Color 2']);
-MageStudios.Param.ABRAni1 = Number(MageStudios.Parameters['Barrier Animation']);
-MageStudios.Param.ABRAni2 = Number(MageStudios.Parameters['Break Animation']);
-MageStudios.Param.ABRPop = String(MageStudios.Parameters['Barrier Popup']);
-MageStudios.Param.ABRPop = eval('[' + MageStudios.Param.ABRPop + ']');
-MageStudios.Param.ABRDisplay0 = String(MageStudios.Parameters['Display 0 HP Damage']);
+MageStudios.Param.ABRState = Number(MageStudios.Parameters["Barrier State"]);
+MageStudios.Param.ABRColor1 = Number(MageStudios.Parameters["Barrier Color 1"]);
+MageStudios.Param.ABRColor2 = Number(MageStudios.Parameters["Barrier Color 2"]);
+MageStudios.Param.ABRAni1 = Number(MageStudios.Parameters["Barrier Animation"]);
+MageStudios.Param.ABRAni2 = Number(MageStudios.Parameters["Break Animation"]);
+MageStudios.Param.ABRPop = String(MageStudios.Parameters["Barrier Popup"]);
+MageStudios.Param.ABRPop = eval("[" + MageStudios.Param.ABRPop + "]");
+MageStudios.Param.ABRDisplay0 = String(
+  MageStudios.Parameters["Display 0 HP Damage"]
+);
 MageStudios.Param.ABRDisplay0 = eval(MageStudios.Param.ABRDisplay0);
-MageStudios.Param.ABRClear = eval(String(MageStudios.Parameters['Clear Per Battle']));
-MageStudios.Param.ABRDeath = eval(String(MageStudios.Parameters['Clear on Death']));
-MageStudios.Param.ABRPenRate = Number(MageStudios.Parameters['Default Penetration Rate']);
-MageStudios.Param.ABRPenFlat = Number(MageStudios.Parameters['Default Penetration Flat']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.ABRClear = eval(
+  String(MageStudios.Parameters["Clear Per Battle"])
+);
+MageStudios.Param.ABRDeath = eval(
+  String(MageStudios.Parameters["Clear on Death"])
+);
+MageStudios.Param.ABRPenRate = Number(
+  MageStudios.Parameters["Default Penetration Rate"]
+);
+MageStudios.Param.ABRPenFlat = Number(
+  MageStudios.Parameters["Default Penetration Flat"]
+);
 
 MageStudios.ABR.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.ABR.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_AbsorptionBarrier) {
     this.processABRNotetags1($dataSkills);
@@ -467,7 +462,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processABRNotetags1 = function(group) {
+DataManager.processABRNotetags1 = function (group) {
   var noteA1 = /<TARGET BARRIER:[ ]([\+\-]\d+)>/i;
   var noteA2 = /<TARGET BARRIER[ ](\d+)[ ](?:TURN|TURNS):[ ]([\+\-]\d+)>/i;
   var noteB1 = /<USER BARRIER:[ ]([\+\-]\d+)>/i;
@@ -484,12 +479,12 @@ DataManager.processABRNotetags1 = function(group) {
     obj.userBarrier = [];
     obj.barrierPenetrationRate = MageStudios.Param.ABRPenRate;
     obj.barrierPenetrationFlat = MageStudios.Param.ABRPenFlat;
-    var evalMode = 'none';
+    var evalMode = "none";
     var evalTurn = 0;
     obj.targetBarrierEval = [];
     obj.userBarrierEval = [];
-    obj.barrierPenetrationRateEval = '';
-    obj.barrierPenetrationFlatEval = '';
+    obj.barrierPenetrationRateEval = "";
+    obj.barrierPenetrationFlatEval = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -512,59 +507,59 @@ DataManager.processABRNotetags1 = function(group) {
       } else if (line.match(/<BARRIER PENETRATION:[ ](\d+)>/i)) {
         obj.barrierPenetrationFlat = parseInt(RegExp.$1);
       } else if (line.match(/<CUSTOM TARGET BARRIER>/i)) {
-        evalMode = 'custom target barrier';
+        evalMode = "custom target barrier";
         evalTurn = 0;
-        obj.targetBarrierEval[0] = '';
+        obj.targetBarrierEval[0] = "";
       } else if (line.match(/<\/CUSTOM TARGET BARRIER>/i)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
       } else if (line.match(noteC1)) {
-        evalMode = 'custom target barrier';
+        evalMode = "custom target barrier";
         evalTurn = parseInt(RegExp.$1);
-        obj.targetBarrierEval[evalTurn] = '';
+        obj.targetBarrierEval[evalTurn] = "";
       } else if (line.match(noteC2)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
-      } else if (evalMode === 'custom target barrier') {
-        obj.targetBarrierEval[evalTurn] = obj.targetBarrierEval[evalTurn] +
-          line + '\n';
+      } else if (evalMode === "custom target barrier") {
+        obj.targetBarrierEval[evalTurn] =
+          obj.targetBarrierEval[evalTurn] + line + "\n";
       } else if (line.match(/<CUSTOM USER BARRIER>/i)) {
-        evalMode = 'custom user barrier';
+        evalMode = "custom user barrier";
         evalTurn = 0;
-        obj.userBarrierEval[0] = '';
+        obj.userBarrierEval[0] = "";
       } else if (line.match(/<\/CUSTOM USER BARRIER>/i)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
       } else if (line.match(noteD1)) {
-        evalMode = 'custom user barrier';
+        evalMode = "custom user barrier";
         evalTurn = parseInt(RegExp.$1);
-        obj.userBarrierEval[evalTurn] = '';
+        obj.userBarrierEval[evalTurn] = "";
       } else if (line.match(noteD2)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
-      } else if (evalMode === 'custom user barrier') {
-        obj.userBarrierEval[evalTurn] = obj.userBarrierEval[evalTurn] +
-          line + '\n';
+      } else if (evalMode === "custom user barrier") {
+        obj.userBarrierEval[evalTurn] =
+          obj.userBarrierEval[evalTurn] + line + "\n";
       } else if (line.match(/<CUSTOM BARRIER PENETRATION RATE>/i)) {
-        evalMode = 'custom barrier penetration rate';
+        evalMode = "custom barrier penetration rate";
       } else if (line.match(/<\/CUSTOM BARRIER PENETRATION RATE>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom barrier penetration rate') {
-        obj.barrierPenetrationRateEval = obj.barrierPenetrationRateEval +
-          line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom barrier penetration rate") {
+        obj.barrierPenetrationRateEval =
+          obj.barrierPenetrationRateEval + line + "\n";
       } else if (line.match(/<CUSTOM BARRIER PENETRATION FLAT>/i)) {
-        evalMode = 'custom barrier penetration flat';
+        evalMode = "custom barrier penetration flat";
       } else if (line.match(/<\/CUSTOM BARRIER PENETRATION flat>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom barrier penetration flat') {
-        obj.barrierPenetrationFlatEval = obj.barrierPenetrationFlatEval +
-          line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom barrier penetration flat") {
+        obj.barrierPenetrationFlatEval =
+          obj.barrierPenetrationFlatEval + line + "\n";
       }
     }
   }
 };
 
-DataManager.processABRNotetags2 = function(group) {
+DataManager.processABRNotetags2 = function (group) {
   var noteA1 = /<BARRIER POINTS:[ ]([\+\-]\d+)>/i;
   var noteA2 = /<BARRIER POINTS[ ](\d+)[ ](?:TURN|TURNS):[ ]([\+\-]\d+)>/i;
   var noteB1 = /<CUSTOM BARRIER POINTS[ ](\d+)[ ](?:TURN|TURNS)>/i;
@@ -583,10 +578,10 @@ DataManager.processABRNotetags2 = function(group) {
     obj.barrierPenetrationFlat = 0;
     obj.battleStartBarrierPoints = [];
     obj.barrierRegen = [];
-    var evalMode = 'none';
+    var evalMode = "none";
     var evalTurn = 0;
-    obj.barrierPenetrationRateEval = '';
-    obj.barrierPenetrationFlatEval = '';
+    obj.barrierPenetrationRateEval = "";
+    obj.barrierPenetrationFlatEval = "";
     obj.battleStartBarrierPointsEval = [];
     obj.barrierRegenEval = [];
 
@@ -603,36 +598,36 @@ DataManager.processABRNotetags2 = function(group) {
         var value = parseInt(RegExp.$2);
         obj.battleStartBarrierPoints[id] = value;
       } else if (line.match(/<CUSTOM BARRIER PENETRATION RATE>/i)) {
-        evalMode = 'custom barrier penetration rate';
+        evalMode = "custom barrier penetration rate";
       } else if (line.match(/<\/CUSTOM BARRIER PENETRATION RATE>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom barrier penetration rate') {
-        obj.barrierPenetrationRateEval = obj.barrierPenetrationRateEval +
-          line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom barrier penetration rate") {
+        obj.barrierPenetrationRateEval =
+          obj.barrierPenetrationRateEval + line + "\n";
       } else if (line.match(/<CUSTOM BARRIER PENETRATION FLAT>/i)) {
-        evalMode = 'custom barrier penetration flat';
+        evalMode = "custom barrier penetration flat";
       } else if (line.match(/<\/CUSTOM BARRIER PENETRATION flat>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom barrier penetration flat') {
-        obj.barrierPenetrationFlatEval = obj.barrierPenetrationFlatEval +
-          line + '\n';
+        evalMode = "none";
+      } else if (evalMode === "custom barrier penetration flat") {
+        obj.barrierPenetrationFlatEval =
+          obj.barrierPenetrationFlatEval + line + "\n";
       } else if (line.match(/<CUSTOM BARRIER POINTS>/i)) {
-        evalMode = 'custom barrier points';
+        evalMode = "custom barrier points";
         evalTurn = 0;
-        obj.battleStartBarrierPointsEval[0] = '';
+        obj.battleStartBarrierPointsEval[0] = "";
       } else if (line.match(/<\/CUSTOM BARRIER POINTS>/i)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
       } else if (line.match(noteB1)) {
-        evalMode = 'custom barrier points';
+        evalMode = "custom barrier points";
         evalTurn = parseInt(RegExp.$1);
-        obj.battleStartBarrierPointsEval[evalTurn] = '';
+        obj.battleStartBarrierPointsEval[evalTurn] = "";
       } else if (line.match(noteB2)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
-      } else if (evalMode === 'custom barrier points') {
+      } else if (evalMode === "custom barrier points") {
         obj.battleStartBarrierPointsEval[evalTurn] =
-          obj.battleStartBarrierPointsEval[evalTurn] + line + '\n';
+          obj.battleStartBarrierPointsEval[evalTurn] + line + "\n";
       } else if (line.match(noteC1)) {
         obj.barrierRegen[0] = parseInt(RegExp.$1);
       } else if (line.match(noteC2)) {
@@ -640,58 +635,53 @@ DataManager.processABRNotetags2 = function(group) {
         var value = parseInt(RegExp.$2);
         obj.barrierRegen[id] = value;
       } else if (line.match(noteD1)) {
-        evalMode = 'custom barrier regen';
+        evalMode = "custom barrier regen";
         evalTurn = 0;
-        obj.barrierRegenEval[0] = '';
+        obj.barrierRegenEval[0] = "";
       } else if (line.match(noteD2)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
       } else if (line.match(noteE1)) {
-        evalMode = 'custom barrier regen';
+        evalMode = "custom barrier regen";
         evalTurn = parseInt(RegExp.$1);
-        obj.barrierRegenEval[evalTurn] = '';
+        obj.barrierRegenEval[evalTurn] = "";
       } else if (line.match(noteE2)) {
-        evalMode = 'none';
+        evalMode = "none";
         evalTurn = 0;
-      } else if (evalMode === 'custom barrier regen') {
-        obj.barrierRegenEval[evalTurn] = obj.barrierRegenEval[evalTurn] +
-          line + '\n';
+      } else if (evalMode === "custom barrier regen") {
+        obj.barrierRegenEval[evalTurn] =
+          obj.barrierRegenEval[evalTurn] + line + "\n";
       }
     }
   }
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
 MageStudios.ABR.Game_BattlerBase_initMembers =
-    Game_BattlerBase.prototype.initMembers;
-Game_BattlerBase.prototype.initMembers = function() {
-    MageStudios.ABR.Game_BattlerBase_initMembers.call(this);
-    this.clearAbsorptionBarrier();
+  Game_BattlerBase.prototype.initMembers;
+Game_BattlerBase.prototype.initMembers = function () {
+  MageStudios.ABR.Game_BattlerBase_initMembers.call(this);
+  this.clearAbsorptionBarrier();
 };
 
-Game_BattlerBase.prototype.clearAbsorptionBarrier = function() {
-    this._turnBarrier = [];
-    this._permBarrier = 0;
+Game_BattlerBase.prototype.clearAbsorptionBarrier = function () {
+  this._turnBarrier = [];
+  this._permBarrier = 0;
 };
 
-Game_BattlerBase.prototype.initAbsorptionBarrier = function() {
-    this._turnBarrier = this._turnBarrier || [];
-    this._permBarrier = this._permBarrier || 0;
+Game_BattlerBase.prototype.initAbsorptionBarrier = function () {
+  this._turnBarrier = this._turnBarrier || [];
+  this._permBarrier = this._permBarrier || 0;
 };
 
 if (MageStudios.Param.ABRState) {
-
-MageStudios.ABR.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
+  MageStudios.ABR.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
+  Game_BattlerBase.prototype.refresh = function () {
     this._barrierState = undefined;
     MageStudios.ABR.Game_BattlerBase_refresh.call(this);
-};
+  };
 
-MageStudios.ABR.Game_BattlerBase_states = Game_BattlerBase.prototype.states;
-Game_BattlerBase.prototype.states = function() {
+  MageStudios.ABR.Game_BattlerBase_states = Game_BattlerBase.prototype.states;
+  Game_BattlerBase.prototype.states = function () {
     var array = MageStudios.ABR.Game_BattlerBase_states.call(this);
     if (this._barrierState === undefined) {
       this._barrierState = this.barrierPoints() > 0;
@@ -701,320 +691,323 @@ Game_BattlerBase.prototype.states = function() {
       this.sortBarrierStates(array);
     }
     return array;
-};
+  };
 
-Game_BattlerBase.prototype.sortBarrierStates = function(array) {
-    array.sort(function(a, b) {
+  Game_BattlerBase.prototype.sortBarrierStates = function (array) {
+    array.sort(function (a, b) {
       var p1 = a.priority;
       var p2 = b.priority;
       if (p1 !== p2) return p2 - p1;
       return a - b;
     });
+  };
+}
+
+Game_Battler.prototype.barrierPoints = function (turn) {
+  this.initAbsorptionBarrier();
+  if (turn < 0) {
+    return this._permBarrier;
+  } else if (turn >= 0) {
+    this._turnBarrier[turn] = this._turnBarrier[turn] || 0;
+    return this._turnBarrier[turn];
+  }
+  var value = this._permBarrier;
+  var length = this._turnBarrier.length;
+  for (var i = 0; i < length; ++i) {
+    this._turnBarrier[i] = this._turnBarrier[i] || 0;
+    value += this._turnBarrier[i];
+  }
+  return value;
 };
 
-}; // MageStudios.Param.ABRState
-
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.barrierPoints = function(turn) {
-    this.initAbsorptionBarrier();
-    if (turn < 0) {
-      return this._permBarrier;
-    } else if (turn >= 0) {
-      this._turnBarrier[turn] = this._turnBarrier[turn] || 0;
-      return this._turnBarrier[turn];
-    }
-    var value = this._permBarrier;
-    var length = this._turnBarrier.length;
-    for (var i = 0; i < length; ++i) {
-      this._turnBarrier[i] = this._turnBarrier[i] || 0;
-      value += this._turnBarrier[i];
-    }
-    return value;
+Game_Battler.prototype.barrierPointsTotal = function (turn) {
+  this.initAbsorptionBarrier();
+  var total = this._permBarrier || 0;
+  var length = turn;
+  for (var i = 0; i < length; ++i) {
+    total += this._turnBarrier[i] || 0;
+  }
+  return total;
 };
 
-Game_Battler.prototype.barrierPointsTotal = function(turn) {
-    this.initAbsorptionBarrier();
-    var total = this._permBarrier || 0;
-    var length = turn;
-    for (var i = 0; i < length; ++i) {
-      total += this._turnBarrier[i] || 0;
-    }
-    return total;
+Game_Battler.prototype.gainBarrier = function (value, turn) {
+  this.initAbsorptionBarrier();
+  value = Math.floor(value);
+  if (turn > 0) {
+    turn -= 1;
+    this._turnBarrier[turn] = this._turnBarrier[turn] || 0;
+    this._turnBarrier[turn] += value;
+    this._turnBarrier[turn] = Math.max(0, this._turnBarrier[turn]);
+  } else {
+    this._permBarrier = this._permBarrier || 0;
+    this._permBarrier += value;
+    this._permBarrier = Math.max(0, this._permBarrier);
+  }
+  this._barrierAltered = true;
+  this.refresh();
 };
 
-Game_Battler.prototype.gainBarrier = function(value, turn) {
-    this.initAbsorptionBarrier();
-    value = Math.floor(value);
-    if (turn > 0) {
-      turn -= 1;
-      this._turnBarrier[turn] = this._turnBarrier[turn] || 0;
-      this._turnBarrier[turn] += value;
-      this._turnBarrier[turn] = Math.max(0, this._turnBarrier[turn]);
-    } else {
-      this._permBarrier = this._permBarrier || 0;
-      this._permBarrier += value;
-      this._permBarrier = Math.max(0, this._permBarrier);
-    }
-    this._barrierAltered = true;
-    this.refresh();
+Game_Battler.prototype.gainBarrierEval = function (
+  formula,
+  turn,
+  user,
+  target
+) {
+  if (formula === "") return 0;
+  this.initAbsorptionBarrier();
+  value = 0;
+  var a = user;
+  var b = target;
+  var subject = user;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    eval(formula);
+  } catch (e) {
+    MageStudios.Util.displayError(e, formula, "GAIN BARRIER CUSTOM CODE ERROR");
+  }
+  value = Math.floor(value);
+  return value;
 };
 
-Game_Battler.prototype.gainBarrierEval = function(formula, turn, user, target) {
-    if (formula === '') return 0;
-    this.initAbsorptionBarrier();
-    value = 0;
-    var a = user;
-    var b = target;
-    var subject = user;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      eval(formula);
-    } catch (e) {
-      MageStudios.Util.displayError(e, formula, 'GAIN BARRIER CUSTOM CODE ERROR');
-    }
-    value = Math.floor(value);
-    return value;
-};
-
-Game_Battler.prototype.loseBarrier = function(value, penRate, penFlat) {
-    if (penRate === undefined) penRate = 1;
-    if (penFlat === undefined) penFlat = 0;
-    value = Math.ceil(value);
-    if (value <= 0) return 0;
-    this.initAbsorptionBarrier();
-    var initValue = value;
-    var result = JsonEx.makeDeepCopy(this._result);
-    var calcValue = Math.ceil(value * penRate - penFlat);
-    this._result = new Game_ActionResult();
-    var length = this._turnBarrier.length;
-    for (var i = 0; i < length; ++i) {
-      this._turnBarrier[i] = this._turnBarrier[i] || 0;
-      var reduction = Math.min(this._turnBarrier[i], calcValue);
-      if (reduction > 0) {
-        this._turnBarrier[i] -= reduction;
-        this._result.hpDamage += reduction;
-        value -= reduction;
-        calcValue -= reduction;
-      }
-      if (value <= 0) break;
-    }
-    var reduction = Math.min(this._permBarrier, calcValue);
+Game_Battler.prototype.loseBarrier = function (value, penRate, penFlat) {
+  if (penRate === undefined) penRate = 1;
+  if (penFlat === undefined) penFlat = 0;
+  value = Math.ceil(value);
+  if (value <= 0) return 0;
+  this.initAbsorptionBarrier();
+  var initValue = value;
+  var result = JsonEx.makeDeepCopy(this._result);
+  var calcValue = Math.ceil(value * penRate - penFlat);
+  this._result = new Game_ActionResult();
+  var length = this._turnBarrier.length;
+  for (var i = 0; i < length; ++i) {
+    this._turnBarrier[i] = this._turnBarrier[i] || 0;
+    var reduction = Math.min(this._turnBarrier[i], calcValue);
     if (reduction > 0) {
-      this._permBarrier -= reduction;
+      this._turnBarrier[i] -= reduction;
       this._result.hpDamage += reduction;
       value -= reduction;
       calcValue -= reduction;
     }
-    if (initValue !== value) {
-      this._barrierAltered = true;
-      this.startBarrierAnimation();
-      if (Imported.MSEP_BattleEngineCore) {
-        this._result._barrierAffected = true;
-        this._result.hpAffected = true;
-        this.startDamagePopup();
-      }
-    }
-    this._result = result;
-    return value;
-};
-
-Game_Battler.prototype.loseBarrierTurn = function(value, turn) {
-    value = Math.abs(value);
-    var barrierPoints = this.barrierPointsTotal(turn);
-    var dmg = Math.min(value, barrierPoints);
-    this.loseBarrier(dmg);
-};
-
-Game_Battler.prototype.startBarrierAnimation = function() {
-    if (this.barrierPoints() > 0) {
-      if (MageStudios.Param.ABRAni1 > 0) this.startAnimation(MageStudios.Param.ABRAni1);
-    } else {
-      if (MageStudios.Param.ABRAni2 > 0) this.startAnimation(MageStudios.Param.ABRAni2);
-    }
-};
-
-MageStudios.ABR.Game_Battler_regenerateAll = Game_Battler.prototype.regenerateAll;
-Game_Battler.prototype.regenerateAll = function() {
-    MageStudios.ABR.Game_Battler_regenerateAll.call(this);
-    if (!$gameParty.inBattle()) return;
-    if (this.isAlive()) {
-      this.updateBarrierTurns();
-      this.regenBarriers();
-    }
-};
-
-Game_Battler.prototype.updateBarrierTurns = function() {
-    this.initAbsorptionBarrier();
-    if (this.barrierPoints() <= 0) return;
-    this._turnBarrier.shift();
-    this.initAbsorptionBarrier();
+    if (value <= 0) break;
+  }
+  var reduction = Math.min(this._permBarrier, calcValue);
+  if (reduction > 0) {
+    this._permBarrier -= reduction;
+    this._result.hpDamage += reduction;
+    value -= reduction;
+    calcValue -= reduction;
+  }
+  if (initValue !== value) {
     this._barrierAltered = true;
-    this.refresh();
+    this.startBarrierAnimation();
+    if (Imported.MSEP_BattleEngineCore) {
+      this._result._barrierAffected = true;
+      this._result.hpAffected = true;
+      this.startDamagePopup();
+    }
+  }
+  this._result = result;
+  return value;
 };
 
-MageStudios.ABR.Game_Battler_onBattleStart = Game_Battler.prototype.onBattleStart;
-Game_Battler.prototype.onBattleStart = function() {
-    if (MageStudios.Param.ABRClear) this.clearAbsorptionBarrier();
-    MageStudios.ABR.Game_Battler_onBattleStart.call(this);
-    this.makeOnBattleStartBarrierPoints();
+Game_Battler.prototype.loseBarrierTurn = function (value, turn) {
+  value = Math.abs(value);
+  var barrierPoints = this.barrierPointsTotal(turn);
+  var dmg = Math.min(value, barrierPoints);
+  this.loseBarrier(dmg);
+};
+
+Game_Battler.prototype.startBarrierAnimation = function () {
+  if (this.barrierPoints() > 0) {
+    if (MageStudios.Param.ABRAni1 > 0)
+      this.startAnimation(MageStudios.Param.ABRAni1);
+  } else {
+    if (MageStudios.Param.ABRAni2 > 0)
+      this.startAnimation(MageStudios.Param.ABRAni2);
+  }
+};
+
+MageStudios.ABR.Game_Battler_regenerateAll =
+  Game_Battler.prototype.regenerateAll;
+Game_Battler.prototype.regenerateAll = function () {
+  MageStudios.ABR.Game_Battler_regenerateAll.call(this);
+  if (!$gameParty.inBattle()) return;
+  if (this.isAlive()) {
+    this.updateBarrierTurns();
+    this.regenBarriers();
+  }
+};
+
+Game_Battler.prototype.updateBarrierTurns = function () {
+  this.initAbsorptionBarrier();
+  if (this.barrierPoints() <= 0) return;
+  this._turnBarrier.shift();
+  this.initAbsorptionBarrier();
+  this._barrierAltered = true;
+  this.refresh();
+};
+
+MageStudios.ABR.Game_Battler_onBattleStart =
+  Game_Battler.prototype.onBattleStart;
+Game_Battler.prototype.onBattleStart = function () {
+  if (MageStudios.Param.ABRClear) this.clearAbsorptionBarrier();
+  MageStudios.ABR.Game_Battler_onBattleStart.call(this);
+  this.makeOnBattleStartBarrierPoints();
 };
 
 MageStudios.ABR.Game_Battler_onBattleEnd = Game_Battler.prototype.onBattleEnd;
-Game_Battler.prototype.onBattleEnd = function() {
-    if (MageStudios.Param.ABRClear) this.clearAbsorptionBarrier();
-    MageStudios.ABR.Game_Battler_onBattleEnd.call(this);
+Game_Battler.prototype.onBattleEnd = function () {
+  if (MageStudios.Param.ABRClear) this.clearAbsorptionBarrier();
+  MageStudios.ABR.Game_Battler_onBattleEnd.call(this);
 };
 
-Game_Battler.prototype.barrierPenetrationRate = function() {
-    var rate = 1;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.barrierPenetrationRate !== undefined) {
-        rate *= (1 - obj.barrierPenetrationRate);
-      }
+Game_Battler.prototype.barrierPenetrationRate = function () {
+  var rate = 1;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.barrierPenetrationRate !== undefined) {
+      rate *= 1 - obj.barrierPenetrationRate;
     }
-    return 1 - rate;
+  }
+  return 1 - rate;
 };
 
-Game_Battler.prototype.barrierPenetrationRateEval = function(c1, c2, c3, c4) {
-    var rate = 1;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.barrierPenetrationRateEval !== undefined) {
-        var formula = obj.barrierPenetrationRateEval;
-        rate *= (1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4));
-      }
+Game_Battler.prototype.barrierPenetrationRateEval = function (c1, c2, c3, c4) {
+  var rate = 1;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.barrierPenetrationRateEval !== undefined) {
+      var formula = obj.barrierPenetrationRateEval;
+      rate *= 1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4);
     }
-    return 1 - rate;
+  }
+  return 1 - rate;
 };
 
-Game_Battler.prototype.getbarrierPenRateEval = function(f1, c1, c2, c3, c4) {
-    if (f1 === '') return 0;
-    var rate = 0;
-    var item = c1;
-    var skill = c1;
-    var a = c2;
-    var user = c2;
-    var subject = c2;
-    var b = c3;
-    var target = c3;
-    var value = c4;
-    var damage = c4;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      eval(f1);
-    } catch (e) {
-      MageStudios.Util.displayError(e, f1, 'BARRIER PEN RATE CUSTOM CODE ERROR');
-    }
-    return rate;
+Game_Battler.prototype.getbarrierPenRateEval = function (f1, c1, c2, c3, c4) {
+  if (f1 === "") return 0;
+  var rate = 0;
+  var item = c1;
+  var skill = c1;
+  var a = c2;
+  var user = c2;
+  var subject = c2;
+  var b = c3;
+  var target = c3;
+  var value = c4;
+  var damage = c4;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    eval(f1);
+  } catch (e) {
+    MageStudios.Util.displayError(e, f1, "BARRIER PEN RATE CUSTOM CODE ERROR");
+  }
+  return rate;
 };
 
-Game_Battler.prototype.barrierPenetrationFlat = function() {
-    var value = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.barrierPenetrationFlat !== undefined) {
-        value += obj.barrierPenetrationFlat;
-      }
+Game_Battler.prototype.barrierPenetrationFlat = function () {
+  var value = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.barrierPenetrationFlat !== undefined) {
+      value += obj.barrierPenetrationFlat;
     }
-    return value;
+  }
+  return value;
 };
 
-Game_Battler.prototype.barrierPenetrationFlatEval = function(c1, c2, c3, c4) {
-    var value = 0;
-    var length = this.states().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj && obj.barrierPenetrationFlatEval !== undefined) {
-        var formula = obj.barrierPenetrationFlatEval;
-        value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
-      }
+Game_Battler.prototype.barrierPenetrationFlatEval = function (c1, c2, c3, c4) {
+  var value = 0;
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj && obj.barrierPenetrationFlatEval !== undefined) {
+      var formula = obj.barrierPenetrationFlatEval;
+      value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
     }
-    return value;
+  }
+  return value;
 };
 
-Game_Battler.prototype.getbarrierPenFlatEval = function(f1, c1, c2, c3, c4) {
-    if (f1 === '') return 0;
-    var flat = 0;
-    var item = c1;
-    var skill = c1;
-    var a = c2;
-    var user = c2;
-    var subject = c2;
-    var b = c3;
-    var target = c3;
-    var value = c4;
-    var damage = c4;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      eval(f1);
-    } catch (e) {
-      MageStudios.Util.displayError(e, f1, 'BARRIER PEN FLAT CUSTOM CODE ERROR');
-    }
-    return flat;
+Game_Battler.prototype.getbarrierPenFlatEval = function (f1, c1, c2, c3, c4) {
+  if (f1 === "") return 0;
+  var flat = 0;
+  var item = c1;
+  var skill = c1;
+  var a = c2;
+  var user = c2;
+  var subject = c2;
+  var b = c3;
+  var target = c3;
+  var value = c4;
+  var damage = c4;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    eval(f1);
+  } catch (e) {
+    MageStudios.Util.displayError(e, f1, "BARRIER PEN FLAT CUSTOM CODE ERROR");
+  }
+  return flat;
 };
 
 if (MageStudios.Param.ABRDeath) {
+  MageStudios.ABR.Game_Battler_addState = Game_Battler.prototype.addState;
+  Game_Battler.prototype.addState = function (stateId) {
+    var deathState = stateId === this.deathStateId();
+    var lifeState = this.isAlive();
+    MageStudios.ABR.Game_Battler_addState.call(this, stateId);
+    if (deathState && lifeState !== this.isAlive())
+      this.clearAbsorptionBarrier();
+  };
+}
 
-MageStudios.ABR.Game_Battler_addState = Game_Battler.prototype.addState;
-Game_Battler.prototype.addState = function(stateId) {
-  var deathState = (stateId === this.deathStateId());
-  var lifeState = this.isAlive();
-  MageStudios.ABR.Game_Battler_addState.call(this, stateId);
-  if (deathState && lifeState !== this.isAlive()) this.clearAbsorptionBarrier();
+Game_Battler.prototype.makeOnBattleStartBarrierPoints = function () {
+  var barriers = this.battleStartBarrierPoints();
+  var length = barriers.length;
+  for (var i = 0; i < length; ++i) {
+    var value = barriers[i] || 0;
+    this.gainBarrier(value, i);
+  }
 };
 
-}; // MageStudios.Param.ABRDeath
+Game_Battler.prototype.battleStartBarrierPoints = function () {
+  var array = [];
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj) this.makeBattleStartBarrierPoints(array, obj);
+  }
+  return array;
+};
 
-Game_Battler.prototype.makeOnBattleStartBarrierPoints = function() {
-    var barriers = this.battleStartBarrierPoints();
-    var length = barriers.length;
+Game_Battler.prototype.makeBattleStartBarrierPoints = function (array, obj) {
+  if (obj.battleStartBarrierPoints !== undefined) {
+    var length = obj.battleStartBarrierPoints.length;
     for (var i = 0; i < length; ++i) {
-      var value = barriers[i] || 0;
-      this.gainBarrier(value, i);
+      var iteration = obj.battleStartBarrierPoints[i] || 0;
+      array[i] = array[i] || 0;
+      array[i] += iteration;
     }
-};
-
-Game_Battler.prototype.battleStartBarrierPoints = function() {
-    var array = [];
-    var length = this.states().length;
+  }
+  if (obj.battleStartBarrierPointsEval !== undefined) {
+    var length = obj.battleStartBarrierPointsEval.length;
     for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj) this.makeBattleStartBarrierPoints(array, obj);
+      var formula = obj.battleStartBarrierPointsEval[i] || "";
+      array[i] = array[i] || 0;
+      array[i] += this.makeBattleStartBarrierPointsEval(formula);
     }
-    return array;
+  }
+  return array;
 };
 
-Game_Battler.prototype.makeBattleStartBarrierPoints = function(array, obj) {
-    if (obj.battleStartBarrierPoints !== undefined) {
-      var length = obj.battleStartBarrierPoints.length;
-      for (var i = 0; i < length; ++i) {
-        var iteration = obj.battleStartBarrierPoints[i] || 0;
-        array[i] = array[i] || 0;
-        array[i] += iteration;
-      }
-    }
-    if (obj.battleStartBarrierPointsEval !== undefined) {
-      var length = obj.battleStartBarrierPointsEval.length;
-      for (var i = 0; i < length; ++i) {
-        var formula = obj.battleStartBarrierPointsEval[i] || '';
-        array[i] = array[i] || 0;
-        array[i] += this.makeBattleStartBarrierPointsEval(formula);
-      }
-    }
-    return array;
-};
-
-Game_Battler.prototype.makeBattleStartBarrierPointsEval = function(formula) {
+Game_Battler.prototype.makeBattleStartBarrierPointsEval = function (formula) {
   var value = 0;
   var a = this;
   var user = this;
@@ -1024,50 +1017,54 @@ Game_Battler.prototype.makeBattleStartBarrierPointsEval = function(formula) {
   try {
     eval(formula);
   } catch (e) {
-    MageStudios.Util.displayError(e, formula, 'BARRIER START CUSTOM CODE ERROR');
+    MageStudios.Util.displayError(
+      e,
+      formula,
+      "BARRIER START CUSTOM CODE ERROR"
+    );
   }
   return value;
 };
 
-Game_Battler.prototype.regenBarriers = function() {
-    var barriers = this.getRegenBarriers();
-    var length = barriers.length;
+Game_Battler.prototype.regenBarriers = function () {
+  var barriers = this.getRegenBarriers();
+  var length = barriers.length;
+  for (var i = 0; i < length; ++i) {
+    var value = barriers[i] || 0;
+    this.gainBarrier(value, i);
+  }
+};
+
+Game_Battler.prototype.getRegenBarriers = function () {
+  var array = [];
+  var length = this.states().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.states()[i];
+    if (obj) this.makeRegenBarrierPoints(array, obj);
+  }
+  return array;
+};
+
+Game_Battler.prototype.makeRegenBarrierPoints = function (array, obj) {
+  if (obj.barrierRegen !== undefined) {
+    var length = obj.barrierRegen.length;
     for (var i = 0; i < length; ++i) {
-      var value = barriers[i] || 0;
-      this.gainBarrier(value, i);
+      var iteration = obj.barrierRegen[i] || 0;
+      array[i] = array[i] || 0;
+      array[i] += iteration;
     }
-};
-
-Game_Battler.prototype.getRegenBarriers = function() {
-    var array = [];
-    var length = this.states().length;
+  }
+  if (obj.barrierRegenEval !== undefined) {
+    var length = obj.barrierRegenEval.length;
     for (var i = 0; i < length; ++i) {
-      var obj = this.states()[i];
-      if (obj) this.makeRegenBarrierPoints(array, obj);
+      var formula = obj.barrierRegenEval[i] || "";
+      array[i] = array[i] || 0;
+      array[i] += this.makeBattleStartBarrierPointsEval(formula);
     }
-    return array;
+  }
 };
 
-Game_Battler.prototype.makeRegenBarrierPoints = function(array, obj) {
-    if (obj.barrierRegen !== undefined) {
-      var length = obj.barrierRegen.length;
-      for (var i = 0; i < length; ++i) {
-        var iteration = obj.barrierRegen[i] || 0;
-        array[i] = array[i] || 0;
-        array[i] += iteration;
-      }
-    }
-    if (obj.barrierRegenEval !== undefined) {
-      var length = obj.barrierRegenEval.length;
-      for (var i = 0; i < length; ++i) {
-        var formula = obj.barrierRegenEval[i] || '';
-        array[i] = array[i] || 0;
-        array[i] += this.makeBattleStartBarrierPointsEval(formula);
-      }
-    }
-};
-
-Game_Battler.prototype.makeRegenBarrierPointsEval = function(formula) {
+Game_Battler.prototype.makeRegenBarrierPointsEval = function (formula) {
   var value = 0;
   var a = this;
   var user = this;
@@ -1077,224 +1074,251 @@ Game_Battler.prototype.makeRegenBarrierPointsEval = function(formula) {
   try {
     eval(formula);
   } catch (e) {
-    MageStudios.Util.displayError(e, formula, 'BARRIER REGEN CUSTOM CODE ERROR');
+    MageStudios.Util.displayError(
+      e,
+      formula,
+      "BARRIER REGEN CUSTOM CODE ERROR"
+    );
   }
   return value;
 };
-
-//=============================================================================
-// Game_Actor
-//=============================================================================
 
 MageStudios.ABR.Game_Actor_setup = Game_Actor.prototype.setup;
-Game_Actor.prototype.setup = function(actorId) {
-    MageStudios.ABR.Game_Actor_setup.call(this, actorId);
-    this.clearAbsorptionBarrier();
+Game_Actor.prototype.setup = function (actorId) {
+  MageStudios.ABR.Game_Actor_setup.call(this, actorId);
+  this.clearAbsorptionBarrier();
 };
 
-Game_Actor.prototype.barrierPenetrationRate = function() {
-    var rate = 1 - Game_Battler.prototype.barrierPenetrationRate.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.barrierPenetrationRate !== undefined) {
-        rate *= (1 - obj.barrierPenetrationRate);
-      }
+Game_Actor.prototype.barrierPenetrationRate = function () {
+  var rate = 1 - Game_Battler.prototype.barrierPenetrationRate.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.barrierPenetrationRate !== undefined) {
+      rate *= 1 - obj.barrierPenetrationRate;
     }
-    rate *= (1 - this.actor().barrierPenetrationRate);
-    rate *= (1 - this.currentClass().barrierPenetrationRate);
-    return 1 - rate;
+  }
+  rate *= 1 - this.actor().barrierPenetrationRate;
+  rate *= 1 - this.currentClass().barrierPenetrationRate;
+  return 1 - rate;
 };
 
-Game_Actor.prototype.barrierPenetrationRateEval = function(c1, c2, c3, c4) {
-    var rate = 1 - Game_Battler.prototype.barrierPenetrationRateEval.call(this,
-      c1, c2, c3, c4);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.barrierPenetrationRateEval !== undefined) {
-        var formula = obj.barrierPenetrationRateEval;
-        rate *= (1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4));
-      }
+Game_Actor.prototype.barrierPenetrationRateEval = function (c1, c2, c3, c4) {
+  var rate =
+    1 -
+    Game_Battler.prototype.barrierPenetrationRateEval.call(
+      this,
+      c1,
+      c2,
+      c3,
+      c4
+    );
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.barrierPenetrationRateEval !== undefined) {
+      var formula = obj.barrierPenetrationRateEval;
+      rate *= 1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4);
     }
-    var formula = this.actor().barrierPenetrationRateEval;
-    rate *= (1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4));
-    var formula = this.currentClass().barrierPenetrationRateEval;
-    rate *= (1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4));
-    return 1 - rate;
+  }
+  var formula = this.actor().barrierPenetrationRateEval;
+  rate *= 1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4);
+  var formula = this.currentClass().barrierPenetrationRateEval;
+  rate *= 1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4);
+  return 1 - rate;
 };
 
-Game_Actor.prototype.barrierPenetrationFlat = function() {
-    var value = Game_Battler.prototype.barrierPenetrationFlat.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.barrierPenetrationFlat !== undefined) {
-        value += obj.barrierPenetrationFlat;
-      }
+Game_Actor.prototype.barrierPenetrationFlat = function () {
+  var value = Game_Battler.prototype.barrierPenetrationFlat.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.barrierPenetrationFlat !== undefined) {
+      value += obj.barrierPenetrationFlat;
     }
-    value += this.actor().barrierPenetrationFlat;
-    value += this.currentClass().barrierPenetrationFlat;
-    return value;
+  }
+  value += this.actor().barrierPenetrationFlat;
+  value += this.currentClass().barrierPenetrationFlat;
+  return value;
 };
 
-Game_Actor.prototype.barrierPenetrationFlatEval = function(c1, c2, c3, c4) {
-    var value = Game_Battler.prototype.barrierPenetrationFlatEval.call(this,
-      c1, c2, c3, c4);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj && obj.barrierPenetrationFlatEval !== undefined) {
-        var formula = obj.barrierPenetrationFlatEval;
-        value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
-      }
+Game_Actor.prototype.barrierPenetrationFlatEval = function (c1, c2, c3, c4) {
+  var value = Game_Battler.prototype.barrierPenetrationFlatEval.call(
+    this,
+    c1,
+    c2,
+    c3,
+    c4
+  );
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj && obj.barrierPenetrationFlatEval !== undefined) {
+      var formula = obj.barrierPenetrationFlatEval;
+      value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
     }
-    var formula = this.actor().barrierPenetrationFlatEval;
-    value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
-    var formula = this.currentClass().barrierPenetrationFlatEval;
-    value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
-    return value;
+  }
+  var formula = this.actor().barrierPenetrationFlatEval;
+  value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
+  var formula = this.currentClass().barrierPenetrationFlatEval;
+  value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
+  return value;
 };
 
-Game_Actor.prototype.battleStartBarrierPoints = function() {
-    var array = Game_Battler.prototype.battleStartBarrierPoints.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj) this.makeBattleStartBarrierPoints(array, obj);
-    }
-    this.makeBattleStartBarrierPoints(array, this.actor());
-    this.makeBattleStartBarrierPoints(array, this.currentClass());
-    return array;
+Game_Actor.prototype.battleStartBarrierPoints = function () {
+  var array = Game_Battler.prototype.battleStartBarrierPoints.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj) this.makeBattleStartBarrierPoints(array, obj);
+  }
+  this.makeBattleStartBarrierPoints(array, this.actor());
+  this.makeBattleStartBarrierPoints(array, this.currentClass());
+  return array;
 };
 
-Game_Actor.prototype.getRegenBarriers = function() {
-    var array = Game_Battler.prototype.getRegenBarriers.call(this);
-    var length = this.equips().length;
-    for (var i = 0; i < length; ++i) {
-      var obj = this.equips()[i];
-      if (obj) this.makeRegenBarrierPoints(array, obj);
-    }
-    this.makeRegenBarrierPoints(array, this.actor());
-    this.makeRegenBarrierPoints(array, this.currentClass());
-    return array;
+Game_Actor.prototype.getRegenBarriers = function () {
+  var array = Game_Battler.prototype.getRegenBarriers.call(this);
+  var length = this.equips().length;
+  for (var i = 0; i < length; ++i) {
+    var obj = this.equips()[i];
+    if (obj) this.makeRegenBarrierPoints(array, obj);
+  }
+  this.makeRegenBarrierPoints(array, this.actor());
+  this.makeRegenBarrierPoints(array, this.currentClass());
+  return array;
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.barrierPenetrationRate = function() {
-    var rate = 1 - Game_Battler.prototype.barrierPenetrationRate.call(this);
-    rate *= (1 - this.enemy().barrierPenetrationRate);
-    return 1 - rate;
+Game_Enemy.prototype.barrierPenetrationRate = function () {
+  var rate = 1 - Game_Battler.prototype.barrierPenetrationRate.call(this);
+  rate *= 1 - this.enemy().barrierPenetrationRate;
+  return 1 - rate;
 };
 
-Game_Enemy.prototype.barrierPenetrationRateEval = function(c1, c2, c3, c4) {
-    var rate = 1 - Game_Battler.prototype.barrierPenetrationRateEval.call(this,
-      c1, c2, c3, c4);
-    var formula = this.enemy().barrierPenetrationRateEval;
-    rate *= (1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4));
-    return 1 - rate;
+Game_Enemy.prototype.barrierPenetrationRateEval = function (c1, c2, c3, c4) {
+  var rate =
+    1 -
+    Game_Battler.prototype.barrierPenetrationRateEval.call(
+      this,
+      c1,
+      c2,
+      c3,
+      c4
+    );
+  var formula = this.enemy().barrierPenetrationRateEval;
+  rate *= 1 - this.getbarrierPenRateEval(formula, c1, c2, c3, c4);
+  return 1 - rate;
 };
 
-Game_Enemy.prototype.barrierPenetrationFlat = function() {
-    var value = Game_Battler.prototype.barrierPenetrationFlat.call(this);
-    value += this.enemy().barrierPenetrationFlat;
-    return value;
+Game_Enemy.prototype.barrierPenetrationFlat = function () {
+  var value = Game_Battler.prototype.barrierPenetrationFlat.call(this);
+  value += this.enemy().barrierPenetrationFlat;
+  return value;
 };
 
-Game_Enemy.prototype.barrierPenetrationFlatEval = function(c1, c2, c3, c4) {
-    var value = Game_Battler.prototype.barrierPenetrationFlatEval.call(this,
-      c1, c2, c3, c4);
-    var formula = this.enemy().barrierPenetrationFlatEval;
-    value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
-    return value;
+Game_Enemy.prototype.barrierPenetrationFlatEval = function (c1, c2, c3, c4) {
+  var value = Game_Battler.prototype.barrierPenetrationFlatEval.call(
+    this,
+    c1,
+    c2,
+    c3,
+    c4
+  );
+  var formula = this.enemy().barrierPenetrationFlatEval;
+  value += this.getbarrierPenFlatEval(formula, c1, c2, c3, c4);
+  return value;
 };
 
-Game_Enemy.prototype.battleStartBarrierPoints = function() {
-    var array = Game_Battler.prototype.battleStartBarrierPoints.call(this);
-    this.makeBattleStartBarrierPoints(array, this.enemy());
-    return array;
+Game_Enemy.prototype.battleStartBarrierPoints = function () {
+  var array = Game_Battler.prototype.battleStartBarrierPoints.call(this);
+  this.makeBattleStartBarrierPoints(array, this.enemy());
+  return array;
 };
 
-Game_Enemy.prototype.getRegenBarriers = function() {
-    var array = Game_Battler.prototype.getRegenBarriers.call(this);
-    this.makeRegenBarrierPoints(array, this.enemy());
-    return array;
+Game_Enemy.prototype.getRegenBarriers = function () {
+  var array = Game_Battler.prototype.getRegenBarriers.call(this);
+  this.makeRegenBarrierPoints(array, this.enemy());
+  return array;
 };
-
-//=============================================================================
-// Game_Action
-//=============================================================================
 
 MageStudios.ABR.Game_Action_applyItemUserEffect =
-    Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
-    MageStudios.ABR.Game_Action_applyItemUserEffect.call(this, target);
-    if (this.item()) this.applyItemBarrierEffect(target);
+  Game_Action.prototype.applyItemUserEffect;
+Game_Action.prototype.applyItemUserEffect = function (target) {
+  MageStudios.ABR.Game_Action_applyItemUserEffect.call(this, target);
+  if (this.item()) this.applyItemBarrierEffect(target);
 };
 
-Game_Action.prototype.applyItemBarrierEffect = function(target) {
-    var item = this.item();
-    if (target) this.gainBarrierBonus(target, true);
-    this.gainBarrierBonus(this.subject(), false);
-};
-
-Game_Action.prototype.gainBarrierBonus = function(target, isTarget) {
-    var item = this.item();
-    var barriers = isTarget ? item.targetBarrier : item.userBarrier;
-    var evalBarriers = isTarget ? item.targetBarrierEval : item.userBarrierEval;
-    var length = Math.max(barriers.length, evalBarriers.length);
-    if (length <= 0) return;
-    for (var i = 0; i < length; ++i) {
-      var t = i;
-      if (t > 0 && target === this.subject()) t += 1;
-      var value = barriers[i] || 0;
-      value += target.gainBarrierEval(evalBarriers[i] || '', t, this.subject(),
-        target);
-      if (value > 0) {
-        target.gainBarrier(value, t);
-      } else if (value < 0) {
-        target.loseBarrierTurn(value, t);
-      }
-    }
-    target.refresh();
-};
-
-MageStudios.ABR.Game_Action_executeHpDamage = Game_Action.prototype.executeHpDamage;
-Game_Action.prototype.executeHpDamage = function(target, value) {
-    var barrier = false;
-    if (this.isAffectBarrierPoints(target, value)) {
-      barrier = true;
-      var penRate = this.calcBarrierPenetrationRate(target, value);
-      var penFlat = this.calcBarrierPenetrationFlat(target, value);
-      value = target.loseBarrier(value, penRate, penFlat);
-    }
-    MageStudios.ABR.Game_Action_executeHpDaMageStudios.call(this, target, value);
-    if (MageStudios.Param.ABRDisplay0) return;
-    if (barrier && target && target._result.hpDamage === 0) {
-      target._result.hpAffected = false;
-    }
-};
-
-Game_Action.prototype.isAffectBarrierPoints = function(target, value) {
-    if (value <= 0) return false;
-    return target.barrierPoints() > 0;
-};
-
-Game_Action.prototype.calcBarrierPenetrationRate = function(target, value) {
-    var value = 1 - this.item().barrierPenetrationRate;
-    value *= 1 - this.barrierPenetrationRateEval(target, value);
-    value *= 1 - this.subject().barrierPenetrationRate();
-    value *= 1 - this.subject().barrierPenetrationRateEval(this, this.subject(),
-      target, value);
-    return value.clamp(0, 1);
-};
-
-Game_Action.prototype.barrierPenetrationRateEval = function(target, value) {
+Game_Action.prototype.applyItemBarrierEffect = function (target) {
   var item = this.item();
-  if (item.barrierPenetrationRateEval === '') return 0;
+  if (target) this.gainBarrierBonus(target, true);
+  this.gainBarrierBonus(this.subject(), false);
+};
+
+Game_Action.prototype.gainBarrierBonus = function (target, isTarget) {
+  var item = this.item();
+  var barriers = isTarget ? item.targetBarrier : item.userBarrier;
+  var evalBarriers = isTarget ? item.targetBarrierEval : item.userBarrierEval;
+  var length = Math.max(barriers.length, evalBarriers.length);
+  if (length <= 0) return;
+  for (var i = 0; i < length; ++i) {
+    var t = i;
+    if (t > 0 && target === this.subject()) t += 1;
+    var value = barriers[i] || 0;
+    value += target.gainBarrierEval(
+      evalBarriers[i] || "",
+      t,
+      this.subject(),
+      target
+    );
+    if (value > 0) {
+      target.gainBarrier(value, t);
+    } else if (value < 0) {
+      target.loseBarrierTurn(value, t);
+    }
+  }
+  target.refresh();
+};
+
+MageStudios.ABR.Game_Action_executeHpDamage =
+  Game_Action.prototype.executeHpDamage;
+Game_Action.prototype.executeHpDamage = function (target, value) {
+  var barrier = false;
+  if (this.isAffectBarrierPoints(target, value)) {
+    barrier = true;
+    var penRate = this.calcBarrierPenetrationRate(target, value);
+    var penFlat = this.calcBarrierPenetrationFlat(target, value);
+    value = target.loseBarrier(value, penRate, penFlat);
+  }
+  MageStudios.ABR.Game_Action_executeHpDaMageStudios.call(this, target, value);
+  if (MageStudios.Param.ABRDisplay0) return;
+  if (barrier && target && target._result.hpDamage === 0) {
+    target._result.hpAffected = false;
+  }
+};
+
+Game_Action.prototype.isAffectBarrierPoints = function (target, value) {
+  if (value <= 0) return false;
+  return target.barrierPoints() > 0;
+};
+
+Game_Action.prototype.calcBarrierPenetrationRate = function (target, value) {
+  var value = 1 - this.item().barrierPenetrationRate;
+  value *= 1 - this.barrierPenetrationRateEval(target, value);
+  value *= 1 - this.subject().barrierPenetrationRate();
+  value *=
+    1 -
+    this.subject().barrierPenetrationRateEval(
+      this,
+      this.subject(),
+      target,
+      value
+    );
+  return value.clamp(0, 1);
+};
+
+Game_Action.prototype.barrierPenetrationRateEval = function (target, value) {
+  var item = this.item();
+  if (item.barrierPenetrationRateEval === "") return 0;
   var rate = 0;
   var skill = item;
   var a = this.subject();
@@ -1308,23 +1332,31 @@ Game_Action.prototype.barrierPenetrationRateEval = function(target, value) {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'BARRIER PEN RATE CUSTOM CODE ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "BARRIER PEN RATE CUSTOM CODE ERROR"
+    );
   }
   return rate;
 };
 
-Game_Action.prototype.calcBarrierPenetrationFlat = function(target, value) {
-    var value = this.item().barrierPenetrationFlat;
-    value += this.barrierPenetrationFlatEval(target, value);
-    value += this.subject().barrierPenetrationFlat();
-    value += this.subject().barrierPenetrationFlatEval(this, this.subject(),
-      target, value);
-    return value.clamp(0, target.barrierPoints());
+Game_Action.prototype.calcBarrierPenetrationFlat = function (target, value) {
+  var value = this.item().barrierPenetrationFlat;
+  value += this.barrierPenetrationFlatEval(target, value);
+  value += this.subject().barrierPenetrationFlat();
+  value += this.subject().barrierPenetrationFlatEval(
+    this,
+    this.subject(),
+    target,
+    value
+  );
+  return value.clamp(0, target.barrierPoints());
 };
 
-Game_Action.prototype.barrierPenetrationFlatEval = function(target, value) {
+Game_Action.prototype.barrierPenetrationFlatEval = function (target, value) {
   var item = this.item();
-  if (item.barrierPenetrationFlatEval === '') return 0;
+  if (item.barrierPenetrationFlatEval === "") return 0;
   var flat = 0;
   var a = this.subject();
   var user = this.subject();
@@ -1336,102 +1368,88 @@ Game_Action.prototype.barrierPenetrationFlatEval = function(target, value) {
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'BARRIER PEN FLAT CUSTOM CODE ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "BARRIER PEN FLAT CUSTOM CODE ERROR"
+    );
   }
   return flat;
 };
 
-//=============================================================================
-// Sprite_Damage
-//=============================================================================
-
 if (Imported.MSEP_BattleEngineCore) {
-
-MageStudios.ABR.Sprite_Damage_setup = Sprite_DaMageStudios.prototype.setup;
-Sprite_DaMageStudios.prototype.setup = function(target) {
+  MageStudios.ABR.Sprite_Damage_setup = Sprite_DaMageStudios.prototype.setup;
+  Sprite_DaMageStudios.prototype.setup = function (target) {
     var result = target._damagePopup[0];
     MageStudios.ABR.Sprite_Damage_setup.call(this, target);
     if (result._barrierAffected) this.setupBarrierEffect();
+  };
+}
+
+Sprite_DaMageStudios.prototype.setupBarrierEffect = function () {
+  this._flashColor = MageStudios.Param.ABRPop.slice();
+  this._flashDuration = 180;
 };
 
-} // Imported.MSEP_BattleEngineCore
-
-Sprite_DaMageStudios.prototype.setupBarrierEffect = function() {
-    this._flashColor = MageStudios.Param.ABRPop.slice();
-    this._flashDuration = 180;
+Window_Base.prototype.drawActorHp = function (actor, wx, wy, ww) {
+  ww = ww || 186;
+  var color1 = this.hpGaugeColor1();
+  var color2 = this.hpGaugeColor2();
+  if (actor.barrierPoints() > 0) {
+    ww = this.drawBarrierGauge(actor, wx, wy, ww);
+  } else {
+    this.drawGauge(wx, wy, ww, actor.hpRate(), color1, color2);
+  }
+  this.changeTextColor(this.systemColor());
+  this.drawText(TextManager.hpA, wx, wy, 44);
+  var c1 = this.hpColor(actor);
+  var c2 = this.normalColor();
+  this.drawCurrentAndMax(actor.hp, actor.mhp, wx, wy, ww, c1, c2);
 };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-Window_Base.prototype.drawActorHp = function(actor, wx, wy, ww) {
-    ww = ww || 186;
-    var color1 = this.hpGaugeColor1();
-    var color2 = this.hpGaugeColor2();
-    if (actor.barrierPoints() > 0) {
-      ww = this.drawBarrierGauge(actor, wx, wy, ww);
-    } else {
-      this.drawGauge(wx, wy, ww, actor.hpRate(), color1, color2);
-    }
-    this.changeTextColor(this.systemColor());
-    this.drawText(TextManager.hpA, wx, wy, 44);
-    var c1 = this.hpColor(actor);
-    var c2 = this.normalColor();
-    this.drawCurrentAndMax(actor.hp, actor.mhp, wx, wy, ww, c1, c2);
+Window_Base.prototype.barrierColor1 = function () {
+  return this.textColor(MageStudios.Param.ABRColor1);
 };
 
-Window_Base.prototype.barrierColor1 = function() {
-    return this.textColor(MageStudios.Param.ABRColor1);
+Window_Base.prototype.barrierColor2 = function () {
+  return this.textColor(MageStudios.Param.ABRColor2);
 };
 
-Window_Base.prototype.barrierColor2 = function() {
-    return this.textColor(MageStudios.Param.ABRColor2);
+Window_Base.prototype.drawBarrierGauge = function (actor, wx, wy, ww) {
+  if (actor.hp + actor.barrierPoints() > actor.mhp) {
+    var max = actor.mhp + actor.barrierPoints();
+    var rate1 = actor.hp / max;
+  } else {
+    var max = actor.mhp;
+    var rate1 = actor.hpRate();
+  }
+  var rate2 = (actor.barrierPoints() + actor.hp) / max;
+  var color1 = this.barrierColor1();
+  var color2 = this.barrierColor2();
+  this.drawGauge(wx, wy, ww, rate2, color1, color2);
+  var color1 = this.hpGaugeColor1();
+  var color2 = this.hpGaugeColor2();
+  var ww2 = ww * rate1;
+  this.drawGauge(wx, wy, ww2, 1, color1, color2);
+  return ww;
 };
-
-Window_Base.prototype.drawBarrierGauge = function(actor, wx, wy, ww) {
-    if (actor.hp + actor.barrierPoints() > actor.mhp) {
-      var max = actor.mhp + actor.barrierPoints();
-      var rate1 = actor.hp / max;
-    } else {
-      var max = actor.mhp;
-      var rate1 = actor.hpRate();
-    }
-    var rate2 = (actor.barrierPoints() + actor.hp) / max;
-    var color1 = this.barrierColor1();
-    var color2 = this.barrierColor2();
-    this.drawGauge(wx, wy, ww, rate2, color1, color2);
-    var color1 = this.hpGaugeColor1();
-    var color2 = this.hpGaugeColor2();
-    var ww2 = ww * rate1;
-    this.drawGauge(wx, wy, ww2, 1, color1, color2);
-    return ww;
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
 
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-      return inVal;
-    }
-};
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
+}
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

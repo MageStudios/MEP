@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Engine Extension - Action Sequence Pack 2
-// MSEP_X_ActSeqPack2.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ActSeqPack2 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP2 = MageStudios.ASP2 || {};
-MageStudios.ASP2.version = 1.00;
+MageStudios.ASP2.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore.js) Visual functions
  * are added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
@@ -447,178 +441,190 @@ MageStudios.ASP2.version = 1.00;
  * Usage Example: wait for opacity
  *=============================================================================
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ActSeqPack2");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameters
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack2');
-MageStudios.Param = MageStudios.Param || {};
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.ASP2.BattleManager_processActionSequence =
-  BattleManager.processActionSequence;
-BattleManager.processActionSequence = function(actionName, actionArgs) {
-  // ATTACK ANIMATION
-  if (actionName === 'ATTACK ANIMATION') {
-    return this.actionAttackAnimation(actionArgs);
-  }
-  // ENEMY EFFECT
-  if (actionName === 'ENEMY EFFECT') {
-    return this.actionEnemyEffect(actionArgs);
-  }
-  // FACE TARGET
-  if (actionName.match(/FACE[ ](.*)/i)) {
-    var string = String(RegExp.$1);
-    if (this.makeActionTargets(string).length > 0) {
-      return this.actionFace(string, actionArgs);
+  MageStudios.ASP2.BattleManager_processActionSequence =
+    BattleManager.processActionSequence;
+  BattleManager.processActionSequence = function (actionName, actionArgs) {
+    if (actionName === "ATTACK ANIMATION") {
+      return this.actionAttackAnimation(actionArgs);
     }
-  }
-  // FADE IN, FADE OUT
-  if (['FADE IN', 'FADE OUT'].contains(actionName)) {
-    return this.actionFadeScreen(actionName, actionArgs);
-  }
-  // FLASH SCREEN
-  if (actionName === 'FLASH SCREEN') {
-    return this.actionFlashScreen(actionArgs);
-  }
-  // FLOAT TARGET
-  if (actionName.match(/FLOAT[ ](.*)/i)) {
-    var string = String(RegExp.$1);
-    if (this.makeActionTargets(string).length > 0) {
-      return this.actionFloat(string, actionArgs);
-    }
-  }
-  // HIDE BATTLE HUD, SHOW BATTLE HUD
-  if (['HIDE BATTLE HUD', 'SHOW BATTLE HUD'].contains(actionName)) {
-    return this.actionBattleHud(actionName);
-  }
-  // JUMP TARGET
-  if (actionName.match(/JUMP[ ](.*)/i)) {
-    var string = String(RegExp.$1);
-    if (this.makeActionTargets(string).length > 0) {
-      return this.actionJump(string, actionArgs);
-    }
-  }
-  // MOTION TYPE
-  if (actionName.match(/MOTION[ ](.*)/i)) {
-    return this.actionMotionTarget(String(RegExp.$1), actionArgs);
-  }
-  // MOVE TARGET
-  if (actionName.match(/MOVE[ ](.*)/i)) {
-    var string = String(RegExp.$1);
-    if (this.makeActionTargets(string).length > 0) {
-      return this.actionMove(string, actionArgs);
-    }
-  }
-  // OPACITY TARGET
-  if (actionName.match(/OPACITY[ ](.*)/i)) {
-    var string = String(RegExp.$1);
-    if (this.makeActionTargets(string).length > 0) {
-      return this.actionOpacity(string, actionArgs);
-    }
-  }
-  // SHAKE SCREEN
-  if (actionName === 'SHAKE SCREEN') {
-    return this.actionShakeScreen(actionArgs);
-  }
-  // TINT SCREEN
-  if (actionName === 'TINT SCREEN') {
-    return this.actionTintScreen(actionArgs);
-  }
-  // WAIT FOR FLOAT
-  if (actionName === 'WAIT FOR FLOAT') {
-    return this.actionWaitForFloat();
-  }
-  // WAIT FOR JUMP
-  if (actionName === 'WAIT FOR JUMP') {
-    return this.actionWaitForJump();
-  }
-  // WAIT FOR OPACITY
-  if (actionName === 'WAIT FOR OPACITY') {
-    return this.actionWaitForOpacity();
-  }
-  return MageStudios.ASP2.BattleManager_processActionSequence.call(this,
-    actionName, actionArgs);
-};
 
-BattleManager.actionAttackAnimation = function(actionArgs) {
-  var targets = this.makeActionTargets(actionArgs[0]);
-  var mirror = false;
-  if (actionArgs[1] && actionArgs[1].toUpperCase() === 'MIRROR') mirror = true;
-  if (mirror) {
-    this._logWindow.showActorAtkAniMirror(this._subject,
-      targets.filter(MageStudios.Util.onlyUnique));
-  } else {
-    this._logWindow.showAttackAnimation(this._subject,
-      targets.filter(MageStudios.Util.onlyUnique));
-  }
-  return true;
-};
+    if (actionName === "ENEMY EFFECT") {
+      return this.actionEnemyEffect(actionArgs);
+    }
 
-BattleManager.actionBattleHud = function(actionName) {
-  if (actionName === 'HIDE BATTLE HUD') {
-    this._windowLayer.x = Graphics.boxWidth * 495;
-  } else if (actionName === 'SHOW BATTLE HUD') {
-    this._windowLayer.x = 0;
-  }
-  return false;
-}
+    if (actionName.match(/FACE[ ](.*)/i)) {
+      var string = String(RegExp.$1);
+      if (this.makeActionTargets(string).length > 0) {
+        return this.actionFace(string, actionArgs);
+      }
+    }
 
-BattleManager.actionEnemyEffect = function(actionArgs) {
+    if (["FADE IN", "FADE OUT"].contains(actionName)) {
+      return this.actionFadeScreen(actionName, actionArgs);
+    }
+
+    if (actionName === "FLASH SCREEN") {
+      return this.actionFlashScreen(actionArgs);
+    }
+
+    if (actionName.match(/FLOAT[ ](.*)/i)) {
+      var string = String(RegExp.$1);
+      if (this.makeActionTargets(string).length > 0) {
+        return this.actionFloat(string, actionArgs);
+      }
+    }
+
+    if (["HIDE BATTLE HUD", "SHOW BATTLE HUD"].contains(actionName)) {
+      return this.actionBattleHud(actionName);
+    }
+
+    if (actionName.match(/JUMP[ ](.*)/i)) {
+      var string = String(RegExp.$1);
+      if (this.makeActionTargets(string).length > 0) {
+        return this.actionJump(string, actionArgs);
+      }
+    }
+
+    if (actionName.match(/MOTION[ ](.*)/i)) {
+      return this.actionMotionTarget(String(RegExp.$1), actionArgs);
+    }
+
+    if (actionName.match(/MOVE[ ](.*)/i)) {
+      var string = String(RegExp.$1);
+      if (this.makeActionTargets(string).length > 0) {
+        return this.actionMove(string, actionArgs);
+      }
+    }
+
+    if (actionName.match(/OPACITY[ ](.*)/i)) {
+      var string = String(RegExp.$1);
+      if (this.makeActionTargets(string).length > 0) {
+        return this.actionOpacity(string, actionArgs);
+      }
+    }
+
+    if (actionName === "SHAKE SCREEN") {
+      return this.actionShakeScreen(actionArgs);
+    }
+
+    if (actionName === "TINT SCREEN") {
+      return this.actionTintScreen(actionArgs);
+    }
+
+    if (actionName === "WAIT FOR FLOAT") {
+      return this.actionWaitForFloat();
+    }
+
+    if (actionName === "WAIT FOR JUMP") {
+      return this.actionWaitForJump();
+    }
+
+    if (actionName === "WAIT FOR OPACITY") {
+      return this.actionWaitForOpacity();
+    }
+    return MageStudios.ASP2.BattleManager_processActionSequence.call(
+      this,
+      actionName,
+      actionArgs
+    );
+  };
+
+  BattleManager.actionAttackAnimation = function (actionArgs) {
+    var targets = this.makeActionTargets(actionArgs[0]);
+    var mirror = false;
+    if (actionArgs[1] && actionArgs[1].toUpperCase() === "MIRROR")
+      mirror = true;
+    if (mirror) {
+      this._logWindow.showActorAtkAniMirror(
+        this._subject,
+        targets.filter(MageStudios.Util.onlyUnique)
+      );
+    } else {
+      this._logWindow.showAttackAnimation(
+        this._subject,
+        targets.filter(MageStudios.Util.onlyUnique)
+      );
+    }
+    return true;
+  };
+
+  BattleManager.actionBattleHud = function (actionName) {
+    if (actionName === "HIDE BATTLE HUD") {
+      this._windowLayer.x = Graphics.boxWidth * 495;
+    } else if (actionName === "SHOW BATTLE HUD") {
+      this._windowLayer.x = 0;
+    }
+    return false;
+  };
+
+  BattleManager.actionEnemyEffect = function (actionArgs) {
     var targets = this.makeActionTargets(actionArgs[0]);
     if (targets.length < 1) return true;
-    if (actionArgs[1].toUpperCase() === 'WHITEN') {
-      targets.forEach(function(target) {
-        if (target.isEnemy()) target.requestEffect('whiten');
+    if (actionArgs[1].toUpperCase() === "WHITEN") {
+      targets.forEach(function (target) {
+        if (target.isEnemy()) target.requestEffect("whiten");
       });
-    } else if (actionArgs[1].toUpperCase() === 'BLINK') {
-      targets.forEach(function(target) {
-        if (target.isEnemy()) target.requestEffect('blink');
+    } else if (actionArgs[1].toUpperCase() === "BLINK") {
+      targets.forEach(function (target) {
+        if (target.isEnemy()) target.requestEffect("blink");
       });
     }
     return true;
-};
+  };
 
-BattleManager.actionFace = function(name, actionArgs) {
+  BattleManager.actionFace = function (name, actionArgs) {
     var movers = this.makeActionTargets(name);
     if (movers.length < 1) return true;
     var cmd = actionArgs[0].toUpperCase();
-    if (['FORWARD', 'NORMAL'].contains(cmd)) {
-      movers.forEach(function(mover) {
+    if (["FORWARD", "NORMAL"].contains(cmd)) {
+      movers.forEach(function (mover) {
         mover.spriteFaceForward();
       });
-    } else if (['BACKWARD', 'MIRROR'].contains(cmd)) {
-      movers.forEach(function(mover) {
+    } else if (["BACKWARD", "MIRROR"].contains(cmd)) {
+      movers.forEach(function (mover) {
         mover.spriteFaceBackward();
       });
-    } else if (['HOME', 'ORIGIN'].contains(cmd)) {
-      movers.forEach(function(mover) {
+    } else if (["HOME", "ORIGIN"].contains(cmd)) {
+      movers.forEach(function (mover) {
         mover.spriteFaceHome();
       });
-    } else if (['AWAY FROM HOME', 'AWAY FROM ORIGIN'].contains(cmd)) {
-      movers.forEach(function(mover) {
+    } else if (["AWAY FROM HOME", "AWAY FROM ORIGIN"].contains(cmd)) {
+      movers.forEach(function (mover) {
         mover.spriteFaceAwayHome();
       });
-    } else if (['POINT', 'POSITION', 'COORDINATE', 'SCREEN', 'SCREEN POS',
-    'COORDINATES'].contains(cmd)) {
+    } else if (
+      [
+        "POINT",
+        "POSITION",
+        "COORDINATE",
+        "SCREEN",
+        "SCREEN POS",
+        "COORDINATES",
+      ].contains(cmd)
+    ) {
       var destX = eval(actionArgs[1]) || 0;
       var destY = eval(actionArgs[2]) || 0;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.spriteFacePoint(destX, destY);
       });
-    } else if (['AWAY FROM POINT', 'AWAY FROM POSITION', 'AWAY FROM COORDINATE',
-    'AWAY FROM SCREEN', 'AWAY FROM SCREEN POS',
-    'AWAY FROM COORDINATES'].contains(cmd)) {
+    } else if (
+      [
+        "AWAY FROM POINT",
+        "AWAY FROM POSITION",
+        "AWAY FROM COORDINATE",
+        "AWAY FROM SCREEN",
+        "AWAY FROM SCREEN POS",
+        "AWAY FROM COORDINATES",
+      ].contains(cmd)
+    ) {
       var destX = eval(actionArgs[1]) || 0;
       var destY = eval(actionArgs[2]) || 0;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.spriteFaceAwayPoint(destX, destY);
       });
     } else if (cmd.match(/AWAY[ ]FROM[ ](.*)/i)) {
@@ -626,13 +632,13 @@ BattleManager.actionFace = function(name, actionArgs) {
       if (targets.length < 1) return false;
       var destX = 0;
       var destY = 0;
-      targets.forEach(function(target) {
+      targets.forEach(function (target) {
         destX += target.spritePosX();
         destY += target.spritePosY();
       }, this);
       destX /= targets.length;
       destY /= targets.length;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.spriteFaceAwayPoint(destX, destY);
       }, this);
     } else {
@@ -640,55 +646,55 @@ BattleManager.actionFace = function(name, actionArgs) {
       if (targets.length < 1) return false;
       var destX = 0;
       var destY = 0;
-      targets.forEach(function(target) {
+      targets.forEach(function (target) {
         destX += target.spritePosX();
         destY += target.spritePosY();
       }, this);
       destX /= targets.length;
       destY /= targets.length;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.spriteFacePoint(destX, destY);
       }, this);
     }
     return false;
-};
+  };
 
-BattleManager.actionFadeScreen = function(actionName, actionArgs) {
-  var frames = actionArgs[0] || 60;
-  if (actionName === 'FADE IN') {
-    $gameScreen.startFadeIn(frames);
-  } else if (actionName === 'FADE OUT') {
-    $gameScreen.startFadeOut(frames);
-  }
-  return false;
-};
+  BattleManager.actionFadeScreen = function (actionName, actionArgs) {
+    var frames = actionArgs[0] || 60;
+    if (actionName === "FADE IN") {
+      $gameScreen.startFadeIn(frames);
+    } else if (actionName === "FADE OUT") {
+      $gameScreen.startFadeOut(frames);
+    }
+    return false;
+  };
 
-BattleManager.actionFlashScreen = function(actionArgs) {
-    if (actionArgs[0].toUpperCase() === 'WHITE') {
+  BattleManager.actionFlashScreen = function (actionArgs) {
+    if (actionArgs[0].toUpperCase() === "WHITE") {
       var flash = [255, 255, 255, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'RED') {
+    } else if (actionArgs[0].toUpperCase() === "RED") {
       var flash = [255, 0, 0, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'ORANGE') {
+    } else if (actionArgs[0].toUpperCase() === "ORANGE") {
       var flash = [255, 128, 0, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'YELLOW') {
+    } else if (actionArgs[0].toUpperCase() === "YELLOW") {
       var flash = [255, 255, 0, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'GREEN') {
+    } else if (actionArgs[0].toUpperCase() === "GREEN") {
       var flash = [0, 255, 0, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'BLUE') {
+    } else if (actionArgs[0].toUpperCase() === "BLUE") {
       var flash = [0, 128, 255, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'PURPLE') {
+    } else if (actionArgs[0].toUpperCase() === "PURPLE") {
       var flash = [128, 64, 255, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'MAGENTA') {
+    } else if (actionArgs[0].toUpperCase() === "MAGENTA") {
       var flash = [255, 0, 255, 255];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'BLACK') {
+    } else if (actionArgs[0].toUpperCase() === "BLACK") {
       var flash = [0, 0, 0, 255];
       var frames = actionArgs[1] || 60;
     } else {
@@ -697,14 +703,18 @@ BattleManager.actionFlashScreen = function(actionArgs) {
       var blue = actionArgs[2] || 0;
       var intensity = actionArgs[3] || 0;
       var frames = actionArgs[4] || 60;
-      var flash = [parseInt(red), parseInt(green),
-          parseInt(blue), parseInt(intensity)];
+      var flash = [
+        parseInt(red),
+        parseInt(green),
+        parseInt(blue),
+        parseInt(intensity),
+      ];
     }
     $gameScreen.startFlash(flash, frames);
     return false;
-};
+  };
 
-BattleManager.actionFloat = function(name, actionArgs) {
+  BattleManager.actionFloat = function (name, actionArgs) {
     var movers = this.makeActionTargets(name);
     if (movers.length < 1) return true;
     var cmd = actionArgs[0];
@@ -718,14 +728,14 @@ BattleManager.actionFloat = function(name, actionArgs) {
     } else {
       var floatPeak = 1.0;
     }
-    movers.forEach(function(mover) {
-      var floatRate = floatPeak + (pixels / mover.spriteHeight());
+    movers.forEach(function (mover) {
+      var floatRate = floatPeak + pixels / mover.spriteHeight();
       mover.spriteFloat(floatRate, frames);
     });
     return false;
-};
+  };
 
-BattleManager.actionJump = function(name, actionArgs) {
+  BattleManager.actionJump = function (name, actionArgs) {
     var movers = this.makeActionTargets(name);
     if (movers.length < 1) return true;
     var cmd = actionArgs[0];
@@ -739,47 +749,62 @@ BattleManager.actionJump = function(name, actionArgs) {
     } else {
       var jumpPeak = 1.0;
     }
-    movers.forEach(function(mover) {
-      var jumpRate = jumpPeak + (pixels / mover.spriteHeight());
+    movers.forEach(function (mover) {
+      var jumpRate = jumpPeak + pixels / mover.spriteHeight();
       mover.spriteJump(jumpRate, frames);
     });
     return true;
-};
+  };
 
-BattleManager.actionMotionTarget = function(name, actionArgs) {
-    if (name.toUpperCase() === 'WAIT') return this.actionMotionWait(actionArgs);
-    if (name.toUpperCase() === 'STANDBY') name = 'WAIT';
+  BattleManager.actionMotionTarget = function (name, actionArgs) {
+    if (name.toUpperCase() === "WAIT") return this.actionMotionWait(actionArgs);
+    if (name.toUpperCase() === "STANDBY") name = "WAIT";
     var movers = this.makeActionTargets(actionArgs[0]);
     if (movers.length < 1) return true;
     var cmd = name.toLowerCase();
-    var motion = 'wait';
-    if (actionArgs[1] && actionArgs[1].toUpperCase() === 'NO WEAPON') {
+    var motion = "wait";
+    if (actionArgs[1] && actionArgs[1].toUpperCase() === "NO WEAPON") {
       var showWeapon = false;
     } else {
       var showWeapon = true;
     }
-    if (['wait', 'chant', 'guard', 'evade', 'skill', 'spell', 'item', 'escape',
-    'victory', 'dying', 'abnormal', 'sleep', 'dead'].contains(cmd)) {
+    if (
+      [
+        "wait",
+        "chant",
+        "guard",
+        "evade",
+        "skill",
+        "spell",
+        "item",
+        "escape",
+        "victory",
+        "dying",
+        "abnormal",
+        "sleep",
+        "dead",
+      ].contains(cmd)
+    ) {
       motion = cmd;
-    } else if (['walk', 'move'].contains(cmd)) {
-      motion = 'walk';
-    } else if (['damage', 'hit'].contains(cmd)) {
-      motion = 'damage';
-    } else if (['attack'].contains(cmd)) {
-      movers.forEach(function(mover) {
+    } else if (["walk", "move"].contains(cmd)) {
+      motion = "walk";
+    } else if (["damage", "hit"].contains(cmd)) {
+      motion = "damage";
+    } else if (["attack"].contains(cmd)) {
+      movers.forEach(function (mover) {
         mover.performAttack();
       });
       return false;
-    } else if (['randattack'].contains(cmd)) {
-      var motions = ['thrust', 'swing', 'missile'];
-      movers.forEach(function(mover) {
+    } else if (["randattack"].contains(cmd)) {
+      var motions = ["thrust", "swing", "missile"];
+      movers.forEach(function (mover) {
         var motion = motions[Math.floor(Math.random() * motions.length)];
         mover.forceMotion(motion);
       });
       return false;
-    } else if (['thrust', 'swing', 'missile'].contains(cmd)) {
+    } else if (["thrust", "swing", "missile"].contains(cmd)) {
       motion = cmd;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.forceMotion(motion);
         if (mover.isActor() && showWeapon) {
           var weapons = mover.weapons();
@@ -798,55 +823,62 @@ BattleManager.actionMotionTarget = function(name, actionArgs) {
       });
       return false;
     }
-    movers.forEach(function(mover) {
+    movers.forEach(function (mover) {
       mover.forceMotion(motion);
     });
     return false;
-};
+  };
 
-BattleManager.actionMove = function(name, actionArgs) {
+  BattleManager.actionMove = function (name, actionArgs) {
     if (!$gameSystem.isSideView()) return true;
     var movers = this.makeActionTargets(name);
     if (movers.length < 1) return true;
     var cmd = actionArgs[0].toUpperCase();
-    if (['HOME', 'ORIGIN'].contains(cmd)) {
+    if (["HOME", "ORIGIN"].contains(cmd)) {
       var frames = actionArgs[1] || 12;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.battler().startMove(0, 0, frames);
-        mover.requestMotion('walk');
+        mover.requestMotion("walk");
         mover.spriteFaceHome();
       });
-    } else if (['RETURN'].contains(cmd)) {
+    } else if (["RETURN"].contains(cmd)) {
       var frames = actionArgs[1] || 12;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.battler().startMove(0, 0, frames);
-        mover.requestMotion('evade');
+        mover.requestMotion("evade");
         mover.spriteFaceForward();
       });
-    } else if (['FORWARD', 'FORWARDS', 'BACKWARD',
-    'BACKWARDS'].contains(cmd)) {
+    } else if (["FORWARD", "FORWARDS", "BACKWARD", "BACKWARDS"].contains(cmd)) {
       var distance = actionArgs[1] || MageStudios.Param.BECStepDist;
-      if (['BACKWARD', 'BACKWARDS'].contains(cmd)) distance *= -1;
+      if (["BACKWARD", "BACKWARDS"].contains(cmd)) distance *= -1;
       var frames = actionArgs[2] || 12;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         mover.battler().moveForward(distance, frames);
-        mover.requestMotion('walk');
-        if (['FORWARD', 'FORWARDS'].contains(cmd)) {
+        mover.requestMotion("walk");
+        if (["FORWARD", "FORWARDS"].contains(cmd)) {
           mover.spriteFaceForward();
         } else {
           mover.spriteFaceBackward();
         }
       });
-    } else if (['POINT', 'POSITION', 'COORDINATE', 'SCREEN', 'SCREEN POS',
-    'COORDINATES'].contains(cmd)) {
+    } else if (
+      [
+        "POINT",
+        "POSITION",
+        "COORDINATE",
+        "SCREEN",
+        "SCREEN POS",
+        "COORDINATES",
+      ].contains(cmd)
+    ) {
       var destX = eval(actionArgs[1]) || 0;
       var destY = eval(actionArgs[2]) || 0;
       var frames = actionArgs[3] || 12;
-      movers.forEach(function(mover) {
+      movers.forEach(function (mover) {
         var offsetX = BattleManager.actionMoveOffsetX(actionArgs, mover, mover);
         var offsetY = BattleManager.actionMoveOffsetY(actionArgs, mover, mover);
         mover.battler().moveToPoint(destX + offsetX, destY + offsetY, frames);
-        mover.requestMotion('walk');
+        mover.requestMotion("walk");
         mover.spriteFacePoint(destX, destY);
       });
     } else {
@@ -855,166 +887,168 @@ BattleManager.actionMove = function(name, actionArgs) {
       var type = actionArgs[1].toUpperCase();
       if (targets.length < 1) return false;
       for (var i = 0; i < movers.length; ++i) {
-      	var mover = movers[i];
-      	if (!mover) continue;
-      	if (['BASE', 'FOOT', 'FEET'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'center');
-	        var destY = this.actionMoveY(mover, targets, 'foot');
-	      } else if (['CENTER', 'MIDDLE'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'center');
-	        var destY = this.actionMoveY(mover, targets, 'center');
-	      } else if (['HEAD', 'TOP'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'center');
-	        var destY = this.actionMoveY(mover, targets, 'head');
-	      } else if (['FRONT BASE', 'FRONT FOOT', 'FRONT FEET',
-	      'FRONT'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'front');
-	        var destY = this.actionMoveY(mover, targets, 'foot');
-	      } else if (['BACK BASE', 'BACK FOOT', 'BACK FEET',
-	      'BACK'].contains(type)) {
-	      	var destX = this.actionMoveX(mover, targets, 'back');
-	        var destY = this.actionMoveY(mover, targets, 'foot');
-	      } else if (['FRONT CENTER', 'FRONT MIDDLE'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'front');
-	        var destY = this.actionMoveY(mover, targets, 'center');
-	      } else if (['BACK CENTER', 'BACK MIDDLE',].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'back');
-	        var destY = this.actionMoveY(mover, targets, 'center');
-	      } else if (['FRONT HEAD', 'FRONT TOP'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'front');
-	        var destY = this.actionMoveY(mover, targets, 'head');
-	      } else if (['BACK HEAD', 'BACK TOP'].contains(type)) {
-	        var destX = this.actionMoveX(mover, targets, 'back');
-	        var destY = this.actionMoveY(mover, targets, 'head');
-	      }
+        var mover = movers[i];
+        if (!mover) continue;
+        if (["BASE", "FOOT", "FEET"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "center");
+          var destY = this.actionMoveY(mover, targets, "foot");
+        } else if (["CENTER", "MIDDLE"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "center");
+          var destY = this.actionMoveY(mover, targets, "center");
+        } else if (["HEAD", "TOP"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "center");
+          var destY = this.actionMoveY(mover, targets, "head");
+        } else if (
+          ["FRONT BASE", "FRONT FOOT", "FRONT FEET", "FRONT"].contains(type)
+        ) {
+          var destX = this.actionMoveX(mover, targets, "front");
+          var destY = this.actionMoveY(mover, targets, "foot");
+        } else if (
+          ["BACK BASE", "BACK FOOT", "BACK FEET", "BACK"].contains(type)
+        ) {
+          var destX = this.actionMoveX(mover, targets, "back");
+          var destY = this.actionMoveY(mover, targets, "foot");
+        } else if (["FRONT CENTER", "FRONT MIDDLE"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "front");
+          var destY = this.actionMoveY(mover, targets, "center");
+        } else if (["BACK CENTER", "BACK MIDDLE"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "back");
+          var destY = this.actionMoveY(mover, targets, "center");
+        } else if (["FRONT HEAD", "FRONT TOP"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "front");
+          var destY = this.actionMoveY(mover, targets, "head");
+        } else if (["BACK HEAD", "BACK TOP"].contains(type)) {
+          var destX = this.actionMoveX(mover, targets, "back");
+          var destY = this.actionMoveY(mover, targets, "head");
+        }
         var offsetX = this.actionMoveOffsetX(actionArgs, mover, targets[0]);
         var offsetY = this.actionMoveOffsetY(actionArgs, mover, targets[0]);
-	      mover.battler().moveToPoint(destX + offsetX, destY + offsetY, frames);
+        mover.battler().moveToPoint(destX + offsetX, destY + offsetY, frames);
         mover.spriteFacePoint(destX, destY);
       }
     }
     return true;
-};
+  };
 
-BattleManager.actionMoveX = function(mover, targets, value) {
-		value = this.actionMoveXLocation(mover, targets, value);
-		var max = targets.length;
-		var moverWidth = mover.spriteWidth();
-		if (value === 'center') {
-			var destX = null;
-		} else {
-			var destX = (value === 'left') ? Graphics.boxWidth : 0;
-		}
-		for (var i = 0; i < max; ++i) {
-			var target = targets[i];
-			if (!target) continue;
-			var targetWidth = target.spriteWidth();
-			var point = target.spritePosX();
-			if (value === 'center') {
-				destX = (destX === null) ? 0 : destX;
-				destX += point;
-			} else if (value === 'left') {
-				point -= targetWidth / 2;
-				point -= (mover.isActor() ? 1 : 1) * moverWidth / 2;
-				destX = Math.min(point, destX);
-			} else {
-				point += targetWidth / 2;
-				point += (mover.isActor() ? 1 : 1) * moverWidth / 2;
-				destX = Math.max(point, destX);
-			}
-		}
-		if (value === 'center') destX /= max;
-		return destX;
-};
+  BattleManager.actionMoveX = function (mover, targets, value) {
+    value = this.actionMoveXLocation(mover, targets, value);
+    var max = targets.length;
+    var moverWidth = mover.spriteWidth();
+    if (value === "center") {
+      var destX = null;
+    } else {
+      var destX = value === "left" ? Graphics.boxWidth : 0;
+    }
+    for (var i = 0; i < max; ++i) {
+      var target = targets[i];
+      if (!target) continue;
+      var targetWidth = target.spriteWidth();
+      var point = target.spritePosX();
+      if (value === "center") {
+        destX = destX === null ? 0 : destX;
+        destX += point;
+      } else if (value === "left") {
+        point -= targetWidth / 2;
+        point -= ((mover.isActor() ? 1 : 1) * moverWidth) / 2;
+        destX = Math.min(point, destX);
+      } else {
+        point += targetWidth / 2;
+        point += ((mover.isActor() ? 1 : 1) * moverWidth) / 2;
+        destX = Math.max(point, destX);
+      }
+    }
+    if (value === "center") destX /= max;
+    return destX;
+  };
 
-BattleManager.actionMoveXLocation = function(mover, targets, value) {
-		if (value === 'center') return 'center';
-		var actors = 0;
-		var enemies = 0;
-		var max = targets.length;
-		for (var i = 0; i < max; ++i) {
-			var target = targets[i];
-			if (!target) continue;
-			if (target.isActor()) actors += 1;
-			if (target.isEnemy()) enemies += 1;
-		}
-		if (actors > 0 && enemies === 0) {
-			return (value === 'front') ? 'left' : 'right';
-		} else if (actors === 0 && enemies > 0) {
-			return (value === 'front') ? 'right' : 'left';
-		} else {
-			if (mover.isActor()) {
-				return (value === 'front') ? 'right' : 'left';
-			} else { // enemy
-				return (value === 'front') ? 'left' : 'right';
-			}
-		}
-		return 'center';
-};
+  BattleManager.actionMoveXLocation = function (mover, targets, value) {
+    if (value === "center") return "center";
+    var actors = 0;
+    var enemies = 0;
+    var max = targets.length;
+    for (var i = 0; i < max; ++i) {
+      var target = targets[i];
+      if (!target) continue;
+      if (target.isActor()) actors += 1;
+      if (target.isEnemy()) enemies += 1;
+    }
+    if (actors > 0 && enemies === 0) {
+      return value === "front" ? "left" : "right";
+    } else if (actors === 0 && enemies > 0) {
+      return value === "front" ? "right" : "left";
+    } else {
+      if (mover.isActor()) {
+        return value === "front" ? "right" : "left";
+      } else {
+        return value === "front" ? "left" : "right";
+      }
+    }
+    return "center";
+  };
 
-BattleManager.actionMoveY = function(mover, targets, value) {
-		var max = targets.length;
-		var destY = 0;
-		var point = (value === 'head') ? Graphics.boxHeight : 0;
-		for (var i = 0; i < max; ++i) {
-			var target = targets[i];
-			if (!target) continue;
-			if (value === 'head') {
-				point = Math.min(target.spritePosY() - target.spriteHeight(), point);
-			} else if (value === 'center') {
-				point += target.spritePosY() - target.spriteHeight() / 2;
-			} else { // foot
-				point = Math.max(target.spritePosY(), point);
-			}
-		}
-		destY = (value === 'center') ? point / max : point;
-		return destY;
-};
+  BattleManager.actionMoveY = function (mover, targets, value) {
+    var max = targets.length;
+    var destY = 0;
+    var point = value === "head" ? Graphics.boxHeight : 0;
+    for (var i = 0; i < max; ++i) {
+      var target = targets[i];
+      if (!target) continue;
+      if (value === "head") {
+        point = Math.min(target.spritePosY() - target.spriteHeight(), point);
+      } else if (value === "center") {
+        point += target.spritePosY() - target.spriteHeight() / 2;
+      } else {
+        point = Math.max(target.spritePosY(), point);
+      }
+    }
+    destY = value === "center" ? point / max : point;
+    return destY;
+  };
 
-BattleManager.actionMoveOffsetX = function(actionArgs, user, target) {
-  if (actionArgs && actionArgs.length > 0) {
-    var length = actionArgs.length;
-    for (var i = 0; i < length; ++i) {
-      var line = actionArgs[i];
-      if (line.match(/AUTO OFFSET X[ ]([\+\-]\d+)/i)) {
-        var value = parseInt(RegExp.$1);
-        if (user.isActor() && !target) {
-          return value * -1;
-        } else if (user.isEnemy() && !target) {
-          return value;
-        } else if (user.isActor() && target.isActor()) {
-          return value;
-        } else if (user.isActor() && target.isEnemy()) {
-          return value * -1;
-        } else if (user.isEnemy() && target.isEnemy()) {
-          return value * -1;
-        } else if (user.isEnemy() && target.isActor()) {
-          return value;
+  BattleManager.actionMoveOffsetX = function (actionArgs, user, target) {
+    if (actionArgs && actionArgs.length > 0) {
+      var length = actionArgs.length;
+      for (var i = 0; i < length; ++i) {
+        var line = actionArgs[i];
+        if (line.match(/AUTO OFFSET X[ ]([\+\-]\d+)/i)) {
+          var value = parseInt(RegExp.$1);
+          if (user.isActor() && !target) {
+            return value * -1;
+          } else if (user.isEnemy() && !target) {
+            return value;
+          } else if (user.isActor() && target.isActor()) {
+            return value;
+          } else if (user.isActor() && target.isEnemy()) {
+            return value * -1;
+          } else if (user.isEnemy() && target.isEnemy()) {
+            return value * -1;
+          } else if (user.isEnemy() && target.isActor()) {
+            return value;
+          }
+        } else if (line.match(/OFFSET X[ ]([\+\-]\d+)/i)) {
+          return parseInt(RegExp.$1);
         }
-      } else if (line.match(/OFFSET X[ ]([\+\-]\d+)/i)) {
-        return parseInt(RegExp.$1);
       }
     }
-  }
-  return 0;
-};
+    return 0;
+  };
 
-BattleManager.actionMoveOffsetY = function(actionArgs, user, target) {
-  if (actionArgs && actionArgs.length > 0) {
-    var length = actionArgs.length;
-    for (var i = 0; i < length; ++i) {
-      var line = actionArgs[i];
-      if (line.match(/AUTO OFFSET Y[ ]([\+\-]\d+)/i)) {
-        return parseInt(RegExp.$1);
-      } else if (line.match(/OFFSET Y[ ]([\+\-]\d+)/i)) {
-        return parseInt(RegExp.$1);
+  BattleManager.actionMoveOffsetY = function (actionArgs, user, target) {
+    if (actionArgs && actionArgs.length > 0) {
+      var length = actionArgs.length;
+      for (var i = 0; i < length; ++i) {
+        var line = actionArgs[i];
+        if (line.match(/AUTO OFFSET Y[ ]([\+\-]\d+)/i)) {
+          return parseInt(RegExp.$1);
+        } else if (line.match(/OFFSET Y[ ]([\+\-]\d+)/i)) {
+          return parseInt(RegExp.$1);
+        }
       }
     }
-  }
-  return 0;
-};
+    return 0;
+  };
 
-BattleManager.actionOpacity = function(name, actionArgs) {
+  BattleManager.actionOpacity = function (name, actionArgs) {
     var targets = this.makeActionTargets(name);
     if (targets.length < 1) return true;
     var cmd = actionArgs[0];
@@ -1026,26 +1060,26 @@ BattleManager.actionOpacity = function(name, actionArgs) {
     } else {
       return false;
     }
-    targets.forEach(function(target) {
+    targets.forEach(function (target) {
       target.spriteOpacity(opacity, frames);
     });
     return false;
-};
+  };
 
-BattleManager.actionTintScreen = function(actionArgs) {
-    if (actionArgs[0].toUpperCase() === 'NORMAL') {
+  BattleManager.actionTintScreen = function (actionArgs) {
+    if (actionArgs[0].toUpperCase() === "NORMAL") {
       var tint = [0, 0, 0, 0];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'DARK') {
+    } else if (actionArgs[0].toUpperCase() === "DARK") {
       var tint = [-68, -68, -68, 0];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'SEPIA') {
+    } else if (actionArgs[0].toUpperCase() === "SEPIA") {
       var tint = [34, -34, -68, 170];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'SUNSET') {
+    } else if (actionArgs[0].toUpperCase() === "SUNSET") {
       var tint = [68, -34, -34, 0];
       var frames = actionArgs[1] || 60;
-    } else if (actionArgs[0].toUpperCase() === 'NIGHT') {
+    } else if (actionArgs[0].toUpperCase() === "NIGHT") {
       var tint = [68, -68, 0, 68];
       var frames = actionArgs[1] || 60;
     } else {
@@ -1054,91 +1088,92 @@ BattleManager.actionTintScreen = function(actionArgs) {
       var blue = actionArgs[2] || 0;
       var gray = actionArgs[3] || 0;
       var frames = actionArgs[4] || 60;
-      var tint = [parseInt(red), parseInt(green),
-          parseInt(blue), parseInt(gray)];
+      var tint = [
+        parseInt(red),
+        parseInt(green),
+        parseInt(blue),
+        parseInt(gray),
+      ];
     }
     $gameScreen.startTint(tint, frames);
     return false;
-};
+  };
 
-BattleManager.actionShakeScreen = function(actionArgs) {
+  BattleManager.actionShakeScreen = function (actionArgs) {
     var power = actionArgs[0] || 5;
     var speed = actionArgs[1] || 5;
     var frames = actionArgs[2] || 60;
     $gameScreen.startShake(parseInt(power), parseInt(speed), parseInt(frames));
     return false;
-};
+  };
 
-BattleManager.actionWaitForFloat = function() {
+  BattleManager.actionWaitForFloat = function () {
     this._logWindow.waitForFloat();
     return false;
-};
+  };
 
-BattleManager.actionWaitForJump = function() {
+  BattleManager.actionWaitForJump = function () {
     this._logWindow.waitForJump();
     return false;
-};
+  };
 
-BattleManager.actionWaitForOpacity = function() {
+  BattleManager.actionWaitForOpacity = function () {
     this._logWindow.waitForOpacity();
     return false;
-};
+  };
 
-BattleManager.setWindowLayer = function(windowLayer) {
+  BattleManager.setWindowLayer = function (windowLayer) {
     this._windowLayer = windowLayer;
-};
+  };
 
-//=============================================================================
-// Sprite_Battler
-//=============================================================================
-
-MageStudios.ASP2.Sprite_Battler_initMembers = Sprite_Battler.prototype.initMembers;
-Sprite_Battler.prototype.initMembers = function() {
+  MageStudios.ASP2.Sprite_Battler_initMembers =
+    Sprite_Battler.prototype.initMembers;
+  Sprite_Battler.prototype.initMembers = function () {
     MageStudios.ASP2.Sprite_Battler_initMembers.call(this);
     this.resetFloat();
     this.setupJump(0, 0);
     this.resetOpacity();
-};
+  };
 
-Sprite_Battler.prototype.resetFloat = function() {
+  Sprite_Battler.prototype.resetFloat = function () {
     this._floatHeight = 0.0;
     this._floatTarget = 0;
     this._floatDur = 0;
     this._floatRate = 0;
-};
+  };
 
-Sprite_Battler.prototype.resetOpacity = function() {
+  Sprite_Battler.prototype.resetOpacity = function () {
     this._opacityTarget = 255;
     this._opacityDur = 0;
     this._opacityRate = 0;
     this._opacityChanging = false;
-};
+  };
 
-Sprite_Battler.prototype.setupFloat = function(floatHeight, floatDuration) {
+  Sprite_Battler.prototype.setupFloat = function (floatHeight, floatDuration) {
     floatDuration = Math.max(1, floatDuration);
     this._floatTarget = floatHeight;
     this._floatDur = floatDuration;
     var rate = Math.abs(this._floatHeight - floatHeight) / floatDuration;
     this._floatRate = rate;
-};
+  };
 
-Sprite_Battler.prototype.setupJump = function(jumpHeight, jumpDuration) {
+  Sprite_Battler.prototype.setupJump = function (jumpHeight, jumpDuration) {
     this._jumpHeight = jumpHeight;
     this._jumpDur = jumpDuration;
     this._jumpFull = jumpDuration;
-};
+  };
 
-Sprite_Battler.prototype.setupOpacityChange = function(target, duration) {
+  Sprite_Battler.prototype.setupOpacityChange = function (target, duration) {
     duration = Math.max(1, duration);
     this._opacityTarget = target;
     this._opacityDur = duration;
     var rate = Math.abs(this.opacity - target) / duration;
     this._opacityRate = rate;
     this._opacityChanging = true;
-};
+  };
 
-MageStudios.ASP2.Sprite_Battler_update = Sprite_Battler.prototype.update;
-Sprite_Battler.prototype.update = function() {
+  MageStudios.ASP2.Sprite_Battler_update = Sprite_Battler.prototype.update;
+  Sprite_Battler.prototype.update = function () {
     MageStudios.ASP2.Sprite_Battler_update.call(this);
     if (this._battler) {
       this.updateFloat();
@@ -1146,9 +1181,9 @@ Sprite_Battler.prototype.update = function() {
       this.updateWeapon();
       this.updateOpacity();
     }
-};
+  };
 
-Sprite_Battler.prototype.updateFloat = function() {
+  Sprite_Battler.prototype.updateFloat = function () {
     if (!this._battler) return;
     if (this._floatDur > 0) this._floatDur--;
     if (this._jumpDur > 0) this._jumpDur--;
@@ -1158,14 +1193,14 @@ Sprite_Battler.prototype.updateFloat = function() {
     var height = floatHeight + jumpHeight;
     if (this._mainSprite && this._mainSprite.bitmap) {
       var rate = this._battler.spriteHeight() / this._mainSprite.height;
-      this._mainSprite.anchor.y = (baseY + height * rate);
+      this._mainSprite.anchor.y = baseY + height * rate;
       this._weaponSprite.anchor.y = this._mainSprite.anchor.y;
     } else {
-      this.anchor.y = (baseY + height);
+      this.anchor.y = baseY + height;
     }
-};
+  };
 
-Sprite_Battler.prototype.updateStateSprites = function() {
+  Sprite_Battler.prototype.updateStateSprites = function () {
     if (this._stateIconSprite) {
       var height = this._battler.spriteHeight() * -1;
       height -= Sprite_StateIcon._iconHeight;
@@ -1182,7 +1217,7 @@ Sprite_Battler.prototype.updateStateSprites = function() {
     if (Imported.MSEP_X_AnimatedSVEnemies) {
       if (this._enemy && this._enemy.isFloating()) {
         heightRate += this.addFloatingHeight();
-      };
+      }
     }
     var height = this._battler.spriteHeight();
     if (this._stateIconSprite) {
@@ -1191,15 +1226,15 @@ Sprite_Battler.prototype.updateStateSprites = function() {
     if (this._stateSprite) {
       this._stateSprite.y += Math.ceil(heightRate * -height);
     }
-};
+  };
 
-Sprite_Battler.prototype.updateWeapon = function() {
+  Sprite_Battler.prototype.updateWeapon = function () {
     if (!this._battler) return;
     if (!this._battler.isActor()) return;
     this._weaponSprite.anchor.y = this._mainSprite.anchor.y;
-};
+  };
 
-Sprite_Battler.prototype.getFloatHeight = function() {
+  Sprite_Battler.prototype.getFloatHeight = function () {
     if (this._floatDur <= 0) {
       this._floatHeight = this._floatTarget;
     } else {
@@ -1212,9 +1247,9 @@ Sprite_Battler.prototype.getFloatHeight = function() {
       }
     }
     return this._floatHeight;
-};
+  };
 
-Sprite_Battler.prototype.getJumpHeight = function() {
+  Sprite_Battler.prototype.getJumpHeight = function () {
     if (this._jumpDur <= 0) {
       return 0;
     } else {
@@ -1222,12 +1257,12 @@ Sprite_Battler.prototype.getJumpHeight = function() {
       var h = this._jumpFull / 2;
       var k = this._jumpHeight;
       var a = -k / Math.pow(h, 2);
-      var height = a * Math.pow((x - h), 2) + k;
+      var height = a * Math.pow(x - h, 2) + k;
     }
     return height;
-};
+  };
 
-Sprite_Battler.prototype.updateOpacity = function() {
+  Sprite_Battler.prototype.updateOpacity = function () {
     if (this.antiOpacityChange()) return;
     this._opacityDur--;
     if (this._opacityDur <= 0) {
@@ -1244,45 +1279,41 @@ Sprite_Battler.prototype.updateOpacity = function() {
         this.opacity = Math.min(target, this.opacity + rate);
       }
     }
-};
+  };
 
-Sprite_Battler.prototype.antiOpacityChange = function() {
+  Sprite_Battler.prototype.antiOpacityChange = function () {
     if (!this._opacityChanging) return true;
     return false;
-};
+  };
 
-Sprite_Battler.prototype.isFloating = function() {
+  Sprite_Battler.prototype.isFloating = function () {
     return this._floatDur > 0;
-};
+  };
 
-Sprite_Battler.prototype.isJumping = function() {
+  Sprite_Battler.prototype.isJumping = function () {
     return this._jumpDur > 0;
-};
+  };
 
-Sprite_Battler.prototype.isChangingOpacity = function() {
+  Sprite_Battler.prototype.isChangingOpacity = function () {
     return this._opacityDur > 0;
-};
+  };
 
-//=============================================================================
-// Sprite_Animation
-//=============================================================================
-
-MageStudios.ASP2.Sprite_Animation_updatePosition =
+  MageStudios.ASP2.Sprite_Animation_updatePosition =
     Sprite_Animation.prototype.updatePosition;
-Sprite_Animation.prototype.updatePosition = function() {
+  Sprite_Animation.prototype.updatePosition = function () {
     MageStudios.ASP2.Sprite_Animation_updatePosition.call(this);
     if ([0, 1].contains(this._animation.position)) {
       if (this.isBattlerRelated()) this.updateBattlerPosition();
     }
-};
+  };
 
-Sprite_Animation.prototype.isBattlerRelated = function() {
+  Sprite_Animation.prototype.isBattlerRelated = function () {
     if (this._target instanceof Sprite_Battler) return true;
     if (this._target.parent instanceof Sprite_Battler) return true;
     return false;
-};
+  };
 
-Sprite_Animation.prototype.updateBattlerPosition = function() {
+  Sprite_Animation.prototype.updateBattlerPosition = function () {
     if (this._target instanceof Sprite_Battler) {
       var target = this._target;
     } else if (this._target.parent instanceof Sprite_Battler) {
@@ -1295,94 +1326,74 @@ Sprite_Animation.prototype.updateBattlerPosition = function() {
     var heightRate = target.getFloatHeight() + target.getJumpHeight();
     var height = heightRate * target.bitmap.height;
     this.y -= height;
-};
+  };
 
-//=============================================================================
-// Spriteset_Battle
-//=============================================================================
-
-Spriteset_Battle.prototype.isAnyoneFloating = function() {
-    return this.battlerSprites().some(function(sprite) {
-        return sprite.isFloating();
+  Spriteset_Battle.prototype.isAnyoneFloating = function () {
+    return this.battlerSprites().some(function (sprite) {
+      return sprite.isFloating();
     });
-};
+  };
 
-Spriteset_Battle.prototype.isAnyoneJumping = function() {
-    return this.battlerSprites().some(function(sprite) {
-        return sprite.isJumping();
+  Spriteset_Battle.prototype.isAnyoneJumping = function () {
+    return this.battlerSprites().some(function (sprite) {
+      return sprite.isJumping();
     });
-};
+  };
 
-Spriteset_Battle.prototype.isAnyoneChangingOpacity = function() {
-    return this.battlerSprites().some(function(sprite) {
-        return sprite.isChangingOpacity();
+  Spriteset_Battle.prototype.isAnyoneChangingOpacity = function () {
+    return this.battlerSprites().some(function (sprite) {
+      return sprite.isChangingOpacity();
     });
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-Game_Battler.prototype.spriteFloat = function(floatHeight, floatDuration) {
+  Game_Battler.prototype.spriteFloat = function (floatHeight, floatDuration) {
     if (!this.battler()) return;
     if (!this.spriteCanMove()) return;
     if (!$gameSystem.isSideView()) return;
     this.battler().setupFloat(floatHeight, floatDuration);
-};
+  };
 
-Game_Battler.prototype.spriteJump = function(jumpHeight, jumpDuration) {
+  Game_Battler.prototype.spriteJump = function (jumpHeight, jumpDuration) {
     if (!this.battler()) return;
     if (!this.spriteCanMove()) return;
     if (!$gameSystem.isSideView()) return;
     this.battler().setupJump(jumpHeight, jumpDuration);
-};
+  };
 
-Game_Battler.prototype.spriteOpacity = function(opacity, duration) {
+  Game_Battler.prototype.spriteOpacity = function (opacity, duration) {
     if (!this.battler()) return;
     this.battler().setupOpacityChange(opacity, duration);
-};
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
-
-MageStudios.ASP2.Scene_Base_createWindowLayer =
+  MageStudios.ASP2.Scene_Base_createWindowLayer =
     Scene_Base.prototype.createWindowLayer;
-Scene_Base.prototype.createWindowLayer = function() {
+  Scene_Base.prototype.createWindowLayer = function () {
     MageStudios.ASP2.Scene_Base_createWindowLayer.call(this);
     BattleManager.setWindowLayer(this._windowLayer);
-};
+  };
 
-//=============================================================================
-// Window_BattleLog
-//=============================================================================
-
-MageStudios.ASP2.Window_BattleLog_updateWaitMode =
+  MageStudios.ASP2.Window_BattleLog_updateWaitMode =
     Window_BattleLog.prototype.updateWaitMode;
-Window_BattleLog.prototype.updateWaitMode = function() {
-    if (this._waitMode === 'float') {
+  Window_BattleLog.prototype.updateWaitMode = function () {
+    if (this._waitMode === "float") {
       if (this._spriteset.isAnyoneFloating()) return true;
-    } else if (this._waitMode === 'jump') {
+    } else if (this._waitMode === "jump") {
       if (this._spriteset.isAnyoneJumping()) return true;
-    } else if (this._waitMode === 'opacity') {
+    } else if (this._waitMode === "opacity") {
       if (this._spriteset.isAnyoneChangingOpacity()) return true;
     }
     return MageStudios.ASP2.Window_BattleLog_updateWaitMode.call(this);
-};
+  };
 
-Window_BattleLog.prototype.waitForFloat = function() {
-    this.setWaitMode('float');
-};
+  Window_BattleLog.prototype.waitForFloat = function () {
+    this.setWaitMode("float");
+  };
 
-Window_BattleLog.prototype.waitForJump = function() {
-    this.setWaitMode('jump');
-};
+  Window_BattleLog.prototype.waitForJump = function () {
+    this.setWaitMode("jump");
+  };
 
-Window_BattleLog.prototype.waitForOpacity = function() {
-    this.setWaitMode('opacity');
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  Window_BattleLog.prototype.waitForOpacity = function () {
+    this.setWaitMode("opacity");
+  };
+}

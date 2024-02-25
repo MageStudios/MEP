@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Message Core Extension - Backlog
-// MSEP_X_MessageBacklog.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MessageBacklog = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MsgBacklog = MageStudios.MsgBacklog || {};
-MageStudios.MsgBacklog.version = 1.00;
+MageStudios.MsgBacklog.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_MessageCore.js) Add a message backlog
  * function to your game's message system!
  * @author Mage Studios Engine Plugins
@@ -40,7 +34,7 @@ MageStudios.MsgBacklog.version = 1.00;
  * These saved messages can also include any choices from the choice lists they
  * have selected, any numbers they may have inputted, or items they selected
  * from special events.
- * 
+ *
  * Now, your players can go forward, knowing full well they have little to
  * worry about in case they've missed any messages.
  *
@@ -214,7 +208,7 @@ MageStudios.MsgBacklog.version = 1.00;
  * @type note
  * @desc This is the code used for the scroll bar's sprite.
  * Edit this if you wish to customize it for your game.
- * @default "// Establish basic measurements\nvar padding = backlogWindow.standardPadding();\nvar width = padding / 2;\nvar height = Graphics.boxHeight;\n\n// Calculate number of visible rows\nvar visibleRows = backlogWindow.height - padding * 2;\nvisibleRows = Math.floor(visibleRows / backlogWindow.lineHeight());\nif (visibleRows < backlogWindow.maxItems()) {\n  height *= visibleRows / Math.max(1, backlogWindow.maxItems());\n}\n\n// Calculate the size of a basic scrolling increment\nvar max = Math.floor(Math.max(1, backlogWindow.maxItems()) / backlogWindow.maxCols()) - 1;\nthis._increment = Graphics.boxHeight / Math.max(1, max);\n\n// Generate the bitmap\nthis.bitmap = new Bitmap(width, height);\nthis.bitmap.fillAll(backlogWindow.textColor(scrollBarColor));"
+ * @default "
  *
  * @param ScrollSpeed
  * @text Scroll Speed
@@ -285,7 +279,7 @@ MageStudios.MsgBacklog.version = 1.00;
  * @require 1
  * @desc If you are using a Picture background type,
  * select a picture to use for your background.
- * @default 
+ * @default
  *
  * @param PictureOpacity
  * @text Picture Opacity
@@ -308,861 +302,866 @@ MageStudios.MsgBacklog.version = 1.00;
  * @default true
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_MessageCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MessageBacklog");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.MsgBacklogKeyButton = String(
+    MageStudios.Parameters["LogKeyButton"]
+  );
+  MageStudios.Param.MsgBacklogEnableKey = String(
+    MageStudios.Parameters["EnableLogKey"]
+  );
+  MageStudios.Param.MsgBacklogEnableKey = eval(
+    MageStudios.Param.MsgBacklogEnableKey
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageBacklog');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.MsgBacklogDefaultLog = String(
+    MageStudios.Parameters["DefaultLogging"]
+  );
+  MageStudios.Param.MsgBacklogDefaultLog = eval(
+    MageStudios.Param.MsgBacklogDefaultLog
+  );
+  MageStudios.Param.MsgBacklogSpcInput = String(
+    MageStudios.Parameters["LogSpecialInput"]
+  );
+  MageStudios.Param.MsgBacklogSpcInput = eval(
+    MageStudios.Param.MsgBacklogSpcInput
+  );
+  MageStudios.Param.MsgBacklogSpcFmt = String(
+    MageStudios.Parameters["SpecialInputFmt"]
+  );
+  MageStudios.Param.MsgBacklogMaxEntries = Number(
+    MageStudios.Parameters["MaximumEntries"]
+  );
+  MageStudios.Param.MsgBacklogScrBarEn = String(
+    MageStudios.Parameters["ScrollBarEnabled"]
+  );
+  MageStudios.Param.MsgBacklogScrBarEn = eval(
+    MageStudios.Param.MsgBacklogScrBarEn
+  );
+  MageStudios.Param.MsgBacklogScrBarCol = Number(
+    MageStudios.Parameters["ScrollBarColor"]
+  );
+  MageStudios.Param.MsgBacklogScrBarSpriteCode = JSON.parse(
+    MageStudios.Parameters["ScrollBarSpriteCode"]
+  );
+  MageStudios.Param.MsgBacklogScrollSpd = Number(
+    MageStudios.Parameters["ScrollSpeed"]
+  );
+  MageStudios.Param.MsgBacklogScrollWrap = String(
+    MageStudios.Parameters["ScrollWrap"]
+  );
+  MageStudios.Param.MsgBacklogScrollWrap = eval(
+    MageStudios.Param.MsgBacklogScrollWrap
+  );
 
-MageStudios.Param.MsgBacklogKeyButton = String(MageStudios.Parameters['LogKeyButton']);
-MageStudios.Param.MsgBacklogEnableKey = String(MageStudios.Parameters['EnableLogKey']);
-MageStudios.Param.MsgBacklogEnableKey = eval(MageStudios.Param.MsgBacklogEnableKey);
+  MageStudios.Param.MsgBacklogBgType = Number(
+    MageStudios.Parameters["BackgroundType"]
+  );
+  MageStudios.Param.MsgBacklogBackOpacity = Number(
+    MageStudios.Parameters["BackOpacity"]
+  );
+  MageStudios.Param.MsgBacklogDimColor1 = String(
+    MageStudios.Parameters["DimColor1"]
+  );
+  MageStudios.Param.MsgBacklogDimColor2 = String(
+    MageStudios.Parameters["DimColor2"]
+  );
+  MageStudios.Param.MsgBacklogPicture = String(
+    MageStudios.Parameters["Picture"]
+  );
+  MageStudios.Param.MsgBacklogPicOpacity = Number(
+    MageStudios.Parameters["PictureOpacity"]
+  );
+  MageStudios.Param.MsgBacklogPicStretch = String(
+    MageStudios.Parameters["PictureStretch"]
+  );
+  MageStudios.Param.MsgBacklogPicStretch = eval(
+    MageStudios.Param.MsgBacklogPicStretch
+  );
 
-MageStudios.Param.MsgBacklogDefaultLog = String(MageStudios.Parameters['DefaultLogging']);
-MageStudios.Param.MsgBacklogDefaultLog = eval(MageStudios.Param.MsgBacklogDefaultLog);
-MageStudios.Param.MsgBacklogSpcInput = String(MageStudios.Parameters['LogSpecialInput']);
-MageStudios.Param.MsgBacklogSpcInput = eval(MageStudios.Param.MsgBacklogSpcInput);
-MageStudios.Param.MsgBacklogSpcFmt = String(MageStudios.Parameters['SpecialInputFmt']);
-MageStudios.Param.MsgBacklogMaxEntries = Number(MageStudios.Parameters['MaximumEntries']);
-MageStudios.Param.MsgBacklogScrBarEn = String(MageStudios.Parameters['ScrollBarEnabled']);
-MageStudios.Param.MsgBacklogScrBarEn = eval(MageStudios.Param.MsgBacklogScrBarEn);
-MageStudios.Param.MsgBacklogScrBarCol = Number(MageStudios.Parameters['ScrollBarColor']);
-MageStudios.Param.MsgBacklogScrBarSpriteCode = 
-  JSON.parse(MageStudios.Parameters['ScrollBarSpriteCode']);
-MageStudios.Param.MsgBacklogScrollSpd = Number(MageStudios.Parameters['ScrollSpeed']);
-MageStudios.Param.MsgBacklogScrollWrap = String(MageStudios.Parameters['ScrollWrap']);
-MageStudios.Param.MsgBacklogScrollWrap = eval(MageStudios.Param.MsgBacklogScrollWrap);
-
-MageStudios.Param.MsgBacklogBgType = Number(MageStudios.Parameters['BackgroundType']);
-MageStudios.Param.MsgBacklogBackOpacity = Number(MageStudios.Parameters['BackOpacity']);
-MageStudios.Param.MsgBacklogDimColor1 = String(MageStudios.Parameters['DimColor1']);
-MageStudios.Param.MsgBacklogDimColor2 = String(MageStudios.Parameters['DimColor2']);
-MageStudios.Param.MsgBacklogPicture = String(MageStudios.Parameters['Picture']);
-MageStudios.Param.MsgBacklogPicOpacity = Number(MageStudios.Parameters['PictureOpacity']);
-MageStudios.Param.MsgBacklogPicStretch = String(MageStudios.Parameters['PictureStretch']);
-MageStudios.Param.MsgBacklogPicStretch = eval(MageStudios.Param.MsgBacklogPicStretch);
-
-//=============================================================================
-// Game_Temp
-//=============================================================================
-
-Game_Temp.prototype.isMessageBacklogOpened = function() {
-  if (SceneManager._scene && SceneManager._scene._messageWindow) {
-    var win = SceneManager._scene._messageWindow;
-    if (win._backlogWindow && win._backlogWindow.isOpenAndActive()) {
-      return true;
-    }
-  }
-  return false;
-};
-
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.MsgBacklog.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-  MageStudios.MsgBacklog.Game_System_initialize.call(this);
-  this.initMessageBacklog();
-};
-
-Game_System.prototype.initMessageBacklog = function() {
-  this._messageBacklog = [];
-  this._messageBacklogKeyEnable = MageStudios.Param.MsgBacklogEnableKey;
-  this._messageBacklogLoggingEnable = MageStudios.Param.MsgBacklogDefaultLog;
-};
-
-Game_System.prototype.addMessageBacklog = function(text) {
-  if (!this.isMessageBacklogLoggingEnabled()) return;
-  text = this.convertMessageBacklogText(text);
-  this._messageBacklog.push(text);
-  while (this._messageBacklog.length > MageStudios.Param.MsgBacklogMaxEntries) {
-    this._messageBacklog.shift();
-  }
-};
-
-Game_System.prototype.convertMessageBacklogText = function(text) {
-  if (SceneManager._scene && SceneManager._scene._messageWindow) {
-    var win = SceneManager._scene._messageWindow._backlogWindow;
-    if (win) text = win.convertMessageText(text);
-  }
-  return text;
-};
-
-Game_System.prototype.getMessageBacklog = function() {
-  if (this._messageBacklog === undefined) this.initMessageBacklog();
-  return this._messageBacklog;
-};
-
-Game_System.prototype.isMessageBacklogKeyEnabled = function() {
-  if (this._messageBacklogKeyEnable === undefined) this.initMessageBacklog();
-  return this._messageBacklogKeyEnable;
-};
-
-Game_System.prototype.setMessageBacklogKeyEnable = function(value) {
-  if (this._messageBacklogKeyEnable === undefined) this.initMessageBacklog();
-  this._messageBacklogKeyEnable = value;
-};
-
-Game_System.prototype.isMessageBacklogLoggingEnabled = function() {
-  if (this._messageBacklogLoggingEnable === undefined) {
-    this.initMessageBacklog();
-  }
-  return this._messageBacklogLoggingEnable;
-};
-
-Game_System.prototype.setMessageBacklogLoggingEnable = function(value) {
-  if (this._messageBacklogLoggingEnable === undefined) {
-    this.initMessageBacklog();
-  }
-  this._messageBacklogLoggingEnable = value;
-};
-
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-MageStudios.MsgBacklog.Game_Player_canMove = Game_Player.prototype.canMove;
-Game_Player.prototype.canMove = function() {
-  if ($gameTemp.isMessageBacklogOpened()) return false;
-  return MageStudios.MsgBacklog.Game_Player_canMove.call(this);
-};
-
-//=============================================================================
-// Game_Event
-//=============================================================================
-
-MageStudios.MsgBacklog.Game_Event_updateSelfMovement =
-  Game_Event.prototype.updateSelfMovement;
-Game_Event.prototype.updateSelfMovement = function() {
-  if ($gameTemp.isMessageBacklogOpened()) return;
-  MageStudios.MsgBacklog.Game_Event_updateSelfMovement.call(this);
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.MsgBacklog.Game_Interpreter_pluginCommand =
-  Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.MsgBacklog.Game_Interpreter_pluginCommand.call(this, command, args);
-  // Plugin Commands
-  if (command === 'EnableMessageBacklog') {
-    $gameSystem.setMessageHideKeyEnable(true);
-
-  } else if (command === 'DisableMessageBacklog') {
-    $gameSystem.setMessageHideKeyEnable(false);
-
-  } else if (command === 'EnableMessageLogging') {
-    $gameSystem.setMessageBacklogLoggingEnable(true);
-
-  } else if (command === 'DisableMessageLogging') {
-    $gameSystem.setMessageBacklogLoggingEnable(false);
-
-  } else if (command === 'OpenMessageBacklog') {
-    if (SceneManager._scene instanceof Scene_Map) {
+  Game_Temp.prototype.isMessageBacklogOpened = function () {
+    if (SceneManager._scene && SceneManager._scene._messageWindow) {
       var win = SceneManager._scene._messageWindow;
-      if (win) win.openBacklogWindow();
+      if (win._backlogWindow && win._backlogWindow.isOpenAndActive()) {
+        return true;
+      }
     }
-
-  // End
-  }
-};
-
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.MsgBacklog.Scene_Map_isMenuEnabled = Scene_Map.prototype.isMenuEnabled;
-Scene_Map.prototype.isMenuEnabled = function() {
-  if ($gameTemp.isMessageBacklogOpened()) return false;
-  return MageStudios.MsgBacklog.Scene_Map_isMenuEnabled.call(this);
-};
-
-//=============================================================================
-// Window_Message
-//=============================================================================
-
-MageStudios.MsgBacklog.Window_Message_createSubWindows =
-  Window_Message.prototype.createSubWindows;
-Window_Message.prototype.createSubWindows = function() {
-  MageStudios.MsgBacklog.Window_Message_createSubWindows.call(this);
-  this.createMessageBacklogWindow();
-};
-
-Window_Message.prototype.createMessageBacklogWindow = function() {
-  this._backlogWindow = new Window_MessageBacklog();
-  SceneManager._scene.addChild(this._backlogWindow);
-};
-
-MageStudios.MsgBacklog.Window_Message_isAnySubWindowActive =
-  Window_Message.prototype.isAnySubWindowActive;
-Window_Message.prototype.isAnySubWindowActive = function() {
-  if (this._backlogWindow.active) return true;
-  return MageStudios.MsgBacklog.Window_Message_isAnySubWindowActive.call(this);
-};
-
-MageStudios.MsgBacklog.Window_Message_startMessage =
-  Window_Message.prototype.startMessage;
-Window_Message.prototype.startMessage = function() {
-  MageStudios.MsgBacklog.Window_Message_startMessage.call(this);
-  $gameSystem.addMessageBacklog($gameMessage.allText());
-};
-
-MageStudios.MsgBacklog.Window_Message_updateInput =
-  Window_Message.prototype.updateInput;
-Window_Message.prototype.updateInput = function() {
-  if (this.isAnySubWindowActive()) return true;
-  this.updateBacklogInput();
-  var value = MageStudios.MsgBacklog.Window_Message_updateInput.call(this);
-  return value;
-};
-
-Window_Message.prototype.updateBacklogInput = function() {
-  if (!this.pause) return;
-  if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
-  if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
-    this.openBacklogWindow();
-  }
-};
-
-Window_Message.prototype.openBacklogWindow = function() {
-  this._backlogWindow.fullActivate();
-};
-
-Window_Message.prototype.setReturnWindow = function(target) {
-  this._backlogWindow.setReturnWindow(target);
-};
-
-//=============================================================================
-// Window_ChoiceList
-//=============================================================================
-
-MageStudios.MsgBacklog.Window_ChoiceList_processHandling =
-  Window_ChoiceList.prototype.processHandling;
-Window_ChoiceList.prototype.processHandling = function() {
-  if (this.isOpenAndActive()) this.updateBacklogInput();
-  MageStudios.MsgBacklog.Window_ChoiceList_processHandling.call(this);
-};
-
-Window_ChoiceList.prototype.updateBacklogInput = function() {
-  if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
-  if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
-    this.openBacklogWindow();
-  }
-};
-
-Window_ChoiceList.prototype.openBacklogWindow = function() {
-  if (SceneManager._scene && SceneManager._scene._messageWindow) {
-    SceneManager._scene._messageWindow.setReturnWindow(this);
-    SceneManager._scene._messageWindow.openBacklogWindow();
-  }
-};
-
-MageStudios.MsgBacklog.Window_ChoiceList_callOkHandler =
-  Window_ChoiceList.prototype.callOkHandler;
-Window_ChoiceList.prototype.callOkHandler = function() {
-  this.backlogAddSelectedChoice();
-  MageStudios.MsgBacklog.Window_ChoiceList_callOkHandler.call(this);
-};
-
-Window_ChoiceList.prototype.backlogAddSelectedChoice = function() {
-  if (!MageStudios.Param.MsgBacklogSpcInput) return;
-  var fmt = MageStudios.Param.MsgBacklogSpcFmt;
-  var text = fmt.format(this.commandName(this.index()));
-  $gameSystem.addMessageBacklog(text);
-};
-
-//=============================================================================
-// Window_NumberInput
-//=============================================================================
-
-MageStudios.MsgBacklog.Window_NumberInput_processHandling =
-  Window_NumberInput.prototype.processHandling;
-Window_NumberInput.prototype.processHandling = function() {
-  if (this.isOpenAndActive()) this.updateBacklogInput();
-  MageStudios.MsgBacklog.Window_NumberInput_processHandling.call(this);
-};
-
-Window_NumberInput.prototype.updateBacklogInput = function() {
-  if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
-  if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
-    this.openBacklogWindow();
-  }
-};
-
-Window_NumberInput.prototype.openBacklogWindow = function() {
-  if (SceneManager._scene && SceneManager._scene._messageWindow) {
-    SceneManager._scene._messageWindow.setReturnWindow(this);
-    SceneManager._scene._messageWindow.openBacklogWindow();
-  }
-};
-
-MageStudios.MsgBacklog.Window_NumberInput_processOk =
-  Window_NumberInput.prototype.processOk;
-Window_NumberInput.prototype.processOk = function() {
-  this.backlogAddSelectedChoice();
-  MageStudios.MsgBacklog.Window_NumberInput_processOk.call(this);
-};
-
-Window_NumberInput.prototype.backlogAddSelectedChoice = function() {
-  if (!MageStudios.Param.MsgBacklogSpcInput) return;
-  var fmt = MageStudios.Param.MsgBacklogSpcFmt;
-  var text = fmt.format(MageStudios.Util.toGroup(this._number));
-  $gameSystem.addMessageBacklog(text);
-};
-
-//=============================================================================
-// Window_EventItem
-//=============================================================================
-
-MageStudios.MsgBacklog.Window_EventItem_processHandling =
-  Window_EventItem.prototype.processHandling;
-Window_EventItem.prototype.processHandling = function() {
-  if (this.isOpenAndActive()) this.updateBacklogInput();
-  MageStudios.MsgBacklog.Window_EventItem_processHandling.call(this);
-};
-
-Window_EventItem.prototype.updateBacklogInput = function() {
-  if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
-  if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
-    this.openBacklogWindow();
-  }
-};
-
-Window_EventItem.prototype.openBacklogWindow = function() {
-  if (SceneManager._scene && SceneManager._scene._messageWindow) {
-    SceneManager._scene._messageWindow.setReturnWindow(this);
-    SceneManager._scene._messageWindow.openBacklogWindow();
-  }
-};
-
-MageStudios.MsgBacklog.Window_EventItem_onOk = Window_EventItem.prototype.onOk;
-Window_EventItem.prototype.onOk = function() {
-  this.backlogAddSelectedChoice();
-  MageStudios.MsgBacklog.Window_EventItem_onOk.call(this);
-};
-
-Window_EventItem.prototype.backlogAddSelectedChoice = function() {
-  if (!MageStudios.Param.MsgBacklogSpcInput) return;
-  var fmt = MageStudios.Param.MsgBacklogSpcFmt;
-  var item = this.item();
-  var text = fmt.format('\\i[' + item.iconIndex + ']' + item.name);
-  $gameSystem.addMessageBacklog(text);
-};
-
-//=============================================================================
-// Sprite_BacklogScroll
-//=============================================================================
-
-function Sprite_BacklogScroll() {
-    this.initialize.apply(this, arguments);
-}
-
-Sprite_BacklogScroll.prototype = Object.create(Sprite.prototype);
-Sprite_BacklogScroll.prototype.constructor = Sprite_BacklogScroll;
-
-Sprite_BacklogScroll.prototype.initialize = function(target) {
-  this._target = target;
-  Sprite.prototype.initialize.call(this);
-  this._target._scrollSprite = this;
-  this.initMembers();
-  this.createBitmap();
-};
-
-Sprite_BacklogScroll.prototype.initMembers = function() {
-  this.anchor.x = 1;
-  this.anchor.y = 0;
-  this.x = Graphics.boxWidth;
-  this.y = 0;
-  this._increment = 1;
-};
-
-Sprite_BacklogScroll.prototype.createBitmap = function() {
-  var scrollBarColor = MageStudios.Param.MsgBacklogScrBarCol;
-  var backlogWindow = this._target;
-  this._increment = 1;
-  eval(MageStudios.Param.MsgBacklogScrBarSpriteCode);
-};
-
-Sprite_BacklogScroll.prototype.resize = function() {
-  this.bitmap.clear();
-  this.createBitmap();
-};
-
-Sprite_BacklogScroll.prototype.update = function() {
-  Sprite.prototype.update.call(this);
-  if (!this._target) return;
-  this.updateOpacity();
-  //this.updatePosition();
-};
-
-Sprite_BacklogScroll.prototype.updateOpacity = function() {
-  this.opacity = this._target.isOpen() ? 255 : 0;
-};
-
-Sprite_BacklogScroll.prototype.updatePosition = function() {
-  var target = this._target;
-  if (!target.isOpen()) return;
-  this.y = target.topRow() * this._increment;
-};
-
-//=============================================================================
-// Window_MessageBacklog
-//=============================================================================
-
-function Window_MessageBacklog() {
-    this.initialize.apply(this, arguments);
-}
-
-Window_MessageBacklog.prototype = Object.create(Window_Command.prototype);
-Window_MessageBacklog.prototype.constructor = Window_MessageBacklog;
-
-Window_MessageBacklog.prototype.initialize = function() {
-  this._touchHold = 0;
-  this._ready = false;
-  Window_Command.prototype.initialize.call(this, 0, 0);
-  this.createScrollSprite(this);
-  this.setBackgroundType(MageStudios.Param.MsgBacklogBgType);
-  this.deactivate();
-  this.openness = 0;
-  this._ready = true;
-};
-
-Window_MessageBacklog.prototype.createScrollSprite = function() {
-  if (!MageStudios.Param.MsgBacklogScrBarEn) return;
-  this._scrollSprite = new Sprite_BacklogScroll(this);
-  this.addChild(this._scrollSprite);
-};
-
-Window_MessageBacklog.prototype.windowWidth = function() {
-  return Graphics.boxWidth;
-};
-
-Window_MessageBacklog.prototype.windowHeight = function() {
-  return Graphics.boxHeight;
-};
-
-Window_MessageBacklog.prototype.dimColor1 = function() {
-  return MageStudios.Param.MsgBacklogDimColor1;
-};
-
-Window_MessageBacklog.prototype.dimColor2 = function() {
-  return MageStudios.Param.MsgBacklogDimColor2;
-};
-
-Window_MessageBacklog.prototype.setBackgroundType = function(type) {
-  Window_Base.prototype.setBackgroundType.call(this, type);
-  if (type === 2) this.createBackgroundPicture();
-};
-
-Window_MessageBacklog.prototype.createBackgroundPicture = function() {
-  var filename = MageStudios.Param.MsgBacklogPicture;
-  if (filename === '') return;
-  this._backgroundPicture = new Sprite();
-  this._backgroundPicture.bitmap = ImageManager.loadPicture(filename, 0);
-  SceneManager._scene.addChild(this._backgroundPicture);
-  this._backgroundPicture.opacity = 0;
-  this._backgroundPicture.anchor.x = 0.5;
-  this._backgroundPicture.anchor.y = 0.5;
-  this._backgroundPicture.x = Graphics.boxWidth / 2;
-  this._backgroundPicture.y = Graphics.boxHeight / 2;
-};
-
-Window_MessageBacklog.prototype.setBgPictureOpacity = function(opacity) {
-  this._backgroundPicture.opacity = opacity;
-  
-  this.stretchBgPicture();
-};
-
-Window_MessageBacklog.prototype.stretchBgPicture = function() {
-  if (!MageStudios.Param.MsgBacklogPicStretch) return;
-  if (this._backgroundPicture.width < Graphics.boxWidth) {
-    var rate = Graphics.boxWidth / this._backgroundPicture.width;
-    this._backgroundPicture.scale.x = rate;
-  }
-  if (this._backgroundPicture.height < Graphics.boxHeight) {
-    var rate = Graphics.boxHeight / this._backgroundPicture.height;
-    this._backgroundPicture.scale.y = rate;
-  }
-};
-
-Window_MessageBacklog.prototype.standardFontFace = function() {
-  return Window_Message.prototype.standardFontFace.call(this);
-};
-
-Window_MessageBacklog.prototype.standardFontSize = function() {
-  return Window_Message.prototype.standardFontSize.call(this);
-};
-
-Window_MessageBacklog.prototype.standardBackOpacity = function() {
-  return MageStudios.Param.MsgBacklogBackOpacity;
-};
-
-Window_MessageBacklog.prototype.makeFontBigger = function() {
-};
-
-Window_MessageBacklog.prototype.makeFontSmaller = function() {
-};
-
-Window_MessageBacklog.prototype.select = function(index) {
-};
-
-Window_MessageBacklog.prototype.moveSelect = function(index) {
-  Window_Command.prototype.select.call(this, index);
-  if (this._scrollSprite) this._scrollSprite.updatePosition();
-};
-
-Window_MessageBacklog.prototype.deselect = function() {
-  this.moveSelect(-1);
-};
-
-Window_MessageBacklog.prototype.processHandling = function() {
-  if (!this.isOpenAndActive()) return;
-  Window_Command.prototype.processHandling.call(this);
-  if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
-    this.processCancel();
-  }
-};
-
-Window_MessageBacklog.prototype.setReturnWindow = function(target) {
-  this._returnWindow = target;
-  this._returnWindow.deactivate();
-};
-
-Window_MessageBacklog.prototype.fullActivate = function() {
-  this.updateInputData();
-  Input.clear();
-  TouchInput.clear();
-  this.refresh();
-  this.activate();
-  this.openness = 255;
-  this.moveSelect(this.maxItems() - 1);
-  if (this._scrollSprite) this._scrollSprite.resize();
-  if (this._backgroundPicture) {
-    this.setBgPictureOpacity(MageStudios.Param.MsgBacklogPicOpacity);
-  }
-};
-
-Window_MessageBacklog.prototype.processOk = function() {
-  SoundManager.playOk();
-  this.fullDeactivate();
-};
-
-Window_MessageBacklog.prototype.isCancelEnabled = function() {
-  return true;
-};
-
-Window_MessageBacklog.prototype.processCancel = function() {
-  SoundManager.playCancel();
-  this.fullDeactivate();
-};
-
-Window_MessageBacklog.prototype.fullDeactivate = function() {
-  this.updateInputData();
-  Input.clear();
-  TouchInput.clear();
-  this.deactivate();
-  this.openness = 0;
-  this.deselect();
-  if (this._returnWindow) {
-    this._returnWindow.activate();
-    this._returnWindow = undefined;
-  }
-  if (this._backgroundPicture) this.setBgPictureOpacity(0)
-};
-
-Window_MessageBacklog.prototype.isCursorVisible = function() {
-  return false;
-};
-
-Window_MessageBacklog.prototype.cursorDown = function(wrap) {
-  var index = this.bottomRow();
-  var maxItems = this.maxItems();
-  var maxCols = this.maxCols();
-  wrap = MageStudios.Param.MsgBacklogScrollWrap;
-  if (index < maxItems - maxCols || (wrap && maxCols === 1)) {
-    this.moveSelect((index + maxCols) % maxItems);
-  }
-};
-
-Window_MessageBacklog.prototype.cursorUp = function(wrap) {
-  var index = this.topRow();
-  var maxItems = this.maxItems();
-  var maxCols = this.maxCols();
-  wrap = MageStudios.Param.MsgBacklogScrollWrap;
-  if (index >= maxCols || (wrap && maxCols === 1)) {
-    this.moveSelect((index - maxCols + maxItems) % maxItems);
-  }
-};
-
-Window_MessageBacklog.prototype.cursorPagedown = function() {
-  var index = this.index();
-  var maxItems = this.maxItems();
-  if (this.topRow() + this.maxPageRows() < this.maxRows()) {
-    SoundManager.playCursor();
-  }
-  Window_Selectable.prototype.cursorPagedown.call(this);
-  if (this._scrollSprite) this._scrollSprite.updatePosition();
-};
-
-Window_MessageBacklog.prototype.cursorPageup = function() {
-  var index = this.index();
-  if (this.topRow() > 0) {
-    SoundManager.playCursor();
-  }
-  Window_Selectable.prototype.cursorPageup.call(this);
-  if (this._scrollSprite) this._scrollSprite.updatePosition();
-};
-
-Window_MessageBacklog.prototype.processTouch = function() {
-  if (!this.isOpenAndActive()) return;
-  this._touchHold -= 1;
-  if (TouchInput.isPressed() && this._touchHold <= 0) {
-    if (TouchInput.y < Graphics.boxHeight / 4) {
-      this.scrollUp();
-      this._touchHold = MageStudios.Param.MsgBacklogScrollSpd;
-    } else if (TouchInput.y > Graphics.boxHeight * 3 / 4) {
-      this.scrollDown();
-      this._touchHold = MageStudios.Param.MsgBacklogScrollSpd;
-    } else {
-      this.processOk();
+    return false;
+  };
+
+  MageStudios.MsgBacklog.Game_System_initialize =
+    Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    MageStudios.MsgBacklog.Game_System_initialize.call(this);
+    this.initMessageBacklog();
+  };
+
+  Game_System.prototype.initMessageBacklog = function () {
+    this._messageBacklog = [];
+    this._messageBacklogKeyEnable = MageStudios.Param.MsgBacklogEnableKey;
+    this._messageBacklogLoggingEnable = MageStudios.Param.MsgBacklogDefaultLog;
+  };
+
+  Game_System.prototype.addMessageBacklog = function (text) {
+    if (!this.isMessageBacklogLoggingEnabled()) return;
+    text = this.convertMessageBacklogText(text);
+    this._messageBacklog.push(text);
+    while (
+      this._messageBacklog.length > MageStudios.Param.MsgBacklogMaxEntries
+    ) {
+      this._messageBacklog.shift();
     }
-  } else if (TouchInput.isCancelled()) {
-    if (this.isCancelEnabled()) {
+  };
+
+  Game_System.prototype.convertMessageBacklogText = function (text) {
+    if (SceneManager._scene && SceneManager._scene._messageWindow) {
+      var win = SceneManager._scene._messageWindow._backlogWindow;
+      if (win) text = win.convertMessageText(text);
+    }
+    return text;
+  };
+
+  Game_System.prototype.getMessageBacklog = function () {
+    if (this._messageBacklog === undefined) this.initMessageBacklog();
+    return this._messageBacklog;
+  };
+
+  Game_System.prototype.isMessageBacklogKeyEnabled = function () {
+    if (this._messageBacklogKeyEnable === undefined) this.initMessageBacklog();
+    return this._messageBacklogKeyEnable;
+  };
+
+  Game_System.prototype.setMessageBacklogKeyEnable = function (value) {
+    if (this._messageBacklogKeyEnable === undefined) this.initMessageBacklog();
+    this._messageBacklogKeyEnable = value;
+  };
+
+  Game_System.prototype.isMessageBacklogLoggingEnabled = function () {
+    if (this._messageBacklogLoggingEnable === undefined) {
+      this.initMessageBacklog();
+    }
+    return this._messageBacklogLoggingEnable;
+  };
+
+  Game_System.prototype.setMessageBacklogLoggingEnable = function (value) {
+    if (this._messageBacklogLoggingEnable === undefined) {
+      this.initMessageBacklog();
+    }
+    this._messageBacklogLoggingEnable = value;
+  };
+
+  MageStudios.MsgBacklog.Game_Player_canMove = Game_Player.prototype.canMove;
+  Game_Player.prototype.canMove = function () {
+    if ($gameTemp.isMessageBacklogOpened()) return false;
+    return MageStudios.MsgBacklog.Game_Player_canMove.call(this);
+  };
+
+  MageStudios.MsgBacklog.Game_Event_updateSelfMovement =
+    Game_Event.prototype.updateSelfMovement;
+  Game_Event.prototype.updateSelfMovement = function () {
+    if ($gameTemp.isMessageBacklogOpened()) return;
+    MageStudios.MsgBacklog.Game_Event_updateSelfMovement.call(this);
+  };
+
+  MageStudios.MsgBacklog.Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.MsgBacklog.Game_Interpreter_pluginCommand.call(
+      this,
+      command,
+      args
+    );
+
+    if (command === "EnableMessageBacklog") {
+      $gameSystem.setMessageHideKeyEnable(true);
+    } else if (command === "DisableMessageBacklog") {
+      $gameSystem.setMessageHideKeyEnable(false);
+    } else if (command === "EnableMessageLogging") {
+      $gameSystem.setMessageBacklogLoggingEnable(true);
+    } else if (command === "DisableMessageLogging") {
+      $gameSystem.setMessageBacklogLoggingEnable(false);
+    } else if (command === "OpenMessageBacklog") {
+      if (SceneManager._scene instanceof Scene_Map) {
+        var win = SceneManager._scene._messageWindow;
+        if (win) win.openBacklogWindow();
+      }
+    }
+  };
+
+  MageStudios.MsgBacklog.Scene_Map_isMenuEnabled =
+    Scene_Map.prototype.isMenuEnabled;
+  Scene_Map.prototype.isMenuEnabled = function () {
+    if ($gameTemp.isMessageBacklogOpened()) return false;
+    return MageStudios.MsgBacklog.Scene_Map_isMenuEnabled.call(this);
+  };
+
+  MageStudios.MsgBacklog.Window_Message_createSubWindows =
+    Window_Message.prototype.createSubWindows;
+  Window_Message.prototype.createSubWindows = function () {
+    MageStudios.MsgBacklog.Window_Message_createSubWindows.call(this);
+    this.createMessageBacklogWindow();
+  };
+
+  Window_Message.prototype.createMessageBacklogWindow = function () {
+    this._backlogWindow = new Window_MessageBacklog();
+    SceneManager._scene.addChild(this._backlogWindow);
+  };
+
+  MageStudios.MsgBacklog.Window_Message_isAnySubWindowActive =
+    Window_Message.prototype.isAnySubWindowActive;
+  Window_Message.prototype.isAnySubWindowActive = function () {
+    if (this._backlogWindow.active) return true;
+    return MageStudios.MsgBacklog.Window_Message_isAnySubWindowActive.call(
+      this
+    );
+  };
+
+  MageStudios.MsgBacklog.Window_Message_startMessage =
+    Window_Message.prototype.startMessage;
+  Window_Message.prototype.startMessage = function () {
+    MageStudios.MsgBacklog.Window_Message_startMessage.call(this);
+    $gameSystem.addMessageBacklog($gameMessage.allText());
+  };
+
+  MageStudios.MsgBacklog.Window_Message_updateInput =
+    Window_Message.prototype.updateInput;
+  Window_Message.prototype.updateInput = function () {
+    if (this.isAnySubWindowActive()) return true;
+    this.updateBacklogInput();
+    var value = MageStudios.MsgBacklog.Window_Message_updateInput.call(this);
+    return value;
+  };
+
+  Window_Message.prototype.updateBacklogInput = function () {
+    if (!this.pause) return;
+    if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
+    if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
+      this.openBacklogWindow();
+    }
+  };
+
+  Window_Message.prototype.openBacklogWindow = function () {
+    this._backlogWindow.fullActivate();
+  };
+
+  Window_Message.prototype.setReturnWindow = function (target) {
+    this._backlogWindow.setReturnWindow(target);
+  };
+
+  MageStudios.MsgBacklog.Window_ChoiceList_processHandling =
+    Window_ChoiceList.prototype.processHandling;
+  Window_ChoiceList.prototype.processHandling = function () {
+    if (this.isOpenAndActive()) this.updateBacklogInput();
+    MageStudios.MsgBacklog.Window_ChoiceList_processHandling.call(this);
+  };
+
+  Window_ChoiceList.prototype.updateBacklogInput = function () {
+    if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
+    if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
+      this.openBacklogWindow();
+    }
+  };
+
+  Window_ChoiceList.prototype.openBacklogWindow = function () {
+    if (SceneManager._scene && SceneManager._scene._messageWindow) {
+      SceneManager._scene._messageWindow.setReturnWindow(this);
+      SceneManager._scene._messageWindow.openBacklogWindow();
+    }
+  };
+
+  MageStudios.MsgBacklog.Window_ChoiceList_callOkHandler =
+    Window_ChoiceList.prototype.callOkHandler;
+  Window_ChoiceList.prototype.callOkHandler = function () {
+    this.backlogAddSelectedChoice();
+    MageStudios.MsgBacklog.Window_ChoiceList_callOkHandler.call(this);
+  };
+
+  Window_ChoiceList.prototype.backlogAddSelectedChoice = function () {
+    if (!MageStudios.Param.MsgBacklogSpcInput) return;
+    var fmt = MageStudios.Param.MsgBacklogSpcFmt;
+    var text = fmt.format(this.commandName(this.index()));
+    $gameSystem.addMessageBacklog(text);
+  };
+
+  MageStudios.MsgBacklog.Window_NumberInput_processHandling =
+    Window_NumberInput.prototype.processHandling;
+  Window_NumberInput.prototype.processHandling = function () {
+    if (this.isOpenAndActive()) this.updateBacklogInput();
+    MageStudios.MsgBacklog.Window_NumberInput_processHandling.call(this);
+  };
+
+  Window_NumberInput.prototype.updateBacklogInput = function () {
+    if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
+    if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
+      this.openBacklogWindow();
+    }
+  };
+
+  Window_NumberInput.prototype.openBacklogWindow = function () {
+    if (SceneManager._scene && SceneManager._scene._messageWindow) {
+      SceneManager._scene._messageWindow.setReturnWindow(this);
+      SceneManager._scene._messageWindow.openBacklogWindow();
+    }
+  };
+
+  MageStudios.MsgBacklog.Window_NumberInput_processOk =
+    Window_NumberInput.prototype.processOk;
+  Window_NumberInput.prototype.processOk = function () {
+    this.backlogAddSelectedChoice();
+    MageStudios.MsgBacklog.Window_NumberInput_processOk.call(this);
+  };
+
+  Window_NumberInput.prototype.backlogAddSelectedChoice = function () {
+    if (!MageStudios.Param.MsgBacklogSpcInput) return;
+    var fmt = MageStudios.Param.MsgBacklogSpcFmt;
+    var text = fmt.format(MageStudios.Util.toGroup(this._number));
+    $gameSystem.addMessageBacklog(text);
+  };
+
+  MageStudios.MsgBacklog.Window_EventItem_processHandling =
+    Window_EventItem.prototype.processHandling;
+  Window_EventItem.prototype.processHandling = function () {
+    if (this.isOpenAndActive()) this.updateBacklogInput();
+    MageStudios.MsgBacklog.Window_EventItem_processHandling.call(this);
+  };
+
+  Window_EventItem.prototype.updateBacklogInput = function () {
+    if (!$gameSystem.isMessageBacklogKeyEnabled()) return;
+    if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
+      this.openBacklogWindow();
+    }
+  };
+
+  Window_EventItem.prototype.openBacklogWindow = function () {
+    if (SceneManager._scene && SceneManager._scene._messageWindow) {
+      SceneManager._scene._messageWindow.setReturnWindow(this);
+      SceneManager._scene._messageWindow.openBacklogWindow();
+    }
+  };
+
+  MageStudios.MsgBacklog.Window_EventItem_onOk =
+    Window_EventItem.prototype.onOk;
+  Window_EventItem.prototype.onOk = function () {
+    this.backlogAddSelectedChoice();
+    MageStudios.MsgBacklog.Window_EventItem_onOk.call(this);
+  };
+
+  Window_EventItem.prototype.backlogAddSelectedChoice = function () {
+    if (!MageStudios.Param.MsgBacklogSpcInput) return;
+    var fmt = MageStudios.Param.MsgBacklogSpcFmt;
+    var item = this.item();
+    var text = fmt.format("\\i[" + item.iconIndex + "]" + item.name);
+    $gameSystem.addMessageBacklog(text);
+  };
+
+  function Sprite_BacklogScroll() {
+    this.initialize.apply(this, arguments);
+  }
+
+  Sprite_BacklogScroll.prototype = Object.create(Sprite.prototype);
+  Sprite_BacklogScroll.prototype.constructor = Sprite_BacklogScroll;
+
+  Sprite_BacklogScroll.prototype.initialize = function (target) {
+    this._target = target;
+    Sprite.prototype.initialize.call(this);
+    this._target._scrollSprite = this;
+    this.initMembers();
+    this.createBitmap();
+  };
+
+  Sprite_BacklogScroll.prototype.initMembers = function () {
+    this.anchor.x = 1;
+    this.anchor.y = 0;
+    this.x = Graphics.boxWidth;
+    this.y = 0;
+    this._increment = 1;
+  };
+
+  Sprite_BacklogScroll.prototype.createBitmap = function () {
+    var scrollBarColor = MageStudios.Param.MsgBacklogScrBarCol;
+    var backlogWindow = this._target;
+    this._increment = 1;
+    eval(MageStudios.Param.MsgBacklogScrBarSpriteCode);
+  };
+
+  Sprite_BacklogScroll.prototype.resize = function () {
+    this.bitmap.clear();
+    this.createBitmap();
+  };
+
+  Sprite_BacklogScroll.prototype.update = function () {
+    Sprite.prototype.update.call(this);
+    if (!this._target) return;
+    this.updateOpacity();
+    //this.updatePosition();
+  };
+
+  Sprite_BacklogScroll.prototype.updateOpacity = function () {
+    this.opacity = this._target.isOpen() ? 255 : 0;
+  };
+
+  Sprite_BacklogScroll.prototype.updatePosition = function () {
+    var target = this._target;
+    if (!target.isOpen()) return;
+    this.y = target.topRow() * this._increment;
+  };
+
+  function Window_MessageBacklog() {
+    this.initialize.apply(this, arguments);
+  }
+
+  Window_MessageBacklog.prototype = Object.create(Window_Command.prototype);
+  Window_MessageBacklog.prototype.constructor = Window_MessageBacklog;
+
+  Window_MessageBacklog.prototype.initialize = function () {
+    this._touchHold = 0;
+    this._ready = false;
+    Window_Command.prototype.initialize.call(this, 0, 0);
+    this.createScrollSprite(this);
+    this.setBackgroundType(MageStudios.Param.MsgBacklogBgType);
+    this.deactivate();
+    this.openness = 0;
+    this._ready = true;
+  };
+
+  Window_MessageBacklog.prototype.createScrollSprite = function () {
+    if (!MageStudios.Param.MsgBacklogScrBarEn) return;
+    this._scrollSprite = new Sprite_BacklogScroll(this);
+    this.addChild(this._scrollSprite);
+  };
+
+  Window_MessageBacklog.prototype.windowWidth = function () {
+    return Graphics.boxWidth;
+  };
+
+  Window_MessageBacklog.prototype.windowHeight = function () {
+    return Graphics.boxHeight;
+  };
+
+  Window_MessageBacklog.prototype.dimColor1 = function () {
+    return MageStudios.Param.MsgBacklogDimColor1;
+  };
+
+  Window_MessageBacklog.prototype.dimColor2 = function () {
+    return MageStudios.Param.MsgBacklogDimColor2;
+  };
+
+  Window_MessageBacklog.prototype.setBackgroundType = function (type) {
+    Window_Base.prototype.setBackgroundType.call(this, type);
+    if (type === 2) this.createBackgroundPicture();
+  };
+
+  Window_MessageBacklog.prototype.createBackgroundPicture = function () {
+    var filename = MageStudios.Param.MsgBacklogPicture;
+    if (filename === "") return;
+    this._backgroundPicture = new Sprite();
+    this._backgroundPicture.bitmap = ImageManager.loadPicture(filename, 0);
+    SceneManager._scene.addChild(this._backgroundPicture);
+    this._backgroundPicture.opacity = 0;
+    this._backgroundPicture.anchor.x = 0.5;
+    this._backgroundPicture.anchor.y = 0.5;
+    this._backgroundPicture.x = Graphics.boxWidth / 2;
+    this._backgroundPicture.y = Graphics.boxHeight / 2;
+  };
+
+  Window_MessageBacklog.prototype.setBgPictureOpacity = function (opacity) {
+    this._backgroundPicture.opacity = opacity;
+
+    this.stretchBgPicture();
+  };
+
+  Window_MessageBacklog.prototype.stretchBgPicture = function () {
+    if (!MageStudios.Param.MsgBacklogPicStretch) return;
+    if (this._backgroundPicture.width < Graphics.boxWidth) {
+      var rate = Graphics.boxWidth / this._backgroundPicture.width;
+      this._backgroundPicture.scale.x = rate;
+    }
+    if (this._backgroundPicture.height < Graphics.boxHeight) {
+      var rate = Graphics.boxHeight / this._backgroundPicture.height;
+      this._backgroundPicture.scale.y = rate;
+    }
+  };
+
+  Window_MessageBacklog.prototype.standardFontFace = function () {
+    return Window_Message.prototype.standardFontFace.call(this);
+  };
+
+  Window_MessageBacklog.prototype.standardFontSize = function () {
+    return Window_Message.prototype.standardFontSize.call(this);
+  };
+
+  Window_MessageBacklog.prototype.standardBackOpacity = function () {
+    return MageStudios.Param.MsgBacklogBackOpacity;
+  };
+
+  Window_MessageBacklog.prototype.makeFontBigger = function () {};
+
+  Window_MessageBacklog.prototype.makeFontSmaller = function () {};
+
+  Window_MessageBacklog.prototype.select = function (index) {};
+
+  Window_MessageBacklog.prototype.moveSelect = function (index) {
+    Window_Command.prototype.select.call(this, index);
+    if (this._scrollSprite) this._scrollSprite.updatePosition();
+  };
+
+  Window_MessageBacklog.prototype.deselect = function () {
+    this.moveSelect(-1);
+  };
+
+  Window_MessageBacklog.prototype.processHandling = function () {
+    if (!this.isOpenAndActive()) return;
+    Window_Command.prototype.processHandling.call(this);
+    if (Input.isTriggered(MageStudios.Param.MsgBacklogKeyButton)) {
       this.processCancel();
     }
-  }
-};
+  };
 
-Window_MessageBacklog.prototype.drawItem = function(index) {
-  var rect = this.itemRectForText(index);
-  var align = this.itemTextAlign();
-  var symbol = this.commandSymbol(index);
-  if (symbol === 'linebreak') {
-    this.drawHorzLine(rect.y);
-    this.resetFontSettings();
-  } else if (symbol === 'text') {
-    this.drawTextEx(this.commandName(index), rect.x, rect.y);
-  } else if (symbol === 'buffer') {
-    if (index !== this.topRow()) return;
-    var ext = this._list[index].ext;
-    this.drawItem(index - ext);
-  }
-};
+  Window_MessageBacklog.prototype.setReturnWindow = function (target) {
+    this._returnWindow = target;
+    this._returnWindow.deactivate();
+  };
 
-Window_MessageBacklog.prototype.drawHorzLine = function(y) {
-  var lineY = y + this.lineHeight() / 2 - 1;
-  this.contents.paintOpacity = 48;
-  this.contents.fillRect(0, lineY, this.contentsWidth(), 2, this.normalColor());
-  this.contents.paintOpacity = 255;
-};
-
-Window_MessageBacklog.prototype.drawTextEx = function(text, x, y) {
-  if (text) {
-    var textState = { index: 0, x: x, y: y, left: x };
-    textState.text = this.convertEscapeCharacters(text);
-    textState.height = this.calcTextHeight(textState, false);
-    while (textState.index < textState.text.length) {
-      this.processCharacter(textState);
+  Window_MessageBacklog.prototype.fullActivate = function () {
+    this.updateInputData();
+    Input.clear();
+    TouchInput.clear();
+    this.refresh();
+    this.activate();
+    this.openness = 255;
+    this.moveSelect(this.maxItems() - 1);
+    if (this._scrollSprite) this._scrollSprite.resize();
+    if (this._backgroundPicture) {
+      this.setBgPictureOpacity(MageStudios.Param.MsgBacklogPicOpacity);
     }
-    return textState.x - x;
-  } else {
-    return 0;
-  }
-};
+  };
 
-Window_MessageBacklog.prototype.textHeightEx = function(text) {
-  return this.getTextExHeight(text, 0, 0);
-};
+  Window_MessageBacklog.prototype.processOk = function () {
+    SoundManager.playOk();
+    this.fullDeactivate();
+  };
 
-Window_MessageBacklog.prototype.getTextExHeight = function(text, x, y) {
-  if (text) {
-    var textState = { index: 0, x: x, y: y, left: x };
-    textState.text = this.convertEscapeCharacters(text);
-    textState.height = this.calcTextHeight(textState, false);
-    while (textState.index < textState.text.length) {
-      this.processCharacter(textState);
+  Window_MessageBacklog.prototype.isCancelEnabled = function () {
+    return true;
+  };
+
+  Window_MessageBacklog.prototype.processCancel = function () {
+    SoundManager.playCancel();
+    this.fullDeactivate();
+  };
+
+  Window_MessageBacklog.prototype.fullDeactivate = function () {
+    this.updateInputData();
+    Input.clear();
+    TouchInput.clear();
+    this.deactivate();
+    this.openness = 0;
+    this.deselect();
+    if (this._returnWindow) {
+      this._returnWindow.activate();
+      this._returnWindow = undefined;
     }
-    this.contents.clear();
-    return textState.y;
-  } else {
-    return 0;
+    if (this._backgroundPicture) this.setBgPictureOpacity(0);
+  };
+
+  Window_MessageBacklog.prototype.isCursorVisible = function () {
+    return false;
+  };
+
+  Window_MessageBacklog.prototype.cursorDown = function (wrap) {
+    var index = this.bottomRow();
+    var maxItems = this.maxItems();
+    var maxCols = this.maxCols();
+    wrap = MageStudios.Param.MsgBacklogScrollWrap;
+    if (index < maxItems - maxCols || (wrap && maxCols === 1)) {
+      this.moveSelect((index + maxCols) % maxItems);
+    }
+  };
+
+  Window_MessageBacklog.prototype.cursorUp = function (wrap) {
+    var index = this.topRow();
+    var maxItems = this.maxItems();
+    var maxCols = this.maxCols();
+    wrap = MageStudios.Param.MsgBacklogScrollWrap;
+    if (index >= maxCols || (wrap && maxCols === 1)) {
+      this.moveSelect((index - maxCols + maxItems) % maxItems);
+    }
+  };
+
+  Window_MessageBacklog.prototype.cursorPagedown = function () {
+    var index = this.index();
+    var maxItems = this.maxItems();
+    if (this.topRow() + this.maxPageRows() < this.maxRows()) {
+      SoundManager.playCursor();
+    }
+    Window_Selectable.prototype.cursorPagedown.call(this);
+    if (this._scrollSprite) this._scrollSprite.updatePosition();
+  };
+
+  Window_MessageBacklog.prototype.cursorPageup = function () {
+    var index = this.index();
+    if (this.topRow() > 0) {
+      SoundManager.playCursor();
+    }
+    Window_Selectable.prototype.cursorPageup.call(this);
+    if (this._scrollSprite) this._scrollSprite.updatePosition();
+  };
+
+  Window_MessageBacklog.prototype.processTouch = function () {
+    if (!this.isOpenAndActive()) return;
+    this._touchHold -= 1;
+    if (TouchInput.isPressed() && this._touchHold <= 0) {
+      if (TouchInput.y < Graphics.boxHeight / 4) {
+        this.scrollUp();
+        this._touchHold = MageStudios.Param.MsgBacklogScrollSpd;
+      } else if (TouchInput.y > (Graphics.boxHeight * 3) / 4) {
+        this.scrollDown();
+        this._touchHold = MageStudios.Param.MsgBacklogScrollSpd;
+      } else {
+        this.processOk();
+      }
+    } else if (TouchInput.isCancelled()) {
+      if (this.isCancelEnabled()) {
+        this.processCancel();
+      }
+    }
+  };
+
+  Window_MessageBacklog.prototype.drawItem = function (index) {
+    var rect = this.itemRectForText(index);
+    var align = this.itemTextAlign();
+    var symbol = this.commandSymbol(index);
+    if (symbol === "linebreak") {
+      this.drawHorzLine(rect.y);
+      this.resetFontSettings();
+    } else if (symbol === "text") {
+      this.drawTextEx(this.commandName(index), rect.x, rect.y);
+    } else if (symbol === "buffer") {
+      if (index !== this.topRow()) return;
+      var ext = this._list[index].ext;
+      this.drawItem(index - ext);
+    }
+  };
+
+  Window_MessageBacklog.prototype.drawHorzLine = function (y) {
+    var lineY = y + this.lineHeight() / 2 - 1;
+    this.contents.paintOpacity = 48;
+    this.contents.fillRect(
+      0,
+      lineY,
+      this.contentsWidth(),
+      2,
+      this.normalColor()
+    );
+    this.contents.paintOpacity = 255;
+  };
+
+  Window_MessageBacklog.prototype.drawTextEx = function (text, x, y) {
+    if (text) {
+      var textState = { index: 0, x: x, y: y, left: x };
+      textState.text = this.convertEscapeCharacters(text);
+      textState.height = this.calcTextHeight(textState, false);
+      while (textState.index < textState.text.length) {
+        this.processCharacter(textState);
+      }
+      return textState.x - x;
+    } else {
+      return 0;
+    }
+  };
+
+  Window_MessageBacklog.prototype.textHeightEx = function (text) {
+    return this.getTextExHeight(text, 0, 0);
+  };
+
+  Window_MessageBacklog.prototype.getTextExHeight = function (text, x, y) {
+    if (text) {
+      var textState = { index: 0, x: x, y: y, left: x };
+      textState.text = this.convertEscapeCharacters(text);
+      textState.height = this.calcTextHeight(textState, false);
+      while (textState.index < textState.text.length) {
+        this.processCharacter(textState);
+      }
+      this.contents.clear();
+      return textState.y;
+    } else {
+      return 0;
+    }
+  };
+
+  Window_MessageBacklog.prototype.makeCommandList = function () {
+    if (!this._ready) return;
+    var backlog = $gameSystem.getMessageBacklog();
+    var length = backlog.length;
+    for (var i = 0; i < length; ++i) {
+      var text = backlog[i];
+      this.addCommand("---", "linebreak");
+      this.addIndividualLines(text);
+    }
+    this.addCommand("---", "linebreak");
+  };
+
+  Window_MessageBacklog.prototype.addIndividualLines = function (text) {
+    var text = this.convertMessageText(text);
+    var items = text.split("\n");
+    var length = items.length;
+    for (var i = 0; i < length; ++i) {
+      var line = items[i];
+      if (line.length <= 0) continue;
+      this.addCommand(line, "text");
+      this.addWordWrapBuffer(line);
+    }
+  };
+
+  Window_MessageBacklog.prototype.convertMessageText = function (text) {
+    text = this.convertMessageMacros(text);
+    text = text.replace(/\\/g, "\x1b");
+    text = this.convertNameboxCodes(text);
+    text = this.convertBasicCodes(text);
+    text = this.convertSpecialCodes(text);
+    text = this.removeMessageBoxOnlyCodes(text);
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.convertMessageMacros = function (text) {
+    if (Imported.MSEP_X_MessageMacros1) {
+      text = this.convertMacroText(text);
+    }
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.convertNameboxCodes = function (text) {
+    var name = "";
+
+    if (text.match(/\x1bN\<(.*?)\>/gi)) {
+      name = RegExp.$1;
+    } else if (text.match(/\x1bN(\d+)\<(.*?)\>/gi)) {
+      name = RegExp.$2;
+    } else if (text.match(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)\<(.*?)\>/gi)) {
+      name = RegExp.$1;
+    } else if (
+      text.match(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)(\d+)\<(.*?)\>/gi)
+    ) {
+      name = RegExp.$2;
+    }
+    if (name.length > 0) {
+      var nameText = MageStudios.Param.MSGNameBoxText + name + "\\c[0]\n";
+      text = nameText + text;
+    }
+
+    text = text.replace(/\x1bN\<(.*?)\>/gi, "");
+    text = text.replace(/\x1bN(\d+)\<(.*?)\>/gi, "");
+    text = text.replace(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)\<(.*?)\>/gi, "");
+    text = text.replace(/\x1bN\<(.*?)\>/gi, "");
+    text = text.replace(
+      /\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)(\d+)\<(.*?)\>/gi,
+      ""
+    );
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.convertBasicCodes = function (text) {
+    text = text.replace(/\\/g, "\x1b");
+    text = text.replace(/\x1b\x1b/g, "\\");
+    text = text.replace(
+      /\x1bV\[(\d+)\]/gi,
+      function () {
+        return $gameVariables.value(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\x1bV\[(\d+)\]/gi,
+      function () {
+        return $gameVariables.value(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\x1bN\[(\d+)\]/gi,
+      function () {
+        return this.actorName(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\x1bP\[(\d+)\]/gi,
+      function () {
+        return this.partyMemberName(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(/\x1bG/gi, TextManager.currencyUnit);
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.convertSpecialCodes = function (text) {
+    if (Imported.MSEP_X_ExtMesPack2) {
+      text = this.convertItemQuantitiesCodes(text);
+      text = this.convertActorParameterCodes(text);
+      text = this.convertEnemyParameterCodes(text);
+    }
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.removeMessageBoxOnlyCodes = function (text) {
+    text = text.replace(/\x1b/gi, "\\");
+
+    text = text.replace(/\\AF\[(\d+)\]/gi, "");
+    text = text.replace(/\\PF\[(\d+)\]/gi, "");
+    text = text.replace(/\\FS\[(\d+)\]/gi, "");
+
+    text = text.replace(/\\LSON/gi, "");
+    text = text.replace(/\\LSOFF/gi, "");
+    text = text.replace(/\\LSRESET/gi, "");
+    text = text.replace(/\\LSR/gi, "");
+    text = text.replace(/\\LSN\[(.*?)\]/gi, "");
+    text = text.replace(/\\LSV\[(\d+)\]/gi, "");
+    text = text.replace(/\\LSPIV\[(\d+)\]/gi, "");
+    text = text.replace(/\\LSPI\[(\d+)\]/gi, "");
+    text = text.replace(/\\LSPAV\[(\d+)\]/gi, "");
+    text = text.replace(/\\LSPA\[(\d+)\]/gi, "");
+    text = text.replace(/\\LSI\[(\d+)\]/gi, "");
+    text = text.replace(/\\MSGPOSX\[(.*?)\]/gi, "");
+    text = text.replace(/\\MSGPOSY\[(.*?)\]/gi, "");
+    text = text.replace(/\\MSGEVENT\[(\d+)\]/gi, "");
+    text = text.replace(/\\MSGACTOR\[(\d+)\]/gi, "");
+    text = text.replace(/\\MSGPARTY\[(\d+)\]/gi, "");
+    text = text.replace(/\\MSGENEMY\[(\d+)\]/gi, "");
+    text = text.replace(/\\AUTOEVENT\[(\d+)\]/gi, "");
+    text = text.replace(/\\AUTOACTOR\[(\d+)\]/gi, "");
+    text = text.replace(/\\AUTOPARTY\[(\d+)\]/gi, "");
+    text = text.replace(/\\AUTOENEMY\[(\d+)\]/gi, "");
+    text = text.replace(/\\MSGROWS\[(.*?)\]/gi, "");
+    text = text.replace(/\\MSGWIDTH\[(.*?)\]/gi, "");
+    text = text.replace(/\\AUTO/gi, "");
+    text = text.replace(/\\MSGRESET/gi, "");
+    text = text.replace(/\\FACEINDEX\[(\d+)\]/gi, "");
+    return text;
+  };
+
+  Window_MessageBacklog.prototype.addWordWrapBuffer = function (text) {
+    if (!text.match(/<(?:WordWrap)>/gi)) return;
+    var textHeight = this.textHeightEx(text);
+    var bufferTimes = Math.ceil(textHeight / this.lineHeight());
+    for (var i = 1; i <= bufferTimes; ++i) {
+      this.addCommand("", "buffer", true, i);
+    }
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
   }
-};
-
-Window_MessageBacklog.prototype.makeCommandList = function() {
-  if (!this._ready) return;
-  var backlog = $gameSystem.getMessageBacklog();
-  var length = backlog.length;
-  for (var i = 0; i < length; ++i) {
-    var text = backlog[i];
-    this.addCommand('---', 'linebreak');
-    this.addIndividualLines(text);
-  }
-  this.addCommand('---', 'linebreak');
-};
-
-Window_MessageBacklog.prototype.addIndividualLines = function(text) {
-  var text = this.convertMessageText(text);
-  var items = text.split('\n');
-  var length = items.length;
-  for (var i = 0; i < length; ++i) {
-    var line = items[i];
-    if (line.length <= 0) continue;
-    this.addCommand(line, 'text');
-    this.addWordWrapBuffer(line);
-  }
-};
-
-Window_MessageBacklog.prototype.convertMessageText = function(text) {
-  text = this.convertMessageMacros(text);
-  text = text.replace(/\\/g, '\x1b');
-  text = this.convertNameboxCodes(text);
-  text = this.convertBasicCodes(text);
-  text = this.convertSpecialCodes(text);
-  text = this.removeMessageBoxOnlyCodes(text);
-  return text;
-};
-
-Window_MessageBacklog.prototype.convertMessageMacros = function(text) {
-  if (Imported.MSEP_X_MessageMacros1) {
-    text = this.convertMacroText(text);
-  }
-  return text;
-};
-
-Window_MessageBacklog.prototype.convertNameboxCodes = function(text) {
-  var name = '';
-  // \x1b
-  if (text.match(/\x1bN\<(.*?)\>/gi)) {
-    name = RegExp.$1;
-  } else if (text.match(/\x1bN(\d+)\<(.*?)\>/gi)) {
-    name = RegExp.$2;
-  } else if (text.match(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)\<(.*?)\>/gi)) {
-    name = RegExp.$1;
-  } else if 
-  (text.match(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)(\d+)\<(.*?)\>/gi)) {
-    name = RegExp.$2;
-  }
-  if (name.length > 0) {
-    var nameText = MageStudios.Param.MSGNameBoxText + name + '\\c[0]\n';
-    text = nameText + text;
-  }
-  // \x1b version
-  text = text.replace(/\x1bN\<(.*?)\>/gi, '');
-  text = text.replace(/\x1bN(\d+)\<(.*?)\>/gi, '');
-  text = text.replace(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)\<(.*?)\>/gi, '');
-  text = text.replace(/\x1bN\<(.*?)\>/gi, '');
-  text = 
-    text.replace(/\x1bN(?:T|D|L|C|R|DL|DC|DR|TL|TC|TR)(\d+)\<(.*?)\>/gi, '');
-  return text;
-};
-
-Window_MessageBacklog.prototype.convertBasicCodes = function(text) {
-  text = text.replace(/\\/g, '\x1b');
-  text = text.replace(/\x1b\x1b/g, '\\');
-  text = text.replace(/\x1bV\[(\d+)\]/gi, function() {
-    return $gameVariables.value(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/\x1bV\[(\d+)\]/gi, function() {
-    return $gameVariables.value(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/\x1bN\[(\d+)\]/gi, function() {
-    return this.actorName(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/\x1bP\[(\d+)\]/gi, function() {
-    return this.partyMemberName(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/\x1bG/gi, TextManager.currencyUnit);
-  return text;
-};
-
-Window_MessageBacklog.prototype.convertSpecialCodes = function(text) {
-  if (Imported.MSEP_X_ExtMesPack2) {
-    text = this.convertItemQuantitiesCodes(text);
-    text = this.convertActorParameterCodes(text);
-    text = this.convertEnemyParameterCodes(text);
-  }
-  return text;
-};
-
-Window_MessageBacklog.prototype.removeMessageBoxOnlyCodes = function(text) {
-  text = text.replace(/\x1b/gi, '\\');
-  // Message Core
-  text = text.replace(/\\AF\[(\d+)\]/gi, '');
-  text = text.replace(/\\PF\[(\d+)\]/gi, '');
-  text = text.replace(/\\FS\[(\d+)\]/gi, '');
-  // Extended Message Pack 1
-  text = text.replace(/\\LSON/gi, '');
-  text = text.replace(/\\LSOFF/gi, '');
-  text = text.replace(/\\LSRESET/gi, '');
-  text = text.replace(/\\LSR/gi, '');
-  text = text.replace(/\\LSN\[(.*?)\]/gi, '');
-  text = text.replace(/\\LSV\[(\d+)\]/gi, '');
-  text = text.replace(/\\LSPIV\[(\d+)\]/gi, '');
-  text = text.replace(/\\LSPI\[(\d+)\]/gi, '');
-  text = text.replace(/\\LSPAV\[(\d+)\]/gi, '');
-  text = text.replace(/\\LSPA\[(\d+)\]/gi, '');
-  text = text.replace(/\\LSI\[(\d+)\]/gi, '');
-  text = text.replace(/\\MSGPOSX\[(.*?)\]/gi, '');
-  text = text.replace(/\\MSGPOSY\[(.*?)\]/gi, '');
-  text = text.replace(/\\MSGEVENT\[(\d+)\]/gi, '');
-  text = text.replace(/\\MSGACTOR\[(\d+)\]/gi, '');
-  text = text.replace(/\\MSGPARTY\[(\d+)\]/gi, '');
-  text = text.replace(/\\MSGENEMY\[(\d+)\]/gi, '');
-  text = text.replace(/\\AUTOEVENT\[(\d+)\]/gi, '');
-  text = text.replace(/\\AUTOACTOR\[(\d+)\]/gi, '');
-  text = text.replace(/\\AUTOPARTY\[(\d+)\]/gi, '');
-  text = text.replace(/\\AUTOENEMY\[(\d+)\]/gi, '');
-  text = text.replace(/\\MSGROWS\[(.*?)\]/gi, '');
-  text = text.replace(/\\MSGWIDTH\[(.*?)\]/gi, '');
-  text = text.replace(/\\AUTO/gi, '');
-  text = text.replace(/\\MSGRESET/gi, '');
-  text = text.replace(/\\FACEINDEX\[(\d+)\]/gi, '');
-  return text;
-};
-
-Window_MessageBacklog.prototype.addWordWrapBuffer = function(text) {
-  if (!text.match(/<(?:WordWrap)>/gi)) return;
-  var textHeight = this.textHeightEx(text);
-  var bufferTimes = Math.ceil(textHeight / this.lineHeight());
-  for (var i = 1; i <= bufferTimes; ++i) {
-    this.addCommand('', 'buffer', true, i);
-  }
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
-}
-
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_MessageBacklog without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // Imported.MSEP_MessageCore
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_X_MessageBacklog without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

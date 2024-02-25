@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Item Disassemble
-// MSEP_X_ItemDisassemble.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ItemDisassemble = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IDA = MageStudios.IDA || {};
-MageStudios.IDA.version = 1.00;
+MageStudios.IDA.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Grants the option to
  * break down items in the item menu into other items.
  * @author Mage Studios Engine Plugins
@@ -152,7 +146,7 @@ MageStudios.IDA.version = 1.00;
  * Making items be disassemble-able can be done with these notetags:
  *
  * Item, Weapon, and Armor Notetags:
- * 
+ *
  *   <Disassemble Pool>
  *    item
  *    item
@@ -340,207 +334,211 @@ MageStudios.IDA.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_ItemCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ItemDisassemble");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.IDACmdNameFmt = String(
+    MageStudios.Parameters["Disassemble Command"]
+  );
+  MageStudios.Param.IDADisList = String(
+    MageStudios.Parameters["Disassemble List"]
+  );
+  MageStudios.Param.IDAQuantityFmt1 = String(
+    MageStudios.Parameters["Item Quantity 1"]
+  );
+  MageStudios.Param.IDAQuantityFmt2 = String(
+    MageStudios.Parameters["Item Quantity 2"]
+  );
+  MageStudios.Param.IDARateSize = Number(
+    MageStudios.Parameters["Rate Font Size"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemDisassemble');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.IDASoundName = String(
+    MageStudios.Parameters["Disassemble Sound"]
+  );
+  MageStudios.Param.IDASoundVol = Number(
+    MageStudios.Parameters["Disassemble Volume"]
+  );
+  MageStudios.Param.IDASoundPitch = Number(
+    MageStudios.Parameters["Disassemble Pitch"]
+  );
+  MageStudios.Param.IDASoundPan = Number(
+    MageStudios.Parameters["Disassemble Pan"]
+  );
 
-MageStudios.Param.IDACmdNameFmt = String(MageStudios.Parameters['Disassemble Command']);
-MageStudios.Param.IDADisList = String(MageStudios.Parameters['Disassemble List']);
-MageStudios.Param.IDAQuantityFmt1 = String(MageStudios.Parameters['Item Quantity 1']);
-MageStudios.Param.IDAQuantityFmt2 = String(MageStudios.Parameters['Item Quantity 2']);
-MageStudios.Param.IDARateSize = Number(MageStudios.Parameters['Rate Font Size']);
+  MageStudios.Param.IDAResultSound = {
+    name: String(MageStudios.Parameters["Result Sound"]),
+    volume: Number(MageStudios.Parameters["Result Volume"]),
+    pitch: Number(MageStudios.Parameters["Result Pitch"]),
+    pan: Number(MageStudios.Parameters["Result Pan"]),
+  };
 
-MageStudios.Param.IDASoundName = String(MageStudios.Parameters['Disassemble Sound']);
-MageStudios.Param.IDASoundVol = Number(MageStudios.Parameters['Disassemble Volume']);
-MageStudios.Param.IDASoundPitch = Number(MageStudios.Parameters['Disassemble Pitch']);
-MageStudios.Param.IDASoundPan = Number(MageStudios.Parameters['Disassemble Pan']);
+  MageStudios.Param.IDAEmptytSound = {
+    name: String(MageStudios.Parameters["Empty Sound"]),
+    volume: Number(MageStudios.Parameters["Empty Volume"]),
+    pitch: Number(MageStudios.Parameters["Empty Pitch"]),
+    pan: Number(MageStudios.Parameters["Empty Pan"]),
+  };
 
-MageStudios.Param.IDAResultSound = {
-  name: String(MageStudios.Parameters['Result Sound']),
-  volume: Number(MageStudios.Parameters['Result Volume']),
-  pitch: Number(MageStudios.Parameters['Result Pitch']),
-  pan: Number(MageStudios.Parameters['Result Pan'])
-}
+  MageStudios.IDA.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.IDA.DataManager_isDatabaseLoaded.call(this)) return false;
 
-MageStudios.Param.IDAEmptytSound = {
-  name: String(MageStudios.Parameters['Empty Sound']),
-  volume: Number(MageStudios.Parameters['Empty Volume']),
-  pitch: Number(MageStudios.Parameters['Empty Pitch']),
-  pan: Number(MageStudios.Parameters['Empty Pan'])
-}
+    if (!MageStudios._loaded_MSEP_X_ItemDisassemble) {
+      this.processIDANotetagsI($dataItems);
+      this.processIDANotetagsW($dataWeapons);
+      this.processIDANotetagsA($dataArmors);
+      this.processIDANotetags1($dataItems);
+      this.processIDANotetags1($dataWeapons);
+      this.processIDANotetags1($dataArmors);
+      MageStudios._loaded_MSEP_X_ItemDisassemble = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.IDA.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.IDA.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processIDANotetagsI = function (group) {
+    if (MageStudios.ItemIdRef) return;
+    MageStudios.ItemIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-  if (!MageStudios._loaded_MSEP_X_ItemDisassemble) {
-    this.processIDANotetagsI($dataItems);
-    this.processIDANotetagsW($dataWeapons);
-    this.processIDANotetagsA($dataArmors);
-    this.processIDANotetags1($dataItems);
-    this.processIDANotetags1($dataWeapons);
-    this.processIDANotetags1($dataArmors);
-    MageStudios._loaded_MSEP_X_ItemDisassemble = true;
-  }
-  
-  return true;
-};
+  DataManager.processIDANotetagsW = function (group) {
+    if (MageStudios.WeaponIdRef) return;
+    MageStudios.WeaponIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-DataManager.processIDANotetagsI = function(group) {
-  if (MageStudios.ItemIdRef) return;
-  MageStudios.ItemIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+  DataManager.processIDANotetagsA = function (group) {
+    if (MageStudios.ArmorIdRef) return;
+    MageStudios.ArmorIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-DataManager.processIDANotetagsW = function(group) {
-  if (MageStudios.WeaponIdRef) return;
-  MageStudios.WeaponIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+  DataManager.processIDANotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processIDANotetagsA = function(group) {
-  if (MageStudios.ArmorIdRef) return;
-  MageStudios.ArmorIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+      obj.disassemblerTypes = [];
+      obj.disassemblerRates = [];
+      obj.disassembleItems = {};
+      obj.canDisassemble = true;
+      obj.disassembleSound = {
+        name: MageStudios.Param.IDASoundName,
+        volume: MageStudios.Param.IDASoundVol,
+        pitch: MageStudios.Param.IDASoundPitch,
+        pan: MageStudios.Param.IDASoundPan,
+      };
+      var evalMode = "none";
+      var evalType = "none";
+      obj.customDisassembledEval = "";
+      obj.customDisassemblerEval = "";
 
-DataManager.processIDANotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.disassemblerTypes = [];
-    obj.disassemblerRates = [];
-    obj.disassembleItems = {};
-    obj.canDisassemble = true;
-    obj.disassembleSound = {
-      name:   MageStudios.Param.IDASoundName,
-      volume: MageStudios.Param.IDASoundVol,
-      pitch:  MageStudios.Param.IDASoundPitch,
-      pan:    MageStudios.Param.IDASoundPan
-    };
-    var evalMode = 'none';
-    var evalType = 'none';
-    obj.customDisassembledEval = '';
-    obj.customDisassemblerEval = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<DISASSEMBLE POOL>/i)) {
-        evalMode = 'disassemble pool';
-        evalType = 'ALL';
-        obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
-      } else if (line.match(/<\/DISASSEMBLE POOL>/i)) {
-        evalMode = 'none';
-        evalType = 'none';
-      } else if (line.match(/<DISASSEMBLE POOL:[ ](.*)>/i)) {
-        evalMode = 'disassemble pool';
-        evalType = String(RegExp.$1).toUpperCase().trim();
-        obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
-      } else if (line.match(/<\/DISASSEMBLE POOL:[ ](.*)>/i)) {
-        evalMode = 'none';
-        evalType = 'none';
-      } else if (evalMode === 'disassemble pool') {
-        obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
-        obj.disassembleItems[evalType].push(line.trim());
-      } else if (line.match(/<DISASSEMBLER>/i)) {
-        obj.nonIndependent = true;
-        if (!obj.disassemblerTypes.contains('ALL')) {
-          obj.disassemblerTypes.push('ALL');
-          obj.disassemblerRates.push(0);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<DISASSEMBLE POOL>/i)) {
+          evalMode = "disassemble pool";
+          evalType = "ALL";
+          obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
+        } else if (line.match(/<\/DISASSEMBLE POOL>/i)) {
+          evalMode = "none";
+          evalType = "none";
+        } else if (line.match(/<DISASSEMBLE POOL:[ ](.*)>/i)) {
+          evalMode = "disassemble pool";
+          evalType = String(RegExp.$1).toUpperCase().trim();
+          obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
+        } else if (line.match(/<\/DISASSEMBLE POOL:[ ](.*)>/i)) {
+          evalMode = "none";
+          evalType = "none";
+        } else if (evalMode === "disassemble pool") {
+          obj.disassembleItems[evalType] = obj.disassembleItems[evalType] || [];
+          obj.disassembleItems[evalType].push(line.trim());
+        } else if (line.match(/<DISASSEMBLER>/i)) {
+          obj.nonIndependent = true;
+          if (!obj.disassemblerTypes.contains("ALL")) {
+            obj.disassemblerTypes.push("ALL");
+            obj.disassemblerRates.push(0);
+          }
+        } else if (line.match(/<DISASSEMBLER:[ ]([\+\-]\d+)([%％])>/i)) {
+          obj.nonIndependent = true;
+          var rate = parseFloat(RegExp.$1) * 0.01;
+          if (!obj.disassemblerTypes.contains("ALL")) {
+            obj.disassemblerTypes.push("ALL");
+            obj.disassemblerRates.push(rate);
+          }
+        } else if (line.match(/<DISASSEMBLER:[ ](.*)[ ]([\+\-]\d+)([%％])>/i)) {
+          obj.nonIndependent = true;
+          var type = String(RegExp.$1).toUpperCase().trim();
+          var rate = parseFloat(RegExp.$2) * 0.01;
+          if (!obj.disassemblerTypes.contains("ALL")) {
+            obj.disassemblerTypes.push("ALL");
+            obj.disassemblerRates.push(rate);
+          }
+          if (!obj.disassemblerTypes.contains(type)) {
+            obj.disassemblerTypes.push(type);
+            obj.disassemblerRates.push(rate);
+          }
+        } else if (line.match(/<DISASSEMBLER:[ ](.*)>/i)) {
+          obj.nonIndependent = true;
+          var type = String(RegExp.$1).toUpperCase().trim();
+          if (!obj.disassemblerTypes.contains("ALL")) {
+            obj.disassemblerTypes.push("ALL");
+            obj.disassemblerRates.push(0);
+          }
+          if (!obj.disassemblerTypes.contains(type)) {
+            obj.disassemblerTypes.push(type);
+            obj.disassemblerRates.push(0);
+          }
+        } else if (line.match(/<DISASSEMBLE SOUND NAME:[ ](.*)>/i)) {
+          obj.disassembleSound["name"] = String(RegExp.$1);
+        } else if (line.match(/<DISASSEMBLE SOUND VOLUME:[ ](\d+)>/i)) {
+          obj.disassembleSound["volume"] = parseInt(RegExp.$1);
+        } else if (line.match(/<DISASSEMBLE SOUND PITCH:[ ](\d+)>/i)) {
+          obj.disassembleSound["pitch"] = parseInt(RegExp.$1);
+        } else if (line.match(/<DISASSEMBLE SOUND PAN:[ ]([\+\-]\d+)>/i)) {
+          obj.disassembleSound["pan"] = parseInt(RegExp.$1);
+        } else if (line.match(/<CUSTOM DISASSEMBLED EFFECT>/i)) {
+          evalMode = "custom disassembled effect";
+        } else if (line.match(/<\/CUSTOM DISASSEMBLED EFFECT>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "custom disassembled effect") {
+          obj.customDisassembledEval += line + "\n";
+        } else if (line.match(/<CUSTOM DISASSEMBLER EFFECT>/i)) {
+          evalMode = "custom disassembler effect";
+        } else if (line.match(/<\/CUSTOM DISASSEMBLER EFFECT>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "custom disassembler effect") {
+          obj.customDisassemblerEval += line + "\n";
         }
-      } else if (line.match(/<DISASSEMBLER:[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.nonIndependent = true;
-        var rate = parseFloat(RegExp.$1) * 0.01;
-        if (!obj.disassemblerTypes.contains('ALL')) {
-          obj.disassemblerTypes.push('ALL');
-          obj.disassemblerRates.push(rate);
-        }
-      } else if (line.match(/<DISASSEMBLER:[ ](.*)[ ]([\+\-]\d+)([%％])>/i)) {
-        obj.nonIndependent = true;
-        var type = String(RegExp.$1).toUpperCase().trim();
-        var rate = parseFloat(RegExp.$2) * 0.01;
-        if (!obj.disassemblerTypes.contains('ALL')) {
-          obj.disassemblerTypes.push('ALL');
-          obj.disassemblerRates.push(rate);
-        }
-        if (!obj.disassemblerTypes.contains(type)) {
-          obj.disassemblerTypes.push(type);
-          obj.disassemblerRates.push(rate);
-        }
-      } else if (line.match(/<DISASSEMBLER:[ ](.*)>/i)) {
-        obj.nonIndependent = true;
-        var type = String(RegExp.$1).toUpperCase().trim();
-        if (!obj.disassemblerTypes.contains('ALL')) {
-          obj.disassemblerTypes.push('ALL');
-          obj.disassemblerRates.push(0);
-        }
-        if (!obj.disassemblerTypes.contains(type)) {
-          obj.disassemblerTypes.push(type);
-          obj.disassemblerRates.push(0);
-        }
-      } else if (line.match(/<DISASSEMBLE SOUND NAME:[ ](.*)>/i)) {
-        obj.disassembleSound['name'] = String(RegExp.$1);
-      } else if (line.match(/<DISASSEMBLE SOUND VOLUME:[ ](\d+)>/i)) {
-        obj.disassembleSound['volume'] = parseInt(RegExp.$1);
-      } else if (line.match(/<DISASSEMBLE SOUND PITCH:[ ](\d+)>/i)) {
-        obj.disassembleSound['pitch'] = parseInt(RegExp.$1);
-      } else if (line.match(/<DISASSEMBLE SOUND PAN:[ ]([\+\-]\d+)>/i)) {
-        obj.disassembleSound['pan'] = parseInt(RegExp.$1);
-      } else if (line.match(/<CUSTOM DISASSEMBLED EFFECT>/i)) {
-        evalMode = 'custom disassembled effect';
-      } else if (line.match(/<\/CUSTOM DISASSEMBLED EFFECT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom disassembled effect') {
-        obj.customDisassembledEval += line + '\n';
-      } else if (line.match(/<CUSTOM DISASSEMBLER EFFECT>/i)) {
-        evalMode = 'custom disassembler effect';
-      } else if (line.match(/<\/CUSTOM DISASSEMBLER EFFECT>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom disassembler effect') {
-        obj.customDisassemblerEval += line + '\n';
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// ItemManager
-//=============================================================================
-
-ItemManager.checkDisassemblePool = function(item) {
+  ItemManager.checkDisassemblePool = function (item) {
     if (!item) return;
     if (item.disassembleItems) return;
     if (item.baseItemId) {
       var base = DataManager.getBaseItem(item);
       item.disassembleItems = JsonEx.makeDeepCopy(base.disassembleItems);
     }
-};
+  };
 
-ItemManager.getDisassembleItems = function(item, type) {
+  ItemManager.getDisassembleItems = function (item, type) {
     if (!item || !type) return [];
     if (!item.disassembleItems) {
       if (item.baseItemId) {
@@ -559,9 +557,9 @@ ItemManager.getDisassembleItems = function(item, type) {
       this.makeDisassembleItems(line.toUpperCase().trim(), type, results);
     }
     return results;
-};
+  };
 
-ItemManager.makeDisassembleItems = function(line, type, results) {
+  ItemManager.makeDisassembleItems = function (line, type, results) {
     var item = null;
     var rate = 1.0;
     var quantity = [1, 1];
@@ -599,15 +597,15 @@ ItemManager.makeDisassembleItems = function(line, type, results) {
       var id = MageStudios.ArmorIdRef[line];
       var item = $dataArmors[id];
     }
-    if (item) results.push([item, quantity, rate, type])
-};
+    if (item) results.push([item, quantity, rate, type]);
+  };
 
-ItemManager.isDisassembler = function(item) {
+  ItemManager.isDisassembler = function (item) {
     if (!item.disassemblerTypes) return;
     return item.disassemblerTypes.length > 0;
-};
+  };
 
-ItemManager.disassemble = function(targetItem, effectItem) {
+  ItemManager.disassemble = function (targetItem, effectItem) {
     var results = [];
     var pool = [];
     var types = effectItem.disassemblerTypes;
@@ -621,7 +619,7 @@ ItemManager.disassemble = function(targetItem, effectItem) {
     for (var i = 0; i < length; ++i) {
       var data = pool[i];
       if (!data) continue;
-      var item = data[0]
+      var item = data[0];
       var quantity1 = data[1][0];
       var quantity2 = data[1][1];
       if (quantity1 > quantity2) {
@@ -642,87 +640,83 @@ ItemManager.disassemble = function(targetItem, effectItem) {
     }
     this.disassembleEval(results, targetItem, effectItem);
     return results;
-};
+  };
 
-ItemManager.disassembleEval = function(results, targetItem, effectItem) {
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  if (targetItem.customDisassembledEval) {
-    var code = targetItem.customDisassembledEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM DISASSEMBLE EFFECT ERROR');
+  ItemManager.disassembleEval = function (results, targetItem, effectItem) {
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    if (targetItem.customDisassembledEval) {
+      var code = targetItem.customDisassembledEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "CUSTOM DISASSEMBLE EFFECT ERROR"
+        );
+      }
     }
-  }
-  if (effectItem.customDisassemblerEval) {
-    var code = effectItem.customDisassemblerEval;
-    try {
-      eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'CUSTOM DISASSEMBLER EFFECT ERROR');
+    if (effectItem.customDisassemblerEval) {
+      var code = effectItem.customDisassemblerEval;
+      try {
+        eval(code);
+      } catch (e) {
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "CUSTOM DISASSEMBLER EFFECT ERROR"
+        );
+      }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.IDA.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.IDA.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.IDA.Game_System_initialize.call(this);
     this.initItemDisassemble();
-};
+  };
 
-Game_System.prototype.initItemDisassemble = function() {
+  Game_System.prototype.initItemDisassemble = function () {
     this._showItemDisassemble = true;
-};
+  };
 
-Game_System.prototype.isShowItemDisassemble = function() {
+  Game_System.prototype.isShowItemDisassemble = function () {
     if ($gameTemp._equipCustomize) return false;
     if (this._showItemDisassemble === undefined) this.initItemDisassemble();
     return this._showItemDisassemble;
-};
+  };
 
-Game_System.prototype.setShowItemDisassemble = function(value) {
+  Game_System.prototype.setShowItemDisassemble = function (value) {
     if (this._showItemDisassemble === undefined) this.initItemDisassemble();
     this._showItemDisassemble = value;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.IDA.Game_Interpreter_pluginCommand =
+  MageStudios.IDA.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.IDA.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowItemDisassemble') {
-    $gameSystem.setShowItemDisassemble(true);
-  } else if (command === 'HideItemDisassemble') {
-    $gameSystem.setShowItemDisassemble(false);
-  }
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.IDA.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "ShowItemDisassemble") {
+      $gameSystem.setShowItemDisassemble(true);
+    } else if (command === "HideItemDisassemble") {
+      $gameSystem.setShowItemDisassemble(false);
+    }
+  };
 
-//=============================================================================
-// Window_ItemActionCommand
-//=============================================================================
-
-MageStudios.IDA.Window_ItemActionCommand_addCustomCommandsB =
+  MageStudios.IDA.Window_ItemActionCommand_addCustomCommandsB =
     Window_ItemActionCommand.prototype.addCustomCommandsB;
-Window_ItemActionCommand.prototype.addCustomCommandsB = function() {
+  Window_ItemActionCommand.prototype.addCustomCommandsB = function () {
     MageStudios.IDA.Window_ItemActionCommand_addCustomCommandsB.call(this);
     if (this.isAddDisassembleCommand()) this.addDisassembleCommand();
-};
+  };
 
-Window_ItemActionCommand.prototype.isAddDisassembleCommand = function() {
+  Window_ItemActionCommand.prototype.isAddDisassembleCommand = function () {
     if (!this._item) return false;
     if (!$gameSystem.isShowItemDisassemble()) return false;
     return Object.keys(this._item.disassembleItems).length > 0;
-};
+  };
 
-Window_ItemActionCommand.prototype.isEnableDisassembleCommand = function() {
+  Window_ItemActionCommand.prototype.isEnableDisassembleCommand = function () {
     if (!this._item.canDisassemble) return false;
     if (this.isEquippedItem()) return false;
     if (!this._item.disassembleItems) {
@@ -730,9 +724,9 @@ Window_ItemActionCommand.prototype.isEnableDisassembleCommand = function() {
       this._item.disassembleItems = JsonEx.makeDeepCopy(base.disassembleItems);
     }
     return Object.keys(this._item.disassembleItems).length > 0;
-};
+  };
 
-Window_ItemActionCommand.prototype.isEquippedItem = function() {
+  Window_ItemActionCommand.prototype.isEquippedItem = function () {
     var length = $gameParty.members().length;
     for (var a = 0; a < length; ++a) {
       var actor = $gameParty.members()[a];
@@ -746,71 +740,67 @@ Window_ItemActionCommand.prototype.isEquippedItem = function() {
       }
     }
     return false;
-};
+  };
 
-Window_ItemActionCommand.prototype.addDisassembleCommand = function() {
+  Window_ItemActionCommand.prototype.addDisassembleCommand = function () {
     var enabled = this.isEnableDisassembleCommand();
     var fmt = MageStudios.Param.IDACmdNameFmt;
-    var name = '\\i[' + this._item.iconIndex + ']';
+    var name = "\\i[" + this._item.iconIndex + "]";
     if (this._item.textColor !== undefined) {
-      name += '\\c[' + this._item.textColor + ']';
+      name += "\\c[" + this._item.textColor + "]";
     }
     name += this._item.name;
     var text = fmt.format(name);
-    this.addCommand(text, 'disassemble', enabled);
-};
+    this.addCommand(text, "disassemble", enabled);
+  };
 
-//=============================================================================
-// Window_DisassemblePool
-//=============================================================================
-
-function Window_DisassemblePool() {
+  function Window_DisassemblePool() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_DisassemblePool.prototype = Object.create(Window_Base.prototype);
-Window_DisassemblePool.prototype.constructor = Window_DisassemblePool;
+  Window_DisassemblePool.prototype = Object.create(Window_Base.prototype);
+  Window_DisassemblePool.prototype.constructor = Window_DisassemblePool;
 
-Window_DisassemblePool.prototype.initialize = function(x, y, w, h) {
+  Window_DisassemblePool.prototype.initialize = function (x, y, w, h) {
     this._currentItem = null;
-    this._types = ['ALL'];
+    this._types = ["ALL"];
     this._rates = [0];
     Window_Base.prototype.initialize.call(this, x, y, w, h);
     this.hide();
-};
+  };
 
-Window_DisassemblePool.prototype.update = function() {
+  Window_DisassemblePool.prototype.update = function () {
     Window_Base.prototype.update.call(this);
     this.updateCurrentItem();
     this.updateVisibility();
-};
+  };
 
-Window_DisassemblePool.prototype.setTypes = function(types, rates) {
+  Window_DisassemblePool.prototype.setTypes = function (types, rates) {
     this._types = types.slice();
     this._rates = rates.slice();
     this.refresh();
-};
+  };
 
-Window_DisassemblePool.prototype.updateCurrentItem = function() {
+  Window_DisassemblePool.prototype.updateCurrentItem = function () {
     if (this._currentItem === SceneManager._scene.item()) return;
     this.refresh();
-};
+  };
 
-Window_DisassemblePool.prototype.updateVisibility = function() {
+  Window_DisassemblePool.prototype.updateVisibility = function () {
     var win = SceneManager._scene._itemActionWindow;
     if (!win) return;
     var current = this.visible;
-    var visible = win.visible && win.currentSymbol() === 'disassemble';
+    var visible = win.visible && win.currentSymbol() === "disassemble";
     win = SceneManager._scene._disassemblerListWindow;
     if (win && win.visible) visible = true;
     this.visible = visible;
     if (current !== this.visible) {
-      this._types = ['ALL'];
+      this._types = ["ALL"];
       this.refresh();
     }
-};
+  };
 
-Window_DisassemblePool.prototype.refresh = function() {
+  Window_DisassemblePool.prototype.refresh = function () {
     this.contents.clear();
     this._currentItem = SceneManager._scene.item();
     var dx = this.textPadding();
@@ -821,23 +811,28 @@ Window_DisassemblePool.prototype.refresh = function() {
     this.changeTextColor(this.systemColor());
     var text = MageStudios.Param.IDADisList;
     dy += this.lineHeight();
-    this.drawText(text, dx, dy, dw, 'center');
+    this.drawText(text, dx, dy, dw, "center");
     this.drawDisassembleItems();
-};
+  };
 
-Window_DisassemblePool.prototype.drawItemNumber = function(item, dx, dy, dw) {
+  Window_DisassemblePool.prototype.drawItemNumber = function (
+    item,
+    dx,
+    dy,
+    dw
+  ) {
     if (DataManager.isIndependent(item)) return;
     this.resetFontSettings();
     var value = $gameParty.numItems(item);
-    var text = '×' + MageStudios.Util.toGroup(value);
+    var text = "×" + MageStudios.Util.toGroup(value);
     if (MageStudios.Param.ItemQuantitySize) {
       this.contents.fontSize = MageStudios.Param.ItemQuantitySize;
     }
-    this.drawText(text, dx, dy, dw - this.textPadding(), 'right');
+    this.drawText(text, dx, dy, dw - this.textPadding(), "right");
     this.resetFontSettings();
-};
+  };
 
-Window_DisassemblePool.prototype.drawDisassembleItems = function() {
+  Window_DisassemblePool.prototype.drawDisassembleItems = function () {
     var dx = this.textPadding();
     var dy = this.lineHeight() * 2;
     var dw = this.contentsWidth() - dx * 2;
@@ -846,9 +841,12 @@ Window_DisassemblePool.prototype.drawDisassembleItems = function() {
       var type = this._types[i];
       dy = this.drawDisassembleTypePool(dy, type);
     }
-};
+  };
 
-Window_DisassemblePool.prototype.drawDisassembleTypePool = function(dy, type) {
+  Window_DisassemblePool.prototype.drawDisassembleTypePool = function (
+    dy,
+    type
+  ) {
     var pool = ItemManager.getDisassembleItems(this._currentItem, type);
     if (!pool) return dy;
     var index = this._types.indexOf(type);
@@ -872,7 +870,7 @@ Window_DisassemblePool.prototype.drawDisassembleTypePool = function(dy, type) {
       quantity1 = MageStudios.Util.toGroup(quantity1);
       quantity2 = MageStudios.Util.toGroup(quantity2);
       var rate = data[2] + rateBonus;
-      var name = '\\i[' + item.iconIndex + ']' + item.name;
+      var name = "\\i[" + item.iconIndex + "]" + item.name;
       if (quantity1 === quantity2) {
         var text = fmt1.format(quantity1, name);
       } else {
@@ -881,52 +879,53 @@ Window_DisassemblePool.prototype.drawDisassembleTypePool = function(dy, type) {
       this.drawTextEx(text, dx, dy);
       rate = rate.clamp(0, 1);
       rate = (rate * 100).toFixed(0);
-      text = rate + '%';
+      text = rate + "%";
       this.contents.fontSize = MageStudios.Param.IDARateSize;
-      this.drawText(text, dx, dy, dw, 'right');
+      this.drawText(text, dx, dy, dw, "right");
       this.resetFontSettings();
       dy += this.lineHeight();
     }
     return dy;
-};
+  };
 
-//=============================================================================
-// Window_DisassemblerList
-//=============================================================================
-
-function Window_DisassemblerList() {
+  function Window_DisassemblerList() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_DisassemblerList.prototype = Object.create(Window_ItemList.prototype);
-Window_DisassemblerList.prototype.constructor = Window_DisassemblerList;
+  Window_DisassemblerList.prototype = Object.create(Window_ItemList.prototype);
+  Window_DisassemblerList.prototype.constructor = Window_DisassemblerList;
 
-Window_DisassemblerList.prototype.initialize = function(x, y, width, height) {
+  Window_DisassemblerList.prototype.initialize = function (
+    x,
+    y,
+    width,
+    height
+  ) {
     Window_ItemList.prototype.initialize.call(this, x, y, width, height);
     this._item = null;
     this._helpIndex = -1;
     this.hide();
-};
+  };
 
-Window_DisassemblerList.prototype.setPoolWindow = function(win) {
+  Window_DisassemblerList.prototype.setPoolWindow = function (win) {
     this._poolWindow = win;
-};
+  };
 
-Window_DisassemblerList.prototype.setItem = function(item) {
+  Window_DisassemblerList.prototype.setItem = function (item) {
     if (this._item === item) return;
     this._item = item;
     this.refresh();
     this.select(0);
-};
+  };
 
-Window_DisassemblerList.prototype.includes = function(item) {
+  Window_DisassemblerList.prototype.includes = function (item) {
     if (!item) return false;
     if (DataManager.isIndependent(item)) return false;
     if (!this.containsType(item)) return false;
     return true;
-};
+  };
 
-Window_DisassemblerList.prototype.containsType = function(item) {
+  Window_DisassemblerList.prototype.containsType = function (item) {
     if (!item) return;
     if (!this._item) return;
     ItemManager.checkDisassemblePool(this._item);
@@ -940,30 +939,30 @@ Window_DisassemblerList.prototype.containsType = function(item) {
       }
     }
     return false;
-};
+  };
 
-Window_DisassemblerList.prototype.isEnabled = function(item) {
+  Window_DisassemblerList.prototype.isEnabled = function (item) {
     return item;
-};
+  };
 
-Window_DisassemblerList.prototype.makeItemList = function() {
-    this._data = $gameParty.allItems().filter(function(item) {
-        return this.includes(item);
+  Window_DisassemblerList.prototype.makeItemList = function () {
+    this._data = $gameParty.allItems().filter(function (item) {
+      return this.includes(item);
     }, this);
-};
+  };
 
-Window_DisassemblerList.prototype.updateHelp = function() {
+  Window_DisassemblerList.prototype.updateHelp = function () {
     Window_ItemList.prototype.updateHelp.call(this);
     this.updateHelpIndex();
-};
+  };
 
-Window_DisassemblerList.prototype.updateHelpIndex = function() {
+  Window_DisassemblerList.prototype.updateHelpIndex = function () {
     if (!this._poolWindow) return;
     if (this._helpIndex === this.index()) return;
     this.updatePool();
-};
+  };
 
-Window_DisassemblerList.prototype.updatePool = function() {
+  Window_DisassemblerList.prototype.updatePool = function () {
     this._helpIndex = this.index();
     var item = this.item();
     if (!item) {
@@ -974,97 +973,92 @@ Window_DisassemblerList.prototype.updatePool = function() {
       var rates = item.disassemblerRates;
     }
     this._poolWindow.setTypes(types, rates);
-};
+  };
 
-Window_DisassemblerList.prototype.playOkSound = function() {
+  Window_DisassemblerList.prototype.playOkSound = function () {
     var sound = {
-      name:   MageStudios.Param.IDASoundName,
+      name: MageStudios.Param.IDASoundName,
       volume: MageStudios.Param.IDASoundVol,
-      pitch:  MageStudios.Param.IDASoundPitch,
-      pan:    MageStudios.Param.IDASoundPan
+      pitch: MageStudios.Param.IDASoundPitch,
+      pan: MageStudios.Param.IDASoundPan,
     };
     if (this.item() && this.item().disassembleSound) {
       sound = this.item().disassembleSound;
     }
     AudioManager.playSe(sound);
-};
+  };
 
-//=============================================================================
-// Window_DisassembleResult
-//=============================================================================
-
-function Window_DisassembleResult() {
+  function Window_DisassembleResult() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_DisassembleResult.prototype = Object.create(Window_Selectable.prototype);
-Window_DisassembleResult.prototype.constructor = Window_DisassembleResult;
+  Window_DisassembleResult.prototype = Object.create(
+    Window_Selectable.prototype
+  );
+  Window_DisassembleResult.prototype.constructor = Window_DisassembleResult;
 
-Window_DisassembleResult.prototype.initialize = function() {
+  Window_DisassembleResult.prototype.initialize = function () {
     var x = Math.floor(Graphics.boxWidth / 8);
     var y = this.fittingHeight(1);
-    var width = Math.floor(Graphics.boxWidth * 3 / 4);
+    var width = Math.floor((Graphics.boxWidth * 3) / 4);
     var height = Graphics.boxHeight - this.fittingHeight(1) * 2;
     Window_Selectable.prototype.initialize.call(this, x, y, width, height);
     this._data = [];
     this.openness = 0;
     this.deactivate();
-};
+  };
 
-Window_DisassembleResult.prototype.setResults = function(results) {
+  Window_DisassembleResult.prototype.setResults = function (results) {
     this._data = results;
     this.refresh();
     this.open();
     this.activate();
     this.select(0);
-};
+  };
 
-Window_DisassembleResult.prototype.maxItems = function() {
+  Window_DisassembleResult.prototype.maxItems = function () {
     return this._data ? this._data.length : 1;
-};
+  };
 
-Window_DisassembleResult.prototype.drawItem = function(index) {
+  Window_DisassembleResult.prototype.drawItem = function (index) {
     var item = this._data[index];
     if (!item) return;
     var rect = this.itemRect(index);
     rect.width -= this.textPadding();
     this.drawItemName(item, rect.x, rect.y, rect.width);
-};
+  };
 
-Window_DisassembleResult.prototype.playOkSound = function() {
+  Window_DisassembleResult.prototype.playOkSound = function () {
     if (this._data.length > 0) {
       AudioManager.playSe(MageStudios.Param.IDAResultSound);
     } else {
       AudioManager.playSe(MageStudios.Param.IDAEmptytSound);
     }
-};
+  };
 
-//=============================================================================
-// Scene_Item
-//=============================================================================
-
-MageStudios.IDA.Scene_Item_createInfoWindow = Scene_Item.prototype.createInfoWindow;
-Scene_Item.prototype.createInfoWindow = function() {
+  MageStudios.IDA.Scene_Item_createInfoWindow =
+    Scene_Item.prototype.createInfoWindow;
+  Scene_Item.prototype.createInfoWindow = function () {
     MageStudios.IDA.Scene_Item_createInfoWindow.call(this);
     this.createDisassembleWindows();
-};
+  };
 
-Scene_Item.prototype.createDisassembleWindows = function() {
+  Scene_Item.prototype.createDisassembleWindows = function () {
     this.createDisassemblePoolWindow();
     this.createDisassemblerListWindow();
     this.createDisassembleResultWindow();
-};
+  };
 
-Scene_Item.prototype.createDisassemblePoolWindow = function() {
+  Scene_Item.prototype.createDisassemblePoolWindow = function () {
     var x = this._infoWindow.x;
     var y = this._infoWindow.y;
     var w = this._infoWindow.width;
     var h = this._infoWindow.height;
     this._disassemblePoolWindow = new Window_DisassemblePool(x, y, w, h);
     this.addWindow(this._disassemblePoolWindow);
-};
+  };
 
-Scene_Item.prototype.createDisassemblerListWindow = function() {
+  Scene_Item.prototype.createDisassemblerListWindow = function () {
     var x = this._itemWindow.x;
     var y = this._itemWindow.y;
     var w = this._itemWindow.width;
@@ -1073,28 +1067,36 @@ Scene_Item.prototype.createDisassemblerListWindow = function() {
     this._disassemblerListWindow.setHelpWindow(this._helpWindow);
     this._disassemblerListWindow.setPoolWindow(this._disassemblePoolWindow);
     this.addWindow(this._disassemblerListWindow);
-    this._disassemblerListWindow.setHandler('cancel',
-      this.onDisassemblerListCancel.bind(this));
-    this._disassemblerListWindow.setHandler('ok',
-      this.onDisassemblerListOk.bind(this));
-};
+    this._disassemblerListWindow.setHandler(
+      "cancel",
+      this.onDisassemblerListCancel.bind(this)
+    );
+    this._disassemblerListWindow.setHandler(
+      "ok",
+      this.onDisassemblerListOk.bind(this)
+    );
+  };
 
-Scene_Item.prototype.createDisassembleResultWindow = function() {
+  Scene_Item.prototype.createDisassembleResultWindow = function () {
     this._disassembleResultWindow = new Window_DisassembleResult();
     this.addWindow(this._disassembleResultWindow);
-    this._disassembleResultWindow.setHandler('ok',
-      this.closeDisassembleLootWindow.bind(this));
-};
+    this._disassembleResultWindow.setHandler(
+      "ok",
+      this.closeDisassembleLootWindow.bind(this)
+    );
+  };
 
-MageStudios.IDA.Scene_Item_createActionWindow =
+  MageStudios.IDA.Scene_Item_createActionWindow =
     Scene_Item.prototype.createActionWindow;
-Scene_Item.prototype.createActionWindow = function() {
+  Scene_Item.prototype.createActionWindow = function () {
     MageStudios.IDA.Scene_Item_createActionWindow.call(this);
-    this._itemActionWindow.setHandler('disassemble',
-      this.onActionDisassemble.bind(this));
-};
+    this._itemActionWindow.setHandler(
+      "disassemble",
+      this.onActionDisassemble.bind(this)
+    );
+  };
 
-Scene_Item.prototype.onActionDisassemble = function() {
+  Scene_Item.prototype.onActionDisassemble = function () {
     this._itemActionWindow.hide();
     this._itemActionWindow.deactivate();
     this._disassemblerListWindow.show();
@@ -1103,17 +1105,17 @@ Scene_Item.prototype.onActionDisassemble = function() {
     this._disassemblerListWindow.select(0);
     this._disassemblerListWindow.updatePool();
     this._disassemblePoolWindow.refresh();
-};
+  };
 
-Scene_Item.prototype.onDisassemblerListCancel = function() {
+  Scene_Item.prototype.onDisassemblerListCancel = function () {
     this._disassemblerListWindow.hide();
     this._disassemblerListWindow.deactivate();
     this._itemActionWindow.show();
     this._itemActionWindow.activate();
     this._helpWindow.setItem(this.item());
-};
+  };
 
-Scene_Item.prototype.onDisassemblerListOk = function() {
+  Scene_Item.prototype.onDisassemblerListOk = function () {
     var effectItem = this._disassemblerListWindow.item();
     if (effectItem) {
       var results = ItemManager.disassemble(this.item(), effectItem);
@@ -1123,10 +1125,10 @@ Scene_Item.prototype.onDisassemblerListOk = function() {
     $gameParty.loseItem(this.item(), 1);
     this._disassemblePoolWindow.refresh();
     $gameParty.consumeItem(effectItem);
-    this._disassembleResultWindow.setResults(results)
-};
+    this._disassembleResultWindow.setResults(results);
+  };
 
-Scene_Item.prototype.closeDisassembleLootWindow = function() {
+  Scene_Item.prototype.closeDisassembleLootWindow = function () {
     this._disassembleResultWindow.close();
     if (this.isCloseDisassembleWindow()) {
       this._disassemblerListWindow.setItem(null);
@@ -1147,42 +1149,34 @@ Scene_Item.prototype.closeDisassembleLootWindow = function() {
       this._disassemblerListWindow.activate();
     }
     this._infoWindow.setItem(this.item());
-};
+  };
 
-Scene_Item.prototype.isCloseDisassembleWindow = function() {
+  Scene_Item.prototype.isCloseDisassembleWindow = function () {
     if (DataManager.isIndependent(this.item())) return true;
     return $gameParty.numItems(this.item()) <= 0;
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
-    }
-};
-
-MageStudios.Util.getRandomInt = function(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
-    }
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
   }
-};
 
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_ItemCore
+  MageStudios.Util.getRandomInt = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+}

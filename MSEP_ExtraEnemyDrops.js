@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Extra Enemy Drops
-// MSEP_ExtraEnemyDrops.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ExtraEnemyDrops = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EED = MageStudios.EED || {};
-MageStudios.EED.version = 1.00;
+MageStudios.EED.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Allows your enemies to drop more than just three
  * items as per the editor's limit.
  * @author Mage Studios Engine Plugins
@@ -352,66 +346,15 @@ MageStudios.EED.version = 1.00;
  * enemy.timesStruckElement(element ID)
  * This will return a number value for the number of times it was struck by
  * the element referenced by the element ID.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.09:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.08:
- * - Plugin compatibility update with Element Core to count multiple elemental
- * skills from counting the times struck by each element.
- *
- * Version 1.07:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.06:
- * - New Conditional Drop line: Enemy Level. If you are using the
- * YEP Enemy Level plugin, this will allow conditional drops to check around
- * the enemy's level at death.
- *
- * Version 1.05:
- * - Eval condition is given more priority as to not be triggered by other
- * conditions.
- *
- * Version 1.04:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.03:
- * - Fixed documentation errors.
- * - Fixed a bug with the Turn Count condition.
- *
- * Version 1.02:
- * - Fixed a bug that crashed the game when a conditional drop is made based
- * off of an item count.
- *
- * Version 1.01:
- * - Added a new section: Lunatic Mode - New JavaScript Functions to allow
- * easier reference for the eval condition.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ExtraEnemyDrops');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ExtraEnemyDrops");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.Variables = String(MageStudios.Parameters['Variables']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
+MageStudios.Param.Variables = String(MageStudios.Parameters["Variables"]);
 
 MageStudios.EED.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
+DataManager.isDatabaseLoaded = function () {
   if (!MageStudios.EED.DataManager_isDatabaseLoaded.call(this)) return false;
   if (!MageStudios._loaded_MSEP_ExtraEnemyDrops) {
     this.processEEDNotetagsI($dataItems);
@@ -426,7 +369,7 @@ DataManager.isDatabaseLoaded = function() {
   return true;
 };
 
-DataManager.processEEDNotetagsI = function(group) {
+DataManager.processEEDNotetagsI = function (group) {
   if (MageStudios.ItemIdRef) return;
   MageStudios.ItemIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -436,7 +379,7 @@ DataManager.processEEDNotetagsI = function(group) {
   }
 };
 
-DataManager.processEEDNotetagsW = function(group) {
+DataManager.processEEDNotetagsW = function (group) {
   if (MageStudios.WeaponIdRef) return;
   MageStudios.WeaponIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -446,7 +389,7 @@ DataManager.processEEDNotetagsW = function(group) {
   }
 };
 
-DataManager.processEEDNotetagsA = function(group) {
+DataManager.processEEDNotetagsA = function (group) {
   if (MageStudios.ArmorIdRef) return;
   MageStudios.ArmorIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -456,7 +399,7 @@ DataManager.processEEDNotetagsA = function(group) {
   }
 };
 
-DataManager.processEEDNotetagsS = function(group) {
+DataManager.processEEDNotetagsS = function (group) {
   if (MageStudios.SkillIdRef) return;
   MageStudios.SkillIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -466,7 +409,7 @@ DataManager.processEEDNotetagsS = function(group) {
   }
 };
 
-DataManager.processEEDNotetagsT = function(group) {
+DataManager.processEEDNotetagsT = function (group) {
   if (MageStudios.StateIdRef) return;
   MageStudios.StateIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -476,22 +419,22 @@ DataManager.processEEDNotetagsT = function(group) {
   }
 };
 
-DataManager.processEEDNotetagsSys = function(group) {
+DataManager.processEEDNotetagsSys = function (group) {
   MageStudios.STypeIdRef = {};
   for (var i = 1; i < group.skillTypes.length; ++i) {
     var name = group.skillTypes[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
+    name = name.replace(/\\I\[(\d+)\]/gi, "");
     MageStudios.STypeIdRef[name] = i;
   }
   MageStudios.ElementIdRef = {};
   for (var i = 1; i < group.elements.length; ++i) {
     var name = group.elements[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
+    name = name.replace(/\\I\[(\d+)\]/gi, "");
     MageStudios.ElementIdRef[name] = i;
   }
 };
 
-DataManager.processEEDNotetags1 = function(group) {
+DataManager.processEEDNotetags1 = function (group) {
   var noteD1 = /<(?:ITEM|DROP ITEM)[ ](\d+):[ ](\d+)([%％])>/i;
   var noteD2 = /<(?:WEAPON|DROP WEAPON)[ ](\d+):[ ](\d+)([%％])>/i;
   var noteD3 = /<(?:ARMOR|DROP armor)[ ](\d+):[ ](\d+)([%％])>/i;
@@ -503,7 +446,7 @@ DataManager.processEEDNotetags1 = function(group) {
     obj.dropsMade = true;
     obj.conditionalDropItems = [];
     var conditionalLines = [];
-    var evalMode = 'none';
+    var evalMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -536,10 +479,10 @@ DataManager.processEEDNotetags1 = function(group) {
         }
         this.createEnemyDrop(obj, id, rate, kind);
       } else if (line.match(/<(?:ENEMY DROP|ENEMY DROPS)>/i)) {
-        var evalMode = 'drops';
+        var evalMode = "drops";
       } else if (line.match(/<\/(?:ENEMY DROP|ENEMY DROPS)>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'drops') {
+        var evalMode = "none";
+      } else if (evalMode === "drops") {
         if (line.match(/ITEM[ ](\d+):[ ](\d+)([%％])/i)) {
           var id = parseInt(RegExp.$1);
           var rate = parseFloat(RegExp.$2) * 0.01;
@@ -570,10 +513,10 @@ DataManager.processEEDNotetags1 = function(group) {
           this.createEnemyDrop(obj, id, rate, kind);
         }
       } else if (line.match(/<CONDITIONAL[ ](.*)[ ]DROP>/i)) {
-        var evalMode = 'conditionalDrop';
+        var evalMode = "conditionalDrop";
         conditionalLines = [];
       } else if (line.match(/<\/CONDITIONAL[ ](.*)[ ]DROP>/i)) {
-        var evalMode = 'none';
+        var evalMode = "none";
         var name = String(RegExp.$1).toUpperCase();
         if (name.match(/ITEM[ ](\d+)/i)) {
           var item = $dataItems[parseInt(RegExp.$1)];
@@ -597,123 +540,115 @@ DataManager.processEEDNotetags1 = function(group) {
         var arr = [item, conditionalLines];
         obj.conditionalDropItems.push(arr);
         conditionalLines = [];
-      } else if (evalMode === 'conditionalDrop') {
+      } else if (evalMode === "conditionalDrop") {
         conditionalLines.push(line);
       }
     }
   }
 };
 
-DataManager.createEnemyDrop = function(obj, dataId, rate, kind) {
-    var dropItem = {
-      dataId: dataId,
-      denominator: 1 / rate,
-      kind: kind
-    }
-    obj.dropItems.push(dropItem);
+DataManager.createEnemyDrop = function (obj, dataId, rate, kind) {
+  var dropItem = {
+    dataId: dataId,
+    denominator: 1 / rate,
+    kind: kind,
+  };
+  obj.dropItems.push(dropItem);
 };
-
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
 
 MageStudios.EED.Game_BattlerBase_addNewState =
-    Game_BattlerBase.prototype.addNewState;
-Game_BattlerBase.prototype.addNewState = function(stateId) {
-    MageStudios.EED.Game_BattlerBase_addNewState.call(this, stateId);
-    if (this.isEnemy()) this.markStruckState(stateId);
-    if (stateId === this.deathStateId() && this.isEnemy()) {
-        this.markDeathTurn();
-    }
+  Game_BattlerBase.prototype.addNewState;
+Game_BattlerBase.prototype.addNewState = function (stateId) {
+  MageStudios.EED.Game_BattlerBase_addNewState.call(this, stateId);
+  if (this.isEnemy()) this.markStruckState(stateId);
+  if (stateId === this.deathStateId() && this.isEnemy()) {
+    this.markDeathTurn();
+  }
 };
-
-//=============================================================================
-// Game_Enemy
-//=============================================================================
 
 MageStudios.EED.Game_Enemy_makeDropItems = Game_Enemy.prototype.makeDropItems;
-Game_Enemy.prototype.makeDropItems = function() {
-    var drops = MageStudios.EED.Game_Enemy_makeDropItems.call(this);
-    drops = drops.concat(this.makeConditionalDropItems());
-    return drops;
+Game_Enemy.prototype.makeDropItems = function () {
+  var drops = MageStudios.EED.Game_Enemy_makeDropItems.call(this);
+  drops = drops.concat(this.makeConditionalDropItems());
+  return drops;
 };
 
-Game_Enemy.prototype.makeConditionalDropItems = function() {
-    var drops = DropManager.setup(this);
-    return drops;
+Game_Enemy.prototype.makeConditionalDropItems = function () {
+  var drops = DropManager.setup(this);
+  return drops;
 };
 
-Game_Enemy.prototype.markDeathTurn = function() {
-    if (this._selfTurnCount !== undefined) {
-      this._deathTurn = this._selfTurnCount;
-    } else {
-      this._deathTurn = $gameTroop.turnCount();
-    }
+Game_Enemy.prototype.markDeathTurn = function () {
+  if (this._selfTurnCount !== undefined) {
+    this._deathTurn = this._selfTurnCount;
+  } else {
+    this._deathTurn = $gameTroop.turnCount();
+  }
 };
 
-Game_Enemy.prototype.markStruckState = function(id) {
-    this.createTimesStruck();
-    this._struckStates[id] = this._struckStates[id] || 0;
-    this._struckStates[id] = this._struckStates[id] + 1;
+Game_Enemy.prototype.markStruckState = function (id) {
+  this.createTimesStruck();
+  this._struckStates[id] = this._struckStates[id] || 0;
+  this._struckStates[id] = this._struckStates[id] + 1;
 };
 
-Game_Enemy.prototype.deathTurn = function() {
-    return this._deathTurn || 0;
+Game_Enemy.prototype.deathTurn = function () {
+  return this._deathTurn || 0;
 };
 
-Game_Enemy.prototype.createTimesStruck = function() {
-    if (this._struckSkills === undefined) this._struckSkills = {};
-    if (this._struckSType === undefined) this._struckSType = {};
-    if (this._struckItems === undefined) this._struckItems = {};
-    if (this._struckStates === undefined) this._struckStates = {};
-    if (this._struckElements === undefined) this._struckElements = {};
-    if (this._lastStruckId === undefined) this._lastStruckId = 0;
-    if (this._lastStruckSkill === undefined) this._lastStruckSkill = false;
-    if (this._lastStruckActor === undefined) this._lastStruckActor = null;
+Game_Enemy.prototype.createTimesStruck = function () {
+  if (this._struckSkills === undefined) this._struckSkills = {};
+  if (this._struckSType === undefined) this._struckSType = {};
+  if (this._struckItems === undefined) this._struckItems = {};
+  if (this._struckStates === undefined) this._struckStates = {};
+  if (this._struckElements === undefined) this._struckElements = {};
+  if (this._lastStruckId === undefined) this._lastStruckId = 0;
+  if (this._lastStruckSkill === undefined) this._lastStruckSkill = false;
+  if (this._lastStruckActor === undefined) this._lastStruckActor = null;
 };
 
-Game_Enemy.prototype.lastStruckAction = function() {
-    if (this._lastStruckId === undefined) this.createTimesStruck();
-    if (this._lastStruckSkill === undefined) this.createTimesStruck();
-    if (this._lastStruckSkill) {
-      return $dataSkills[this._lastStruckId];
-    } else {
-      return $dataItems[this._lastStruckId];
-    }
+Game_Enemy.prototype.lastStruckAction = function () {
+  if (this._lastStruckId === undefined) this.createTimesStruck();
+  if (this._lastStruckSkill === undefined) this.createTimesStruck();
+  if (this._lastStruckSkill) {
+    return $dataSkills[this._lastStruckId];
+  } else {
+    return $dataItems[this._lastStruckId];
+  }
 };
 
-Game_Enemy.prototype.markStruckActions = function(item, subject, action) {
-    if (!item) return;
-    this.createTimesStruck();
-    this._lastStruckId = item.id;
-    this._lastStruckSkill = DataManager.isSkill(item);
-    this.markLastStruckActor(subject);
-    if (DataManager.isSkill(item)) {
-      this._struckSkills[item.id] = this._struckSkills[item.id] || 0;
-      this._struckSkills[item.id] = this._struckSkills[item.id] + 1;
-      this._struckSType[item.stypeId] = this._struckSType[item.stypeId] || 0;
-      this._struckSType[item.stypeId] = this._struckSType[item.stypeId] + 1;
-    }
-    if (DataManager.isItem(item)) {
-      this._struckItems[item.id] = this._struckItems[item.id] || 0;
-      this._struckItems[item.id] = this._struckItems[item.id] + 1;
-    }
-    this.markStruckElements(item, subject, action);
+Game_Enemy.prototype.markStruckActions = function (item, subject, action) {
+  if (!item) return;
+  this.createTimesStruck();
+  this._lastStruckId = item.id;
+  this._lastStruckSkill = DataManager.isSkill(item);
+  this.markLastStruckActor(subject);
+  if (DataManager.isSkill(item)) {
+    this._struckSkills[item.id] = this._struckSkills[item.id] || 0;
+    this._struckSkills[item.id] = this._struckSkills[item.id] + 1;
+    this._struckSType[item.stypeId] = this._struckSType[item.stypeId] || 0;
+    this._struckSType[item.stypeId] = this._struckSType[item.stypeId] + 1;
+  }
+  if (DataManager.isItem(item)) {
+    this._struckItems[item.id] = this._struckItems[item.id] || 0;
+    this._struckItems[item.id] = this._struckItems[item.id] + 1;
+  }
+  this.markStruckElements(item, subject, action);
 };
 
-Game_Enemy.prototype.killer = function() {
-    if (this._lastStruckActor > 0) {
-      return $gameActors.actor(this._lastStruckActor);
-    } else {
-      return this;
-    }
+Game_Enemy.prototype.killer = function () {
+  if (this._lastStruckActor > 0) {
+    return $gameActors.actor(this._lastStruckActor);
+  } else {
+    return this;
+  }
 };
 
-Game_Enemy.prototype.markLastStruckActor = function(subject) {
+Game_Enemy.prototype.markLastStruckActor = function (subject) {
   if (subject && subject.isActor()) this._lastStruckActor = subject.actor().id;
 };
 
-Game_Enemy.prototype.markStruckElements = function(item, subject, action) {
+Game_Enemy.prototype.markStruckElements = function (item, subject, action) {
   if (Imported.MSEP_ElementCore && action) {
     var elements = action.getItemElements();
   } else if (item.daMageStudios.elementId < 0) {
@@ -730,431 +665,414 @@ Game_Enemy.prototype.markStruckElements = function(item, subject, action) {
   }
 };
 
-Game_Enemy.prototype.timesStruckSkill = function(id) {
-    this.createTimesStruck();
-    return this._struckSkills[id] || 0;
+Game_Enemy.prototype.timesStruckSkill = function (id) {
+  this.createTimesStruck();
+  return this._struckSkills[id] || 0;
 };
 
-Game_Enemy.prototype.timesStruckItem = function(id) {
-    this.createTimesStruck();
-    return this._struckItems[id] || 0;
+Game_Enemy.prototype.timesStruckItem = function (id) {
+  this.createTimesStruck();
+  return this._struckItems[id] || 0;
 };
 
-Game_Enemy.prototype.timesStruckSType = function(id) {
-    this.createTimesStruck();
-    return this._struckSType[id] || 0;
+Game_Enemy.prototype.timesStruckSType = function (id) {
+  this.createTimesStruck();
+  return this._struckSType[id] || 0;
 };
 
-Game_Enemy.prototype.timesStruckState = function(id) {
-    this.createTimesStruck();
-    return this._struckStates[id] || 0;
+Game_Enemy.prototype.timesStruckState = function (id) {
+  this.createTimesStruck();
+  return this._struckStates[id] || 0;
 };
 
-Game_Enemy.prototype.timesStruckElement = function(id) {
-    this.createTimesStruck();
-    return this._struckElements[id] || 0;
+Game_Enemy.prototype.timesStruckElement = function (id) {
+  this.createTimesStruck();
+  return this._struckElements[id] || 0;
 };
-
-//=============================================================================
-// Game_Action
-//=============================================================================
 
 MageStudios.EED.Game_Action_applyItemUserEffect =
-    Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
-    MageStudios.EED.Game_Action_applyItemUserEffect.call(this, target);
-    if (target && target.isEnemy()) {
-      target.markStruckActions(this.item(), this.subject(), this);
-    }
+  Game_Action.prototype.applyItemUserEffect;
+Game_Action.prototype.applyItemUserEffect = function (target) {
+  MageStudios.EED.Game_Action_applyItemUserEffect.call(this, target);
+  if (target && target.isEnemy()) {
+    target.markStruckActions(this.item(), this.subject(), this);
+  }
 };
-
-//=============================================================================
-// DropManager
-//=============================================================================
 
 function DropManager() {
-    throw new Error('This is a static class');
+  throw new Error("This is a static class");
 }
 
-DropManager.setup = function(enemy) {
-    this._enemy = enemy;
-    this._data = this._enemy.enemy().conditionalDropItems;
-    this._drops = [];
-    this.makeConditionalDropItems();
-    return this._drops;
+DropManager.setup = function (enemy) {
+  this._enemy = enemy;
+  this._data = this._enemy.enemy().conditionalDropItems;
+  this._drops = [];
+  this.makeConditionalDropItems();
+  return this._drops;
 };
 
-DropManager.makeConditionalDropItems = function() {
-    var length = this._data.length;
-    if (length <= 0) return;
-    for (var i = 0; i < length; ++i) {
-      var data = this._data[i];
-      var item = data[0];
-      var conditions = data[1];
-      if (Math.random() < this.getConditionalRate(conditions)) {
-        this._drops.push(item);
-      }
-    }
-};
-
-DropManager.getConditionalRate = function(conditions) {
-    var rate = 0;
-    var length = conditions.length;
-    for (var i = 0; i < length; ++i) {
-      var condition = conditions[i];
-      if (condition.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
-        var line = String(RegExp.$1);
-        var value = parseFloat(RegExp.$2) * 0.01;
-        if (this.meetsLineCondition(line)) rate += value;
-      }
-    }
-    return rate;
-};
-
-DropManager.meetsLineCondition = function(line) {
-    // EVAL
-    if (line.match(/EVAL[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionEval(line);
-    }
-    // ALIVE MEMBERS
-    if (line.match(/ALIVE MEMBERS[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionAliveMembers(line);
-    }
-    // ALWAYS
-    if (line.toUpperCase() === 'ALWAYS') {
-      return this.conditionAlways();
-    }
-    // COUNT
-    if (line.match(/(.*)[ ]COUNT[ ](.*)/i)) {
-      var line1 = String(RegExp.$1);
-      var line2 = String(RegExp.$2);
-      return this.conditionCount(line1, line2);
-    }
-    // DEAD MEMBERS
-    if (line.match(/DEAD MEMBERS[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionDeadMembers(line);
-    }
-    // DEATH TURN EVAL
-    if (line.match(/DEATH TURN[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionDeathTurn(line);
-    }
-    // ENEMY LEVEL
-    if (line.match(/ENEMY LEVEL[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionEnemyLevel(line);
-    }
-    // LAST STRIKE
-    if (line.match(/LAST STRIKE[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionLastStrike(line);
-    }
-    // PARTY MEMBERS
-    if (line.match(/PARTY MEMBERS[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionPartyMembers(line);
-    }
-    // RANDOM X%
-    if (line.match(/RANDOM[ ](\d+)([%％])/i)) {
-      var rate = parseFloat(RegExp.$1) * 0.01;
-      return this.conditionRandom(rate);
-    }
-    // TIMES STRUCK
-    if (line.match(/TIMES[ ](.*)[ ]STRUCK[ ](.*)/i)) {
-      var line1 = String(RegExp.$1);
-      var line2 = String(RegExp.$2);
-      return this.conditionTimesStruck(line1, line2);
-    }
-    // SWITCH EVAL
-    if (line.match(/SWITCH[ ](\d+)[ ](.*)/i)) {
-      var switchId = parseInt(RegExp.$1);
-      var switchCase = String(RegExp.$2).toUpperCase();
-      return this.conditionSwitch(switchId, switchCase);
-    }
-    // TURN EVAL
-    if (line.match(/TURN[ ](.*)/i)) {
-      var line = String(RegExp.$1);
-      return this.conditionTurn(line);
-    }
-    // VARIABLE EVAL
-    if (line.match(/VARIABLE[ ](\d+)[ ](.*)/i)) {
-      var varId = parseInt(RegExp.$1);
-      var varLine = String(RegExp.$2).toUpperCase();
-      return this.conditionVariable(varId, varLine);
-    }
-    return false;
-};
-
-DropManager.conditionAliveMembers = function(line) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = '$gameParty.aliveMembers().length ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP ALIVE CONDITION ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionAlways = function() {
-    return true;
-};
-
-DropManager.conditionCount = function(line1, line2) {
-    var item = null;
-    if (line1.match(/ITEM[ ](\d+)/i)) {
-      item = $dataItems[parseInt(RegExp.$1)];
-    } else if (line1.match(/WEAPON[ ](\d+)/i)) {
-      item = $dataWeapons[parseInt(RegExp.$1)];
-    } else if (line1.match(/ARMOR[ ](\d+)/i)) {
-      item = $dataArmors[parseInt(RegExp.$1)];
-    } else if (MageStudios.ItemIdRef[line1.toUpperCase()]) {
-      item = $dataItems[MageStudios.ItemIdRef[line1.toUpperCase()]];
-    } else if (MageStudios.WeaponIdRef[line1.toUpperCase()]) {
-      item = $dataWeapons[MageStudios.WeaponIdRef[line1.toUpperCase()]];
-    } else if (MageStudios.ArmorIdRef[line1.toUpperCase()]) {
-      item = $dataArmors[MageStudios.ArmorIdRef[line1.toUpperCase()]];
-    }
-    if (!item) return false;
-    if (Imported.MSEP_ItemCore && DataManager.isIndependent(item)) {
-      var quantity = $gameParty.numIndependentItems(item);
-    } else {
-      var quantity = $gameParty.numItems(item);
-    }
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = 'quantity ' + line2;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP COUNT ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionDeadMembers = function(line) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = '$gameParty.deadMembers().length ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP DEAD MEMBERS ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionDeathTurn = function(line) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = 'user.deathTurn() ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP DEATH TURN ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionEnemyLevel = function(line) {
-    if (!Imported.MSEP_EnemyLevels) return false;
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = 'enemy.level ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP ENEMY LEVEL ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionLastStrike = function(line) {
-    if (line.match(/SKILL[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      return this._enemy.lastStruckAction() === $dataSkills[id];
-    } else if (line.match(/ITEM[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      return this._enemy.lastStruckAction() === $dataItems[id];
-    } else if (MageStudios.SkillIdRef[line.toUpperCase()]) {
-      var id = MageStudios.SkillIdRef[line.toUpperCase()];
-      return this._enemy.lastStruckAction() === $dataSkills[id];
-    } else if (MageStudios.ItemIdRef[line.toUpperCase()]) {
-      var id = MageStudios.ItemIdRef[line.toUpperCase()];
-      return this._enemy.lastStruckAction() === $dataItems[id];
-    }
-    return false;
-};
-
-DropManager.conditionPartyMembers = function(line) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = '$gameParty.battleMembers().length ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP PARTY SIZE ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionRandom = function(rate) {
-    return Math.random() < rate;
-};
-
-DropManager.conditionSwitch = function(switchId, switchCase) {
-    var condition = false;
-    if (['ON', 'TRUE'].contains(switchCase)) condition = true;
-    return $gameSwitches.value(switchId) === condition;
-};
-
-DropManager.conditionTimesStruck = function(line1, line2) {
-    var times = this.getTimesStruck(line1);
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = 'times ' + line2;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP TIMES STRUCK ERROR');
-      return false;
-    }
-};
-
-DropManager.getTimesStruck = function(line) {
-    var times = 0;
-    if (line.match(/SKILL[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      times = this._enemy.timesStruckSkill(id);
-    } else if (line.match(/SKILL[ ](.*)/i)) {
-      var name = String(RegExp.$1).toUpperCase();
-      if (MageStudios.SkillIdRef[name]) {
-        var id = MageStudios.SkillIdRef[name];
-        times = this._enemy.timesStruckSkill(id);
-      }
-    } else if (line.match(/ITEM[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      times = this._enemy.timesStruckItem(id);
-    } else if (line.match(/ITEM[ ](.*)/i)) {
-      var name = String(RegExp.$1).toUpperCase();
-      if (MageStudios.ItemIdRef[name]) {
-        var id = MageStudios.ItemIdRef[name];
-        times = this._enemy.timesStruckItem(id);
-      }
-    } else if (line.match(/STYPE[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      times = this._enemy.timesStruckSType(id);
-    } else if (line.match(/STYPE[ ](.*)/i)) {
-      var name = String(RegExp.$1).toUpperCase();
-      if (MageStudios.STypeIdRef[name]) {
-        var id = MageStudios.STypeIdRef[name];
-        times = this._enemy.timesStruckSType(id);
-      }
-    } else if (line.match(/STATE[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      times = this._enemy.timesStruckState(id);
-    } else if (line.match(/STATE[ ](.*)/i)) {
-      var name = String(RegExp.$1).toUpperCase();
-      if (MageStudios.StateIdRef[name]) {
-        var id = MageStudios.StateIdRef[name];
-        times = this._enemy.timesStruckState(id);
-      }
-    } else if (line.match(/ELEMENT[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      times = this._enemy.timesStruckElement(id);
-    } else if (line.match(/ELEMENT[ ](.*)/i)) {
-      var name = String(RegExp.$1).toUpperCase();
-      if (MageStudios.ElementIdRef[name]) {
-        var id = MageStudios.ElementIdRef[name];
-        times = this._enemy.timesStruckElement(id);
-      }
-    }
-    return times;
-};
-
-DropManager.conditionTurn = function(line) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    var code = '$gameTroop.turnCount() ' + line;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP TURN ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionVariable = function(varId, varLine) {
-    var value = false;
-    var code = '$gameVariables.value(varId) ' + varLine;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP VARIABLE ERROR');
-      return false;
-    }
-};
-
-DropManager.conditionEval = function(code) {
-    var user = this._enemy;
-    var enemy = this._enemy;
-    var a = this._enemy;
-    var s = $gameSwitches._data;
-    var v = $gameVariables._data;
-    try {
-      return eval(code);
-    } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ENEMY DROP EVAL ERROR');
-      return false;
-    }
-};
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+DropManager.makeConditionalDropItems = function () {
+  var length = this._data.length;
+  if (length <= 0) return;
+  for (var i = 0; i < length; ++i) {
+    var data = this._data[i];
+    var item = data[0];
+    var conditions = data[1];
+    if (Math.random() < this.getConditionalRate(conditions)) {
+      this._drops.push(item);
     }
   }
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+DropManager.getConditionalRate = function (conditions) {
+  var rate = 0;
+  var length = conditions.length;
+  for (var i = 0; i < length; ++i) {
+    var condition = conditions[i];
+    if (condition.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
+      var line = String(RegExp.$1);
+      var value = parseFloat(RegExp.$2) * 0.01;
+      if (this.meetsLineCondition(line)) rate += value;
+    }
+  }
+  return rate;
+};
+
+DropManager.meetsLineCondition = function (line) {
+  if (line.match(/EVAL[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionEval(line);
+  }
+
+  if (line.match(/ALIVE MEMBERS[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionAliveMembers(line);
+  }
+
+  if (line.toUpperCase() === "ALWAYS") {
+    return this.conditionAlways();
+  }
+
+  if (line.match(/(.*)[ ]COUNT[ ](.*)/i)) {
+    var line1 = String(RegExp.$1);
+    var line2 = String(RegExp.$2);
+    return this.conditionCount(line1, line2);
+  }
+
+  if (line.match(/DEAD MEMBERS[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionDeadMembers(line);
+  }
+
+  if (line.match(/DEATH TURN[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionDeathTurn(line);
+  }
+
+  if (line.match(/ENEMY LEVEL[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionEnemyLevel(line);
+  }
+
+  if (line.match(/LAST STRIKE[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionLastStrike(line);
+  }
+
+  if (line.match(/PARTY MEMBERS[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionPartyMembers(line);
+  }
+
+  if (line.match(/RANDOM[ ](\d+)([%％])/i)) {
+    var rate = parseFloat(RegExp.$1) * 0.01;
+    return this.conditionRandom(rate);
+  }
+
+  if (line.match(/TIMES[ ](.*)[ ]STRUCK[ ](.*)/i)) {
+    var line1 = String(RegExp.$1);
+    var line2 = String(RegExp.$2);
+    return this.conditionTimesStruck(line1, line2);
+  }
+
+  if (line.match(/SWITCH[ ](\d+)[ ](.*)/i)) {
+    var switchId = parseInt(RegExp.$1);
+    var switchCase = String(RegExp.$2).toUpperCase();
+    return this.conditionSwitch(switchId, switchCase);
+  }
+
+  if (line.match(/TURN[ ](.*)/i)) {
+    var line = String(RegExp.$1);
+    return this.conditionTurn(line);
+  }
+
+  if (line.match(/VARIABLE[ ](\d+)[ ](.*)/i)) {
+    var varId = parseInt(RegExp.$1);
+    var varLine = String(RegExp.$2).toUpperCase();
+    return this.conditionVariable(varId, varLine);
+  }
+  return false;
+};
+
+DropManager.conditionAliveMembers = function (line) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "$gameParty.aliveMembers().length " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP ALIVE CONDITION ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionAlways = function () {
+  return true;
+};
+
+DropManager.conditionCount = function (line1, line2) {
+  var item = null;
+  if (line1.match(/ITEM[ ](\d+)/i)) {
+    item = $dataItems[parseInt(RegExp.$1)];
+  } else if (line1.match(/WEAPON[ ](\d+)/i)) {
+    item = $dataWeapons[parseInt(RegExp.$1)];
+  } else if (line1.match(/ARMOR[ ](\d+)/i)) {
+    item = $dataArmors[parseInt(RegExp.$1)];
+  } else if (MageStudios.ItemIdRef[line1.toUpperCase()]) {
+    item = $dataItems[MageStudios.ItemIdRef[line1.toUpperCase()]];
+  } else if (MageStudios.WeaponIdRef[line1.toUpperCase()]) {
+    item = $dataWeapons[MageStudios.WeaponIdRef[line1.toUpperCase()]];
+  } else if (MageStudios.ArmorIdRef[line1.toUpperCase()]) {
+    item = $dataArmors[MageStudios.ArmorIdRef[line1.toUpperCase()]];
+  }
+  if (!item) return false;
+  if (Imported.MSEP_ItemCore && DataManager.isIndependent(item)) {
+    var quantity = $gameParty.numIndependentItems(item);
+  } else {
+    var quantity = $gameParty.numItems(item);
+  }
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "quantity " + line2;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP COUNT ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionDeadMembers = function (line) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "$gameParty.deadMembers().length " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP DEAD MEMBERS ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionDeathTurn = function (line) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "user.deathTurn() " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP DEATH TURN ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionEnemyLevel = function (line) {
+  if (!Imported.MSEP_EnemyLevels) return false;
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "enemy.level " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP ENEMY LEVEL ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionLastStrike = function (line) {
+  if (line.match(/SKILL[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    return this._enemy.lastStruckAction() === $dataSkills[id];
+  } else if (line.match(/ITEM[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    return this._enemy.lastStruckAction() === $dataItems[id];
+  } else if (MageStudios.SkillIdRef[line.toUpperCase()]) {
+    var id = MageStudios.SkillIdRef[line.toUpperCase()];
+    return this._enemy.lastStruckAction() === $dataSkills[id];
+  } else if (MageStudios.ItemIdRef[line.toUpperCase()]) {
+    var id = MageStudios.ItemIdRef[line.toUpperCase()];
+    return this._enemy.lastStruckAction() === $dataItems[id];
+  }
+  return false;
+};
+
+DropManager.conditionPartyMembers = function (line) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "$gameParty.battleMembers().length " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP PARTY SIZE ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionRandom = function (rate) {
+  return Math.random() < rate;
+};
+
+DropManager.conditionSwitch = function (switchId, switchCase) {
+  var condition = false;
+  if (["ON", "TRUE"].contains(switchCase)) condition = true;
+  return $gameSwitches.value(switchId) === condition;
+};
+
+DropManager.conditionTimesStruck = function (line1, line2) {
+  var times = this.getTimesStruck(line1);
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "times " + line2;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP TIMES STRUCK ERROR");
+    return false;
+  }
+};
+
+DropManager.getTimesStruck = function (line) {
+  var times = 0;
+  if (line.match(/SKILL[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    times = this._enemy.timesStruckSkill(id);
+  } else if (line.match(/SKILL[ ](.*)/i)) {
+    var name = String(RegExp.$1).toUpperCase();
+    if (MageStudios.SkillIdRef[name]) {
+      var id = MageStudios.SkillIdRef[name];
+      times = this._enemy.timesStruckSkill(id);
+    }
+  } else if (line.match(/ITEM[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    times = this._enemy.timesStruckItem(id);
+  } else if (line.match(/ITEM[ ](.*)/i)) {
+    var name = String(RegExp.$1).toUpperCase();
+    if (MageStudios.ItemIdRef[name]) {
+      var id = MageStudios.ItemIdRef[name];
+      times = this._enemy.timesStruckItem(id);
+    }
+  } else if (line.match(/STYPE[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    times = this._enemy.timesStruckSType(id);
+  } else if (line.match(/STYPE[ ](.*)/i)) {
+    var name = String(RegExp.$1).toUpperCase();
+    if (MageStudios.STypeIdRef[name]) {
+      var id = MageStudios.STypeIdRef[name];
+      times = this._enemy.timesStruckSType(id);
+    }
+  } else if (line.match(/STATE[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    times = this._enemy.timesStruckState(id);
+  } else if (line.match(/STATE[ ](.*)/i)) {
+    var name = String(RegExp.$1).toUpperCase();
+    if (MageStudios.StateIdRef[name]) {
+      var id = MageStudios.StateIdRef[name];
+      times = this._enemy.timesStruckState(id);
+    }
+  } else if (line.match(/ELEMENT[ ](\d+)/i)) {
+    var id = parseInt(RegExp.$1);
+    times = this._enemy.timesStruckElement(id);
+  } else if (line.match(/ELEMENT[ ](.*)/i)) {
+    var name = String(RegExp.$1).toUpperCase();
+    if (MageStudios.ElementIdRef[name]) {
+      var id = MageStudios.ElementIdRef[name];
+      times = this._enemy.timesStruckElement(id);
+    }
+  }
+  return times;
+};
+
+DropManager.conditionTurn = function (line) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  var code = "$gameTroop.turnCount() " + line;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP TURN ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionVariable = function (varId, varLine) {
+  var value = false;
+  var code = "$gameVariables.value(varId) " + varLine;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP VARIABLE ERROR");
+    return false;
+  }
+};
+
+DropManager.conditionEval = function (code) {
+  var user = this._enemy;
+  var enemy = this._enemy;
+  var a = this._enemy;
+  var s = $gameSwitches._data;
+  var v = $gameVariables._data;
+  try {
+    return eval(code);
+  } catch (e) {
+    MageStudios.Util.displayError(e, code, "ENEMY DROP EVAL ERROR");
+    return false;
+  }
+};
+
+MageStudios.Util = MageStudios.Util || {};
+
+MageStudios.Util.displayError = function (e, code, message) {
+  console.log(message);
+  console.log(code || "NON-EXISTENT");
+  console.error(e);
+  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
+    }
+  }
+};

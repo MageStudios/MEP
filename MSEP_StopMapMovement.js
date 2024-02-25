@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Stop Map Movement
-// MSEP_StopMapMovement.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_StopMapMovement = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Stop = MageStudios.Stop || {};
-MageStudios.Stop.version = 1.00
+MageStudios.Stop.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc A utility plugin to stop events from automatically
  * moving by themselves all across your map.
  * @author Mage Studios Engine Plugins
@@ -82,106 +76,81 @@ MageStudios.Stop.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_StopMapMovement');
+MageStudios.Parameters = PluginManager.parameters("MSEP_StopMapMovement");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.StopEvent = eval(String(MageStudios.Parameters['Stop During Events']));
-MageStudios.Param.StopMsg = eval(String(MageStudios.Parameters['Stop During Message']));
+MageStudios.Param.StopEvent = eval(
+  String(MageStudios.Parameters["Stop During Events"])
+);
+MageStudios.Param.StopMsg = eval(
+  String(MageStudios.Parameters["Stop During Message"])
+);
 
-//=============================================================================
-// Game_Temp
-//=============================================================================
-
-Game_Temp.prototype.stopMapEventMovement = function() {
-    this._stopMapEvents = true;
+Game_Temp.prototype.stopMapEventMovement = function () {
+  this._stopMapEvents = true;
 };
 
-Game_Temp.prototype.stopMapPlayerMovement = function() {
-    this._stopMapPlayer = true;
+Game_Temp.prototype.stopMapPlayerMovement = function () {
+  this._stopMapPlayer = true;
 };
 
-Game_Temp.prototype.allowMapEventMovement = function() {
-    this._stopMapEvents = false;
+Game_Temp.prototype.allowMapEventMovement = function () {
+  this._stopMapEvents = false;
 };
 
-Game_Temp.prototype.allowMapPlayerMovement = function() {
-    this._stopMapPlayer = false;
+Game_Temp.prototype.allowMapPlayerMovement = function () {
+  this._stopMapPlayer = false;
 };
 
-Game_Temp.prototype.isStopMapEventMovement = function() {
-    return this._stopMapEvents;
+Game_Temp.prototype.isStopMapEventMovement = function () {
+  return this._stopMapEvents;
 };
 
-Game_Temp.prototype.isStopMapPlayerMovement = function() {
-    return this._stopMapPlayer;
+Game_Temp.prototype.isStopMapPlayerMovement = function () {
+  return this._stopMapPlayer;
 };
-
-//=============================================================================
-// Game_Player
-//=============================================================================
 
 MageStudios.Stop.Game_Player_canMove = Game_Player.prototype.canMove;
-Game_Player.prototype.canMove = function() {
-    if ($gameTemp.isStopMapPlayerMovement()) return false;
-    return MageStudios.Stop.Game_Player_canMove.call(this);
+Game_Player.prototype.canMove = function () {
+  if ($gameTemp.isStopMapPlayerMovement()) return false;
+  return MageStudios.Stop.Game_Player_canMove.call(this);
 };
-
-//=============================================================================
-// Game_Event
-//=============================================================================
 
 MageStudios.Stop.Game_Event_updateSelfMovement =
-    Game_Event.prototype.updateSelfMovement;
-Game_Event.prototype.updateSelfMovement = function() {
-    if (this.preventSelfMovement()) return;
-    MageStudios.Stop.Game_Event_updateSelfMovement.call(this);
+  Game_Event.prototype.updateSelfMovement;
+Game_Event.prototype.updateSelfMovement = function () {
+  if (this.preventSelfMovement()) return;
+  MageStudios.Stop.Game_Event_updateSelfMovement.call(this);
 };
 
-Game_Event.prototype.preventSelfMovement = function() {
-    if (this._moveType === 0) return true;
-    if ($gameTemp.isStopMapEventMovement()) return true;
-    if (MageStudios.Param.StopMsg && $gameMessage.isBusy()) return true;
-    if (MageStudios.Param.StopEvent && $gameMap.isEventRunQuick()) return true;
-    return false;
+Game_Event.prototype.preventSelfMovement = function () {
+  if (this._moveType === 0) return true;
+  if ($gameTemp.isStopMapEventMovement()) return true;
+  if (MageStudios.Param.StopMsg && $gameMessage.isBusy()) return true;
+  if (MageStudios.Param.StopEvent && $gameMap.isEventRunQuick()) return true;
+  return false;
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
-Game_Map.prototype.isEventRunQuick = function() {
-    return this._interpreter.isRunning() || this.isAnyEventStartingQuick();
+Game_Map.prototype.isEventRunQuick = function () {
+  return this._interpreter.isRunning() || this.isAnyEventStartingQuick();
 };
 
-Game_Map.prototype.isAnyEventStartingQuick = function() {
-    var max = this._events.length;
-    for (var i = 0; i < max; ++i) {
-      var ev = this._events[i];
-      if (ev && ev.isStarting()) return true;
-    }
-    return false;
+Game_Map.prototype.isAnyEventStartingQuick = function () {
+  var max = this._events.length;
+  for (var i = 0; i < max; ++i) {
+    var ev = this._events[i];
+    if (ev && ev.isStarting()) return true;
+  }
+  return false;
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.Stop.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.Stop.Game_Interpreter_pluginCommand.call(this, command, args)
-  if (command === 'StopEventMovement') $gameTemp.stopMapEventMovement();
-  if (command === 'AllowEventMovement') $gameTemp.allowMapEventMovement();
-  if (command === 'StopPlayerMovement') $gameTemp.stopMapPlayerMovement();
-  if (command === 'AllowPlayerMovement') $gameTemp.allowMapPlayerMovement();
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.Stop.Game_Interpreter_pluginCommand.call(this, command, args);
+  if (command === "StopEventMovement") $gameTemp.stopMapEventMovement();
+  if (command === "AllowEventMovement") $gameTemp.allowMapEventMovement();
+  if (command === "StopPlayerMovement") $gameTemp.stopMapPlayerMovement();
+  if (command === "AllowPlayerMovement") $gameTemp.allowMapPlayerMovement();
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

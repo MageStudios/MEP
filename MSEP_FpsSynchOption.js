@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - FPS Synch Option
-// MSEP_FpsSynchOption.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SynchFpsOption = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FpsSynch = MageStudios.FpsSynch || {};
-MageStudios.FpsSynch.version = 1.00;
+MageStudios.FpsSynch.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Adds a new command to Options menu for synching
  * the FPS of moniters with higher FPS rates.
  * @author Mage Studios Engine Plugins
@@ -47,7 +41,7 @@ MageStudios.FpsSynch.version = 1.00;
  *
  * However, there comes a problem when a player's hardware isn't strong enough
  * to support RPG Maker MV natively at 60 fps (such as the case with older
- * computers, or weaker mobile devices) or if the player is using video 
+ * computers, or weaker mobile devices) or if the player is using video
  * recording software that goes below 60 fps. The game will appear laggy and
  * jumping without good response rates from input commands or possibly even
  * make the player miss out on certain visual frame updates.
@@ -68,7 +62,7 @@ MageStudios.FpsSynch.version = 1.00;
  * ---------
  * Settings:
  * ---------
- * 
+ *
  * Name:
  * \i[302]Synch Monitor FPS
  *
@@ -91,7 +85,7 @@ MageStudios.FpsSynch.version = 1.00;
  * ----------
  * Functions:
  * ----------
- * 
+ *
  * Make Option Code:
  * this.addCommand(name, symbol, enabled, ext);
  *
@@ -115,7 +109,7 @@ MageStudios.FpsSynch.version = 1.00;
  * var symbol = this.commandSymbol(index);
  * var value = this.getConfigValue(symbol);
  * this.changeValue(symbol, true);
- * 
+ *
  * Cursor Left Code:
  * var index = this.index();
  * var symbol = this.commandSymbol(index);
@@ -123,13 +117,13 @@ MageStudios.FpsSynch.version = 1.00;
  * this.changeValue(symbol, false);
  *
  * Default Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Save Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Load Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * ============================================================================
  * Changelog
@@ -148,100 +142,76 @@ MageStudios.FpsSynch.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.1.0') {
+if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.1.0") {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_FpsSynchOption");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.FpsSynchCmd = String(
+    MageStudios.Parameters["Command Name"]
+  );
+  MageStudios.Param.FpsSDefault = eval(
+    String(MageStudios.Parameters["Default Setting"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_FpsSynchOption');
-MageStudios.Param = MageStudios.Param || {};
+  ConfigManager.synchFps = MageStudios.Param.FpsSDefault;
 
-MageStudios.Param.FpsSynchCmd = String(MageStudios.Parameters['Command Name']);
-MageStudios.Param.FpsSDefault = eval(String(MageStudios.Parameters['Default Setting']));
-
-//=============================================================================
-// MainCode
-//=============================================================================
-
-ConfigManager.synchFps = MageStudios.Param.FpsSDefault;
-
-MageStudios.FpsSynch.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
+  MageStudios.FpsSynch.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
     var config = MageStudios.FpsSynch.ConfigManager_makeData.call(this);
     config.synchFps = this.synchFps;
     return config;
-};
+  };
 
-MageStudios.FpsSynch.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
+  MageStudios.FpsSynch.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
     MageStudios.FpsSynch.ConfigManager_applyData.call(this, config);
-    this.synchFps = this.readConfigFpsSynch(config, 'synchFps');
-};
+    this.synchFps = this.readConfigFpsSynch(config, "synchFps");
+  };
 
-ConfigManager.readConfigFpsSynch = function(config, name) {
+  ConfigManager.readConfigFpsSynch = function (config, name) {
     var value = config[name];
     if (value !== undefined) {
-        return value;
+      return value;
     } else {
-        return MageStudios.Param.FpsSDefault;
+      return MageStudios.Param.FpsSDefault;
     }
-};
+  };
 
-//=============================================================================
-// SceneManager
-//=============================================================================
+  SceneManager.updateMainFluidTimestep = SceneManager.updateMain;
 
-SceneManager.updateMainFluidTimestep = SceneManager.updateMain;
-
-SceneManager.updateMain = function() {
+  SceneManager.updateMain = function () {
     if (ConfigManager.synchFps) {
       this.updateMainFluidTimestep();
     } else {
       this.updateMainNoFpsSynch();
     }
-};
+  };
 
-SceneManager.updateMainNoFpsSynch = function() {
+  SceneManager.updateMainNoFpsSynch = function () {
     this.updateInputData();
     this.changeScene();
     this.updateScene();
     this.renderScene();
     this.requestUpdate();
-};
+  };
 
-//=============================================================================
-// Window_Options
-//=============================================================================
-
-MageStudios.FpsSynch.Window_Options_addGeneralOptions =
+  MageStudios.FpsSynch.Window_Options_addGeneralOptions =
     Window_Options.prototype.addGeneralOptions;
-Window_Options.prototype.addGeneralOptions = function() {
+  Window_Options.prototype.addGeneralOptions = function () {
     MageStudios.FpsSynch.Window_Options_addGeneralOptions.call(this);
     if (!Imported.MSEP_OptionsCore) {
-      this.addCommand(MageStudios.Param.FpsSynchCmd, 'synchFps');
+      this.addCommand(MageStudios.Param.FpsSynchCmd, "synchFps");
     }
-};
-
-//=============================================================================
-// Version Compatibility Update
-//=============================================================================
+  };
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run FPS Synch ';
-text += 'Options while your project files are lower than version 1.1.0. \n\n';
-text += 'Please visit this thread for instructions on how to update your ';
-text += 'project files to 1.1.0 or higher: \n\n';
-text += 'http://forums.rpgmakerweb.com/index.php?/topic/';
-text += '71400-rpg-maker-mv-v134-update/';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-} // (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.1.0')
-
-//=============================================================================
-// End of File
-//=============================================================================
+  var text = "";
+  text += "You are getting this error because you are trying to run FPS Synch ";
+  text += "Options while your project files are lower than version 1.1.0. \n\n";
+  text += "Please visit this thread for instructions on how to update your ";
+  text += "project files to 1.1.0 or higher: \n\n";
+  text += "http://forums.rpgmakerweb.com/index.php?/topic/";
+  text += "71400-rpg-maker-mv-v134-update/";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

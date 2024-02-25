@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Sectioned Gauges
-// MSEP_SectionedGauges.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SectionedGauges = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SecGauge = MageStudios.SecGauge || {};
-MageStudios.SecGauge.version = 1.00;
+MageStudios.SecGauge.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Section up your gauges to make them easier to read.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *
@@ -97,184 +91,207 @@ MageStudios.SecGauge.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_SegmentedGauges) {
-
-var text = '================================================================\n';
-text += 'You are trying to use MSEP_SectionedGauges with MSEP_SegmentedGauges.\n';
-text += 'These two plugins cannot be used with each other. Please disable\n';
-text += 'one or the other.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
+  var text =
+    "================================================================\n";
+  text +=
+    "You are trying to use MSEP_SectionedGauges with MSEP_SegmentedGauges.\n";
+  text += "These two plugins cannot be used with each other. Please disable\n";
+  text += "one or the other.\n";
+  text += "================================================================\n";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 } else {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_SectionedGauges");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.SectionGaugesHp = Number(
+    MageStudios.Parameters["HP Gauge Sections"]
+  );
+  MageStudios.Param.SectionGaugesMp = Number(
+    MageStudios.Parameters["MP Gauge Sections"]
+  );
+  MageStudios.Param.SectionGaugesTp = Number(
+    MageStudios.Parameters["TP Gauge Sections"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_SectionedGauges');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.SectionGaugesExp = Number(
+    MageStudios.Parameters["EXP Gauge Sections"]
+  );
+  MageStudios.Param.SectionGaugesParam = Number(
+    MageStudios.Parameters["Param Gauge Sections"]
+  );
 
-MageStudios.Param.SectionGaugesHp = Number(MageStudios.Parameters['HP Gauge Sections']);
-MageStudios.Param.SectionGaugesMp = Number(MageStudios.Parameters['MP Gauge Sections']);
-MageStudios.Param.SectionGaugesTp = Number(MageStudios.Parameters['TP Gauge Sections']);
+  MageStudios.SecGauge.Window_Base_initialize =
+    Window_Base.prototype.initialize;
+  Window_Base.prototype.initialize = function (x, y, width, height) {
+    this.clearGaugeSections();
+    MageStudios.SecGauge.Window_Base_initialize.call(this, x, y, width, height);
+  };
 
-MageStudios.Param.SectionGaugesExp = Number(MageStudios.Parameters['EXP Gauge Sections']);
-MageStudios.Param.SectionGaugesParam =
-  Number(MageStudios.Parameters['Param Gauge Sections']);
+  MageStudios.SecGauge.Window_Base_drawActorHp =
+    Window_Base.prototype.drawActorHp;
+  Window_Base.prototype.drawActorHp = function (actor, x, y, width) {
+    this.setGaugeSections(MageStudios.Param.SectionGaugesHp);
+    MageStudios.SecGauge.Window_Base_drawActorHp.call(this, actor, x, y, width);
+    this.clearGaugeSections();
+  };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
+  MageStudios.SecGauge.Window_Base_drawActorMp =
+    Window_Base.prototype.drawActorMp;
+  Window_Base.prototype.drawActorMp = function (actor, x, y, width) {
+    this.setGaugeSections(MageStudios.Param.SectionGaugesMp);
+    MageStudios.SecGauge.Window_Base_drawActorMp.call(this, actor, x, y, width);
+    this.clearGaugeSections();
+  };
 
-MageStudios.SecGauge.Window_Base_initialize = Window_Base.prototype.initialize;
-Window_Base.prototype.initialize = function(x, y, width, height) {
-  this.clearGaugeSections();
-  MageStudios.SecGauge.Window_Base_initialize.call(this, x, y, width, height);
-};
+  MageStudios.SecGauge.Window_Base_drawActorTp =
+    Window_Base.prototype.drawActorTp;
+  Window_Base.prototype.drawActorTp = function (actor, x, y, width) {
+    this.setGaugeSections(MageStudios.Param.SectionGaugesTp);
+    MageStudios.SecGauge.Window_Base_drawActorTp.call(this, actor, x, y, width);
+    this.clearGaugeSections();
+  };
 
-MageStudios.SecGauge.Window_Base_drawActorHp = Window_Base.prototype.drawActorHp;
-Window_Base.prototype.drawActorHp = function(actor, x, y, width) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesHp);
-  MageStudios.SecGauge.Window_Base_drawActorHp.call(this, actor, x, y, width);
-  this.clearGaugeSections();
-};
+  Window_Base.prototype.setGaugeSections = function (sections) {
+    this._gaugeSections = sections;
+  };
 
-MageStudios.SecGauge.Window_Base_drawActorMp = Window_Base.prototype.drawActorMp;
-Window_Base.prototype.drawActorMp = function(actor, x, y, width) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesMp);
-  MageStudios.SecGauge.Window_Base_drawActorMp.call(this, actor, x, y, width);
-  this.clearGaugeSections();
-};
+  Window_Base.prototype.clearGaugeSections = function () {
+    this._gaugeSections = 0;
+  };
 
-MageStudios.SecGauge.Window_Base_drawActorTp = Window_Base.prototype.drawActorTp;
-Window_Base.prototype.drawActorTp = function(actor, x, y, width) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesTp);
-  MageStudios.SecGauge.Window_Base_drawActorTp.call(this, actor, x, y, width);
-  this.clearGaugeSections();
-};
+  MageStudios.SecGauge.Window_Base_drawGauge = Window_Base.prototype.drawGauge;
+  Window_Base.prototype.drawGauge = function (
+    dx,
+    dy,
+    dw,
+    rate,
+    color1,
+    color2
+  ) {
+    MageStudios.SecGauge.Window_Base_drawGauge.call(
+      this,
+      dx,
+      dy,
+      dw,
+      rate,
+      color1,
+      color2
+    );
+    this.drawGaugeSections(dx, dy, dw, 0, 0);
+  };
 
-Window_Base.prototype.setGaugeSections = function(sections) {
-  this._gaugeSections = sections;
-};
-
-Window_Base.prototype.clearGaugeSections = function() {
-  this._gaugeSections = 0;
-};
-
-MageStudios.SecGauge.Window_Base_drawGauge = Window_Base.prototype.drawGauge;
-Window_Base.prototype.drawGauge = function(dx, dy, dw, rate, color1, color2) {
-  MageStudios.SecGauge.Window_Base_drawGauge.call(this, dx, dy, dw, rate, 
-    color1, color2);
-  this.drawGaugeSections(dx, dy, dw, 0, 0);
-};
-
-Window_Base.prototype.drawGaugeSections = function(dx, dy, dw, xB, yB) {
-  var sections = this._gaugeSections;
-  if (sections) {
-    var gaugeH = this.gaugeHeight() - 2;
-    var gaugeY = dy + this.lineHeight() - gaugeH - 2 + yB;
-    if (this.isGaugeOutline()) {
-      dx += 1;
-      dw -= 2;
-      gaugeY -= 2;
-    }
-    dx += xB;
-    var sectionWidth = dw / sections;
-    if (sectionWidth > 0) {
-      var color = this.gaugeBackColor();
-      for (var i = 1; i < sections; ++i) {
-        dx += sectionWidth;
-        this.contents.fillRect(dx, gaugeY, 1, gaugeH, color);
+  Window_Base.prototype.drawGaugeSections = function (dx, dy, dw, xB, yB) {
+    var sections = this._gaugeSections;
+    if (sections) {
+      var gaugeH = this.gaugeHeight() - 2;
+      var gaugeY = dy + this.lineHeight() - gaugeH - 2 + yB;
+      if (this.isGaugeOutline()) {
+        dx += 1;
+        dw -= 2;
+        gaugeY -= 2;
+      }
+      dx += xB;
+      var sectionWidth = dw / sections;
+      if (sectionWidth > 0) {
+        var color = this.gaugeBackColor();
+        for (var i = 1; i < sections; ++i) {
+          dx += sectionWidth;
+          this.contents.fillRect(dx, gaugeY, 1, gaugeH, color);
+        }
       }
     }
+  };
+
+  if (!Imported.MSEP_CoreEngine) {
+    Window_Base.prototype.gaugeHeight = function () {
+      return 6;
+    };
   }
-};
 
-//=============================================================================
-// Compatibility Stuff
-// ----------------------------------------------------------------------------
-// MSEP_CoreEngine
-//=============================================================================
-
-if (!Imported.MSEP_CoreEngine) {
-
-Window_Base.prototype.gaugeHeight = function() {
-  return 6;
-};
-
-}; // Imported.MSEP_CoreEngine
-
-Window_Base.prototype.isGaugeOutline = function() {
-  if (this._isGaugeOutline === undefined) {
-    if (Imported.MSEP_CoreEngine) {
-      this._isGaugeOutline = eval(MageStudios.Param.GaugeOutline);
-    } else {
-      this._isGaugeOutline = false;
+  Window_Base.prototype.isGaugeOutline = function () {
+    if (this._isGaugeOutline === undefined) {
+      if (Imported.MSEP_CoreEngine) {
+        this._isGaugeOutline = eval(MageStudios.Param.GaugeOutline);
+      } else {
+        this._isGaugeOutline = false;
+      }
     }
+    return this._isGaugeOutline;
+  };
+
+  if (Imported.MSEP_X_VisualHpGauge) {
+    MageStudios.SecGauge.Window_VisualHPGauge_drawActorHp =
+      Window_VisualHPGauge.prototype.drawActorHp;
+    Window_VisualHPGauge.prototype.drawActorHp = function (actor, x, y, w) {
+      this.setGaugeSections(MageStudios.Param.SectionGaugesHp);
+      MageStudios.SecGauge.Window_VisualHPGauge_drawActorHp.call(
+        this,
+        actor,
+        x,
+        y,
+        w
+      );
+      this.clearGaugeSections();
+    };
+
+    MageStudios.SecGauge.Window_VisualHPGauge_drawGauge =
+      Window_VisualHPGauge.prototype.drawGauge;
+    Window_VisualHPGauge.prototype.drawGauge = function (
+      dx,
+      dy,
+      dw,
+      rate,
+      color1,
+      color2
+    ) {
+      MageStudios.SecGauge.Window_VisualHPGauge_drawGauge.call(
+        this,
+        dx,
+        dy,
+        dw,
+        rate,
+        color1,
+        color2
+      );
+      this.drawGaugeSections(dx, dy, dw, 0, 1);
+    };
   }
-  return this._isGaugeOutline;
-};
 
-//=============================================================================
-// Compatibility Stuff
-// ----------------------------------------------------------------------------
-// MSEP_X_VisualHpGauge
-//=============================================================================
+  if (Imported.MSEP_StatusMenuCore) {
+    MageStudios.SecGauge.Window_StatusInfo_drawExpGauge =
+      Window_StatusInfo.prototype.drawExpGauge;
+    Window_StatusInfo.prototype.drawExpGauge = function (actor, rate, rect) {
+      this.setGaugeSections(MageStudios.Param.SectionGaugesExp);
+      MageStudios.SecGauge.Window_StatusInfo_drawExpGauge.call(
+        this,
+        actor,
+        rate,
+        rect
+      );
+      this.clearGaugeSections();
+    };
 
-if (Imported.MSEP_X_VisualHpGauge) {
-
-MageStudios.SecGauge.Window_VisualHPGauge_drawActorHp =
-  Window_VisualHPGauge.prototype.drawActorHp;
-Window_VisualHPGauge.prototype.drawActorHp = function(actor, x, y, w) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesHp);
-  MageStudios.SecGauge.Window_VisualHPGauge_drawActorHp.call(this, actor, x, y, w);
-  this.clearGaugeSections();
-};
-
-MageStudios.SecGauge.Window_VisualHPGauge_drawGauge =
-  Window_VisualHPGauge.prototype.drawGauge;
-Window_VisualHPGauge.prototype.drawGauge =
-function(dx, dy, dw, rate, color1, color2) {
-  MageStudios.SecGauge.Window_VisualHPGauge_drawGauge.call(this, dx, dy, dw, rate,
-    color1, color2);
-  this.drawGaugeSections(dx, dy, dw, 0, 1);
-};
-
-}; // Imported.MSEP_X_VisualHpGauge
-
-//=============================================================================
-// Compatibility Stuff
-// ----------------------------------------------------------------------------
-// MSEP_StatusMenuCore
-//=============================================================================
-
-if (Imported.MSEP_StatusMenuCore) {
-
-MageStudios.SecGauge.Window_StatusInfo_drawExpGauge =
-  Window_StatusInfo.prototype.drawExpGauge;
-Window_StatusInfo.prototype.drawExpGauge = function(actor, rate, rect) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesExp);
-  MageStudios.SecGauge.Window_StatusInfo_drawExpGauge.call(this, actor, rate, rect);
-  this.clearGaugeSections();
-};
-
-MageStudios.SecGauge.Window_StatusInfo_drawParamGauge =
-  Window_StatusInfo.prototype.drawParamGauge;
-Window_StatusInfo.prototype.drawParamGauge = function(dx, dy, dw, paramId) {
-  this.setGaugeSections(MageStudios.Param.SectionGaugesParam);
-  var rate = MageStudios.SecGauge.Window_StatusInfo_drawParamGauge.call(this, dx, dy,
-    dw, paramId);
-  this.clearGaugeSections();
-  return rate;
-};
-
-}; // Imported.MSEP_StatusMenuCore
-
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_SegmentedGauges
+    MageStudios.SecGauge.Window_StatusInfo_drawParamGauge =
+      Window_StatusInfo.prototype.drawParamGauge;
+    Window_StatusInfo.prototype.drawParamGauge = function (
+      dx,
+      dy,
+      dw,
+      paramId
+    ) {
+      this.setGaugeSections(MageStudios.Param.SectionGaugesParam);
+      var rate = MageStudios.SecGauge.Window_StatusInfo_drawParamGauge.call(
+        this,
+        dx,
+        dy,
+        dw,
+        paramId
+      );
+      this.clearGaugeSections();
+      return rate;
+    };
+  }
+}

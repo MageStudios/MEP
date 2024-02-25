@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Shop Menu Extension Plugin - More Currencies
-// MSEP_X_MoreCurrencies.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MoreCurrencies = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MC = MageStudios.MC || {};
-MageStudios.MC.version = 1.00;
+MageStudios.MC.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ShopMenuCore.js) This plugin adds
  * functionality for your shops to have multiple currencies.
  * @author Mage Studios Engine Plugins
@@ -121,7 +115,7 @@ MageStudios.MC.version = 1.00;
  * If you're planning to use variables as currency (and you should!), you can
  * set them up in a way to have them show an icon. Name your currency variable
  * as such:
- * 
+ *
  * \i[x]Variable Name
  *
  * When displayed in shops, it will show the icon and the name. However, if you
@@ -171,7 +165,7 @@ MageStudios.MC.version = 1.00;
  * currencies for your items, weapons, and armors.
  *
  * Item, Weapon, and Armor Notetags:
- * 
+ *
  *   <Variable x Buy Price: y>
  *   This sets the currency of this item, weapon, or armor to variable x with
  *   a buy price of y. You can insert multiples of this notetag to have more
@@ -277,269 +271,276 @@ MageStudios.MC.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_ShopMenuCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MoreCurrencies");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.MCCurrencyPadding = Number(
+    MageStudios.Parameters["Currency Padding"]
+  );
+  MageStudios.Param.MCCurrencyFontSize = Number(
+    MageStudios.Parameters["Font Size"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreCurrencies');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.MCCopyName = eval(
+    String(MageStudios.Parameters["Copy Name"])
+  );
+  MageStudios.Param.MCCopyIcon = eval(
+    String(MageStudios.Parameters["Copy Icon"])
+  );
+  MageStudios.Param.MCCopyHelp = eval(
+    String(MageStudios.Parameters["Copy Help"])
+  );
+  MageStudios.Param.MCCopyTraits = eval(
+    String(MageStudios.Parameters["Copy Traits"])
+  );
+  MageStudios.Param.MCCopyParams = eval(
+    String(MageStudios.Parameters["Copy Parameters"])
+  );
 
-MageStudios.Param.MCCurrencyPadding = Number(MageStudios.Parameters['Currency Padding']);
-MageStudios.Param.MCCurrencyFontSize = Number(MageStudios.Parameters['Font Size']);
+  MageStudios.Param.MCGoldItem = eval(
+    String(MageStudios.Parameters["Gold as Item"])
+  );
+  MageStudios.Param.MCGoldIcon = Number(MageStudios.Parameters["Gold Icon"]);
+  if (MageStudios.Icon.Gold)
+    MageStudios.Param.MCGoldIcon = MageStudios.Icon.Gold;
 
-MageStudios.Param.MCCopyName = eval(String(MageStudios.Parameters['Copy Name']));
-MageStudios.Param.MCCopyIcon = eval(String(MageStudios.Parameters['Copy Icon']));
-MageStudios.Param.MCCopyHelp = eval(String(MageStudios.Parameters['Copy Help']));
-MageStudios.Param.MCCopyTraits = eval(String(MageStudios.Parameters['Copy Traits']));
-MageStudios.Param.MCCopyParams = eval(String(MageStudios.Parameters['Copy Parameters']));
+  MageStudios.MC.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.MC.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_MoreCurrencies) {
+      this.processMCNotetagsI($dataItems);
+      this.processMCNotetagsW($dataWeapons);
+      this.processMCNotetagsA($dataArmors);
+      this.processMCNotetags1($dataItems, 0);
+      this.processMCNotetags1($dataWeapons, 1);
+      this.processMCNotetags1($dataArmors, 2);
+      MageStudios._loaded_MSEP_X_MoreCurrencies = true;
+    }
+    return true;
+  };
 
-MageStudios.Param.MCGoldItem = eval(String(MageStudios.Parameters['Gold as Item']));
-MageStudios.Param.MCGoldIcon = Number(MageStudios.Parameters['Gold Icon']);
-if (MageStudios.Icon.Gold) MageStudios.Param.MCGoldIcon = MageStudios.Icon.Gold;
+  DataManager.processMCNotetagsI = function (group) {
+    if (MageStudios.ItemIdRef) return;
+    MageStudios.ItemIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  DataManager.processMCNotetagsW = function (group) {
+    if (MageStudios.WeaponIdRef) return;
+    MageStudios.WeaponIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-MageStudios.MC.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.MC.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_MoreCurrencies) {
-    this.processMCNotetagsI($dataItems);
-    this.processMCNotetagsW($dataWeapons);
-    this.processMCNotetagsA($dataArmors);
-    this.processMCNotetags1($dataItems, 0);
-    this.processMCNotetags1($dataWeapons, 1);
-    this.processMCNotetags1($dataArmors, 2);
-    MageStudios._loaded_MSEP_X_MoreCurrencies = true;
-  }
-  return true;
-};
+  DataManager.processMCNotetagsA = function (group) {
+    if (MageStudios.ArmorIdRef) return;
+    MageStudios.ArmorIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
 
-DataManager.processMCNotetagsI = function(group) {
-  if (MageStudios.ItemIdRef) return;
-  MageStudios.ItemIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+  DataManager.processMCNotetags1 = function (group, itemType) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processMCNotetagsW = function(group) {
-  if (MageStudios.WeaponIdRef) return;
-  MageStudios.WeaponIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.WeaponIdRef[obj.name.toUpperCase()] = n;
-  }
-};
+      obj.proxyBuy = 0;
+      obj.variableBuyPrice = {};
+      obj.variableBuyPrices = [];
+      obj.variableSellPrice = {};
+      obj.variableSellPrices = [];
+      obj.itemBuyPrice = {};
+      obj.itemBuyPrices = [];
+      obj.itemSellPrice = {};
+      obj.itemSellPrices = [];
+      obj.weaponBuyPrice = {};
+      obj.weaponBuyPrices = [];
+      obj.weaponSellPrice = {};
+      obj.weaponSellPrices = [];
+      obj.armorBuyPrice = {};
+      obj.armorBuyPrices = [];
+      obj.armorSellPrice = {};
+      obj.armorSellPrices = [];
 
-DataManager.processMCNotetagsA = function(group) {
-  if (MageStudios.ArmorIdRef) return;
-  MageStudios.ArmorIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ArmorIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processMCNotetags1 = function(group, itemType) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.proxyBuy = 0;
-    obj.variableBuyPrice = {};
-    obj.variableBuyPrices = [];
-    obj.variableSellPrice = {};
-    obj.variableSellPrices = [];
-    obj.itemBuyPrice = {};
-    obj.itemBuyPrices = [];
-    obj.itemSellPrice = {};
-    obj.itemSellPrices = [];
-    obj.weaponBuyPrice = {};
-    obj.weaponBuyPrices = [];
-    obj.weaponSellPrice = {};
-    obj.weaponSellPrices = [];
-    obj.armorBuyPrice = {};
-    obj.armorBuyPrices = [];
-    obj.armorSellPrice = {};
-    obj.armorSellPrices = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<PROXY BUY:[ ](\d+)>/i)) {
-        obj.proxyBuy = parseInt(RegExp.$1);
-        this.adjustProxyBuy(obj, itemType);
-      } else if (line.match(/<PROXY BUY:[ ](.*)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        if (itemType === 0 && MageStudios.ItemIdRef[name]) {
-          obj.proxyBuy = MageStudios.ItemIdRef[name];
-        } else if (itemType === 1 && MageStudios.WeaponIdRef[name]) {
-          obj.proxyBuy = MageStudios.WeaponIdRef[name];
-        } else if (itemType === 2 && MageStudios.ArmorIdRef[name]) {
-          obj.proxyBuy = MageStudios.ArmorIdRef[name];
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<PROXY BUY:[ ](\d+)>/i)) {
+          obj.proxyBuy = parseInt(RegExp.$1);
+          this.adjustProxyBuy(obj, itemType);
+        } else if (line.match(/<PROXY BUY:[ ](.*)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          if (itemType === 0 && MageStudios.ItemIdRef[name]) {
+            obj.proxyBuy = MageStudios.ItemIdRef[name];
+          } else if (itemType === 1 && MageStudios.WeaponIdRef[name]) {
+            obj.proxyBuy = MageStudios.WeaponIdRef[name];
+          } else if (itemType === 2 && MageStudios.ArmorIdRef[name]) {
+            obj.proxyBuy = MageStudios.ArmorIdRef[name];
+          }
+          this.adjustProxyBuy(obj, itemType);
+        } else if (line.match(/<VARIABLE[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.variableBuyPrices.contains(varId)) continue;
+          obj.variableBuyPrices.unshift(varId);
+          obj.variableBuyPrice[varId] = value;
+        } else if (line.match(/<VARIABLE[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.variableSellPrices.contains(varId)) continue;
+          obj.variableSellPrices.unshift(varId);
+          obj.variableSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<ITEM[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.itemBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataItems[varId])) continue;
+          }
+          obj.itemBuyPrices.unshift(varId);
+          obj.itemBuyPrice[varId] = value;
+        } else if (line.match(/<ITEM[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.ItemIdRef[name];
+          if (!varId) continue;
+          if (obj.itemBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataItems[varId])) continue;
+          }
+          obj.itemBuyPrices.unshift(varId);
+          obj.itemBuyPrice[varId] = value;
+        } else if (line.match(/<ITEM[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.itemSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataItems[varId])) continue;
+          }
+          obj.itemSellPrices.unshift(varId);
+          obj.itemSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<ITEM[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.ItemIdRef[name];
+          if (!varId) continue;
+          if (obj.itemSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataItems[varId])) continue;
+          }
+          obj.itemSellPrices.unshift(varId);
+          obj.itemSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<WEAPON[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.weaponBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataWeapons[varId])) continue;
+          }
+          obj.weaponBuyPrices.unshift(varId);
+          obj.weaponBuyPrice[varId] = value;
+        } else if (line.match(/<WEAPON[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.WeaponIdRef[name];
+          if (!varId) continue;
+          if (obj.weaponBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataWeapons[varId])) continue;
+          }
+          obj.weaponBuyPrices.unshift(varId);
+          obj.weaponBuyPrice[varId] = value;
+        } else if (line.match(/<WEAPON[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.weaponSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataWeapons[varId])) continue;
+          }
+          obj.weaponSellPrices.unshift(varId);
+          obj.weaponSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<WEAPON[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.WeaponIdRef[name];
+          if (!varId) continue;
+          if (obj.weaponSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataWeapons[varId])) continue;
+          }
+          obj.weaponSellPrices.unshift(varId);
+          obj.weaponSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<ARMOR[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.armorBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataArmors[varId])) continue;
+          }
+          obj.armorBuyPrices.unshift(varId);
+          obj.armorBuyPrice[varId] = value;
+        } else if (line.match(/<ARMOR[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.ArmorIdRef[name];
+          if (!varId) continue;
+          if (obj.armorBuyPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataArmors[varId])) continue;
+          }
+          obj.armorBuyPrices.unshift(varId);
+          obj.armorBuyPrice[varId] = value;
+        } else if (line.match(/<ARMOR[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var varId = parseInt(RegExp.$1);
+          var value = parseInt(RegExp.$2);
+          if (obj.armorSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataArmors[varId])) continue;
+          }
+          obj.armorSellPrices.unshift(varId);
+          obj.armorSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
+        } else if (line.match(/<ARMOR[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
+          var name = String(RegExp.$1).toUpperCase();
+          var value = parseInt(RegExp.$2);
+          var varId = MageStudios.ArmorIdRef[name];
+          if (!varId) continue;
+          if (obj.armorSellPrices.contains(varId)) continue;
+          if (Imported.MSEP_ItemCore) {
+            if (DataManager.isIndependent($dataArmors[varId])) continue;
+          }
+          obj.armorSellPrices.unshift(varId);
+          obj.armorSellPrice[varId] = value;
+          obj.canSell = true;
+          obj.cannotSell = false;
         }
-        this.adjustProxyBuy(obj, itemType);
-      } else if (line.match(/<VARIABLE[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.variableBuyPrices.contains(varId)) continue;
-        obj.variableBuyPrices.unshift(varId);
-        obj.variableBuyPrice[varId] = value;
-      } else if (line.match(/<VARIABLE[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.variableSellPrices.contains(varId)) continue;
-        obj.variableSellPrices.unshift(varId);
-        obj.variableSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<ITEM[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.itemBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataItems[varId])) continue;
-        }
-        obj.itemBuyPrices.unshift(varId);
-        obj.itemBuyPrice[varId] = value;
-      } else if (line.match(/<ITEM[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.ItemIdRef[name];
-        if (!varId) continue;
-        if (obj.itemBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataItems[varId])) continue;
-        }
-        obj.itemBuyPrices.unshift(varId);
-        obj.itemBuyPrice[varId] = value;
-      } else if (line.match(/<ITEM[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.itemSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataItems[varId])) continue;
-        }
-        obj.itemSellPrices.unshift(varId);
-        obj.itemSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<ITEM[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.ItemIdRef[name];
-        if (!varId) continue;
-        if (obj.itemSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataItems[varId])) continue;
-        }
-        obj.itemSellPrices.unshift(varId);
-        obj.itemSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<WEAPON[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.weaponBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataWeapons[varId])) continue;
-        }
-        obj.weaponBuyPrices.unshift(varId);
-        obj.weaponBuyPrice[varId] = value;
-      } else if (line.match(/<WEAPON[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.WeaponIdRef[name];
-        if (!varId) continue;
-        if (obj.weaponBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataWeapons[varId])) continue;
-        }
-        obj.weaponBuyPrices.unshift(varId);
-        obj.weaponBuyPrice[varId] = value;
-      } else if (line.match(/<WEAPON[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.weaponSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataWeapons[varId])) continue;
-        }
-        obj.weaponSellPrices.unshift(varId);
-        obj.weaponSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<WEAPON[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.WeaponIdRef[name];
-        if (!varId) continue;
-        if (obj.weaponSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataWeapons[varId])) continue;
-        }
-        obj.weaponSellPrices.unshift(varId);
-        obj.weaponSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<ARMOR[ ](\d+)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.armorBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataArmors[varId])) continue;
-        }
-        obj.armorBuyPrices.unshift(varId);
-        obj.armorBuyPrice[varId] = value;
-      } else if (line.match(/<ARMOR[ ](.*)[ ]BUY PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.ArmorIdRef[name];
-        if (!varId) continue;
-        if (obj.armorBuyPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataArmors[varId])) continue;
-        }
-        obj.armorBuyPrices.unshift(varId);
-        obj.armorBuyPrice[varId] = value;
-      } else if (line.match(/<ARMOR[ ](\d+)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var varId = parseInt(RegExp.$1);
-        var value = parseInt(RegExp.$2);
-        if (obj.armorSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataArmors[varId])) continue;
-        }
-        obj.armorSellPrices.unshift(varId);
-        obj.armorSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
-      } else if (line.match(/<ARMOR[ ](.*)[ ]SELL PRICE:[ ](\d+)>/i)) {
-        var name = String(RegExp.$1).toUpperCase();
-        var value = parseInt(RegExp.$2);
-        var varId = MageStudios.ArmorIdRef[name];
-        if (!varId) continue;
-        if (obj.armorSellPrices.contains(varId)) continue;
-        if (Imported.MSEP_ItemCore) {
-          if (DataManager.isIndependent($dataArmors[varId])) continue;
-        }
-        obj.armorSellPrices.unshift(varId);
-        obj.armorSellPrice[varId] = value;
-        obj.canSell = true;
-        obj.cannotSell = false;
       }
     }
-  }
-};
+  };
 
-DataManager.adjustProxyBuy = function(obj, itemType) {
+  DataManager.adjustProxyBuy = function (obj, itemType) {
     if (obj.proxyBuy <= 0) return;
     obj.nonIndependent = true;
     var id = obj.proxyBuy;
@@ -556,21 +557,17 @@ DataManager.adjustProxyBuy = function(obj, itemType) {
     if (MageStudios.Param.MCCopyParams && itemType !== 0) {
       obj.params = item.params.slice();
     }
-};
+  };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-Window_Base.prototype.getcurrencyGoldWidth = function(value) {
+  Window_Base.prototype.getcurrencyGoldWidth = function (value) {
     if (Imported.MSEP_CoreEngine) {
       return this.getCoreGoldWidth(value);
     } else {
       return this.getDefaultGoldWidth(value);
     }
-};
+  };
 
-Window_Base.prototype.getCoreGoldWidth = function(value) {
+  Window_Base.prototype.getCoreGoldWidth = function (value) {
     this.resetTextColor();
     this.contents.fontSize = MageStudios.Param.GoldFontSize;
     if (this.usingGoldIcon(TextManager.currencyUnit)) {
@@ -582,73 +579,79 @@ Window_Base.prototype.getCoreGoldWidth = function(value) {
     ww += 4;
     if (this.usingGoldIcon(TextManager.currencyUnit)) ww += 2;
     return ww;
-};
+  };
 
-Window_Base.prototype.getDefaultGoldWidth = function(value) {
+  Window_Base.prototype.getDefaultGoldWidth = function (value) {
     this.resetTextColor();
     var ww = Math.min(80, this.textWidth(TextManager.currencyUnit));
     ww += this.textWidth(MageStudios.Util.toGroup(value));
     ww += 6;
     return ww;
-};
+  };
 
-MageStudios.MC.Window_Base_resetFontSettings = 
+  MageStudios.MC.Window_Base_resetFontSettings =
     Window_Base.prototype.resetFontSettings;
-Window_Base.prototype.resetFontSettings = function() {
+  Window_Base.prototype.resetFontSettings = function () {
     if (this._bypassResetText) return;
     MageStudios.MC.Window_Base_resetFontSettings.call(this);
-};
+  };
 
-MageStudios.MC.Window_Base_drawCurrencyValue =
+  MageStudios.MC.Window_Base_drawCurrencyValue =
     Window_Base.prototype.drawCurrencyValue;
-Window_Base.prototype.drawCurrencyValue = function(value, unit, wx, wy, ww) {
+  Window_Base.prototype.drawCurrencyValue = function (value, unit, wx, wy, ww) {
     if (unit !== TextManager.currencyUnit) {
       this.drawAltCurrency(value, unit, wx, wy, ww);
     }
-    MageStudios.MC.Window_Base_drawCurrencyValue.call(this, value, unit, wx, wy, ww);
-};
+    MageStudios.MC.Window_Base_drawCurrencyValue.call(
+      this,
+      value,
+      unit,
+      wx,
+      wy,
+      ww
+    );
+  };
 
-Window_Base.prototype.drawAltCurrency = function(value, unit, wx, wy, ww) {
+  Window_Base.prototype.drawAltCurrency = function (value, unit, wx, wy, ww) {
     this.resetTextColor();
     var iconIndex = 0;
-    var unitText = '';
-    if (DataManager.isItem(unit) || DataManager.isWeapon(unit) ||
-    DataManager.isArmor(unit)) {
+    var unitText = "";
+    if (
+      DataManager.isItem(unit) ||
+      DataManager.isWeapon(unit) ||
+      DataManager.isArmor(unit)
+    ) {
       var iconIndex = unit.iconIndex;
     } else if (unit.match(/VARIABLE[ ](\d+)/i)) {
       var name = $dataSystem.variables[parseInt(RegExp.$1)];
       if (name.match(/\\I\[(\d+)\]/i)) {
         var iconIndex = parseInt(RegExp.$1);
       }
-      name = name.replace(/\\I\[(\d+)\]/gi, '');
-      unitText = name.replace(/<<(.*?)>>/gi, '');
+      name = name.replace(/\\I\[(\d+)\]/gi, "");
+      unitText = name.replace(/<<(.*?)>>/gi, "");
     }
-    // Draw Text
+
     this.contents.fontSize = MageStudios.Param.MCCurrencyFontSize;
-    if (unitText !== '') {
+    if (unitText !== "") {
       this.changeTextColor(this.systemColor());
-      this.drawText(unitText, wx, wy, ww, 'right');
+      this.drawText(unitText, wx, wy, ww, "right");
       ww -= this.textWidth(unitText);
     }
-    // Draw Icon
+
     if (iconIndex > 0) {
-      if (unitText !== '') ww -= 6;
+      if (unitText !== "") ww -= 6;
       ww -= Window_Base._iconWidth;
       this.drawIcon(iconIndex, wx + ww, wy + 2);
     }
     this.resetTextColor();
-    this.drawText(MageStudios.Util.toGroup(value), wx, wy, ww, 'right');
+    this.drawText(MageStudios.Util.toGroup(value), wx, wy, ww, "right");
     ww -= this.textWidth(MageStudios.Util.toGroup(value));
     this.resetFontSettings();
     return ww;
-};
+  };
 
-//=============================================================================
-// Window_Gold
-//=============================================================================
-
-MageStudios.MC.Window_Gold_refresh = Window_Gold.prototype.refresh;
-Window_Gold.prototype.refresh = function() {
+  MageStudios.MC.Window_Gold_refresh = Window_Gold.prototype.refresh;
+  Window_Gold.prototype.refresh = function () {
     var x = this.textPadding();
     var ww = this.contents.width - this.textPadding() * 2;
     this.contents.clear();
@@ -659,9 +662,9 @@ Window_Gold.prototype.refresh = function() {
     }
     if (this._item) this.drawItemCurrencies(x, ww);
     this.resetFontSettings();
-};
+  };
 
-Window_Gold.prototype.isDrawGoldCurrency = function() {
+  Window_Gold.prototype.isDrawGoldCurrency = function () {
     if (this._item) {
       var item = this._item;
       if (this._buyMode) {
@@ -693,41 +696,42 @@ Window_Gold.prototype.isDrawGoldCurrency = function() {
       }
     }
     return true;
-};
+  };
 
-Window_Gold.prototype.setItemBuy = function(item) {
+  Window_Gold.prototype.setItemBuy = function (item) {
     if (this._item === item) return;
     this._item = item;
     this._buyMode = true;
     this.refresh();
-};
+  };
 
-Window_Gold.prototype.setItemSell = function(item) {
+  Window_Gold.prototype.setItemSell = function (item) {
     if (this._item === item) return;
     this._item = item;
     this._buyMode = false;
     this.refresh();
-};
+  };
 
-Window_Gold.prototype.drawItemCurrencies = function(wx, ww) {
+  Window_Gold.prototype.drawItemCurrencies = function (wx, ww) {
     var item = this._item;
     var wy = 0;
-    // Variables
-    var currencies = this._buyMode ?
-      item.variableBuyPrices : item.variableSellPrices;
+
+    var currencies = this._buyMode
+      ? item.variableBuyPrices
+      : item.variableSellPrices;
     if (currencies) {
       var length = currencies.length;
       if (length > 0) {
         for (var i = 0; i < length; ++i) {
           var varId = currencies[i];
           var value = $gameVariables.value(varId);
-          var unit = 'VARIABLE ' + varId;
+          var unit = "VARIABLE " + varId;
           ww = this.drawAltCurrency(value, unit, wx, wy, ww);
           ww -= MageStudios.Param.MCCurrencyPadding;
         }
       }
     }
-    // Armors
+
     currencies = this._buyMode ? item.armorBuyPrices : item.armorSellPrices;
     if (currencies) {
       length = currencies.length;
@@ -740,7 +744,7 @@ Window_Gold.prototype.drawItemCurrencies = function(wx, ww) {
         }
       }
     }
-    // Weapons
+
     currencies = this._buyMode ? item.weaponBuyPrices : item.weaponSellPrices;
     if (currencies) {
       length = currencies.length;
@@ -753,7 +757,7 @@ Window_Gold.prototype.drawItemCurrencies = function(wx, ww) {
         }
       }
     }
-    // Items
+
     currencies = this._buyMode ? item.itemBuyPrices : item.itemSellPrices;
     if (currencies) {
       length = currencies.length;
@@ -766,15 +770,11 @@ Window_Gold.prototype.drawItemCurrencies = function(wx, ww) {
         }
       }
     }
-};
+  };
 
-//=============================================================================
-// Window_ShopStatus
-//=============================================================================
-
-MageStudios.MC.Window_ShopStatus_drawPossession =
+  MageStudios.MC.Window_ShopStatus_drawPossession =
     Window_ShopStatus.prototype.drawPossession;
-Window_ShopStatus.prototype.drawPossession = function(x, y) {
+  Window_ShopStatus.prototype.drawPossession = function (x, y) {
     var oldItem = this._item;
     if (this._item.proxyBuy) {
       var id = this._item.proxyBuy;
@@ -784,10 +784,11 @@ Window_ShopStatus.prototype.drawPossession = function(x, y) {
     }
     MageStudios.MC.Window_ShopStatus_drawPossession.call(this, x, y);
     this._item = oldItem;
-};
+  };
 
-MageStudios.MC.Window_ShopStatus_setItem = Window_ShopStatus.prototype.setItem;
-Window_ShopStatus.prototype.setItem = function(item) {
+  MageStudios.MC.Window_ShopStatus_setItem =
+    Window_ShopStatus.prototype.setItem;
+  Window_ShopStatus.prototype.setItem = function (item) {
     if (item && item.proxyBuy) {
       var id = item.proxyBuy;
       if (DataManager.isItem(item)) item = $dataItems[id];
@@ -795,14 +796,11 @@ Window_ShopStatus.prototype.setItem = function(item) {
       if (DataManager.isArmor(item)) item = $dataArmors[id];
     }
     MageStudios.MC.Window_ShopStatus_setItem.call(this, item);
-};
+  };
 
-//=============================================================================
-// Window_ShopBuy
-//=============================================================================
-
-MageStudios.MC.Window_ShopBuy_drawBuyPrice = Window_ShopBuy.prototype.drawBuyPrice;
-Window_ShopBuy.prototype.drawBuyPrice = function(item, rect) {
+  MageStudios.MC.Window_ShopBuy_drawBuyPrice =
+    Window_ShopBuy.prototype.drawBuyPrice;
+  Window_ShopBuy.prototype.drawBuyPrice = function (item, rect) {
     if (!item) return;
     if (item.price > 0) {
       MageStudios.MC.Window_ShopBuy_drawBuyPrice.call(this, item, rect);
@@ -812,17 +810,17 @@ Window_ShopBuy.prototype.drawBuyPrice = function(item, rect) {
     ww = this.drawArmorBuyPrices(item, rect, ww);
     ww = this.drawWeaponBuyPrices(item, rect, ww);
     ww = this.drawItemBuyPrices(item, rect, ww);
-};
+  };
 
-Window_ShopBuy.prototype.calculatePriceWidth = function(item, rect) {
+  Window_ShopBuy.prototype.calculatePriceWidth = function (item, rect) {
     if (item.price <= 0) return rect.width;
     var ww = rect.width;
     ww -= this.getcurrencyGoldWidth(item.price);
     ww -= MageStudios.Param.MCCurrencyPadding;
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawVariableBuyPrices = function(item, rect, ww) {
+  Window_ShopBuy.prototype.drawVariableBuyPrices = function (item, rect, ww) {
     if (!item.variableBuyPrices) return ww;
     if (item.variableBuyPrices.length <= 0) return ww;
     var length = item.variableBuyPrices.length;
@@ -831,17 +829,22 @@ Window_ShopBuy.prototype.drawVariableBuyPrices = function(item, rect, ww) {
       ww = this.drawVariablePrice(item, varId, rect, ww);
     }
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawVariablePrice = function(item, varId, rect, ww) {
+  Window_ShopBuy.prototype.drawVariablePrice = function (
+    item,
+    varId,
+    rect,
+    ww
+  ) {
     var value = item.variableBuyPrice[varId];
-    var unit = 'VARIABLE ' + varId;
+    var unit = "VARIABLE " + varId;
     ww = this.drawAltCurrency(value, unit, rect.x, rect.y, ww);
     ww -= MageStudios.Param.MCCurrencyPadding;
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawItemBuyPrices = function(item, rect, ww) {
+  Window_ShopBuy.prototype.drawItemBuyPrices = function (item, rect, ww) {
     if (!item.itemBuyPrices) return ww;
     if (item.itemBuyPrices.length <= 0) return ww;
     var length = item.itemBuyPrices.length;
@@ -850,17 +853,17 @@ Window_ShopBuy.prototype.drawItemBuyPrices = function(item, rect, ww) {
       ww = this.drawItemBuyPrice(item, varId, rect, ww);
     }
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawItemBuyPrice = function(item, varId, rect, ww) {
+  Window_ShopBuy.prototype.drawItemBuyPrice = function (item, varId, rect, ww) {
     var value = item.itemBuyPrice[varId];
     var unit = $dataItems[varId];
     ww = this.drawAltCurrency(value, unit, rect.x, rect.y, ww);
     ww -= MageStudios.Param.MCCurrencyPadding;
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawWeaponBuyPrices = function(item, rect, ww) {
+  Window_ShopBuy.prototype.drawWeaponBuyPrices = function (item, rect, ww) {
     if (!item.weaponBuyPrices) return ww;
     if (item.weaponBuyPrices.length <= 0) return ww;
     var length = item.weaponBuyPrices.length;
@@ -869,17 +872,22 @@ Window_ShopBuy.prototype.drawWeaponBuyPrices = function(item, rect, ww) {
       ww = this.drawWeaponBuyPrice(item, varId, rect, ww);
     }
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawWeaponBuyPrice = function(item, varId, rect, ww) {
+  Window_ShopBuy.prototype.drawWeaponBuyPrice = function (
+    item,
+    varId,
+    rect,
+    ww
+  ) {
     var value = item.weaponBuyPrice[varId];
     var unit = $dataWeapons[varId];
     ww = this.drawAltCurrency(value, unit, rect.x, rect.y, ww);
     ww -= MageStudios.Param.MCCurrencyPadding;
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawArmorBuyPrices = function(item, rect, ww) {
+  Window_ShopBuy.prototype.drawArmorBuyPrices = function (item, rect, ww) {
     if (!item.armorBuyPrices) return ww;
     if (item.armorBuyPrices.length <= 0) return ww;
     var length = item.armorBuyPrices.length;
@@ -888,23 +896,27 @@ Window_ShopBuy.prototype.drawArmorBuyPrices = function(item, rect, ww) {
       ww = this.drawArmorBuyPrice(item, varId, rect, ww);
     }
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.drawArmorBuyPrice = function(item, varId, rect, ww) {
+  Window_ShopBuy.prototype.drawArmorBuyPrice = function (
+    item,
+    varId,
+    rect,
+    ww
+  ) {
     var value = item.armorBuyPrice[varId];
     var unit = $dataArmors[varId];
     ww = this.drawAltCurrency(value, unit, rect.x, rect.y, ww);
     ww -= MageStudios.Param.MCCurrencyPadding;
     return ww;
-};
+  };
 
-Window_ShopBuy.prototype.textWidthEx = function(text) {
+  Window_ShopBuy.prototype.textWidthEx = function (text) {
     return this.drawTextEx(text, 0, this.contents.height);
-};
+  };
 
-MageStudios.MC.Window_ShopBuy_isEnabled = Window_ShopBuy.prototype.isEnabled;
-Window_ShopBuy.prototype.isEnabled = function(item) {
-    // Variables
+  MageStudios.MC.Window_ShopBuy_isEnabled = Window_ShopBuy.prototype.isEnabled;
+  Window_ShopBuy.prototype.isEnabled = function (item) {
     if (item && $gamePlayer.isDebugThrough()) return true;
     if (item && item.variableBuyPrices.length > 0) {
       var length = item.variableBuyPrices.length;
@@ -915,7 +927,7 @@ Window_ShopBuy.prototype.isEnabled = function(item) {
         if (value < price) return false;
       }
     }
-    // Items
+
     if (item && item.itemBuyPrices.length > 0) {
       var length = item.itemBuyPrices.length;
       for (var i = 0; i < length; ++i) {
@@ -925,7 +937,7 @@ Window_ShopBuy.prototype.isEnabled = function(item) {
         if (value < price) return false;
       }
     }
-    // Weapons
+
     if (item && item.weaponBuyPrices.length > 0) {
       var length = item.weaponBuyPrices.length;
       for (var i = 0; i < length; ++i) {
@@ -935,7 +947,7 @@ Window_ShopBuy.prototype.isEnabled = function(item) {
         if (value < price) return false;
       }
     }
-    // Armors
+
     if (item && item.armorBuyPrices.length > 0) {
       var length = item.armorBuyPrices.length;
       for (var i = 0; i < length; ++i) {
@@ -946,33 +958,27 @@ Window_ShopBuy.prototype.isEnabled = function(item) {
       }
     }
     return MageStudios.MC.Window_ShopBuy_isEnabled.call(this, item);
-};
+  };
 
-MageStudios.MC.Window_ShopBuy_updateHelp = Window_ShopBuy.prototype.updateHelp;
-Window_ShopBuy.prototype.updateHelp = function() {
+  MageStudios.MC.Window_ShopBuy_updateHelp =
+    Window_ShopBuy.prototype.updateHelp;
+  Window_ShopBuy.prototype.updateHelp = function () {
     MageStudios.MC.Window_ShopBuy_updateHelp.call(this);
     if (SceneManager._scene._goldWindow) {
-      SceneManager._scene._goldWindow.setItemBuy(this.item())
+      SceneManager._scene._goldWindow.setItemBuy(this.item());
     }
-};
+  };
 
-//=============================================================================
-// Window_ShopSell
-//=============================================================================
-
-MageStudios.MC.Window_ShopSell_updateHelp = Window_ShopSell.prototype.updateHelp;
-Window_ShopSell.prototype.updateHelp = function() {
+  MageStudios.MC.Window_ShopSell_updateHelp =
+    Window_ShopSell.prototype.updateHelp;
+  Window_ShopSell.prototype.updateHelp = function () {
     MageStudios.MC.Window_ShopSell_updateHelp.call(this);
     if (SceneManager._scene._goldWindow) {
-      SceneManager._scene._goldWindow.setItemSell(this.item())
+      SceneManager._scene._goldWindow.setItemSell(this.item());
     }
-};
+  };
 
-//=============================================================================
-// Window_ShopNumber
-//=============================================================================
-
-Window_ShopNumber.prototype.isDrawGoldCurrency = function() {
+  Window_ShopNumber.prototype.isDrawGoldCurrency = function () {
     var item = this._item;
     if (item.variableBuyPrices && item.variableBuyPrices.length > 0) {
       return this._item.price > 0;
@@ -981,32 +987,32 @@ Window_ShopNumber.prototype.isDrawGoldCurrency = function() {
       return this._item.price > 0;
     }
     return true;
-};
+  };
 
-MageStudios.MC.Window_ShopNumber_drawTotalCurrency =
+  MageStudios.MC.Window_ShopNumber_drawTotalCurrency =
     Window_ShopNumber.prototype.drawTotalCurrency;
-Window_ShopNumber.prototype.drawTotalCurrency = function(ww, wy) {
+  Window_ShopNumber.prototype.drawTotalCurrency = function (ww, wy) {
     if (!this.isDrawGoldCurrency()) return;
     MageStudios.MC.Window_ShopNumber_drawTotalCurrency.call(this, ww, wy);
-};
+  };
 
-MageStudios.MC.Window_ShopNumber_drawTotalCost =
+  MageStudios.MC.Window_ShopNumber_drawTotalCost =
     Window_ShopNumber.prototype.drawTotalCost;
-Window_ShopNumber.prototype.drawTotalCost = function(ww, wy) {
+  Window_ShopNumber.prototype.drawTotalCost = function (ww, wy) {
     if (!this.isDrawGoldCurrency()) return;
     MageStudios.MC.Window_ShopNumber_drawTotalCost.call(this, ww, wy);
-};
+  };
 
-MageStudios.MC.Window_ShopNumber_drawTotalAfter =
+  MageStudios.MC.Window_ShopNumber_drawTotalAfter =
     Window_ShopNumber.prototype.drawTotalAfter;
-Window_ShopNumber.prototype.drawTotalAfter = function(ww, wy) {
+  Window_ShopNumber.prototype.drawTotalAfter = function (ww, wy) {
     if (!this.isDrawGoldCurrency()) return;
     MageStudios.MC.Window_ShopNumber_drawTotalAfter.call(this, ww, wy);
-};
+  };
 
-MageStudios.MC.Window_ShopNumber_drawTotalPrice =
+  MageStudios.MC.Window_ShopNumber_drawTotalPrice =
     Window_ShopNumber.prototype.drawTotalPrice;
-Window_ShopNumber.prototype.drawTotalPrice = function() {
+  Window_ShopNumber.prototype.drawTotalPrice = function () {
     MageStudios.MC.Window_ShopNumber_drawTotalPrice.call(this);
     var ww = this.contents.width - this.textPadding();
     var wy = this.itemY();
@@ -1020,18 +1026,18 @@ Window_ShopNumber.prototype.drawTotalPrice = function() {
     ww = this.drawArmorCostPrices(ww, wy);
     ww = this.drawWeaponCostPrices(ww, wy);
     ww = this.drawItemCostPrices(ww, wy);
-};
+  };
 
-Window_ShopNumber.prototype.getVariableCurrency = function() {
+  Window_ShopNumber.prototype.getVariableCurrency = function () {
     if (this.isSelling()) {
       var currencies = this._item.variableSellPrices;
     } else {
       var currencies = this._item.variableBuyPrices;
     }
     return currencies;
-};
+  };
 
-Window_ShopNumber.prototype.drawVariablePrices = function(ww, wy) {
+  Window_ShopNumber.prototype.drawVariablePrices = function (ww, wy) {
     var currencies = this.getVariableCurrency();
     if (currencies) {
       var length = currencies.length;
@@ -1044,19 +1050,19 @@ Window_ShopNumber.prototype.drawVariablePrices = function(ww, wy) {
       this.resetFontSettings();
     }
     return ww;
-};
+  };
 
-Window_ShopNumber.prototype.drawVariablePrice = function(ww, wy, varId) {
+  Window_ShopNumber.prototype.drawVariablePrice = function (ww, wy, varId) {
     var fw = ww;
     var fy = wy + this.lineHeight() * 1;
     var value = $gameVariables.value(varId);
-    var unit = 'VARIABLE ' + varId;
+    var unit = "VARIABLE " + varId;
     fw = Math.min(fw, this.drawAltCurrency(value, unit, 0, fy, ww));
     fy += this.lineHeight();
     if (this.isSelling()) {
       var price = this._item.variableSellPrice[varId];
       value = this._number * price;
-      value = '+' + value;
+      value = "+" + value;
     } else {
       var price = this._item.variableBuyPrice[varId];
       value = this._number * price;
@@ -1068,18 +1074,18 @@ Window_ShopNumber.prototype.drawVariablePrice = function(ww, wy, varId) {
     value += price * this._number * (this.isSelling() ? 1 : -1);
     fw = Math.min(fw, this.drawAltCurrency(value, unit, 0, fy, ww));
     return fw;
-};
+  };
 
-Window_ShopNumber.prototype.getItemCostCurrency = function() {
+  Window_ShopNumber.prototype.getItemCostCurrency = function () {
     if (this.isSelling()) {
       var currencies = this._item.itemSellPrices;
     } else {
       var currencies = this._item.itemBuyPrices;
     }
     return currencies;
-};
+  };
 
-Window_ShopNumber.prototype.drawItemCostPrices = function(ww, wy) {
+  Window_ShopNumber.prototype.drawItemCostPrices = function (ww, wy) {
     var currencies = this.getItemCostCurrency();
     if (currencies) {
       var length = currencies.length;
@@ -1092,9 +1098,9 @@ Window_ShopNumber.prototype.drawItemCostPrices = function(ww, wy) {
       this.resetFontSettings();
     }
     return ww;
-};
+  };
 
-Window_ShopNumber.prototype.drawItemCostPrice = function(ww, wy, varId) {
+  Window_ShopNumber.prototype.drawItemCostPrice = function (ww, wy, varId) {
     var fw = ww;
     var fy = wy + this.lineHeight() * 1;
     var unit = $dataItems[varId];
@@ -1104,7 +1110,7 @@ Window_ShopNumber.prototype.drawItemCostPrice = function(ww, wy, varId) {
     if (this.isSelling()) {
       var price = this._item.itemSellPrice[varId];
       value = this._number * price;
-      value = '+' + value;
+      value = "+" + value;
     } else {
       var price = this._item.itemBuyPrice[varId];
       value = this._number * price;
@@ -1116,18 +1122,18 @@ Window_ShopNumber.prototype.drawItemCostPrice = function(ww, wy, varId) {
     value += price * this._number * (this.isSelling() ? 1 : -1);
     fw = Math.min(fw, this.drawAltCurrency(value, unit, 0, fy, ww));
     return fw;
-};
+  };
 
-Window_ShopNumber.prototype.getWeaponCostCurrency = function() {
+  Window_ShopNumber.prototype.getWeaponCostCurrency = function () {
     if (this.isSelling()) {
       var currencies = this._item.weaponSellPrices;
     } else {
       var currencies = this._item.weaponBuyPrices;
     }
     return currencies;
-};
+  };
 
-Window_ShopNumber.prototype.drawWeaponCostPrices = function(ww, wy) {
+  Window_ShopNumber.prototype.drawWeaponCostPrices = function (ww, wy) {
     var currencies = this.getWeaponCostCurrency();
     if (currencies) {
       var length = currencies.length;
@@ -1140,9 +1146,9 @@ Window_ShopNumber.prototype.drawWeaponCostPrices = function(ww, wy) {
       this.resetFontSettings();
     }
     return ww;
-};
+  };
 
-Window_ShopNumber.prototype.drawWeaponCostPrice = function(ww, wy, varId) {
+  Window_ShopNumber.prototype.drawWeaponCostPrice = function (ww, wy, varId) {
     var fw = ww;
     var fy = wy + this.lineHeight() * 1;
     var unit = $dataWeapons[varId];
@@ -1152,7 +1158,7 @@ Window_ShopNumber.prototype.drawWeaponCostPrice = function(ww, wy, varId) {
     if (this.isSelling()) {
       var price = this._item.weaponSellPrice[varId];
       value = this._number * price;
-      value = '+' + value;
+      value = "+" + value;
     } else {
       var price = this._item.weaponBuyPrice[varId];
       value = this._number * price;
@@ -1164,18 +1170,18 @@ Window_ShopNumber.prototype.drawWeaponCostPrice = function(ww, wy, varId) {
     value += price * this._number * (this.isSelling() ? 1 : -1);
     fw = Math.min(fw, this.drawAltCurrency(value, unit, 0, fy, ww));
     return fw;
-};
+  };
 
-Window_ShopNumber.prototype.getArmorCostCurrency = function() {
+  Window_ShopNumber.prototype.getArmorCostCurrency = function () {
     if (this.isSelling()) {
       var currencies = this._item.armorSellPrices;
     } else {
       var currencies = this._item.armorBuyPrices;
     }
     return currencies;
-};
+  };
 
-Window_ShopNumber.prototype.drawArmorCostPrices = function(ww, wy) {
+  Window_ShopNumber.prototype.drawArmorCostPrices = function (ww, wy) {
     var currencies = this.getArmorCostCurrency();
     if (currencies) {
       var length = currencies.length;
@@ -1188,9 +1194,9 @@ Window_ShopNumber.prototype.drawArmorCostPrices = function(ww, wy) {
       this.resetFontSettings();
     }
     return ww;
-};
+  };
 
-Window_ShopNumber.prototype.drawArmorCostPrice = function(ww, wy, varId) {
+  Window_ShopNumber.prototype.drawArmorCostPrice = function (ww, wy, varId) {
     var fw = ww;
     var fy = wy + this.lineHeight() * 1;
     var unit = $dataArmors[varId];
@@ -1200,7 +1206,7 @@ Window_ShopNumber.prototype.drawArmorCostPrice = function(ww, wy, varId) {
     if (this.isSelling()) {
       var price = this._item.armorSellPrice[varId];
       value = this._number * price;
-      value = '+' + value;
+      value = "+" + value;
     } else {
       var price = this._item.armorBuyPrice[varId];
       value = this._number * price;
@@ -1212,16 +1218,12 @@ Window_ShopNumber.prototype.drawArmorCostPrice = function(ww, wy, varId) {
     value += price * this._number * (this.isSelling() ? 1 : -1);
     fw = Math.min(fw, this.drawAltCurrency(value, unit, 0, fy, ww));
     return fw;
-};
+  };
 
-//=============================================================================
-// Scene_Shop
-//=============================================================================
-
-MageStudios.MC.Scene_Shop_maxBuy = Scene_Shop.prototype.maxBuy;
-Scene_Shop.prototype.maxBuy = function() {
+  MageStudios.MC.Scene_Shop_maxBuy = Scene_Shop.prototype.maxBuy;
+  Scene_Shop.prototype.maxBuy = function () {
     var max = MageStudios.MC.Scene_Shop_maxBuy.call(this);
-    // Variables
+
     var length = this._item.variableBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1231,7 +1233,7 @@ Scene_Shop.prototype.maxBuy = function() {
         max = Math.min(max, Math.floor(value / price));
       }
     }
-    // Items
+
     var length = this._item.itemBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1241,7 +1243,7 @@ Scene_Shop.prototype.maxBuy = function() {
         max = Math.min(max, Math.floor(value / price));
       }
     }
-    // Weapons
+
     var length = this._item.weaponBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1251,7 +1253,7 @@ Scene_Shop.prototype.maxBuy = function() {
         max = Math.min(max, Math.floor(value / price));
       }
     }
-    // Armors
+
     var length = this._item.armorBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1262,12 +1264,12 @@ Scene_Shop.prototype.maxBuy = function() {
       }
     }
     return max;
-};
+  };
 
-MageStudios.MC.Scene_Shop_doBuyGold = Scene_Shop.prototype.doBuyGold;
-Scene_Shop.prototype.doBuyGold = function(number) {
+  MageStudios.MC.Scene_Shop_doBuyGold = Scene_Shop.prototype.doBuyGold;
+  Scene_Shop.prototype.doBuyGold = function (number) {
     MageStudios.MC.Scene_Shop_doBuyGold.call(this, number);
-    // Variables
+
     var length = this._item.variableBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1277,7 +1279,7 @@ Scene_Shop.prototype.doBuyGold = function(number) {
         $gameVariables.setValue(varId, value - price * number);
       }
     }
-    // Items
+
     var length = this._item.itemBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1287,7 +1289,7 @@ Scene_Shop.prototype.doBuyGold = function(number) {
         $gameParty.gainItem($dataItems[varId], -price * number);
       }
     }
-    // Weapons
+
     var length = this._item.weaponBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1297,7 +1299,7 @@ Scene_Shop.prototype.doBuyGold = function(number) {
         $gameParty.gainItem($dataWeapons[varId], -price * number);
       }
     }
-    // Armors
+
     var length = this._item.armorBuyPrices.length;
     if (length > 0) {
       for (var i = 0; i < length; ++i) {
@@ -1307,10 +1309,10 @@ Scene_Shop.prototype.doBuyGold = function(number) {
         $gameParty.gainItem($dataArmors[varId], -price * number);
       }
     }
-};
+  };
 
-MageStudios.MC.Scene_Shop_doBuyItem = Scene_Shop.prototype.doBuyItem;
-Scene_Shop.prototype.doBuyItem = function(number) {
+  MageStudios.MC.Scene_Shop_doBuyItem = Scene_Shop.prototype.doBuyItem;
+  Scene_Shop.prototype.doBuyItem = function (number) {
     var oldItem = this._item;
     if (this._item.proxyBuy) {
       var id = this._item.proxyBuy;
@@ -1320,18 +1322,18 @@ Scene_Shop.prototype.doBuyItem = function(number) {
     }
     MageStudios.MC.Scene_Shop_doBuyItem.call(this, number);
     this._item = oldItem;
-};
+  };
 
-MageStudios.MC.Scene_Shop_onBuyCancel = Scene_Shop.prototype.onBuyCancel;
-Scene_Shop.prototype.onBuyCancel = function() {
+  MageStudios.MC.Scene_Shop_onBuyCancel = Scene_Shop.prototype.onBuyCancel;
+  Scene_Shop.prototype.onBuyCancel = function () {
     MageStudios.MC.Scene_Shop_onBuyCancel.call(this);
     this._goldWindow.setItemBuy(null);
-};
+  };
 
-MageStudios.MC.Scene_Shop_doSellGold = Scene_Shop.prototype.doSellGold;
-Scene_Shop.prototype.doSellGold = function(number) {
+  MageStudios.MC.Scene_Shop_doSellGold = Scene_Shop.prototype.doSellGold;
+  Scene_Shop.prototype.doSellGold = function (number) {
     MageStudios.MC.Scene_Shop_doSellGold.call(this, number);
-    // Variables
+
     if (this._item.variableSellPrices) {
       var length = this._item.variableSellPrices.length;
       if (length > 0) {
@@ -1343,7 +1345,7 @@ Scene_Shop.prototype.doSellGold = function(number) {
         }
       }
     }
-    // Items
+
     if (this._item.itemSellPrices) {
       var length = this._item.itemSellPrices.length;
       if (length > 0) {
@@ -1355,7 +1357,7 @@ Scene_Shop.prototype.doSellGold = function(number) {
         }
       }
     }
-    // Weapons
+
     if (this._item.weaponSellPrices) {
       var length = this._item.weaponSellPrices.length;
       if (length > 0) {
@@ -1367,7 +1369,7 @@ Scene_Shop.prototype.doSellGold = function(number) {
         }
       }
     }
-    // Armors
+
     if (this._item.armorSellPrices) {
       var length = this._item.armorSellPrices.length;
       if (length > 0) {
@@ -1379,65 +1381,41 @@ Scene_Shop.prototype.doSellGold = function(number) {
         }
       }
     }
-};
+  };
 
-MageStudios.MC.Scene_Shop_onSellCancel = Scene_Shop.prototype.onSellCancel;
-Scene_Shop.prototype.onSellCancel = function() {
+  MageStudios.MC.Scene_Shop_onSellCancel = Scene_Shop.prototype.onSellCancel;
+  Scene_Shop.prototype.onSellCancel = function () {
     MageStudios.MC.Scene_Shop_onSellCancel.call(this);
     this._goldWindow.setItemSell(null);
-};
+  };
 
-//=============================================================================
-// Victory Aftermath Changes
-//=============================================================================
-
-if (Imported.MSEP_VictoryAftermath) {
-
-//=============================================================================
-// Window_VictoryDrop
-//=============================================================================
-
-if (MageStudios.Param.MCGoldItem) {
-
-Window_VictoryDrop.prototype.drawGold = function(item, index) {
-    if (item !== 'gold') return;
-    this.resetFontSettings();
-    var rect = this.itemRect(index);
-    rect.width -= this.textPadding();
-    var value = BattleManager._rewards.gold;
-    var currency = TextManager.currencyUnit;
-    this.drawIcon(MageStudios.Param.MCGoldIcon, rect.x + 2, rect.y);
-    var wx = rect.x + Window_Base._iconWidth + 4;
-    var ww = rect.width - Window_Base._iconWidth + 4;
-    this.drawText(currency, wx, rect.y, ww);
-    var size = MageStudios.Param.ItemQuantitySize || 28;
-    this.contents.fontSize = size;
-    var text = '\u00d7' + MageStudios.Util.toGroup(value);
-    this.drawText(text, rect.x, rect.y, rect.width, 'right');
-    this.resetFontSettings();
-};
-
-}; // MageStudios.Param.MCGoldItem
-
-//=============================================================================
-// End Victory Aftermath Changes
-//=============================================================================
-
-} // Imported.MSEP_VictoryAftermath
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-    MageStudios.Util.toGroup = function(inVal) {
-        return inVal;
+  if (Imported.MSEP_VictoryAftermath) {
+    if (MageStudios.Param.MCGoldItem) {
+      Window_VictoryDrop.prototype.drawGold = function (item, index) {
+        if (item !== "gold") return;
+        this.resetFontSettings();
+        var rect = this.itemRect(index);
+        rect.width -= this.textPadding();
+        var value = BattleManager._rewards.gold;
+        var currency = TextManager.currencyUnit;
+        this.drawIcon(MageStudios.Param.MCGoldIcon, rect.x + 2, rect.y);
+        var wx = rect.x + Window_Base._iconWidth + 4;
+        var ww = rect.width - Window_Base._iconWidth + 4;
+        this.drawText(currency, wx, rect.y, ww);
+        var size = MageStudios.Param.ItemQuantitySize || 28;
+        this.contents.fontSize = size;
+        var text = "\u00d7" + MageStudios.Util.toGroup(value);
+        this.drawText(text, rect.x, rect.y, rect.width, "right");
+        this.resetFontSettings();
+      };
     }
-};
+  }
 
-//=============================================================================
-// End of File
-//=============================================================================
-}; //
+  MageStudios.Util = MageStudios.Util || {};
+
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
+  }
+} //

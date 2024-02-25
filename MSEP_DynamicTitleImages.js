@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Dynamic Title Images
-// MSEP_DynamicTitleImages.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_DynamicTitleImages = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.DTI = MageStudios.DTI || {};
-MageStudios.DTI.version = 1.00;
+MageStudios.DTI.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Change title images depending on how far along your game
  * the player has progressed.
  * @author Mage Studios Engine Plugins
@@ -24,7 +18,7 @@ MageStudios.DTI.version = 1.00;
  * @desc Require a save game to be present to show a custom title
  * image? If one isn't present, the default images are used.
  * @default false
- * 
+ *
  * @help
  * ============================================================================
  * Introduction
@@ -63,27 +57,22 @@ MageStudios.DTI.version = 1.00;
  * The player will see the default Title1/Title2 image that's been applied in
  * the game's database settings.
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_DynamicTitleImages');
+MageStudios.Parameters = PluginManager.parameters("MSEP_DynamicTitleImages");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.DTIRequireSaveGame = String(MageStudios.Parameters['RequireSaveGame']);
-MageStudios.Param.DTIRequireSaveGame = eval(MageStudios.Param.DTIRequireSaveGame);
+MageStudios.Param.DTIRequireSaveGame = String(
+  MageStudios.Parameters["RequireSaveGame"]
+);
+MageStudios.Param.DTIRequireSaveGame = eval(
+  MageStudios.Param.DTIRequireSaveGame
+);
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
-
-ConfigManager.title1ImageName = '';
-ConfigManager.title2ImageName = '';
+ConfigManager.title1ImageName = "";
+ConfigManager.title2ImageName = "";
 
 MageStudios.DTI.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
+ConfigManager.makeData = function () {
   var config = MageStudios.DTI.ConfigManager_makeData.call(this);
   config.title1ImageName = this.title1ImageName;
   config.title2ImageName = this.title2ImageName;
@@ -91,62 +80,58 @@ ConfigManager.makeData = function() {
 };
 
 MageStudios.DTI.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
+ConfigManager.applyData = function (config) {
   MageStudios.DTI.ConfigManager_applyData.call(this, config);
-  this.title1ImageName = config.title1ImageName || '';
-  this.title2ImageName = config.title2ImageName || '';
+  this.title1ImageName = config.title1ImageName || "";
+  this.title2ImageName = config.title2ImageName || "";
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.DTI.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.DTI.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ChangeTitle1') {
+  if (command === "ChangeTitle1") {
     var filename = this.argsToString(args);
     ConfigManager.title1ImageName = filename;
     ConfigManager.save();
-  } else if (command === 'ChangeTitle2') {
+  } else if (command === "ChangeTitle2") {
     var filename = this.argsToString(args);
     ConfigManager.title2ImageName = filename;
     ConfigManager.save();
-  } else if (command === 'ClearChangeTitle1') {
-    ConfigManager.title1ImageName = '';
+  } else if (command === "ClearChangeTitle1") {
+    ConfigManager.title1ImageName = "";
     ConfigManager.save();
-  } else if (command === 'ClearChangeTitle2') {
-    ConfigManager.title2ImageName = '';
+  } else if (command === "ClearChangeTitle2") {
+    ConfigManager.title2ImageName = "";
     ConfigManager.save();
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Scene_Title
-//=============================================================================
-
-MageStudios.DTI.Scene_Title_createBackground = Scene_Title.prototype.createBackground;
-Scene_Title.prototype.createBackground = function() {
+MageStudios.DTI.Scene_Title_createBackground =
+  Scene_Title.prototype.createBackground;
+Scene_Title.prototype.createBackground = function () {
   var originalTitle1 = $dataSystem.title1Name;
   var originalTitle2 = $dataSystem.title2Name;
   this.changeTitleBackgroundImages();
   MageStudios.DTI.Scene_Title_createBackground.call(this);
   $dataSystem.title1Name = originalTitle1;
   $dataSystem.title2Name = originalTitle2;
-}
+};
 
-Scene_Title.prototype.changeTitleBackgroundImages = function() {
-  if (MageStudios.Param.DTIRequireSaveGame && !DataManager.isAnySavefileExists()) {
+Scene_Title.prototype.changeTitleBackgroundImages = function () {
+  if (
+    MageStudios.Param.DTIRequireSaveGame &&
+    !DataManager.isAnySavefileExists()
+  ) {
     return;
   }
   if (ConfigManager.title1ImageName) {
@@ -156,7 +141,3 @@ Scene_Title.prototype.changeTitleBackgroundImages = function() {
     $dataSystem.title2Name = ConfigManager.title2ImageName;
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

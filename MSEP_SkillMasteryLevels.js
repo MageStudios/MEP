@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Skill Mastery Levels
-// MSEP_SkillMasteryLevels.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_SkillMasteryLevels = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SkillMastery = MageStudios.SkillMastery || {};
-MageStudios.SkillMastery.version = 1.00;
+MageStudios.SkillMastery.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Using skills improves skill mastery. As skill mastery
  * improves, skill costs drop and/or skill damage rises!
  * @author Mage Studios Engine Plugins
@@ -315,43 +309,43 @@ MageStudios.SkillMastery.version = 1.00;
  * @param Level Formula
  * @parent ---Settings---
  * @type combo
- * @option 5  // 5 uses per mastery level
- * @option 10 // 10 uses per mastery level
- * @option 20 // 20 uses per mastery level
- * @option level * 5  // Increases by 5 each level
- * @option level * 10 // Increases by 10 each level
- * @option level * 20 // Increases by 20 each level
+ * @option 5
+ * @option 10
+ * @option 20
+ * @option level * 5
+ * @option level * 10
+ * @option level * 20
  * @desc Amount of uses needed before reaching the next skill mastery
  * level.   level: the target level to be reached
- * @default level * 5  // Increases by 5 each level
+ * @default level * 5
  *
  * @param Damage Formula
  * @parent ---Settings---
  * @type combo
- * @option value // no changes based on mastery level
- * @option value * (1.00 + (level * 0.05)) // +5% per level
- * @option value * (1.00 + (level * 0.10)) // +10% per level
- * @option value * (1.00 + (level * 0.20)) // +20% per level
- * @option value + (level * 1)  // +1 MP per level
- * @option value + (level * 5)  // +5 MP per level
- * @option value + (level * 10) // +10 MP per level
+ * @option value
+ * @option value * (1.00 + (level * 0.05))
+ * @option value * (1.00 + (level * 0.10))
+ * @option value * (1.00 + (level * 0.20))
+ * @option value + (level * 1)
+ * @option value + (level * 5)
+ * @option value + (level * 10)
  * @desc Damage rate based on level.   value: original damage
  * level: the target level to be reached
- * @default value * (1.00 + (level * 0.20)) // +20% per level
+ * @default value * (1.00 + (level * 0.20))
  *
  * @param MP Cost Formula
  * @parent ---Settings---
  * @type combo
- * @option cost // no changes based on mastery level
- * @option cost * (1.00 - (level * 0.05)) // -5% per level
- * @option cost * (1.00 - (level * 0.10)) // -10% per level
- * @option cost * (1.00 - (level * 0.20)) // -20% per level
- * @option cost - (level * 1)  // -1 MP per level
- * @option cost - (level * 5)  // -5 MP per level
- * @option cost - (level * 10) // -10 MP per level
+ * @option cost
+ * @option cost * (1.00 - (level * 0.05))
+ * @option cost * (1.00 - (level * 0.10))
+ * @option cost * (1.00 - (level * 0.20))
+ * @option cost - (level * 1)
+ * @option cost - (level * 5)
+ * @option cost - (level * 10)
  * @desc MP cost based on level.   cost: original cost
  * level: the target level to be reached
- * @default cost * (1.00 + (level * 0.10)) // -10% per level
+ * @default cost * (1.00 + (level * 0.10))
  *
  * @param Minimum MP Cost
  * @parent MP Cost Formula
@@ -362,16 +356,16 @@ MageStudios.SkillMastery.version = 1.00;
  * @param TP Cost Formula
  * @parent ---Settings---
  * @type combo
- * @option cost // no changes based on mastery level
- * @option cost * (1.00 - (level * 0.05)) // -5% per level
- * @option cost * (1.00 - (level * 0.10)) // -10% per level
- * @option cost * (1.00 - (level * 0.20)) // -20% per level
- * @option cost - (level * 1)  // -1 TP per level
- * @option cost - (level * 5)  // -5 TP per level
- * @option cost - (level * 10) // -10 TP per level
+ * @option cost
+ * @option cost * (1.00 - (level * 0.05))
+ * @option cost * (1.00 - (level * 0.10))
+ * @option cost * (1.00 - (level * 0.20))
+ * @option cost - (level * 1)
+ * @option cost - (level * 5)
+ * @option cost - (level * 10)
  * @desc TP cost based on level.   cost: original cost
  * level: the target level to be reached
- * @default cost * (1.00 + (level * 0.10)) // -10% per level
+ * @default cost * (1.00 + (level * 0.10))
  *
  * @param Minimum TP Cost
  * @parent TP Cost Formula
@@ -385,16 +379,16 @@ MageStudios.SkillMastery.version = 1.00;
  * @param HP Cost Formula
  * @parent (MSEP_SkillCore)
  * @type combo
- * @option cost // no changes based on mastery level
- * @option cost * (1.00 - (level * 0.05)) // -5% per level
- * @option cost * (1.00 - (level * 0.10)) // -10% per level
- * @option cost * (1.00 - (level * 0.20)) // -20% per level
- * @option cost - (level * 1)  // -1 HP per level
- * @option cost - (level * 5)  // -5 HP per level
- * @option cost - (level * 10) // -10 HP per level
+ * @option cost
+ * @option cost * (1.00 - (level * 0.05))
+ * @option cost * (1.00 - (level * 0.10))
+ * @option cost * (1.00 - (level * 0.20))
+ * @option cost - (level * 1)
+ * @option cost - (level * 5)
+ * @option cost - (level * 10)
  * @desc HP cost based on level.   cost: original cost
  * level: the target level to be reached
- * @default cost * (1.00 + (level * 0.10)) // -10% per level
+ * @default cost * (1.00 + (level * 0.10))
  *
  * @param Minimum HP Cost
  * @parent HP Cost Formula
@@ -408,16 +402,16 @@ MageStudios.SkillMastery.version = 1.00;
  * @param Cooldown Formula
  * @parent (MSEP_X_SkillCooldowns)
  * @type combo
- * @option turns // no changes based on mastery level
- * @option turns * (1.00 - (level * 0.05)) // -5% per level
- * @option turns * (1.00 - (level * 0.10)) // -10% per level
- * @option turns * (1.00 - (level * 0.20)) // -20% per level
- * @option turns - (level * 1)  // -1 turn per level
- * @option turns - (level * 5)  // -5 turns per level
- * @option turns - (level * 10) // -10 turns per level
+ * @option turns
+ * @option turns * (1.00 - (level * 0.05))
+ * @option turns * (1.00 - (level * 0.10))
+ * @option turns * (1.00 - (level * 0.20))
+ * @option turns - (level * 1)
+ * @option turns - (level * 5)
+ * @option turns - (level * 10)
  * @desc Turns based on level.   turns: original turns
  * level: the target level to be reached
- * @default turns - (level * 1)  // -1 turn per level
+ * @default turns - (level * 1)
  *
  * @param Minimum Cooldown
  * @parent Cooldown Formula
@@ -544,56 +538,87 @@ MageStudios.SkillMastery.version = 1.00;
  *
  * @param Text Y Offset
  * @parent Draw Level
- * @desc Offset the Y position 
+ * @desc Offset the Y position
  * @default -8
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_SkillMasteryLevels');
+MageStudios.Parameters = PluginManager.parameters("MSEP_SkillMasteryLevels");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.SMLDefaultMaxLv = Number(MageStudios.Parameters['Default Max Mastery']);
-MageStudios.Param.SMLLvFormula = String(MageStudios.Parameters['Level Formula']);
-MageStudios.Param.SMLDmgFormula = String(MageStudios.Parameters['Damage Formula']);
-MageStudios.Param.SMLmpFormula = String(MageStudios.Parameters['MP Cost Formula']);
-MageStudios.Param.SMLminMpCost = Number(MageStudios.Parameters['Minimum MP Cost']);
-MageStudios.Param.SMLtpFormula = String(MageStudios.Parameters['TP Cost Formula']);
-MageStudios.Param.SMLminTpCost = Number(MageStudios.Parameters['Minimum TP Cost']);
-MageStudios.Param.SMLhpFormula = String(MageStudios.Parameters['HP Cost Formula']);
-MageStudios.Param.SMLminHpCost = Number(MageStudios.Parameters['Minimum HP Cost']);
-MageStudios.Param.SMLcdFormula = String(MageStudios.Parameters['Cooldown Formula']);
-MageStudios.Param.SMLminCdCost = Number(MageStudios.Parameters['Minimum Cooldown']);
+MageStudios.Param.SMLDefaultMaxLv = Number(
+  MageStudios.Parameters["Default Max Mastery"]
+);
+MageStudios.Param.SMLLvFormula = String(
+  MageStudios.Parameters["Level Formula"]
+);
+MageStudios.Param.SMLDmgFormula = String(
+  MageStudios.Parameters["Damage Formula"]
+);
+MageStudios.Param.SMLmpFormula = String(
+  MageStudios.Parameters["MP Cost Formula"]
+);
+MageStudios.Param.SMLminMpCost = Number(
+  MageStudios.Parameters["Minimum MP Cost"]
+);
+MageStudios.Param.SMLtpFormula = String(
+  MageStudios.Parameters["TP Cost Formula"]
+);
+MageStudios.Param.SMLminTpCost = Number(
+  MageStudios.Parameters["Minimum TP Cost"]
+);
+MageStudios.Param.SMLhpFormula = String(
+  MageStudios.Parameters["HP Cost Formula"]
+);
+MageStudios.Param.SMLminHpCost = Number(
+  MageStudios.Parameters["Minimum HP Cost"]
+);
+MageStudios.Param.SMLcdFormula = String(
+  MageStudios.Parameters["Cooldown Formula"]
+);
+MageStudios.Param.SMLminCdCost = Number(
+  MageStudios.Parameters["Minimum Cooldown"]
+);
 
-MageStudios.Param.SMLAnimation = Number(MageStudios.Parameters['Level Up Animation']);
-MageStudios.Param.SMLAniMirActor = eval(String(MageStudios.Parameters['Mirror Actor']));
-MageStudios.Param.SMLAniMirEnemy = eval(String(MageStudios.Parameters['Mirror Enemy']));
+MageStudios.Param.SMLAnimation = Number(
+  MageStudios.Parameters["Level Up Animation"]
+);
+MageStudios.Param.SMLAniMirActor = eval(
+  String(MageStudios.Parameters["Mirror Actor"])
+);
+MageStudios.Param.SMLAniMirEnemy = eval(
+  String(MageStudios.Parameters["Mirror Enemy"])
+);
 
-MageStudios.Param.SMLDrawGauge = eval(String(MageStudios.Parameters['Draw Gauge']));
-MageStudios.Param.SMLGauge1 = Number(MageStudios.Parameters['Gauge Color 1']);
-MageStudios.Param.SMLGauge2 = Number(MageStudios.Parameters['Gauge Color 2']);
-MageStudios.Param.SMLGaugeH = Number(MageStudios.Parameters['Gauge Height']);
-MageStudios.Param.SMLGaugeOutline = eval(String(MageStudios.Parameters['Gauge Outline']));
+MageStudios.Param.SMLDrawGauge = eval(
+  String(MageStudios.Parameters["Draw Gauge"])
+);
+MageStudios.Param.SMLGauge1 = Number(MageStudios.Parameters["Gauge Color 1"]);
+MageStudios.Param.SMLGauge2 = Number(MageStudios.Parameters["Gauge Color 2"]);
+MageStudios.Param.SMLGaugeH = Number(MageStudios.Parameters["Gauge Height"]);
+MageStudios.Param.SMLGaugeOutline = eval(
+  String(MageStudios.Parameters["Gauge Outline"])
+);
 
-MageStudios.Param.SMLDrawLevel = eval(String(MageStudios.Parameters['Draw Level']));
-MageStudios.Param.SMLShowLevel0 = eval(String(MageStudios.Parameters['Show Level 0']));
-MageStudios.Param.SMLLevelColor = Number(MageStudios.Parameters['Text Color']);
-MageStudios.Param.SMLTextAlign = String(MageStudios.Parameters['Text Align']);
-MageStudios.Param.SMLTextFmt = String(MageStudios.Parameters['Text Format']);
-MageStudios.Param.SMLTextSize = Number(MageStudios.Parameters['Text Size']);
-MageStudios.Param.SMLTextOffsetY = Number(MageStudios.Parameters['Text Y Offset']);
+MageStudios.Param.SMLDrawLevel = eval(
+  String(MageStudios.Parameters["Draw Level"])
+);
+MageStudios.Param.SMLShowLevel0 = eval(
+  String(MageStudios.Parameters["Show Level 0"])
+);
+MageStudios.Param.SMLLevelColor = Number(MageStudios.Parameters["Text Color"]);
+MageStudios.Param.SMLTextAlign = String(MageStudios.Parameters["Text Align"]);
+MageStudios.Param.SMLTextFmt = String(MageStudios.Parameters["Text Format"]);
+MageStudios.Param.SMLTextSize = Number(MageStudios.Parameters["Text Size"]);
+MageStudios.Param.SMLTextOffsetY = Number(
+  MageStudios.Parameters["Text Y Offset"]
+);
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.SkillMastery.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.SkillMastery.DataManager_isDatabaseLoaded.call(this)) return false;
+MageStudios.SkillMastery.DataManager_isDatabaseLoaded =
+  DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.SkillMastery.DataManager_isDatabaseLoaded.call(this))
+    return false;
 
   if (!MageStudios._loaded_MSEP_SkillMasteryLevels) {
     this.processSkillMasteryLevelSkillRef($dataSkills);
@@ -602,11 +627,11 @@ DataManager.isDatabaseLoaded = function() {
     this.processSkillMasteryLevelsNotetags2($dataEnemies);
     MageStudios._loaded_MSEP_SkillMasteryLevels = true;
   }
-  
+
   return true;
 };
 
-DataManager.processSkillMasteryLevelSkillRef = function(group) {
+DataManager.processSkillMasteryLevelSkillRef = function (group) {
   if (MageStudios.SkillIdRef) return;
   MageStudios.SkillIdRef = {};
   for (var n = 1; n < group.length; n++) {
@@ -616,7 +641,7 @@ DataManager.processSkillMasteryLevelSkillRef = function(group) {
   }
 };
 
-DataManager.processSkillMasteryLevelsNotetags1 = function(group) {
+DataManager.processSkillMasteryLevelsNotetags1 = function (group) {
   var note1 = /<MASTERY EFFECT: ([\+\-]\d+)[ ](.*)[ ]PER LEVEL>/i;
   var note2 = /<MASTERY EFFECT: ([\+\-]\d+)([%％])[ ](.*)[ ]PER LEVEL>/i;
   var note3 = /<CUSTOM (.*) MASTERY FORMULA: (.*)>/i;
@@ -625,131 +650,233 @@ DataManager.processSkillMasteryLevelsNotetags1 = function(group) {
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.masteryMaxLevel = MageStudios.Param.SMLDefaultMaxLv;
-    obj.masteryFormula = new Function('level','skill', 
-      'return ' + MageStudios.Param.SMLLvFormula);
-    obj.masteryDamage = new Function('value', 'level','skill',
-      'return ' + MageStudios.Param.SMLDmgFormula);
-    obj.masteryMpCost = new Function('cost', 'level','skill',
-      'return ' + MageStudios.Param.SMLmpFormula);
-    obj.masteryTpCost = new Function('cost', 'level','skill',
-      'return ' + MageStudios.Param.SMLtpFormula);
-    obj.masteryHpCost = new Function('cost', 'level','skill',
-      'return ' + MageStudios.Param.SMLhpFormula);
-    obj.masteryCooldown = new Function('turns', 'level','skill',
-      'return ' + MageStudios.Param.SMLcdFormula);
+    obj.masteryFormula = new Function(
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLLvFormula
+    );
+    obj.masteryDamage = new Function(
+      "value",
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLDmgFormula
+    );
+    obj.masteryMpCost = new Function(
+      "cost",
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLmpFormula
+    );
+    obj.masteryTpCost = new Function(
+      "cost",
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLtpFormula
+    );
+    obj.masteryHpCost = new Function(
+      "cost",
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLhpFormula
+    );
+    obj.masteryCooldown = new Function(
+      "turns",
+      "level",
+      "skill",
+      "return " + MageStudios.Param.SMLcdFormula
+    );
 
-    var evalMode = 'none';
-    var evalText = '';
+    var evalMode = "none";
+    var evalText = "";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<(?:MAX MASTERY LEVEL):[ ](\d+)>/i)) {
         obj.masteryMaxLevel = parseInt(RegExp.$1);
-      // Flat +/- per mastery level
       } else if (line.match(note1)) {
         var value = parseInt(RegExp.$1);
         var type = String(RegExp.$2).toUpperCase();
-        if (type === 'DAMAGE') {
-          obj.masteryDamage = new Function('value', 'level','skill',
-            'return value + (level * ' + value + ')');
-        } else if (type === 'MP COST') {
-          obj.masteryMpCost = new Function('cost', 'level','skill',
-            'return cost + (level * ' + value + ')');
-        } else if (type === 'TP COST') {
-          obj.masteryTpCost = new Function('cost', 'level','skill',
-            'return cost + (level * ' + value + ')');
-        } else if (type === 'HP COST') {
-          obj.masteryHpCost = new Function('cost', 'level','skill',
-            'return cost + (level * ' + value + ')');
-        } else if (type === 'COOLDOWN') {
-          obj.masteryCooldown = new Function('turns', 'level','skill',
-            'return turns + (level * ' + value + ')');
+        if (type === "DAMAGE") {
+          obj.masteryDamage = new Function(
+            "value",
+            "level",
+            "skill",
+            "return value + (level * " + value + ")"
+          );
+        } else if (type === "MP COST") {
+          obj.masteryMpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost + (level * " + value + ")"
+          );
+        } else if (type === "TP COST") {
+          obj.masteryTpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost + (level * " + value + ")"
+          );
+        } else if (type === "HP COST") {
+          obj.masteryHpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost + (level * " + value + ")"
+          );
+        } else if (type === "COOLDOWN") {
+          obj.masteryCooldown = new Function(
+            "turns",
+            "level",
+            "skill",
+            "return turns + (level * " + value + ")"
+          );
         }
-      // Percentile +/- per mastery level
       } else if (line.match(note2)) {
         var value = parseFloat(RegExp.$1) * 0.01;
         var type = String(RegExp.$3).toUpperCase();
-        if (type === 'DAMAGE') {
-          obj.masteryDamage = new Function('value', 'level','skill',
-            'return value * (1.00 + (level * ' + value + '))');
-        }if (type === 'MP COST') {
-          obj.masteryMpCost = new Function('cost', 'level','skill',
-            'return cost * (1.00 + (level * ' + value + '))');
-        } else if (type === 'TP COST') {
-          obj.masteryTpCost = new Function('cost', 'level','skill',
-            'return cost * (1.00 + (level * ' + value + '))');
-        } else if (type === 'HP COST') {
-          obj.masteryHpCost = new Function('cost', 'level','skill',
-            'return cost * (1.00 + (level * ' + value + '))');
-        } else if (type === 'COOLDOWN') {
-          obj.masteryCooldown = new Function('turns', 'level','skill',
-            'return turns * (1.00 + (level * ' + value + '))');
+        if (type === "DAMAGE") {
+          obj.masteryDamage = new Function(
+            "value",
+            "level",
+            "skill",
+            "return value * (1.00 + (level * " + value + "))"
+          );
         }
-      // No Mastery Change
+        if (type === "MP COST") {
+          obj.masteryMpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost * (1.00 + (level * " + value + "))"
+          );
+        } else if (type === "TP COST") {
+          obj.masteryTpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost * (1.00 + (level * " + value + "))"
+          );
+        } else if (type === "HP COST") {
+          obj.masteryHpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost * (1.00 + (level * " + value + "))"
+          );
+        } else if (type === "COOLDOWN") {
+          obj.masteryCooldown = new Function(
+            "turns",
+            "level",
+            "skill",
+            "return turns * (1.00 + (level * " + value + "))"
+          );
+        }
       } else if (line.match(/<NO[ ](.*)[ ]MASTERY EFFECT>/i)) {
         var type = String(RegExp.$1).toUpperCase();
-        if (type === 'DAMAGE') {
-          obj.masteryDamage = new Function('value', 'level','skill',
-            'return value');
-        } else if (type === 'MP COST') {
-          obj.masteryMpCost = new Function('cost', 'level','skill',
-            'return cost');
-        } else if (type === 'TP COST') {
-          obj.masteryTpCost = new Function('cost', 'level','skill',
-            'return cost');
-        } else if (type === 'HP COST') {
-          obj.masteryHpCost = new Function('cost', 'level','skill',
-            'return cost');
-        } else if (type === 'COOLDOWN') {
-          obj.masteryCooldown = new Function('turns', 'level','skill',
-            'return turns');
+        if (type === "DAMAGE") {
+          obj.masteryDamage = new Function(
+            "value",
+            "level",
+            "skill",
+            "return value"
+          );
+        } else if (type === "MP COST") {
+          obj.masteryMpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost"
+          );
+        } else if (type === "TP COST") {
+          obj.masteryTpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost"
+          );
+        } else if (type === "HP COST") {
+          obj.masteryHpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return cost"
+          );
+        } else if (type === "COOLDOWN") {
+          obj.masteryCooldown = new Function(
+            "turns",
+            "level",
+            "skill",
+            "return turns"
+          );
         }
-      // Mastery Custom Formula
       } else if (line.match(note3)) {
         var type = String(RegExp.$1).toUpperCase();
         var formula = String(RegExp.$2);
-        if (type === 'EXP') {
-          obj.masteryFormula = new Function('level','skill',
-            'return ' + formula);
-        } else if (type === 'DAMAGE') {
-          obj.masteryDamage = new Function('value', 'level','skill',
-            'return ' + formula);
-        } else if (type === 'MP COST') {
-          obj.masteryMpCost = new Function('cost', 'level','skill',
-            'return ' + formula);
-        } else if (type === 'TP COST') {
-          obj.masteryTpCost = new Function('cost', 'level','skill',
-            'return ' + formula);
-        } else if (type === 'HP COST') {
-          obj.masteryHpCost = new Function('cost', 'level','skill',
-            'return ' + formula);
-        } else if (type === 'COOLDOWN') {
-          obj.masteryCooldown = new Function('turns', 'level','skill',
-            'return ' + formula);
+        if (type === "EXP") {
+          obj.masteryFormula = new Function(
+            "level",
+            "skill",
+            "return " + formula
+          );
+        } else if (type === "DAMAGE") {
+          obj.masteryDamage = new Function(
+            "value",
+            "level",
+            "skill",
+            "return " + formula
+          );
+        } else if (type === "MP COST") {
+          obj.masteryMpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return " + formula
+          );
+        } else if (type === "TP COST") {
+          obj.masteryTpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return " + formula
+          );
+        } else if (type === "HP COST") {
+          obj.masteryHpCost = new Function(
+            "cost",
+            "level",
+            "skill",
+            "return " + formula
+          );
+        } else if (type === "COOLDOWN") {
+          obj.masteryCooldown = new Function(
+            "turns",
+            "level",
+            "skill",
+            "return " + formula
+          );
         }
-      // End
-      } else if (evalMode !== 'none') {
-        evalText += line + '\n';
+      } else if (evalMode !== "none") {
+        evalText += line + "\n";
       }
     }
   }
 };
 
-DataManager.processSkillMasteryLevelsNotetags2 = function(group) {
+DataManager.processSkillMasteryLevelsNotetags2 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.startingSkillMasteryLevels = [];
-    var evalMode = 'none';
+    var evalMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
       if (line.match(/<STARTING SKILL (?:MASTERY|MASTERIES)>/i)) {
-        var evalMode = 'starting skill masteries';
+        var evalMode = "starting skill masteries";
       } else if (line.match(/<\/STARTING SKILL (?:MASTERY|MASTERIES)>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'starting skill masteries') {
+        var evalMode = "none";
+      } else if (evalMode === "starting skill masteries") {
         if (line.match(/SKILL[ ](\d+):[ ](\d+)/i)) {
           var skillId = parseInt(RegExp.$1);
           var level = parseInt(RegExp.$2);
@@ -768,9 +895,12 @@ DataManager.processSkillMasteryLevelsNotetags2 = function(group) {
           try {
             var max = formula.call(this, level + 1, $dataSkills[skillId]) - 1;
           } catch (e) {
-            MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-              'Bad code for Mastery EXP Formula for ' +
-              $dataSkills[skillId].name, e);
+            MageStudios.Util.SkillMasteryLevelsError(
+              "SKILL MASTERY LEVELS:\n" +
+                "Bad code for Mastery EXP Formula for " +
+                $dataSkills[skillId].name,
+              e
+            );
           }
           uses = uses.clamp(0, max);
         } else {
@@ -783,48 +913,50 @@ DataManager.processSkillMasteryLevelsNotetags2 = function(group) {
   }
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
 MageStudios.SkillMastery.Game_BattlerBase_initMembers =
   Game_BattlerBase.prototype.initMembers;
-Game_BattlerBase.prototype.initMembers = function() {
+Game_BattlerBase.prototype.initMembers = function () {
   MageStudios.SkillMastery.Game_BattlerBase_initMembers.call(this);
   this.initSkillMasteryLevels();
 };
 
-Game_BattlerBase.prototype.initSkillMasteryLevels = function() {
+Game_BattlerBase.prototype.initSkillMasteryLevels = function () {
   this._skillMasteryLevels = {};
   this._skillMasteryUses = {};
   this._skillMasteryUsageMax = {};
 };
 
-Game_BattlerBase.prototype.checkSkillMasteryLevels = function() {
+Game_BattlerBase.prototype.checkSkillMasteryLevels = function () {
   if (this._skillMasteryLevels === undefined) this.initSkillMasteryLevels();
   if (this._skillMasteryUses === undefined) this.initSkillMasteryLevels();
   if (this._skillMasteryUsageMax === undefined) this.initSkillMasteryLevels();
 };
 
-Game_BattlerBase.prototype.updateSkillMasteryUsageMax = function(skillId) {
+Game_BattlerBase.prototype.updateSkillMasteryUsageMax = function (skillId) {
   this.checkSkillMasteryLevels();
   this._skillMasteryLevels[skillId] = this._skillMasteryLevels[skillId] || 0;
   this._skillMasteryUses[skillId] = this._skillMasteryUses[skillId] || 0;
   var skillFormula = $dataSkills[skillId].masteryFormula;
   try {
-    this._skillMasteryUsageMax[skillId] = skillFormula.call(this,
-      this._skillMasteryLevels[skillId] + 1, $dataSkills[skillId]);
+    this._skillMasteryUsageMax[skillId] = skillFormula.call(
+      this,
+      this._skillMasteryLevels[skillId] + 1,
+      $dataSkills[skillId]
+    );
   } catch (e) {
-    MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-      'Bad code for Mastery EXP Formula for ' +
-      $dataSkills[skillId].name, e);
+    MageStudios.Util.SkillMasteryLevelsError(
+      "SKILL MASTERY LEVELS:\n" +
+        "Bad code for Mastery EXP Formula for " +
+        $dataSkills[skillId].name,
+      e
+    );
   }
 };
 
-Game_BattlerBase.prototype.skillMasteryLevel = function(skill) {
+Game_BattlerBase.prototype.skillMasteryLevel = function (skill) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -835,10 +967,10 @@ Game_BattlerBase.prototype.skillMasteryLevel = function(skill) {
   return this._skillMasteryLevels[skillId];
 };
 
-Game_BattlerBase.prototype.setSkillMasteryLevel = function(skill, value) {
+Game_BattlerBase.prototype.setSkillMasteryLevel = function (skill, value) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -850,33 +982,36 @@ Game_BattlerBase.prototype.setSkillMasteryLevel = function(skill, value) {
   this.updateSkillMasteryUsageMax(skillId);
 };
 
-Game_BattlerBase.prototype.gainSkillMasteryLevel = function(skillId, value) {
+Game_BattlerBase.prototype.gainSkillMasteryLevel = function (skillId, value) {
   this.checkSkillMasteryLevels();
   this._skillMasteryLevels[skillId] = this._skillMasteryLevels[skillId] || 0;
   this._skillMasteryLevels[skillId] += value;
-  this._skillMasteryLevels[skillId] = this._skillMasteryLevels[skillId].clamp(0,
-    $dataSkills[skillId].masteryMaxLevel);
+  this._skillMasteryLevels[skillId] = this._skillMasteryLevels[skillId].clamp(
+    0,
+    $dataSkills[skillId].masteryMaxLevel
+  );
   this._skillMasteryUses[skillId] = 0;
   this.updateSkillMasteryUsageMax(skillId);
 };
 
-Game_BattlerBase.prototype.isMaxedSkillMasteryLevel = function(skill) {
+Game_BattlerBase.prototype.isMaxedSkillMasteryLevel = function (skill) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return false;
   }
   this.checkSkillMasteryLevels();
-  return this.skillMasteryLevel(skillId) >=
-    $dataSkills[skillId].masteryMaxLevel;
+  return (
+    this.skillMasteryLevel(skillId) >= $dataSkills[skillId].masteryMaxLevel
+  );
 };
 
-Game_BattlerBase.prototype.skillMasteryUses = function(skill) {
+Game_BattlerBase.prototype.skillMasteryUses = function (skill) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -887,10 +1022,10 @@ Game_BattlerBase.prototype.skillMasteryUses = function(skill) {
   return this._skillMasteryUses[skillId];
 };
 
-Game_BattlerBase.prototype.setSkillMasteryUses = function(skill, value) {
+Game_BattlerBase.prototype.setSkillMasteryUses = function (skill, value) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -903,15 +1038,15 @@ Game_BattlerBase.prototype.setSkillMasteryUses = function(skill, value) {
   }
 };
 
-Game_BattlerBase.prototype.gainSkillMasteryUses = function(skill, value) {
+Game_BattlerBase.prototype.gainSkillMasteryUses = function (skill, value) {
   var uses = this.skillMasteryUses(skill) + value;
   this.setSkillMasteryUses(skill, uses);
 };
 
-Game_BattlerBase.prototype.skillMasteryUsageMax = function(skill) {
+Game_BattlerBase.prototype.skillMasteryUsageMax = function (skill) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -921,10 +1056,10 @@ Game_BattlerBase.prototype.skillMasteryUsageMax = function(skill) {
   return this._skillMasteryUsageMax[skillId];
 };
 
-Game_BattlerBase.prototype.skillMasteryRate = function(skill) {
+Game_BattlerBase.prototype.skillMasteryRate = function (skill) {
   if (DataManager.isSkill(skill)) {
     var skillId = skill.id;
-  } else if (typeof skill === 'number') {
+  } else if (typeof skill === "number") {
     var skillId = skill;
   } else {
     return 0;
@@ -937,7 +1072,7 @@ Game_BattlerBase.prototype.skillMasteryRate = function(skill) {
 
 MageStudios.SkillMastery.Game_BattlerBase_paySkillCost =
   Game_BattlerBase.prototype.paySkillCost;
-Game_BattlerBase.prototype.paySkillCost = function(skill) {
+Game_BattlerBase.prototype.paySkillCost = function (skill) {
   MageStudios.SkillMastery.Game_BattlerBase_paySkillCost.call(this, skill);
   if ($gameParty.inBattle()) {
     this._actionMastery = this._actionMastery || [];
@@ -947,7 +1082,7 @@ Game_BattlerBase.prototype.paySkillCost = function(skill) {
 
 MageStudios.SkillMastery.Game_Battler_onAllActionsEnd =
   Game_Battler.prototype.onAllActionsEnd;
-Game_Battler.prototype.onAllActionsEnd = function() {
+Game_Battler.prototype.onAllActionsEnd = function () {
   MageStudios.SkillMastery.Game_Battler_onAllActionsEnd.call(this);
   if (this._actionMastery && $gameParty.inBattle()) {
     var levelup = false;
@@ -971,16 +1106,22 @@ Game_Battler.prototype.onAllActionsEnd = function() {
 
 MageStudios.SkillMastery.Game_BattlerBase_skillMpCost =
   Game_BattlerBase.prototype.skillMpCost;
-Game_BattlerBase.prototype.skillMpCost = function(skill) {
-  var cost = MageStudios.SkillMastery.Game_BattlerBase_skillMpCost.call(this, skill);
+Game_BattlerBase.prototype.skillMpCost = function (skill) {
+  var cost = MageStudios.SkillMastery.Game_BattlerBase_skillMpCost.call(
+    this,
+    skill
+  );
   if (cost > 0) {
     var level = this.skillMasteryLevel(skill);
     try {
       cost = Math.floor(skill.masteryMpCost.call(this, cost, level, skill));
     } catch (e) {
-      MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-        'Bad code for Mastery MP Cost Formula for ' +
-        $dataSkills[skill.id].name, e);
+      MageStudios.Util.SkillMasteryLevelsError(
+        "SKILL MASTERY LEVELS:\n" +
+          "Bad code for Mastery MP Cost Formula for " +
+          $dataSkills[skill.id].name,
+        e
+      );
     }
     cost = Math.max(cost, MageStudios.Param.SMLminMpCost);
   }
@@ -989,16 +1130,22 @@ Game_BattlerBase.prototype.skillMpCost = function(skill) {
 
 MageStudios.SkillMastery.Game_BattlerBase_skillTpCost =
   Game_BattlerBase.prototype.skillTpCost;
-Game_BattlerBase.prototype.skillTpCost = function(skill) {
-  var cost = MageStudios.SkillMastery.Game_BattlerBase_skillTpCost.call(this, skill);
+Game_BattlerBase.prototype.skillTpCost = function (skill) {
+  var cost = MageStudios.SkillMastery.Game_BattlerBase_skillTpCost.call(
+    this,
+    skill
+  );
   if (cost > 0) {
     var level = this.skillMasteryLevel(skill);
     try {
       cost = Math.floor(skill.masteryTpCost.call(this, cost, level, skill));
     } catch (e) {
-      MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-        'Bad code for Mastery TP Cost Formula for ' +
-        $dataSkills[skill.id].name, e);
+      MageStudios.Util.SkillMasteryLevelsError(
+        "SKILL MASTERY LEVELS:\n" +
+          "Bad code for Mastery TP Cost Formula for " +
+          $dataSkills[skill.id].name,
+        e
+      );
     }
     cost = Math.max(cost, MageStudios.Param.SMLminTpCost);
   }
@@ -1006,49 +1153,63 @@ Game_BattlerBase.prototype.skillTpCost = function(skill) {
 };
 
 if (Imported.MSEP_SkillCore) {
-
-MageStudios.SkillMastery.Game_BattlerBase_skillHpCost =
-  Game_BattlerBase.prototype.skillHpCost;
-Game_BattlerBase.prototype.skillHpCost = function(skill) {
-  var cost = MageStudios.SkillMastery.Game_BattlerBase_skillHpCost.call(this, skill);
-  if (cost > 0) {
-    var level = this.skillMasteryLevel(skill);
-    try {
-      cost = Math.floor(skill.masteryHpCost.call(this, cost, level, skill));
-    } catch (e) {
-      MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-        'Bad code for Mastery HP Cost Formula for ' +
-        $dataSkills[skill.id].name, e);
+  MageStudios.SkillMastery.Game_BattlerBase_skillHpCost =
+    Game_BattlerBase.prototype.skillHpCost;
+  Game_BattlerBase.prototype.skillHpCost = function (skill) {
+    var cost = MageStudios.SkillMastery.Game_BattlerBase_skillHpCost.call(
+      this,
+      skill
+    );
+    if (cost > 0) {
+      var level = this.skillMasteryLevel(skill);
+      try {
+        cost = Math.floor(skill.masteryHpCost.call(this, cost, level, skill));
+      } catch (e) {
+        MageStudios.Util.SkillMasteryLevelsError(
+          "SKILL MASTERY LEVELS:\n" +
+            "Bad code for Mastery HP Cost Formula for " +
+            $dataSkills[skill.id].name,
+          e
+        );
+      }
+      cost = Math.max(cost, MageStudios.Param.SMLminHpCost);
     }
-    cost = Math.max(cost, MageStudios.Param.SMLminHpCost);
+    return cost;
+  };
+
+  if (Imported.MSEP_X_SkillCooldowns) {
+    MageStudios.SkillMastery.Game_BattlerBase_applyCooldownMods =
+      Game_BattlerBase.prototype.applyCooldownMods;
+    Game_BattlerBase.prototype.applyCooldownMods = function (skill) {
+      MageStudios.SkillMastery.Game_BattlerBase_applyCooldownMods.call(
+        this,
+        skill
+      );
+      var turns = this.cooldown(skill.id);
+      if (turns > 0) {
+        var level = this.skillMasteryLevel(skill);
+        try {
+          turns = Math.floor(
+            skill.masteryCooldown.call(this, turns, level, skill)
+          );
+        } catch (e) {
+          MageStudios.Util.SkillMasteryLevelsError(
+            "SKILL MASTERY LEVELS:\n" +
+              "Bad code for Mastery Cooldown Formula for " +
+              $dataSkills[skill.id].name,
+            e
+          );
+        }
+        this.setCooldown(
+          skill.id,
+          Math.max(MageStudios.Param.SMLminCdCost, turns)
+        );
+      }
+    };
   }
-  return cost;
-};
+}
 
-if (Imported.MSEP_X_SkillCooldowns) {
-
-MageStudios.SkillMastery.Game_BattlerBase_applyCooldownMods =
-  Game_BattlerBase.prototype.applyCooldownMods;
-Game_BattlerBase.prototype.applyCooldownMods = function(skill) {
-  MageStudios.SkillMastery.Game_BattlerBase_applyCooldownMods.call(this, skill);
-  var turns = this.cooldown(skill.id);
-  if (turns > 0) {
-    var level = this.skillMasteryLevel(skill);
-    try {
-      turns = Math.floor(skill.masteryCooldown.call(this, turns, level, skill));
-    } catch (e) {
-      MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-        'Bad code for Mastery Cooldown Formula for ' +
-        $dataSkills[skill.id].name, e);
-    }
-    this.setCooldown(skill.id, Math.max(MageStudios.Param.SMLminCdCost, turns));
-  }
-};
-
-}; // Imported.MSEP_X_SkillCooldowns
-}; // Imported.MSEP_SkillCore
-
-Game_BattlerBase.prototype.makeStartingSkillMasteryLevels = function(obj) {
+Game_BattlerBase.prototype.makeStartingSkillMasteryLevels = function (obj) {
   if (!obj) return;
   if (!obj.startingSkillMasteryLevels) return;
   var data = obj.startingSkillMasteryLevels;
@@ -1062,68 +1223,66 @@ Game_BattlerBase.prototype.makeStartingSkillMasteryLevels = function(obj) {
   }
 };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
-
 MageStudios.SkillMastery.Game_Action_makeDamageValue =
   Game_Action.prototype.makeDamageValue;
-Game_Action.prototype.makeDamageValue = function(target, critical) {
-  var value = MageStudios.SkillMastery.Game_Action_makeDamageValue.call(this,
-    target, critical);
+Game_Action.prototype.makeDamageValue = function (target, critical) {
+  var value = MageStudios.SkillMastery.Game_Action_makeDamageValue.call(
+    this,
+    target,
+    critical
+  );
   if (value !== 0 && this.isSkill()) {
     var level = this.subject().skillMasteryLevel(this.item());
     try {
-      value = Math.round(this.item().masteryDaMageStudios.call(this, value, level,
-        this.item()));
+      value = Math.round(
+        this.item().masteryDaMageStudios.call(this, value, level, this.item())
+      );
     } catch (e) {
-      MageStudios.Util.SkillMasteryLevelsError('SKILL MASTERY LEVELS:\n' + 
-        'Bad code for Mastery Damage Formula for ' +
-        this.item().name, e);
+      MageStudios.Util.SkillMasteryLevelsError(
+        "SKILL MASTERY LEVELS:\n" +
+          "Bad code for Mastery Damage Formula for " +
+          this.item().name,
+        e
+      );
     }
   }
   return value;
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-MageStudios.SkillMastery.Game_Actor_initSkills = Game_Actor.prototype.initSkills;
-Game_Actor.prototype.initSkills = function() {
+MageStudios.SkillMastery.Game_Actor_initSkills =
+  Game_Actor.prototype.initSkills;
+Game_Actor.prototype.initSkills = function () {
   MageStudios.SkillMastery.Game_Actor_initSkills.call(this);
   this.makeStartingSkillMasteryLevels(this.actor());
 };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
 MageStudios.SkillMastery.Game_Enemy_setup = Game_Enemy.prototype.setup;
-Game_Enemy.prototype.setup = function(enemyId, x, y) {
+Game_Enemy.prototype.setup = function (enemyId, x, y) {
   MageStudios.SkillMastery.Game_Enemy_setup.call(this, enemyId, x, y);
   this.makeStartingSkillMasteryLevels(this.enemy());
 };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
 MageStudios.SkillMastery.Window_Base_drawItemName =
   Window_Base.prototype.drawItemName;
-Window_Base.prototype.drawItemName = function(item, x, y, width) {
+Window_Base.prototype.drawItemName = function (item, x, y, width) {
   width = width || 312;
   var drawSkillMastery = this._actor && DataManager.isSkill(item);
   if (drawSkillMastery && MageStudios.Param.SMLDrawGauge) {
     this.drawSkillMasteryGauge(item, x, y, width);
   }
-  MageStudios.SkillMastery.Window_Base_drawItemName.call(this, item, x, y, width);
+  MageStudios.SkillMastery.Window_Base_drawItemName.call(
+    this,
+    item,
+    x,
+    y,
+    width
+  );
   if (drawSkillMastery && MageStudios.Param.SMLDrawLevel) {
     this.drawSkillMasteryLevel(item, x, y, width);
   }
 };
 
-Window_Base.prototype.drawSkillMasteryGauge = function(skill, x, y, width) {
+Window_Base.prototype.drawSkillMasteryGauge = function (skill, x, y, width) {
   if (skill.masteryMaxLevel <= 0) return;
   x += Window_Base._iconWidth + 4;
   width -= Window_Base._iconWidth + 4;
@@ -1147,7 +1306,7 @@ Window_Base.prototype.drawSkillMasteryGauge = function(skill, x, y, width) {
   this.contents.gradientFillRect(x, gaugeY, fillW, gaugeH, color1, color2);
 };
 
-Window_Base.prototype.drawSkillMasteryLevel = function(skill, x, y, width) {
+Window_Base.prototype.drawSkillMasteryLevel = function (skill, x, y, width) {
   var level = this._actor.skillMasteryLevel(skill);
   if (level <= 0 && !MageStudios.Param.SMLShowLevel0) return;
   var fmt = MageStudios.Param.SMLTextFmt;
@@ -1161,26 +1320,16 @@ Window_Base.prototype.drawSkillMasteryLevel = function(skill, x, y, width) {
   this.resetFontSettings();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
 }
 
-}; // MageStudios.Util.toGroup
-
-MageStudios.Util.SkillMasteryLevelsError = function(text, e) {
-  text = text + '\n\n' + e.stack;
+MageStudios.Util.SkillMasteryLevelsError = function (text, e) {
+  text = text + "\n\n" + e.stack;
   alert(text);
   SceneManager.terminate();
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Utility Common Events
-// MSEP_UtilityCommonEvents.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_UtilityCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.UCE = MageStudios.UCE || {};
-MageStudios.UCE.version = 1.00;
+MageStudios.UCE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Make common events occur at specific gameplay points
  * such as on loading, after battles, etc.
  * @author Mage Studios Engine Plugins
@@ -146,76 +140,64 @@ MageStudios.UCE.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_UtilityCommonEvents');
+MageStudios.Parameters = PluginManager.parameters("MSEP_UtilityCommonEvents");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.UtilCommonEvents = {
-  load: Number(MageStudios.Parameters['Load Game Event']) || 0,
-  battleWon: Number(MageStudios.Parameters['Battle Won Event']) || 0,
-  battleEscape: Number(MageStudios.Parameters['Battle Escape Event']) || 0,
-  closeMenu: Number(MageStudios.Parameters['Close Menu Event']) || 0,
+  load: Number(MageStudios.Parameters["Load Game Event"]) || 0,
+  battleWon: Number(MageStudios.Parameters["Battle Won Event"]) || 0,
+  battleEscape: Number(MageStudios.Parameters["Battle Escape Event"]) || 0,
+  closeMenu: Number(MageStudios.Parameters["Close Menu Event"]) || 0,
 
-  boatEnter: Number(MageStudios.Parameters['Boat Enter Event']) || 0,
-  boatExit: Number(MageStudios.Parameters['Boat Exit Event']) || 0,
-  shipEnter: Number(MageStudios.Parameters['Ship Enter Event']) || 0,
-  shipExit: Number(MageStudios.Parameters['Ship Exit Event']) || 0,
-  airshipEnter: Number(MageStudios.Parameters['Airship Enter Event']) || 0,
-  airshipExit: Number(MageStudios.Parameters['Airship Exit Event']) || 0,
+  boatEnter: Number(MageStudios.Parameters["Boat Enter Event"]) || 0,
+  boatExit: Number(MageStudios.Parameters["Boat Exit Event"]) || 0,
+  shipEnter: Number(MageStudios.Parameters["Ship Enter Event"]) || 0,
+  shipExit: Number(MageStudios.Parameters["Ship Exit Event"]) || 0,
+  airshipEnter: Number(MageStudios.Parameters["Airship Enter Event"]) || 0,
+  airshipExit: Number(MageStudios.Parameters["Airship Exit Event"]) || 0,
 };
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.UCE.DataManager_loadGame = DataManager.loadGame;
-DataManager.loadGame = function(savefileId) {
+DataManager.loadGame = function (savefileId) {
   var flag = MageStudios.UCE.DataManager_loadGame.call(this, savefileId);
-  if (flag && MageStudios.Param.UtilCommonEvents['load'] > 0) {
-    $gameTemp.reserveCommonEvent(MageStudios.Param.UtilCommonEvents['load']);
+  if (flag && MageStudios.Param.UtilCommonEvents["load"] > 0) {
+    $gameTemp.reserveCommonEvent(MageStudios.Param.UtilCommonEvents["load"]);
   }
   return flag;
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.UCE.Game_System_onBattleWin = Game_System.prototype.onBattleWin;
-Game_System.prototype.onBattleWin = function() {
+Game_System.prototype.onBattleWin = function () {
   MageStudios.UCE.Game_System_onBattleWin.call(this);
-  if (MageStudios.Param.UtilCommonEvents['battleWon'] > 0) {
-    $gameTemp.reserveCommonEvent(MageStudios.Param.UtilCommonEvents['battleWon']);
+  if (MageStudios.Param.UtilCommonEvents["battleWon"] > 0) {
+    $gameTemp.reserveCommonEvent(
+      MageStudios.Param.UtilCommonEvents["battleWon"]
+    );
   }
 };
 
-MageStudios.UCE.Game_System_onBattleEscape = Game_System.prototype.onBattleEscape;
-Game_System.prototype.onBattleEscape = function() {
+MageStudios.UCE.Game_System_onBattleEscape =
+  Game_System.prototype.onBattleEscape;
+Game_System.prototype.onBattleEscape = function () {
   MageStudios.UCE.Game_System_onBattleEscape.call(this);
-  if (MageStudios.Param.UtilCommonEvents['battleEscape'] > 0) {
-    $gameTemp.reserveCommonEvent(MageStudios.Param.UtilCommonEvents['battleEscape']);
+  if (MageStudios.Param.UtilCommonEvents["battleEscape"] > 0) {
+    $gameTemp.reserveCommonEvent(
+      MageStudios.Param.UtilCommonEvents["battleEscape"]
+    );
   }
 };
-
-//=============================================================================
-// Game_Player
-//=============================================================================
 
 MageStudios.UCE.Game_Player_getOnVehicle = Game_Player.prototype.getOnVehicle;
-Game_Player.prototype.getOnVehicle = function() {
+Game_Player.prototype.getOnVehicle = function () {
   var success = MageStudios.UCE.Game_Player_getOnVehicle.call(this);
   if (success) {
     var events = MageStudios.Param.UtilCommonEvents;
-    if (this._vehicleType === 'airship' && events.airshipEnter > 0) {
+    if (this._vehicleType === "airship" && events.airshipEnter > 0) {
       $gameTemp.reserveCommonEvent(events.airshipEnter);
-    } else if (this._vehicleType === 'ship' && events.shipEnter > 0) {
+    } else if (this._vehicleType === "ship" && events.shipEnter > 0) {
       $gameTemp.reserveCommonEvent(events.shipEnter);
-    } else if (this._vehicleType === 'boat' && events.boatEnter > 0) {
+    } else if (this._vehicleType === "boat" && events.boatEnter > 0) {
       $gameTemp.reserveCommonEvent(events.boatEnter);
     }
   }
@@ -223,39 +205,33 @@ Game_Player.prototype.getOnVehicle = function() {
 };
 
 MageStudios.UCE.Game_Player_getOffVehicle = Game_Player.prototype.getOffVehicle;
-Game_Player.prototype.getOffVehicle = function() {
+Game_Player.prototype.getOffVehicle = function () {
   var success = MageStudios.UCE.Game_Player_getOffVehicle.call(this);
   if (success) {
     var events = MageStudios.Param.UtilCommonEvents;
-    if (this._vehicleType === 'airship' && events.airshipExit > 0) {
+    if (this._vehicleType === "airship" && events.airshipExit > 0) {
       $gameTemp.reserveCommonEvent(events.airshipExit);
-    } else if (this._vehicleType === 'ship' && events.shipExit > 0) {
+    } else if (this._vehicleType === "ship" && events.shipExit > 0) {
       $gameTemp.reserveCommonEvent(events.shipExit);
-    } else if (this._vehicleType === 'boat' && events.boatExit > 0) {
+    } else if (this._vehicleType === "boat" && events.boatExit > 0) {
       $gameTemp.reserveCommonEvent(events.boatExit);
     }
   }
   return success;
 };
 
-//=============================================================================
-// Scene_Menu
-//=============================================================================
-
 MageStudios.UCE.Scene_Menu_createCommandWindow =
   Scene_Menu.prototype.createCommandWindow;
-Scene_Menu.prototype.createCommandWindow = function() {
+Scene_Menu.prototype.createCommandWindow = function () {
   MageStudios.UCE.Scene_Menu_createCommandWindow.call(this);
-  this._commandWindow.setHandler('cancel', this.closeMainMenu.bind(this));
+  this._commandWindow.setHandler("cancel", this.closeMainMenu.bind(this));
 };
 
-Scene_Menu.prototype.closeMainMenu = function() {
+Scene_Menu.prototype.closeMainMenu = function () {
   this.popScene();
-  if (MageStudios.Param.UtilCommonEvents['closeMenu'] > 0) {
-    $gameTemp.reserveCommonEvent(MageStudios.Param.UtilCommonEvents['closeMenu']);
+  if (MageStudios.Param.UtilCommonEvents["closeMenu"] > 0) {
+    $gameTemp.reserveCommonEvent(
+      MageStudios.Param.UtilCommonEvents["closeMenu"]
+    );
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

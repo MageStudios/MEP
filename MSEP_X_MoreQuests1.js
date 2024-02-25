@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Quest Journal System Extension - More Quests 1
-// MSEP_X_MoreQuests1.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MoreQuests1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MoreQuests1 = MageStudios.MoreQuests1 || {};
-MageStudios.MoreQuests1.version = 1.00;
+MageStudios.MoreQuests1.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_QuestJournal.js)
  * Add quests 101 to 1000 to your game!
  * @author Mage Studios Engine Plugins
@@ -226,7 +220,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 120
  * @parent ---Quests 101 to 200---
  * @type struct<Quest>
@@ -962,7 +956,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 220
  * @parent ---Quests 201 to 300---
  * @type struct<Quest>
@@ -1698,7 +1692,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 320
  * @parent ---Quests 301 to 400---
  * @type struct<Quest>
@@ -2434,7 +2428,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 420
  * @parent ---Quests 401 to 500---
  * @type struct<Quest>
@@ -3170,7 +3164,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 520
  * @parent ---Quests 501 to 600---
  * @type struct<Quest>
@@ -3906,7 +3900,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 620
  * @parent ---Quests 601 to 700---
  * @type struct<Quest>
@@ -4642,7 +4636,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 720
  * @parent ---Quests 701 to 800---
  * @type struct<Quest>
@@ -5378,7 +5372,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 820
  * @parent ---Quests 801 to 900---
  * @type struct<Quest>
@@ -6114,7 +6108,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Modify the data used by this quest entry.
  * Refer to Help for more information about each setting.
  * @default
- * 
+ *
  * @param Quest 920
  * @parent ---Quests 901 to 1000---
  * @type struct<Quest>
@@ -6749,7 +6743,7 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc The reward list for this quest.
  * Text codes allowed.
  * @default ["\"\\\\i[176]Potion x5\"","\"\\\\i[178]Ether x3\"","\"To make other rewards appear,\\nenable them through the \\\\c[4]'Visible\\nRewards'\\\\c[0] plugin parameter or by\\nusing a plugin command to make\\nthem appear\""]
- * 
+ *
  * @param Visible Rewards
  * @parent Rewards List
  * @type number[]
@@ -6762,60 +6756,53 @@ MageStudios.MoreQuests1.version = 1.00;
  * @desc Subtext to be displayed with the quest.
  * @default ["\"\"","\"This is a subtext. It is used as\\nextra text that you may want to\\nplace on your quest journal that\\ndiffers from the description.\""]
  */
-//=============================================================================
 
 if (Imported.MSEP_QuestJournal) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MoreQuests1");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  DataManager.questDatabaseCreate = function () {
+    $dataQuests = $dataQuests || [null];
+    var index1 = [101, 201, 301, 401, 501, 601, 701, 801, 901];
+    var index2 = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    var length = index1.length;
+    for (var n = 0; n < length; ++n) {
+      var a = index1[n];
+      var b = index2[n];
+      var str = a + " to " + b;
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreQuests1');
-MageStudios.Param = MageStudios.Param || {};
-
-DataManager.questDatabaseCreate = function() {
-  $dataQuests = $dataQuests || [null];
-  var index1 = [101, 201, 301, 401, 501, 601, 701, 801, 901];
-  var index2 = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
-  var length = index1.length;
-  for (var n = 0; n < length; ++n) {
-    var a = index1[n];
-    var b = index2[n];
-    var str = a + ' to ' + b;
-
-    for (var i = a; i <= b; ++i) {
-      var questData = JSON.parse(MageStudios.Parameters['Quest ' + i] || 'null');
-      if (!questData) continue;
-      if (questData['Type'] === '|-=AUTO=-|') {
-        questData['Type'] = MageStudios.Parameters['Category: ' + str];
+      for (var i = a; i <= b; ++i) {
+        var questData = JSON.parse(
+          MageStudios.Parameters["Quest " + i] || "null"
+        );
+        if (!questData) continue;
+        if (questData["Type"] === "|-=AUTO=-|") {
+          questData["Type"] = MageStudios.Parameters["Category: " + str];
+        }
+        if (questData["Difficulty"] === "|-=AUTO=-|") {
+          questData["Difficulty"] =
+            MageStudios.Parameters["Difficulty: " + str];
+        }
+        if (questData["From"] === "|-=AUTO=-|") {
+          questData["From"] = MageStudios.Parameters["From: " + str];
+        }
+        if (questData["Location"] === "|-=AUTO=-|") {
+          questData["Location"] = MageStudios.Parameters["Location: " + str];
+        }
+        this.questDatabaseAdd(i, questData);
       }
-      if (questData['Difficulty'] === '|-=AUTO=-|') {
-        questData['Difficulty'] = MageStudios.Parameters['Difficulty: ' + str];
-      }
-      if (questData['From'] === '|-=AUTO=-|') {
-        questData['From'] = MageStudios.Parameters['From: ' + str];
-      }
-      if (questData['Location'] === '|-=AUTO=-|') {
-        questData['Location'] = MageStudios.Parameters['Location: ' + str];
-      }
-      this.questDatabaseAdd(i, questData);
     }
-  }
-};
+  };
 
-DataManager.questDatabaseCreate();
-
-//=============================================================================
-// End of File
-//=============================================================================
+  DataManager.questDatabaseCreate();
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_MoreQuests1 without MSEP_QuestJournal. Please visit MageStudios.moe ';
-text += 'and install MSEP_QuestJournal in your game project before you can use ';
-text += 'this plugin.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // Imported.MSEP_QuestJournal
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text +=
+    "MSEP_X_MoreQuests1 without MSEP_QuestJournal. Please visit MageStudios.moe ";
+  text +=
+    "and install MSEP_QuestJournal in your game project before you can use ";
+  text += "this plugin.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

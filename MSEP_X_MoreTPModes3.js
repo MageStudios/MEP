@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Enhanced TP Extension - More TP Modes 3
-// MSEP_X_MoreTPModes3.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MoreTPModes3 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ETP = MageStudios.ETP || {};
-MageStudios.ETP.version = 1.00
+MageStudios.ETP.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_EnhancedTP.js) Adds TP Modes 61 to 80
  * to your game!
  * @author Mage Studios Engine Plugins
@@ -2868,7 +2862,7 @@ MageStudios.ETP.version = 1.00
  *
  * For those who think that 60 TP Modes isn't enough, this will expand the
  * amount of TP Modes for your game by another 20 for a total of 80 TP Modes!
- * 
+ *
  * ============================================================================
  * Changelog
  * ============================================================================
@@ -2879,54 +2873,103 @@ MageStudios.ETP.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_EnhancedTP) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MoreTPModes3");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreTPModes3');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.ETPMax = 80;
-for (MageStudios.i = 61; MageStudios.i < MageStudios.Param.ETPMax + 1; ++MageStudios.i) {
-  $dataTpModes[MageStudios.i] = {
-    id: MageStudios.i,
-    name: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Name']),
-    iconIndex: Number(MageStudios.Parameters['Mode ' + MageStudios.i + ' Icon']),
-    description: 
-      String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Help Line 1']) + '\n' +
-      String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Help Line 2']),
-    maxTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Max TP']),
-    preserve: eval(String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Preserve'])),
-    initialTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Initial TP']),
-    regenTp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Regen TP']),
-    takeHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Take HP DMG']),
-    dealHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal HP DMG']),
-    healHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Heal HP DMG']),
-    allyHpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally HP DMG']),
-    takeMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Take MP DMG']),
-    dealMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal MP DMG']),
-    healMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Heal MP DMG']),
-    allyMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally MP DMG']),
-    allyMpDmg: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Ally MP DMG']),
-    dealState: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Deal State']),
-    gainState: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Gain State']),
-    killAlly: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Kill Ally']),
-    killEnemy: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Kill Enemy']),
-    winBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Win Battle']),
-    fleeBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Flee Battle']),
-    loseBattle: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Lose Battle']),
-    crisisHp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Crisis HP']),
-    crisisMp: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Crisis MP']),
-    onlyMember: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Only Member']),
-    evasion: String(MageStudios.Parameters['Mode ' + MageStudios.i + ' Evasion'])
+  MageStudios.Param.ETPMax = 80;
+  for (
+    MageStudios.i = 61;
+    MageStudios.i < MageStudios.Param.ETPMax + 1;
+    ++MageStudios.i
+  ) {
+    $dataTpModes[MageStudios.i] = {
+      id: MageStudios.i,
+      name: String(MageStudios.Parameters["Mode " + MageStudios.i + " Name"]),
+      iconIndex: Number(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Icon"]
+      ),
+      description:
+        String(
+          MageStudios.Parameters["Mode " + MageStudios.i + " Help Line 1"]
+        ) +
+        "\n" +
+        String(
+          MageStudios.Parameters["Mode " + MageStudios.i + " Help Line 2"]
+        ),
+      maxTp: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Max TP"]
+      ),
+      preserve: eval(
+        String(MageStudios.Parameters["Mode " + MageStudios.i + " Preserve"])
+      ),
+      initialTp: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Initial TP"]
+      ),
+      regenTp: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Regen TP"]
+      ),
+      takeHpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Take HP DMG"]
+      ),
+      dealHpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Deal HP DMG"]
+      ),
+      healHpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Heal HP DMG"]
+      ),
+      allyHpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Ally HP DMG"]
+      ),
+      takeMpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Take MP DMG"]
+      ),
+      dealMpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Deal MP DMG"]
+      ),
+      healMpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Heal MP DMG"]
+      ),
+      allyMpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Ally MP DMG"]
+      ),
+      allyMpDmg: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Ally MP DMG"]
+      ),
+      dealState: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Deal State"]
+      ),
+      gainState: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Gain State"]
+      ),
+      killAlly: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Kill Ally"]
+      ),
+      killEnemy: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Kill Enemy"]
+      ),
+      winBattle: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Win Battle"]
+      ),
+      fleeBattle: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Flee Battle"]
+      ),
+      loseBattle: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Lose Battle"]
+      ),
+      crisisHp: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Crisis HP"]
+      ),
+      crisisMp: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Crisis MP"]
+      ),
+      onlyMember: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Only Member"]
+      ),
+      evasion: String(
+        MageStudios.Parameters["Mode " + MageStudios.i + " Evasion"]
+      ),
+    };
   }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+}

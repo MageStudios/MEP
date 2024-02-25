@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Advanced Switches % Variables
-// MSEP_AdvSwVar.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_AdvSwVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AdvSwVar = MageStudios.AdvSwVar || {};
-MageStudios.AdvSwVar.version = 1.00;
+MageStudios.AdvSwVar.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Make advanced switches and variables that are
  * able to utilize JavaScript for enhanced usage.
  * @author Mage Studios Engine Plugins
@@ -176,14 +170,9 @@ MageStudios.AdvSwVar.version = 1.00;
  * not include those that are equipped.
  *
  */
-//=============================================================================
-
-//=============================================================================
-// Game_Switches
-//=============================================================================
 
 MageStudios.AdvSwVar.Game_Switches_value = Game_Switches.prototype.value;
-Game_Switches.prototype.value = function(switchId) {
+Game_Switches.prototype.value = function (switchId) {
   if (this.isAdvancedSwitch(switchId)) {
     return this.runAdvancedSwitchCode(switchId);
   } else {
@@ -191,7 +180,7 @@ Game_Switches.prototype.value = function(switchId) {
   }
 };
 
-Game_Switches.prototype.isAdvancedSwitch = function(switchId) {
+Game_Switches.prototype.isAdvancedSwitch = function (switchId) {
   if (SceneManager._scene._debugActive) return false;
   if (SceneManager._scene instanceof Scene_Debug) return;
   var name = $dataSystem.switches[switchId];
@@ -199,33 +188,32 @@ Game_Switches.prototype.isAdvancedSwitch = function(switchId) {
   return false;
 };
 
-Game_Switches.prototype.runAdvancedSwitchCode = function(switchId) {
+Game_Switches.prototype.runAdvancedSwitchCode = function (switchId) {
   var value = false;
   var name = $dataSystem.switches[switchId];
   if (name.match(/EVAL:[ ](.*)/i)) {
-    var code = 'value = ' + String(RegExp.$1);
+    var code = "value = " + String(RegExp.$1);
   } else {
     return this.defaultAdvancedSwitchResult(switchId);
   }
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'ADVANCED SWITCH ' + switchId + 
-    ' EVAL ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "ADVANCED SWITCH " + switchId + " EVAL ERROR"
+    );
   }
   return value;
 };
 
-Game_Switches.prototype.defaultAdvancedSwitchResult = function(switchId) {
+Game_Switches.prototype.defaultAdvancedSwitchResult = function (switchId) {
   return false;
 };
 
-//=============================================================================
-// Game_Variables
-//=============================================================================
-
 MageStudios.AdvSwVar.Game_Variables_value = Game_Variables.prototype.value;
-Game_Variables.prototype.value = function(variableId) {
+Game_Variables.prototype.value = function (variableId) {
   if (this.isAdvancedVariable(variableId)) {
     return this.runAdvancedVariableCode(variableId);
   } else {
@@ -233,7 +221,7 @@ Game_Variables.prototype.value = function(variableId) {
   }
 };
 
-Game_Variables.prototype.isAdvancedVariable = function(variableId) {
+Game_Variables.prototype.isAdvancedVariable = function (variableId) {
   if (SceneManager._scene._debugActive) return false;
   if (SceneManager._scene instanceof Scene_Debug) return;
   var name = $dataSystem.variables[variableId];
@@ -241,65 +229,56 @@ Game_Variables.prototype.isAdvancedVariable = function(variableId) {
   return false;
 };
 
-Game_Variables.prototype.runAdvancedVariableCode = function(variableId) {
+Game_Variables.prototype.runAdvancedVariableCode = function (variableId) {
   var value = 0;
   var name = $dataSystem.variables[variableId];
   if (name.match(/EVAL:[ ](.*)/i)) {
-    var code = 'value = ' + String(RegExp.$1);
+    var code = "value = " + String(RegExp.$1);
   } else {
     return this.defaultAdvancedVariableResult(variableId);
   }
   try {
     eval(code);
   } catch (e) {
-    MageStudios.Util.displayError(e, code, 'ADVANCED VARIABLE' + variableId +
-    ' EVAL ERROR');
+    MageStudios.Util.displayError(
+      e,
+      code,
+      "ADVANCED VARIABLE" + variableId + " EVAL ERROR"
+    );
   }
   return value;
 };
 
-Game_Switches.prototype.defaultAdvancedVariableResult = function(variableId) {
+Game_Switches.prototype.defaultAdvancedVariableResult = function (variableId) {
   return 0;
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.AdvSwVar.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.AdvSwVar.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'RefreshMap') {
+  if (command === "RefreshMap") {
     if (!$gameParty.inBattle()) {
       $gameMap.requestRefresh($gameMap.mapId());
     }
   }
-  if (command === 'RefreshTroop') {
+  if (command === "RefreshTroop") {
     if ($gameParty.inBattle()) {
       $gameTroop.setupBattleEvent();
     }
   }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.displayError = function(e, code, message) {
+MageStudios.Util.displayError = function (e, code, message) {
   console.log(message);
-  console.log(code || 'NON-EXISTENT');
+  console.log(code || "NON-EXISTENT");
   console.error(e);
   if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+    if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+      require("nw.gui").Window.get().showDevTools();
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

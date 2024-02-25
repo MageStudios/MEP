@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle Engine Core Extension - Weak Enemy Poses
-// MSEP_X_WeakEnemyPoses.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_WeakEnemyPoses = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WEPose = MageStudios.WEPose || {};
-MageStudios.WEPose.version = 1.00;
+MageStudios.WEPose.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore.js) Allow enemies to
  * have different battler images when they're weakened.
  * @author Mage Studios Engine Plugins
@@ -116,7 +110,7 @@ MageStudios.WEPose.version = 1.00;
  *
  *   defaultBattlerName
  *   - This will be the default battler's name.
- * 
+ *
  *   defaultBattlerHue
  *   - This will be the default battler's hue.
  *
@@ -137,251 +131,237 @@ MageStudios.WEPose.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore) {
+  MageStudios.WEPose.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.WEPose.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.WEPose.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.WEPose.DataManager_isDatabaseLoaded.call(this)) return false;
-
-  if (!MageStudios._loaded_MSEP_X_WeakEnemyPoses) {
-    this.processWEPoseNotetags1($dataEnemies);
-    this.processWEPoseNotetags2($dataStates);
-    MageStudios._loaded_MSEP_X_WeakEnemyPoses = true;
-  }
-  
-  return true;
-};
-
-DataManager.processWEPoseNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.weakPosesRate = [1.0];
-    obj.weakPosesData = {
-      1.0: [obj.battlerName, obj.battlerHue],
-    };
-    var evalMode = 'none';
-    obj.weakPoseEval = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(\d+)([%％])[ ]HEALTH POSE:[ ](.*),[ ](\d+)>/i)) {
-        var rate = parseFloat(RegExp.$1) * 0.01;
-        var data = [String(RegExp.$3), parseInt(RegExp.$4).clamp(0, 360)];
-        obj.weakPosesRate.push(rate);
-        obj.weakPosesData[rate] = data;
-      } else if (line.match(/<(\d+)([%％])[ ]HEALTH POSE:[ ](.*)>/i)) {
-        var rate = parseFloat(RegExp.$1) * 0.01;
-        var data = [String(RegExp.$3), -1];
-        obj.weakPosesRate.push(rate);
-        obj.weakPosesData[rate] = data;
-      } else if (line.match(/<CUSTOM ENEMY POSE>/i)) {
-        var evalMode = 'custom enemy pose';
-      } else if (line.match(/<\/CUSTOM ENEMY POSE>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'custom enemy pose') {
-        obj.weakPoseEval += line + '\n';
-      }
+    if (!MageStudios._loaded_MSEP_X_WeakEnemyPoses) {
+      this.processWEPoseNotetags1($dataEnemies);
+      this.processWEPoseNotetags2($dataStates);
+      MageStudios._loaded_MSEP_X_WeakEnemyPoses = true;
     }
 
-    this.sortObjectWeakPoses(obj);
-  }
-};
+    return true;
+  };
 
-DataManager.sortObjectWeakPoses = function(obj) {
-  obj.weakPosesRate.sort(function(a, b) { return b - a; });
-};
+  DataManager.processWEPoseNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.processWEPoseNotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+      obj.weakPosesRate = [1.0];
+      obj.weakPosesData = {
+        1.0: [obj.battlerName, obj.battlerHue],
+      };
+      var evalMode = "none";
+      obj.weakPoseEval = "";
 
-    obj.forceEnemyPose = undefined;
-    obj.forceEnemyHue = -1;
-    var evalMode = 'none';
-    obj.forceEnemyPoseEval = '';
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(\d+)([%％])[ ]HEALTH POSE:[ ](.*),[ ](\d+)>/i)) {
+          var rate = parseFloat(RegExp.$1) * 0.01;
+          var data = [String(RegExp.$3), parseInt(RegExp.$4).clamp(0, 360)];
+          obj.weakPosesRate.push(rate);
+          obj.weakPosesData[rate] = data;
+        } else if (line.match(/<(\d+)([%％])[ ]HEALTH POSE:[ ](.*)>/i)) {
+          var rate = parseFloat(RegExp.$1) * 0.01;
+          var data = [String(RegExp.$3), -1];
+          obj.weakPosesRate.push(rate);
+          obj.weakPosesData[rate] = data;
+        } else if (line.match(/<CUSTOM ENEMY POSE>/i)) {
+          var evalMode = "custom enemy pose";
+        } else if (line.match(/<\/CUSTOM ENEMY POSE>/i)) {
+          var evalMode = "none";
+        } else if (evalMode === "custom enemy pose") {
+          obj.weakPoseEval += line + "\n";
+        }
+      }
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<FORCE ENEMY POSE:[ ](.*),[ ](\d+)>/i)) {
-        obj.forceEnemyPose = String(RegExp.$1);
-        obj.forceEnemyHue = parseInt(RegExp.$2).clamp(0, 360);
-      } else if (line.match(/<FORCE ENEMY POSE:[ ](.*)>/i)) {
-        obj.forceEnemyPose = String(RegExp.$1);
-      } else if (line.match(/<CUSTOM ENEMY POSE>/i)) {
-        var evalMode = 'custom enemy pose';
-      } else if (line.match(/<\/CUSTOM ENEMY POSE>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'custom enemy pose') {
-        obj.forceEnemyPoseEval += line + '\n';
+      this.sortObjectWeakPoses(obj);
+    }
+  };
+
+  DataManager.sortObjectWeakPoses = function (obj) {
+    obj.weakPosesRate.sort(function (a, b) {
+      return b - a;
+    });
+  };
+
+  DataManager.processWEPoseNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.forceEnemyPose = undefined;
+      obj.forceEnemyHue = -1;
+      var evalMode = "none";
+      obj.forceEnemyPoseEval = "";
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<FORCE ENEMY POSE:[ ](.*),[ ](\d+)>/i)) {
+          obj.forceEnemyPose = String(RegExp.$1);
+          obj.forceEnemyHue = parseInt(RegExp.$2).clamp(0, 360);
+        } else if (line.match(/<FORCE ENEMY POSE:[ ](.*)>/i)) {
+          obj.forceEnemyPose = String(RegExp.$1);
+        } else if (line.match(/<CUSTOM ENEMY POSE>/i)) {
+          var evalMode = "custom enemy pose";
+        } else if (line.match(/<\/CUSTOM ENEMY POSE>/i)) {
+          var evalMode = "none";
+        } else if (evalMode === "custom enemy pose") {
+          obj.forceEnemyPoseEval += line + "\n";
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
+  MageStudios.WEPose.Game_Battler_refresh = Game_Battler.prototype.refresh;
+  Game_Battler.prototype.refresh = function () {
+    MageStudios.WEPose.Game_Battler_refresh.call(this);
+    if (this.isEnemy()) this.clearWeakPoseData();
+  };
 
-MageStudios.WEPose.Game_Battler_refresh = Game_Battler.prototype.refresh;
-Game_Battler.prototype.refresh = function() {
-  MageStudios.WEPose.Game_Battler_refresh.call(this);
-  if (this.isEnemy()) this.clearWeakPoseData();
-};
+  MageStudios.WEPose.Game_Enemy_initMembers = Game_Enemy.prototype.initMembers;
+  Game_Enemy.prototype.initMembers = function () {
+    MageStudios.WEPose.Game_Enemy_initMembers.call(this);
+    this.clearWeakPoseData();
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
+  Game_Enemy.prototype.clearWeakPoseData = function () {
+    this._weakPoseBattlerName = undefined;
+    this._weakPoseBattlerHue = undefined;
+  };
 
-MageStudios.WEPose.Game_Enemy_initMembers = Game_Enemy.prototype.initMembers;
-Game_Enemy.prototype.initMembers = function() {
-  MageStudios.WEPose.Game_Enemy_initMembers.call(this);
-  this.clearWeakPoseData();
-};
-
-Game_Enemy.prototype.clearWeakPoseData = function() {
-  this._weakPoseBattlerName = undefined;
-  this._weakPoseBattlerHue = undefined;
-};
-
-MageStudios.WEPose.Game_Enemy_battlerName = Game_Enemy.prototype.battlerName;
-Game_Enemy.prototype.battlerName = function() {
-  if (this._weakPoseBattlerName !== undefined) {
+  MageStudios.WEPose.Game_Enemy_battlerName = Game_Enemy.prototype.battlerName;
+  Game_Enemy.prototype.battlerName = function () {
+    if (this._weakPoseBattlerName !== undefined) {
+      return this._weakPoseBattlerName;
+    }
+    this._weakPoseBattlerName =
+      MageStudios.WEPose.Game_Enemy_battlerName.call(this);
+    this._weakPoseBattlerHue = -1;
+    this.makeEnemyWeakPoseData();
+    this.makeEnemyWeakPoseEval();
+    this.makeStateWeakPoseData();
+    this.makeStateWeakPoseEval();
     return this._weakPoseBattlerName;
-  }
-  this._weakPoseBattlerName = MageStudios.WEPose.Game_Enemy_battlerName.call(this);
-  this._weakPoseBattlerHue = -1;
-  this.makeEnemyWeakPoseData();
-  this.makeEnemyWeakPoseEval();
-  this.makeStateWeakPoseData();
-  this.makeStateWeakPoseEval();
-  return this._weakPoseBattlerName;
-};
+  };
 
-MageStudios.WEPose.Game_Enemy_battlerHue = Game_Enemy.prototype.battlerHue;
-Game_Enemy.prototype.battlerHue = function() {
-  if (this._weakPoseBattlerHue !== undefined) {
-    if (this._weakPoseBattlerHue < 0) {
-      return MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-    } else {
-      return this._weakPoseBattlerHue;
-    }
-  }
-  return MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-};
-
-Game_Enemy.prototype.makeEnemyWeakPoseData = function() {
-  var hpRate = this.hpRate();
-  var data = this.enemy().weakPosesData;
-  var rates = this.enemy().weakPosesRate;
-  var length = rates.length;
-  for (var i = 0; i < length; ++i) {
-    var rate = rates[i];
-    if (hpRate <= rate) {
-      this._weakPoseBattlerName = data[rate][0];
-      this._weakPoseBattlerHue = data[rate][1];
-    } else {
-      break;
-    }
-  }
-};
-
-Game_Enemy.prototype.makeEnemyWeakPoseEval = function() {
-  var code = this.enemy().weakPoseEval;
-  if (code === '') return;
-  var hpRate = this.hpRate();
-  var defaultBattlerName = MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-  var defaultBattlerHue = MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-  var name = this._weakPoseBattlerName;
-  var hue = this._weakPoseBattlerHue;
-  var a = this;
-  var user = this;
-  var subject = this;
-  var b = this;
-  var target = this;
-  var s = $gameSwitches._data;
-  var v = $gameVariables._data;
-  try {
-    eval(code);
-  } catch (e) {
-    MageStudios.Util.displayError(e, code, 'WEAK POSE EVAL ERROR');
-  }
-  this._weakPoseBattlerName = name;
-  this._weakPoseBattlerHue = hue;
-};
-
-Game_Enemy.prototype.makeStateWeakPoseData = function() {
-  var hpRate = this.hpRate();
-  var states = this.states();
-  var length = states.length;
-  for (var i = 0; i < length; ++i) {
-    var state = states[i];
-    if (state && state.forceEnemyPose !== undefined) {
-      this._weakPoseBattlerName = state.forceEnemyPose;
-      this._weakPoseBattlerHue = state.forceEnemyHue;
-      break;
-    }
-  }
-};
-
-Game_Enemy.prototype.makeStateWeakPoseEval = function() {
-  var hpRate = this.hpRate();
-  var states = this.states();
-  var length = states.length;
-  for (var i = 0; i < length; ++i) {
-    var state = states[i];
-    if (state && state.forceEnemyPoseEval !== '') {
-      var code = state.forceEnemyPoseEval;
-      var defaultBattlerName = MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-      var defaultBattlerHue = MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
-      var name = this._weakPoseBattlerName;
-      var hue = this._weakPoseBattlerHue;
-      var a = this;
-      var user = this;
-      var subject = this;
-      var b = this;
-      var target = this;
-      var s = $gameSwitches._data;
-      var v = $gameVariables._data;
-      try {
-        eval(code);
-      } catch (e) {
-        MageStudios.Util.displayError(e, code, 'WEAK POSE STATE EVAL ERROR');
+  MageStudios.WEPose.Game_Enemy_battlerHue = Game_Enemy.prototype.battlerHue;
+  Game_Enemy.prototype.battlerHue = function () {
+    if (this._weakPoseBattlerHue !== undefined) {
+      if (this._weakPoseBattlerHue < 0) {
+        return MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+      } else {
+        return this._weakPoseBattlerHue;
       }
-      this._weakPoseBattlerName = name;
-      this._weakPoseBattlerHue = hue;
-      break;
     }
-  }
-};
+    return MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  Game_Enemy.prototype.makeEnemyWeakPoseData = function () {
+    var hpRate = this.hpRate();
+    var data = this.enemy().weakPosesData;
+    var rates = this.enemy().weakPosesRate;
+    var length = rates.length;
+    for (var i = 0; i < length; ++i) {
+      var rate = rates[i];
+      if (hpRate <= rate) {
+        this._weakPoseBattlerName = data[rate][0];
+        this._weakPoseBattlerHue = data[rate][1];
+      } else {
+        break;
+      }
     }
-  }
-};
+  };
 
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_BattleEngineCore
+  Game_Enemy.prototype.makeEnemyWeakPoseEval = function () {
+    var code = this.enemy().weakPoseEval;
+    if (code === "") return;
+    var hpRate = this.hpRate();
+    var defaultBattlerName =
+      MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+    var defaultBattlerHue = MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+    var name = this._weakPoseBattlerName;
+    var hue = this._weakPoseBattlerHue;
+    var a = this;
+    var user = this;
+    var subject = this;
+    var b = this;
+    var target = this;
+    var s = $gameSwitches._data;
+    var v = $gameVariables._data;
+    try {
+      eval(code);
+    } catch (e) {
+      MageStudios.Util.displayError(e, code, "WEAK POSE EVAL ERROR");
+    }
+    this._weakPoseBattlerName = name;
+    this._weakPoseBattlerHue = hue;
+  };
+
+  Game_Enemy.prototype.makeStateWeakPoseData = function () {
+    var hpRate = this.hpRate();
+    var states = this.states();
+    var length = states.length;
+    for (var i = 0; i < length; ++i) {
+      var state = states[i];
+      if (state && state.forceEnemyPose !== undefined) {
+        this._weakPoseBattlerName = state.forceEnemyPose;
+        this._weakPoseBattlerHue = state.forceEnemyHue;
+        break;
+      }
+    }
+  };
+
+  Game_Enemy.prototype.makeStateWeakPoseEval = function () {
+    var hpRate = this.hpRate();
+    var states = this.states();
+    var length = states.length;
+    for (var i = 0; i < length; ++i) {
+      var state = states[i];
+      if (state && state.forceEnemyPoseEval !== "") {
+        var code = state.forceEnemyPoseEval;
+        var defaultBattlerName =
+          MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+        var defaultBattlerHue =
+          MageStudios.WEPose.Game_Enemy_battlerHue.call(this);
+        var name = this._weakPoseBattlerName;
+        var hue = this._weakPoseBattlerHue;
+        var a = this;
+        var user = this;
+        var subject = this;
+        var b = this;
+        var target = this;
+        var s = $gameSwitches._data;
+        var v = $gameVariables._data;
+        try {
+          eval(code);
+        } catch (e) {
+          MageStudios.Util.displayError(e, code, "WEAK POSE STATE EVAL ERROR");
+        }
+        this._weakPoseBattlerName = name;
+        this._weakPoseBattlerHue = hue;
+        break;
+      }
+    }
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
+}

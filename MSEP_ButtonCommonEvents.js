@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Button Common Events
-// MSEP_ButtonCommonEvents.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ButtonCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BCE = MageStudios.BCE || {};
-MageStudios.BCE.version = 1.00
+MageStudios.BCE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc On the field map, call common events when certain
  * buttons are pressed on the keyboard.
  * @author Mage Studios Engine Plugins
@@ -680,364 +674,360 @@ MageStudios.BCE.version = 1.00
  *   all of the keys of that original function.
  *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ButtonCommonEvents');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ButtonCommonEvents");
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BCEList = {
-      tilde: Number(MageStudios.Parameters['Key ~']),
-          1: Number(MageStudios.Parameters['Key 1']),
-          2: Number(MageStudios.Parameters['Key 2']),
-          3: Number(MageStudios.Parameters['Key 3']),
-          4: Number(MageStudios.Parameters['Key 4']),
-          5: Number(MageStudios.Parameters['Key 5']),
-          6: Number(MageStudios.Parameters['Key 6']),
-          7: Number(MageStudios.Parameters['Key 7']),
-          8: Number(MageStudios.Parameters['Key 8']),
-          9: Number(MageStudios.Parameters['Key 9']),
-          0: Number(MageStudios.Parameters['Key 0']),
-      minus: Number(MageStudios.Parameters['Key -']),
-      equal: Number(MageStudios.Parameters['Key =']),
+  tilde: Number(MageStudios.Parameters["Key ~"]),
+  1: Number(MageStudios.Parameters["Key 1"]),
+  2: Number(MageStudios.Parameters["Key 2"]),
+  3: Number(MageStudios.Parameters["Key 3"]),
+  4: Number(MageStudios.Parameters["Key 4"]),
+  5: Number(MageStudios.Parameters["Key 5"]),
+  6: Number(MageStudios.Parameters["Key 6"]),
+  7: Number(MageStudios.Parameters["Key 7"]),
+  8: Number(MageStudios.Parameters["Key 8"]),
+  9: Number(MageStudios.Parameters["Key 9"]),
+  0: Number(MageStudios.Parameters["Key 0"]),
+  minus: Number(MageStudios.Parameters["Key -"]),
+  equal: Number(MageStudios.Parameters["Key ="]),
 
-          q: Number(MageStudios.Parameters['Key Q (PageUp)']),
-          w: Number(MageStudios.Parameters['Key W (PageDown)']),
-          e: Number(MageStudios.Parameters['Key E']),
-          r: Number(MageStudios.Parameters['Key R']),
-          t: Number(MageStudios.Parameters['Key T']),
-          y: Number(MageStudios.Parameters['Key Y']),
-          u: Number(MageStudios.Parameters['Key U']),
-          i: Number(MageStudios.Parameters['Key I']),
-          o: Number(MageStudios.Parameters['Key O']),
-          p: Number(MageStudios.Parameters['Key P']),
-  foreBrack: Number(MageStudios.Parameters['Key [']),
-  backBrack: Number(MageStudios.Parameters['Key ]']),
-  backSlash: Number(MageStudios.Parameters['Key \\']),
+  q: Number(MageStudios.Parameters["Key Q (PageUp)"]),
+  w: Number(MageStudios.Parameters["Key W (PageDown)"]),
+  e: Number(MageStudios.Parameters["Key E"]),
+  r: Number(MageStudios.Parameters["Key R"]),
+  t: Number(MageStudios.Parameters["Key T"]),
+  y: Number(MageStudios.Parameters["Key Y"]),
+  u: Number(MageStudios.Parameters["Key U"]),
+  i: Number(MageStudios.Parameters["Key I"]),
+  o: Number(MageStudios.Parameters["Key O"]),
+  p: Number(MageStudios.Parameters["Key P"]),
+  foreBrack: Number(MageStudios.Parameters["Key ["]),
+  backBrack: Number(MageStudios.Parameters["Key ]"]),
+  backSlash: Number(MageStudios.Parameters["Key \\"]),
 
-          a: Number(MageStudios.Parameters['Key A']),
-          s: Number(MageStudios.Parameters['Key S']),
-          d: Number(MageStudios.Parameters['Key D']),
-          f: Number(MageStudios.Parameters['Key F']),
-          g: Number(MageStudios.Parameters['Key G']),
-          h: Number(MageStudios.Parameters['Key H']),
-          j: Number(MageStudios.Parameters['Key J']),
-          k: Number(MageStudios.Parameters['Key K']),
-          l: Number(MageStudios.Parameters['Key L']),
-  semicolon: Number(MageStudios.Parameters['Key ;']),
-      quote: Number(MageStudios.Parameters['Key "']),
-      enter: Number(MageStudios.Parameters['Key Enter (OK)']),
+  a: Number(MageStudios.Parameters["Key A"]),
+  s: Number(MageStudios.Parameters["Key S"]),
+  d: Number(MageStudios.Parameters["Key D"]),
+  f: Number(MageStudios.Parameters["Key F"]),
+  g: Number(MageStudios.Parameters["Key G"]),
+  h: Number(MageStudios.Parameters["Key H"]),
+  j: Number(MageStudios.Parameters["Key J"]),
+  k: Number(MageStudios.Parameters["Key K"]),
+  l: Number(MageStudios.Parameters["Key L"]),
+  semicolon: Number(MageStudios.Parameters["Key ;"]),
+  quote: Number(MageStudios.Parameters['Key "']),
+  enter: Number(MageStudios.Parameters["Key Enter (OK)"]),
 
-   keyShift: Number(MageStudios.Parameters['Key Shift (Dash)']),
-          z: Number(MageStudios.Parameters['Key Z (OK)']),
-          x: Number(MageStudios.Parameters['Key X (Cancel)']),
-          c: Number(MageStudios.Parameters['Key C']),
-          v: Number(MageStudios.Parameters['Key V']),
-          b: Number(MageStudios.Parameters['Key B']),
-          n: Number(MageStudios.Parameters['Key N']),
-          m: Number(MageStudios.Parameters['Key M']),
-      comma: Number(MageStudios.Parameters['Key ,']),
-     period: Number(MageStudios.Parameters['Key .']),
-  foreSlash: Number(MageStudios.Parameters['Key /']),
+  keyShift: Number(MageStudios.Parameters["Key Shift (Dash)"]),
+  z: Number(MageStudios.Parameters["Key Z (OK)"]),
+  x: Number(MageStudios.Parameters["Key X (Cancel)"]),
+  c: Number(MageStudios.Parameters["Key C"]),
+  v: Number(MageStudios.Parameters["Key V"]),
+  b: Number(MageStudios.Parameters["Key B"]),
+  n: Number(MageStudios.Parameters["Key N"]),
+  m: Number(MageStudios.Parameters["Key M"]),
+  comma: Number(MageStudios.Parameters["Key ,"]),
+  period: Number(MageStudios.Parameters["Key ."]),
+  foreSlash: Number(MageStudios.Parameters["Key /"]),
 
-      space: Number(MageStudios.Parameters['Key Space (OK)']),
-    dirLeft: Number(MageStudios.Parameters['Key Left (Left)']),
-      dirUp: Number(MageStudios.Parameters['Key Up (Up)']),
-   dirRight: Number(MageStudios.Parameters['Key Right (Right)']),
-    dirDown: Number(MageStudios.Parameters['Key Down (Down)']),
-        ins: Number(MageStudios.Parameters['Key Insert (Cancel)']),
-        del: Number(MageStudios.Parameters['Key Delete']),
-       home: Number(MageStudios.Parameters['Key Home']),
-        end: Number(MageStudios.Parameters['Key End']),
-     pageUp: Number(MageStudios.Parameters['Key Page Up (PageUp)']),
-   pageDown: Number(MageStudios.Parameters['Key Page Down (PageDown)']),
+  space: Number(MageStudios.Parameters["Key Space (OK)"]),
+  dirLeft: Number(MageStudios.Parameters["Key Left (Left)"]),
+  dirUp: Number(MageStudios.Parameters["Key Up (Up)"]),
+  dirRight: Number(MageStudios.Parameters["Key Right (Right)"]),
+  dirDown: Number(MageStudios.Parameters["Key Down (Down)"]),
+  ins: Number(MageStudios.Parameters["Key Insert (Cancel)"]),
+  del: Number(MageStudios.Parameters["Key Delete"]),
+  home: Number(MageStudios.Parameters["Key Home"]),
+  end: Number(MageStudios.Parameters["Key End"]),
+  pageUp: Number(MageStudios.Parameters["Key Page Up (PageUp)"]),
+  pageDown: Number(MageStudios.Parameters["Key Page Down (PageDown)"]),
 
-       num0: Number(MageStudios.Parameters['Key NumPad 0 (Cancel)']),
-       num1: Number(MageStudios.Parameters['Key NumPad 1']),
-       num2: Number(MageStudios.Parameters['Key NumPad 2 (Down)']),
-       num3: Number(MageStudios.Parameters['Key NumPad 3']),
-       num4: Number(MageStudios.Parameters['Key NumPad 4 (Left)']),
-       num5: Number(MageStudios.Parameters['Key NumPad 5']),
-       num6: Number(MageStudios.Parameters['Key NumPad 6 (Right)']),
-       num7: Number(MageStudios.Parameters['Key NumPad 7']),
-       num8: Number(MageStudios.Parameters['Key NumPad 8 (Up)']),
-       num9: Number(MageStudios.Parameters['Key NumPad 9']),
-  numPeriod: Number(MageStudios.Parameters['Key NumPad .']),
-    numPlus: Number(MageStudios.Parameters['Key NumPad +']),
-   numMinus: Number(MageStudios.Parameters['Key NumPad -']),
-   numTimes: Number(MageStudios.Parameters['Key NumPad *']),
-  numDivide: Number(MageStudios.Parameters['Key NumPad /'])
+  num0: Number(MageStudios.Parameters["Key NumPad 0 (Cancel)"]),
+  num1: Number(MageStudios.Parameters["Key NumPad 1"]),
+  num2: Number(MageStudios.Parameters["Key NumPad 2 (Down)"]),
+  num3: Number(MageStudios.Parameters["Key NumPad 3"]),
+  num4: Number(MageStudios.Parameters["Key NumPad 4 (Left)"]),
+  num5: Number(MageStudios.Parameters["Key NumPad 5"]),
+  num6: Number(MageStudios.Parameters["Key NumPad 6 (Right)"]),
+  num7: Number(MageStudios.Parameters["Key NumPad 7"]),
+  num8: Number(MageStudios.Parameters["Key NumPad 8 (Up)"]),
+  num9: Number(MageStudios.Parameters["Key NumPad 9"]),
+  numPeriod: Number(MageStudios.Parameters["Key NumPad ."]),
+  numPlus: Number(MageStudios.Parameters["Key NumPad +"]),
+  numMinus: Number(MageStudios.Parameters["Key NumPad -"]),
+  numTimes: Number(MageStudios.Parameters["Key NumPad *"]),
+  numDivide: Number(MageStudios.Parameters["Key NumPad /"]),
 };
-MageStudios.Param.Variables = String(MageStudios.Parameters['Variables']);
+MageStudios.Param.Variables = String(MageStudios.Parameters["Variables"]);
 
-//=============================================================================
-// Input Key Mapper
-//=============================================================================
+if (MageStudios.Param.BCEList["tilde"] !== 0) Input.keyMapper[192] = "tilde";
+if (MageStudios.Param.BCEList["1"] !== 0) Input.keyMapper[49] = "1";
+if (MageStudios.Param.BCEList["2"] !== 0) Input.keyMapper[50] = "2";
+if (MageStudios.Param.BCEList["3"] !== 0) Input.keyMapper[51] = "3";
+if (MageStudios.Param.BCEList["4"] !== 0) Input.keyMapper[52] = "4";
+if (MageStudios.Param.BCEList["5"] !== 0) Input.keyMapper[53] = "5";
+if (MageStudios.Param.BCEList["6"] !== 0) Input.keyMapper[54] = "6";
+if (MageStudios.Param.BCEList["7"] !== 0) Input.keyMapper[55] = "7";
+if (MageStudios.Param.BCEList["8"] !== 0) Input.keyMapper[56] = "8";
+if (MageStudios.Param.BCEList["9"] !== 0) Input.keyMapper[57] = "9";
+if (MageStudios.Param.BCEList["0"] !== 0) Input.keyMapper[48] = "0";
+if (MageStudios.Param.BCEList["minus"] !== 0) Input.keyMapper[189] = "minus";
+if (MageStudios.Param.BCEList["equal"] !== 0) Input.keyMapper[187] = "equal";
 
-if (MageStudios.Param.BCEList['tilde'] !== 0) Input.keyMapper[192]     = 'tilde';
-if (MageStudios.Param.BCEList['1'] !== 0) Input.keyMapper[49]          = '1';
-if (MageStudios.Param.BCEList['2'] !== 0) Input.keyMapper[50]          = '2';
-if (MageStudios.Param.BCEList['3'] !== 0) Input.keyMapper[51]          = '3';
-if (MageStudios.Param.BCEList['4'] !== 0) Input.keyMapper[52]          = '4';
-if (MageStudios.Param.BCEList['5'] !== 0) Input.keyMapper[53]          = '5';
-if (MageStudios.Param.BCEList['6'] !== 0) Input.keyMapper[54]          = '6';
-if (MageStudios.Param.BCEList['7'] !== 0) Input.keyMapper[55]          = '7';
-if (MageStudios.Param.BCEList['8'] !== 0) Input.keyMapper[56]          = '8';
-if (MageStudios.Param.BCEList['9'] !== 0) Input.keyMapper[57]          = '9';
-if (MageStudios.Param.BCEList['0'] !== 0) Input.keyMapper[48]          = '0';
-if (MageStudios.Param.BCEList['minus'] !== 0) Input.keyMapper[189]     = 'minus';
-if (MageStudios.Param.BCEList['equal'] !== 0) Input.keyMapper[187]     = 'equal';
+if (MageStudios.Param.BCEList["q"] !== 0) Input.keyMapper[81] = "q";
+if (MageStudios.Param.BCEList["w"] !== 0) Input.keyMapper[87] = "w";
+if (MageStudios.Param.BCEList["e"] !== 0) Input.keyMapper[69] = "e";
+if (MageStudios.Param.BCEList["r"] !== 0) Input.keyMapper[82] = "r";
+if (MageStudios.Param.BCEList["t"] !== 0) Input.keyMapper[84] = "t";
+if (MageStudios.Param.BCEList["y"] !== 0) Input.keyMapper[89] = "y";
+if (MageStudios.Param.BCEList["u"] !== 0) Input.keyMapper[85] = "u";
+if (MageStudios.Param.BCEList["i"] !== 0) Input.keyMapper[73] = "i";
+if (MageStudios.Param.BCEList["o"] !== 0) Input.keyMapper[79] = "o";
+if (MageStudios.Param.BCEList["p"] !== 0) Input.keyMapper[80] = "p";
+if (MageStudios.Param.BCEList["foreBrack"] !== 0)
+  Input.keyMapper[219] = "foreBrack";
+if (MageStudios.Param.BCEList["backBrack"] !== 0)
+  Input.keyMapper[221] = "backBrack";
+if (MageStudios.Param.BCEList["backSlash"] !== 0)
+  Input.keyMapper[220] = "backSlash";
 
-if (MageStudios.Param.BCEList['q'] !== 0) Input.keyMapper[81]          = 'q';
-if (MageStudios.Param.BCEList['w'] !== 0) Input.keyMapper[87]          = 'w';
-if (MageStudios.Param.BCEList['e'] !== 0) Input.keyMapper[69]          = 'e';
-if (MageStudios.Param.BCEList['r'] !== 0) Input.keyMapper[82]          = 'r';
-if (MageStudios.Param.BCEList['t'] !== 0) Input.keyMapper[84]          = 't';
-if (MageStudios.Param.BCEList['y'] !== 0) Input.keyMapper[89]          = 'y';
-if (MageStudios.Param.BCEList['u'] !== 0) Input.keyMapper[85]          = 'u';
-if (MageStudios.Param.BCEList['i'] !== 0) Input.keyMapper[73]          = 'i';
-if (MageStudios.Param.BCEList['o'] !== 0) Input.keyMapper[79]          = 'o';
-if (MageStudios.Param.BCEList['p'] !== 0) Input.keyMapper[80]          = 'p';
-if (MageStudios.Param.BCEList['foreBrack'] !== 0) Input.keyMapper[219] = 'foreBrack';
-if (MageStudios.Param.BCEList['backBrack'] !== 0) Input.keyMapper[221] = 'backBrack';
-if (MageStudios.Param.BCEList['backSlash'] !== 0) Input.keyMapper[220] = 'backSlash';
+if (MageStudios.Param.BCEList["a"] !== 0) Input.keyMapper[65] = "a";
+if (MageStudios.Param.BCEList["s"] !== 0) Input.keyMapper[83] = "s";
+if (MageStudios.Param.BCEList["d"] !== 0) Input.keyMapper[68] = "d";
+if (MageStudios.Param.BCEList["f"] !== 0) Input.keyMapper[70] = "f";
+if (MageStudios.Param.BCEList["g"] !== 0) Input.keyMapper[71] = "g";
+if (MageStudios.Param.BCEList["h"] !== 0) Input.keyMapper[72] = "h";
+if (MageStudios.Param.BCEList["j"] !== 0) Input.keyMapper[74] = "j";
+if (MageStudios.Param.BCEList["k"] !== 0) Input.keyMapper[75] = "k";
+if (MageStudios.Param.BCEList["l"] !== 0) Input.keyMapper[76] = "l";
+if (MageStudios.Param.BCEList["semicolon"] !== 0)
+  Input.keyMapper[186] = "semicolon";
+if (MageStudios.Param.BCEList["quote"] !== 0) Input.keyMapper[222] = "quote";
+if (MageStudios.Param.BCEList["enter"] !== 0) Input.keyMapper[13] = "enter";
 
-if (MageStudios.Param.BCEList['a'] !== 0) Input.keyMapper[65]          = 'a';
-if (MageStudios.Param.BCEList['s'] !== 0) Input.keyMapper[83]          = 's';
-if (MageStudios.Param.BCEList['d'] !== 0) Input.keyMapper[68]          = 'd';
-if (MageStudios.Param.BCEList['f'] !== 0) Input.keyMapper[70]          = 'f';
-if (MageStudios.Param.BCEList['g'] !== 0) Input.keyMapper[71]          = 'g';
-if (MageStudios.Param.BCEList['h'] !== 0) Input.keyMapper[72]          = 'h';
-if (MageStudios.Param.BCEList['j'] !== 0) Input.keyMapper[74]          = 'j';
-if (MageStudios.Param.BCEList['k'] !== 0) Input.keyMapper[75]          = 'k';
-if (MageStudios.Param.BCEList['l'] !== 0) Input.keyMapper[76]          = 'l';
-if (MageStudios.Param.BCEList['semicolon'] !== 0) Input.keyMapper[186] = 'semicolon';
-if (MageStudios.Param.BCEList['quote'] !== 0) Input.keyMapper[222]     = 'quote';
-if (MageStudios.Param.BCEList['enter'] !== 0) Input.keyMapper[13]      = 'enter';
+if (MageStudios.Param.BCEList["keyShift"] !== 0)
+  Input.keyMapper[16] = "keyShift";
+if (MageStudios.Param.BCEList["z"] !== 0) Input.keyMapper[90] = "z";
+if (MageStudios.Param.BCEList["x"] !== 0) Input.keyMapper[88] = "x";
+if (MageStudios.Param.BCEList["c"] !== 0) Input.keyMapper[67] = "c";
+if (MageStudios.Param.BCEList["v"] !== 0) Input.keyMapper[86] = "v";
+if (MageStudios.Param.BCEList["b"] !== 0) Input.keyMapper[66] = "b";
+if (MageStudios.Param.BCEList["n"] !== 0) Input.keyMapper[78] = "n";
+if (MageStudios.Param.BCEList["m"] !== 0) Input.keyMapper[77] = "m";
+if (MageStudios.Param.BCEList["comma"] !== 0) Input.keyMapper[188] = "comma";
+if (MageStudios.Param.BCEList["period"] !== 0) Input.keyMapper[190] = "period";
+if (MageStudios.Param.BCEList["foreSlash"] !== 0)
+  Input.keyMapper[191] = "foreSlash";
 
-if (MageStudios.Param.BCEList['keyShift'] !== 0) Input.keyMapper[16]   = 'keyShift';
-if (MageStudios.Param.BCEList['z'] !== 0) Input.keyMapper[90]          = 'z';
-if (MageStudios.Param.BCEList['x'] !== 0) Input.keyMapper[88]          = 'x';
-if (MageStudios.Param.BCEList['c'] !== 0) Input.keyMapper[67]          = 'c';
-if (MageStudios.Param.BCEList['v'] !== 0) Input.keyMapper[86]          = 'v';
-if (MageStudios.Param.BCEList['b'] !== 0) Input.keyMapper[66]          = 'b';
-if (MageStudios.Param.BCEList['n'] !== 0) Input.keyMapper[78]          = 'n';
-if (MageStudios.Param.BCEList['m'] !== 0) Input.keyMapper[77]          = 'm';
-if (MageStudios.Param.BCEList['comma'] !== 0) Input.keyMapper[188]     = 'comma';
-if (MageStudios.Param.BCEList['period'] !== 0) Input.keyMapper[190]    = 'period';
-if (MageStudios.Param.BCEList['foreSlash'] !== 0) Input.keyMapper[191] = 'foreSlash';
+if (MageStudios.Param.BCEList["space"] !== 0) Input.keyMapper[32] = "space";
+if (MageStudios.Param.BCEList["dirLeft"] !== 0) Input.keyMapper[37] = "dirLeft";
+if (MageStudios.Param.BCEList["dirUp"] !== 0) Input.keyMapper[38] = "dirUp";
+if (MageStudios.Param.BCEList["dirRight"] !== 0)
+  Input.keyMapper[39] = "dirRight";
+if (MageStudios.Param.BCEList["dirDown"] !== 0) Input.keyMapper[40] = "dirDown";
+if (MageStudios.Param.BCEList["ins"] !== 0) Input.keyMapper[45] = "ins";
+if (MageStudios.Param.BCEList["del"] !== 0) Input.keyMapper[46] = "del";
+if (MageStudios.Param.BCEList["home"] !== 0) Input.keyMapper[36] = "home";
+if (MageStudios.Param.BCEList["end"] !== 0) Input.keyMapper[35] = "end";
+if (MageStudios.Param.BCEList["pageUp"] !== 0) Input.keyMapper[33] = "pageUp";
+if (MageStudios.Param.BCEList["pageDown"] !== 0)
+  Input.keyMapper[34] = "pageDown";
 
-if (MageStudios.Param.BCEList['space'] !== 0) Input.keyMapper[32]     = 'space';
-if (MageStudios.Param.BCEList['dirLeft'] !== 0) Input.keyMapper[37]   = 'dirLeft';
-if (MageStudios.Param.BCEList['dirUp'] !== 0) Input.keyMapper[38]     = 'dirUp';
-if (MageStudios.Param.BCEList['dirRight'] !== 0) Input.keyMapper[39]  = 'dirRight';
-if (MageStudios.Param.BCEList['dirDown'] !== 0) Input.keyMapper[40]   = 'dirDown';
-if (MageStudios.Param.BCEList['ins'] !== 0) Input.keyMapper[45]       = 'ins';
-if (MageStudios.Param.BCEList['del'] !== 0)Input.keyMapper[46]        = 'del';
-if (MageStudios.Param.BCEList['home'] !== 0)Input.keyMapper[36]       = 'home';
-if (MageStudios.Param.BCEList['end'] !== 0)Input.keyMapper[35]        = 'end';
-if (MageStudios.Param.BCEList['pageUp'] !== 0) Input.keyMapper[33]    = 'pageUp';
-if (MageStudios.Param.BCEList['pageDown'] !== 0) Input.keyMapper[34]  = 'pageDown';
+if (MageStudios.Param.BCEList["num0"] !== 0) Input.keyMapper[96] = "num0";
+if (MageStudios.Param.BCEList["num1"] !== 0) Input.keyMapper[97] = "num1";
+if (MageStudios.Param.BCEList["num2"] !== 0) Input.keyMapper[98] = "num2";
+if (MageStudios.Param.BCEList["num3"] !== 0) Input.keyMapper[99] = "num3";
+if (MageStudios.Param.BCEList["num4"] !== 0) Input.keyMapper[100] = "num4";
+if (MageStudios.Param.BCEList["num5"] !== 0) Input.keyMapper[101] = "num5";
+if (MageStudios.Param.BCEList["num6"] !== 0) Input.keyMapper[102] = "num6";
+if (MageStudios.Param.BCEList["num7"] !== 0) Input.keyMapper[103] = "num7";
+if (MageStudios.Param.BCEList["num8"] !== 0) Input.keyMapper[104] = "num8";
+if (MageStudios.Param.BCEList["num9"] !== 0) Input.keyMapper[105] = "num9";
+if (MageStudios.Param.BCEList["numPeriod"] !== 0)
+  Input.keyMapper[110] = "numPeriod";
+if (MageStudios.Param.BCEList["numPlus"] !== 0)
+  Input.keyMapper[107] = "numPlus";
+if (MageStudios.Param.BCEList["numMinus"] !== 0)
+  Input.keyMapper[109] = "numMinus";
+if (MageStudios.Param.BCEList["numTimes"] !== 0)
+  Input.keyMapper[106] = "numTimes";
+if (MageStudios.Param.BCEList["numDivide"] !== 0)
+  Input.keyMapper[111] = "numDivide";
 
-if (MageStudios.Param.BCEList['num0'] !== 0) Input.keyMapper[96]      = 'num0';
-if (MageStudios.Param.BCEList['num1'] !== 0)Input.keyMapper[97]       = 'num1';
-if (MageStudios.Param.BCEList['num2'] !== 0) Input.keyMapper[98]      = 'num2';
-if (MageStudios.Param.BCEList['num3'] !== 0)Input.keyMapper[99]       = 'num3';
-if (MageStudios.Param.BCEList['num4'] !== 0) Input.keyMapper[100]     = 'num4';
-if (MageStudios.Param.BCEList['num5'] !== 0)Input.keyMapper[101]      = 'num5';
-if (MageStudios.Param.BCEList['num6'] !== 0) Input.keyMapper[102]     = 'num6';
-if (MageStudios.Param.BCEList['num7'] !== 0)Input.keyMapper[103]      = 'num7';
-if (MageStudios.Param.BCEList['num8'] !== 0) Input.keyMapper[104]     = 'num8';
-if (MageStudios.Param.BCEList['num9'] !== 0)Input.keyMapper[105]      = 'num9';
-if (MageStudios.Param.BCEList['numPeriod'] !== 0)Input.keyMapper[110] = 'numPeriod';
-if (MageStudios.Param.BCEList['numPlus'] !== 0)Input.keyMapper[107]   = 'numPlus';
-if (MageStudios.Param.BCEList['numMinus'] !== 0)Input.keyMapper[109]  = 'numMinus';
-if (MageStudios.Param.BCEList['numTimes'] !== 0)Input.keyMapper[106]  = 'numTimes';
-if (MageStudios.Param.BCEList['numDivide'] !== 0)Input.keyMapper[111] = 'numDivide';
-
-//=============================================================================
-// Input
-//=============================================================================
-
-Input._revertButton = function(button) {
-  if (button === 'OK') {
-    this.keyMapper[13] = 'ok';
-    this.keyMapper[32] = 'ok';
-    this.keyMapper[90] = 'ok';
-  } else if (button === 'CANCEL') {
-    this.keyMapper[45] = 'escape';
-    this.keyMapper[88] = 'escape';
-    this.keyMapper[96] = 'escape';
-  } else if (button === 'DASH') {
-    this.keyMapper[16] = 'shift';
-  } else if (button === 'PAGEUP') {
-    this.keyMapper[33] = 'pageup';
-    this.keyMapper[81] = 'pageup';
-  } else if (button === 'PAGEDOWN') {
-    this.keyMapper[34] = 'pagedown';
-    this.keyMapper[87] = 'pagedown';
-  } else if (button === 'LEFT') {
-    this.keyMapper[37] = 'left';
-    this.keyMapper[100] = 'left';
-  } else if (button === 'UP') {
-    this.keyMapper[38] = 'up';
-    this.keyMapper[104] = 'up';
-  } else if (button === 'RIGHT') {
-    this.keyMapper[39] = 'right';
-    this.keyMapper[102] = 'right';
-  } else if (button === 'DOWN') {
-    this.keyMapper[40] = 'down';
-    this.keyMapper[98] = 'down';
-  } else if (button === 'ALL') {
-    this.keyMapper[13] = 'ok';
-    this.keyMapper[32] = 'ok';
-    this.keyMapper[90] = 'ok';
-    this.keyMapper[45] = 'escape';
-    this.keyMapper[88] = 'escape';
-    this.keyMapper[96] = 'escape';
-    this.keyMapper[16] = 'shift';
-    this.keyMapper[33] = 'pageup';
-    this.keyMapper[81] = 'pageup';
-    this.keyMapper[34] = 'pagedown';
-    this.keyMapper[87] = 'pagedown';
-    this.keyMapper[37] = 'left';
-    this.keyMapper[100] = 'left';
-    this.keyMapper[38] = 'up';
-    this.keyMapper[104] = 'up';
-    this.keyMapper[39] = 'right';
-    this.keyMapper[102] = 'right';
-    this.keyMapper[40] = 'down';
-    this.keyMapper[98] = 'down';
-  }
-}
-
-Input._switchButton = function(button) {
-  if (button === 'OK') {
-    if (MageStudios.Param.BCEList['enter'] !== 0) this.keyMapper[13] = 'enter';
-    if (MageStudios.Param.BCEList['space'] !== 0) this.keyMapper[32] = 'space';
-    if (MageStudios.Param.BCEList['z'] !== 0) this.keyMapper[90] = 'z';
-  } else if (button === 'CANCEL') {
-    if (MageStudios.Param.BCEList['ins'] !== 0) this.keyMapper[45] = 'ins';
-    if (MageStudios.Param.BCEList['x'] !== 0) this.keyMapper[88] = 'x';
-    if (MageStudios.Param.BCEList['num0'] !== 0) this.keyMapper[96] = 'num0';
-  } else if (button === 'DASH') {
-    if (MageStudios.Param.BCEList['keyShift'] !== 0) this.keyMapper[16] = 'keyShift';
-  } else if (button === 'PAGEUP') {
-    if (MageStudios.Param.BCEList['pageUp'] !== 0) this.keyMapper[33] = 'pageUp';
-    if (MageStudios.Param.BCEList['q'] !== 0) this.keyMapper[81] = 'q';
-  } else if (button === 'PAGEDOWN') {
-    if (MageStudios.Param.BCEList['pageDown'] !== 0) this.keyMapper[34] = 'pageDown';
-    if (MageStudios.Param.BCEList['w'] !== 0) this.keyMapper[87] = 'w';
-  } else if (button === 'LEFT') {
-    if (MageStudios.Param.BCEList['dirLeft'] !== 0) this.keyMapper[37] = 'dirLeft';
-    if (MageStudios.Param.BCEList['num4'] !== 0) this.keyMapper[100] = 'num4';
-  } else if (button === 'UP') {
-    if (MageStudios.Param.BCEList['dirUp'] !== 0) this.keyMapper[38] = 'dirUp';
-    if (MageStudios.Param.BCEList['num8'] !== 0) this.keyMapper[104] = 'num8';
-  } else if (button === 'RIGHT') {
-    if (MageStudios.Param.BCEList['dirRight'] !== 0) this.keyMapper[39] = 'dirRight';
-    if (MageStudios.Param.BCEList['num6'] !== 0) this.keyMapper[102] = 'num6';
-  } else if (button === 'DOWN') {
-    if (MageStudios.Param.BCEList['dirDown'] !== 0) this.keyMapper[40] = 'dirDown';
-    if (MageStudios.Param.BCEList['num2'] !== 0) this.keyMapper[98] = 'num2';
-  } else if (button === 'ALL') {
-    if (MageStudios.Param.BCEList['enter'] !== 0) this.keyMapper[13] = 'enter';
-    if (MageStudios.Param.BCEList['space'] !== 0) this.keyMapper[32] = 'space';
-    if (MageStudios.Param.BCEList['z'] !== 0) this.keyMapper[90] = 'z';
-    if (MageStudios.Param.BCEList['ins'] !== 0) this.keyMapper[45] = 'ins';
-    if (MageStudios.Param.BCEList['x'] !== 0) this.keyMapper[88] = 'x';
-    if (MageStudios.Param.BCEList['num0'] !== 0) this.keyMapper[96] = 'num0';
-    if (MageStudios.Param.BCEList['keyShift'] !== 0) this.keyMapper[16] = 'keyShift';
-    if (MageStudios.Param.BCEList['pageUp'] !== 0) this.keyMapper[33] = 'pageUp';
-    if (MageStudios.Param.BCEList['q'] !== 0) this.keyMapper[81] = 'q';
-    if (MageStudios.Param.BCEList['pageDown'] !== 0) this.keyMapper[34] = 'pageDown';
-    if (MageStudios.Param.BCEList['w'] !== 0) this.keyMapper[87] = 'w';
-    if (MageStudios.Param.BCEList['dirLeft'] !== 0) this.keyMapper[37] = 'dirLeft';
-    if (MageStudios.Param.BCEList['num4'] !== 0) this.keyMapper[100] = 'num4';
-    if (MageStudios.Param.BCEList['dirUp'] !== 0) this.keyMapper[38] = 'dirUp';
-    if (MageStudios.Param.BCEList['num8'] !== 0) this.keyMapper[104] = 'num8';
-    if (MageStudios.Param.BCEList['dirRight'] !== 0) this.keyMapper[39] = 'dirRight';
-    if (MageStudios.Param.BCEList['num6'] !== 0) this.keyMapper[102] = 'num6';
-    if (MageStudios.Param.BCEList['dirDown'] !== 0) this.keyMapper[40] = 'dirDown';
-    if (MageStudios.Param.BCEList['num2'] !== 0) this.keyMapper[98] = 'num2';
+Input._revertButton = function (button) {
+  if (button === "OK") {
+    this.keyMapper[13] = "ok";
+    this.keyMapper[32] = "ok";
+    this.keyMapper[90] = "ok";
+  } else if (button === "CANCEL") {
+    this.keyMapper[45] = "escape";
+    this.keyMapper[88] = "escape";
+    this.keyMapper[96] = "escape";
+  } else if (button === "DASH") {
+    this.keyMapper[16] = "shift";
+  } else if (button === "PAGEUP") {
+    this.keyMapper[33] = "pageup";
+    this.keyMapper[81] = "pageup";
+  } else if (button === "PAGEDOWN") {
+    this.keyMapper[34] = "pagedown";
+    this.keyMapper[87] = "pagedown";
+  } else if (button === "LEFT") {
+    this.keyMapper[37] = "left";
+    this.keyMapper[100] = "left";
+  } else if (button === "UP") {
+    this.keyMapper[38] = "up";
+    this.keyMapper[104] = "up";
+  } else if (button === "RIGHT") {
+    this.keyMapper[39] = "right";
+    this.keyMapper[102] = "right";
+  } else if (button === "DOWN") {
+    this.keyMapper[40] = "down";
+    this.keyMapper[98] = "down";
+  } else if (button === "ALL") {
+    this.keyMapper[13] = "ok";
+    this.keyMapper[32] = "ok";
+    this.keyMapper[90] = "ok";
+    this.keyMapper[45] = "escape";
+    this.keyMapper[88] = "escape";
+    this.keyMapper[96] = "escape";
+    this.keyMapper[16] = "shift";
+    this.keyMapper[33] = "pageup";
+    this.keyMapper[81] = "pageup";
+    this.keyMapper[34] = "pagedown";
+    this.keyMapper[87] = "pagedown";
+    this.keyMapper[37] = "left";
+    this.keyMapper[100] = "left";
+    this.keyMapper[38] = "up";
+    this.keyMapper[104] = "up";
+    this.keyMapper[39] = "right";
+    this.keyMapper[102] = "right";
+    this.keyMapper[40] = "down";
+    this.keyMapper[98] = "down";
   }
 };
 
-//=============================================================================
-// Scene_Base
-//=============================================================================
+Input._switchButton = function (button) {
+  if (button === "OK") {
+    if (MageStudios.Param.BCEList["enter"] !== 0) this.keyMapper[13] = "enter";
+    if (MageStudios.Param.BCEList["space"] !== 0) this.keyMapper[32] = "space";
+    if (MageStudios.Param.BCEList["z"] !== 0) this.keyMapper[90] = "z";
+  } else if (button === "CANCEL") {
+    if (MageStudios.Param.BCEList["ins"] !== 0) this.keyMapper[45] = "ins";
+    if (MageStudios.Param.BCEList["x"] !== 0) this.keyMapper[88] = "x";
+    if (MageStudios.Param.BCEList["num0"] !== 0) this.keyMapper[96] = "num0";
+  } else if (button === "DASH") {
+    if (MageStudios.Param.BCEList["keyShift"] !== 0)
+      this.keyMapper[16] = "keyShift";
+  } else if (button === "PAGEUP") {
+    if (MageStudios.Param.BCEList["pageUp"] !== 0)
+      this.keyMapper[33] = "pageUp";
+    if (MageStudios.Param.BCEList["q"] !== 0) this.keyMapper[81] = "q";
+  } else if (button === "PAGEDOWN") {
+    if (MageStudios.Param.BCEList["pageDown"] !== 0)
+      this.keyMapper[34] = "pageDown";
+    if (MageStudios.Param.BCEList["w"] !== 0) this.keyMapper[87] = "w";
+  } else if (button === "LEFT") {
+    if (MageStudios.Param.BCEList["dirLeft"] !== 0)
+      this.keyMapper[37] = "dirLeft";
+    if (MageStudios.Param.BCEList["num4"] !== 0) this.keyMapper[100] = "num4";
+  } else if (button === "UP") {
+    if (MageStudios.Param.BCEList["dirUp"] !== 0) this.keyMapper[38] = "dirUp";
+    if (MageStudios.Param.BCEList["num8"] !== 0) this.keyMapper[104] = "num8";
+  } else if (button === "RIGHT") {
+    if (MageStudios.Param.BCEList["dirRight"] !== 0)
+      this.keyMapper[39] = "dirRight";
+    if (MageStudios.Param.BCEList["num6"] !== 0) this.keyMapper[102] = "num6";
+  } else if (button === "DOWN") {
+    if (MageStudios.Param.BCEList["dirDown"] !== 0)
+      this.keyMapper[40] = "dirDown";
+    if (MageStudios.Param.BCEList["num2"] !== 0) this.keyMapper[98] = "num2";
+  } else if (button === "ALL") {
+    if (MageStudios.Param.BCEList["enter"] !== 0) this.keyMapper[13] = "enter";
+    if (MageStudios.Param.BCEList["space"] !== 0) this.keyMapper[32] = "space";
+    if (MageStudios.Param.BCEList["z"] !== 0) this.keyMapper[90] = "z";
+    if (MageStudios.Param.BCEList["ins"] !== 0) this.keyMapper[45] = "ins";
+    if (MageStudios.Param.BCEList["x"] !== 0) this.keyMapper[88] = "x";
+    if (MageStudios.Param.BCEList["num0"] !== 0) this.keyMapper[96] = "num0";
+    if (MageStudios.Param.BCEList["keyShift"] !== 0)
+      this.keyMapper[16] = "keyShift";
+    if (MageStudios.Param.BCEList["pageUp"] !== 0)
+      this.keyMapper[33] = "pageUp";
+    if (MageStudios.Param.BCEList["q"] !== 0) this.keyMapper[81] = "q";
+    if (MageStudios.Param.BCEList["pageDown"] !== 0)
+      this.keyMapper[34] = "pageDown";
+    if (MageStudios.Param.BCEList["w"] !== 0) this.keyMapper[87] = "w";
+    if (MageStudios.Param.BCEList["dirLeft"] !== 0)
+      this.keyMapper[37] = "dirLeft";
+    if (MageStudios.Param.BCEList["num4"] !== 0) this.keyMapper[100] = "num4";
+    if (MageStudios.Param.BCEList["dirUp"] !== 0) this.keyMapper[38] = "dirUp";
+    if (MageStudios.Param.BCEList["num8"] !== 0) this.keyMapper[104] = "num8";
+    if (MageStudios.Param.BCEList["dirRight"] !== 0)
+      this.keyMapper[39] = "dirRight";
+    if (MageStudios.Param.BCEList["num6"] !== 0) this.keyMapper[102] = "num6";
+    if (MageStudios.Param.BCEList["dirDown"] !== 0)
+      this.keyMapper[40] = "dirDown";
+    if (MageStudios.Param.BCEList["num2"] !== 0) this.keyMapper[98] = "num2";
+  }
+};
 
 MageStudios.BCE.Scene_Base_start = Scene_Base.prototype.start;
-Scene_Base.prototype.start = function() {
-    MageStudios.BCE.Scene_Base_start.call(this);
-    Input._revertButton('ALL');
+Scene_Base.prototype.start = function () {
+  MageStudios.BCE.Scene_Base_start.call(this);
+  Input._revertButton("ALL");
 };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
 MageStudios.BCE.Scene_Map_start = Scene_Map.prototype.start;
-Scene_Map.prototype.start = function() {
-    MageStudios.BCE.Scene_Map_start.call(this);
-    Input._switchButton('ALL');
+Scene_Map.prototype.start = function () {
+  MageStudios.BCE.Scene_Map_start.call(this);
+  Input._switchButton("ALL");
 };
 
 MageStudios.BCE.Scene_Map_updateScene = Scene_Map.prototype.updateScene;
-Scene_Map.prototype.updateScene = function() {
-    MageStudios.BCE.Scene_Map_updateScene.call(this);
-    if (SceneManager.isSceneChanging()) return;
-    if ($gameMap.isEventRunning()) return;
-    this.updateButtonEvents();
+Scene_Map.prototype.updateScene = function () {
+  MageStudios.BCE.Scene_Map_updateScene.call(this);
+  if (SceneManager.isSceneChanging()) return;
+  if ($gameMap.isEventRunning()) return;
+  this.updateButtonEvents();
 };
 
-Scene_Map.prototype.updateButtonEvents = function() {
-    for (var key in MageStudios.Param.BCEList) {
-      var eventId = MageStudios.Param.BCEList[key];
-      if (eventId <= 0) continue;
-      if (!Input.isRepeated(key)) continue;
-      $gameTemp.reserveCommonEvent(eventId);
-      break;
-    }
+Scene_Map.prototype.updateButtonEvents = function () {
+  for (var key in MageStudios.Param.BCEList) {
+    var eventId = MageStudios.Param.BCEList[key];
+    if (eventId <= 0) continue;
+    if (!Input.isRepeated(key)) continue;
+    $gameTemp.reserveCommonEvent(eventId);
+    break;
+  }
 };
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.BCE.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.BCE.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'RevertButton') this.revertButton(args);
-  if (command === 'SwitchButton') this.switchButton(args);
-  if (command === 'TriggerButton') this.triggerButton(args);
+  if (command === "RevertButton") this.revertButton(args);
+  if (command === "SwitchButton") this.switchButton(args);
+  if (command === "TriggerButton") this.triggerButton(args);
 };
 
-Game_Interpreter.prototype.revertButton = function(args) {
+Game_Interpreter.prototype.revertButton = function (args) {
   if (!args) return;
   var button = args[0].toUpperCase();
   Input._revertButton(button);
 };
 
-Game_Interpreter.prototype.switchButton = function(args) {
+Game_Interpreter.prototype.switchButton = function (args) {
   if (!args) return;
   var button = args[0].toUpperCase();
   Input._switchButton(button);
 };
 
-Game_Interpreter.prototype.triggerButton = function(args) {
+Game_Interpreter.prototype.triggerButton = function (args) {
   if (!args) return;
   var button = args[0].toLowerCase();
-  if (button === 'cancel') button = 'escape';
-  if (button === 'dash') button = 'shift';
+  if (button === "cancel") button = "escape";
+  if (button === "dash") button = "shift";
   Input._latestButton = button;
   Input._pressedTime = 0;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

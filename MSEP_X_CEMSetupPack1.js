@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Common Event Menu Extension - Setup Pack 1
-// MSEP_X_CEMSetupPack.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_CEMSetupPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CEMSP1 = MageStudios.CEMSP1 || {};
-MageStudios.CEMSP1.version = 1.00
+MageStudios.CEMSP1.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_CommonEventMenu.js) Adds more setups
  * to use with the Common Event Menu.
  * @author Mage Studios Engine Plugins
@@ -125,54 +119,48 @@ MageStudios.CEMSP1.version = 1.00
  *   windows on the left half of the screen while the main list is sandwiched
  *   in between using one column on the right half.
  */
-//=============================================================================
 
 if (Imported.MSEP_CommonEventMenu) {
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.CEMSP1.Game_Interpreter_setCommonEventMenuSettings =
+  MageStudios.CEMSP1.Game_Interpreter_setCommonEventMenuSettings =
     Game_Interpreter.prototype.setCommonEventMenuSettings;
-Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
+  Game_Interpreter.prototype.setCommonEventMenuSettings = function (name) {
     var settings;
     if (name.match(/REVERSE SETUP/i)) {
       settings = {
-        mainX: 'Graphics.boxWidth / 2',
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth / 2',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2)',
+        mainX: "Graphics.boxWidth / 2",
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth / 2",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2)",
         mainC: 1,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
         picX: 0,
-        picY: 'this.fittingHeight(2)',
-        picW: 'Graphics.boxWidth / 2',
-        picH: 'this.fittingHeight(10)',
+        picY: "this.fittingHeight(2)",
+        picW: "Graphics.boxWidth / 2",
+        picH: "this.fittingHeight(10)",
         picO: 255,
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth / 2',
-        subH: 'Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(10)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth / 2",
+        subH: "Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(10)",
+        subO: 255,
+      };
     } else if (name.match(/FULL SINGLE SETUP/i)) {
       settings = {
         mainX: 0,
         mainY: 0,
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight',
+        mainW: "Graphics.boxWidth",
+        mainH: "Graphics.boxHeight",
         mainC: 1,
         mainO: 255,
 
@@ -195,14 +183,14 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
         subY: 0,
         subW: 1,
         subH: 1,
-        subO: 255
-      }
+        subO: 255,
+      };
     } else if (name.match(/FULL DOUBLE SETUP/i)) {
       settings = {
         mainX: 0,
         mainY: 0,
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight',
+        mainW: "Graphics.boxWidth",
+        mainH: "Graphics.boxHeight",
         mainC: 2,
         mainO: 255,
 
@@ -225,22 +213,22 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
         subY: 0,
         subW: 1,
         subH: 1,
-        subO: 255
-      }
+        subO: 255,
+      };
     } else if (name.match(/DOUBLE COMMON SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2)',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2)",
         mainC: 2,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: false,
@@ -255,22 +243,23 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
         subY: 0,
         subW: 1,
         subH: 1,
-        subO: 255
-      }
+        subO: 255,
+      };
     } else if (name.match(/DOUBLE SUBTEXT SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH:
+          "Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)",
         mainC: 2,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: false,
@@ -282,32 +271,33 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth',
-        subH: 'this.fittingHeight(4)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth",
+        subH: "this.fittingHeight(4)",
+        subO: 255,
+      };
     } else if (name.match(/DOUBLE PICTURE SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH:
+          "Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)",
         mainC: 2,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
         picX: 0,
-        picY: 'Graphics.boxHeight - height',
-        picW: 'Graphics.boxWidth',
-        picH: 'this.fittingHeight(4)',
+        picY: "Graphics.boxHeight - height",
+        picW: "Graphics.boxWidth",
+        picH: "this.fittingHeight(4)",
         picO: 255,
 
         subS: false,
@@ -315,82 +305,84 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
         subY: 0,
         subW: 1,
         subH: 1,
-        subO: 255
-      }
+        subO: 255,
+      };
     } else if (name.match(/DOUBLE HYBRID SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH:
+          "Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)",
         mainC: 2,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
         picX: 0,
-        picY: 'Graphics.boxHeight - height',
-        picW: 'Graphics.boxWidth / 2',
-        picH: 'this.fittingHeight(4)',
+        picY: "Graphics.boxHeight - height",
+        picW: "Graphics.boxWidth / 2",
+        picH: "this.fittingHeight(4)",
         picO: 255,
 
         subS: true,
-        subX: 'Graphics.boxWidth / 2',
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth / 2',
-        subH: 'this.fittingHeight(4)',
-        subO: 255
-      }
+        subX: "Graphics.boxWidth / 2",
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth / 2",
+        subH: "this.fittingHeight(4)",
+        subO: 255,
+      };
     } else if (name.match(/DOUBLE REVERSE HYBRID SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH:
+          "Graphics.boxHeight - this.fittingHeight(2) - this.fittingHeight(4)",
         mainC: 2,
         mainO: 255,
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
-        picX: 'Graphics.boxWidth / 2',
-        picY: 'Graphics.boxHeight - height',
-        picW: 'Graphics.boxWidth / 2',
-        picH: 'this.fittingHeight(4)',
+        picX: "Graphics.boxWidth / 2",
+        picY: "Graphics.boxHeight - height",
+        picW: "Graphics.boxWidth / 2",
+        picH: "this.fittingHeight(4)",
         picO: 255,
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth / 2',
-        subH: 'this.fittingHeight(4)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth / 2",
+        subH: "this.fittingHeight(4)",
+        subO: 255,
+      };
     } else if (name.match(/SANDWICH SINGLE SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         mainC: 1,
-        mainO: '255',
+        mainO: "255",
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: false,
@@ -402,25 +394,25 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth',
-        subH: 'this.fittingHeight(2)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth",
+        subH: "this.fittingHeight(2)",
+        subO: 255,
+      };
     } else if (name.match(/SANDWICH DOUBLE SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         mainC: 2,
-        mainO: '255',
+        mainO: "255",
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: false,
@@ -432,77 +424,76 @@ Game_Interpreter.prototype.setCommonEventMenuSettings = function(name) {
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth',
-        subH: 'this.fittingHeight(2)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth",
+        subH: "this.fittingHeight(2)",
+        subO: 255,
+      };
     } else if (name.match(/SANDWICH PICTURE SETUP/i)) {
       settings = {
         mainX: 0,
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth / 2',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth / 2",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         mainC: 1,
-        mainO: '255',
+        mainO: "255",
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
-        picX: 'Graphics.boxWidth / 2',
-        picY: 'this.fittingHeight(2)',
-        picW: 'Graphics.boxWidth / 2',
-        picH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        picX: "Graphics.boxWidth / 2",
+        picY: "this.fittingHeight(2)",
+        picW: "Graphics.boxWidth / 2",
+        picH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         picO: 255,
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth',
-        subH: 'this.fittingHeight(2)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth",
+        subH: "this.fittingHeight(2)",
+        subO: 255,
+      };
     } else if (name.match(/SANDWICH REVERSE PICTURE SETUP/i)) {
       settings = {
-        mainX: 'Graphics.boxWidth / 2',
-        mainY: 'this.fittingHeight(2)',
-        mainW: 'Graphics.boxWidth / 2',
-        mainH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        mainX: "Graphics.boxWidth / 2",
+        mainY: "this.fittingHeight(2)",
+        mainW: "Graphics.boxWidth / 2",
+        mainH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         mainC: 1,
-        mainO: '255',
+        mainO: "255",
 
         helpS: true,
         helpX: 0,
         helpY: 0,
-        helpW: 'Graphics.boxWidth',
-        helpH: 'this.fittingHeight(2)',
+        helpW: "Graphics.boxWidth",
+        helpH: "this.fittingHeight(2)",
         helpO: 255,
 
         picS: true,
         picX: 0,
-        picY: 'this.fittingHeight(2)',
-        picW: 'Graphics.boxWidth / 2',
-        picH: 'Graphics.boxHeight - this.fittingHeight(2) * 2',
+        picY: "this.fittingHeight(2)",
+        picW: "Graphics.boxWidth / 2",
+        picH: "Graphics.boxHeight - this.fittingHeight(2) * 2",
         picO: 255,
 
         subS: true,
         subX: 0,
-        subY: 'Graphics.boxHeight - height',
-        subW: 'Graphics.boxWidth',
-        subH: 'this.fittingHeight(2)',
-        subO: 255
-      }
+        subY: "Graphics.boxHeight - height",
+        subW: "Graphics.boxWidth",
+        subH: "this.fittingHeight(2)",
+        subO: 255,
+      };
     }
     if (settings) return $gameSystem.setCommonEventMenuSettings(settings);
-    MageStudios.CEMSP1.Game_Interpreter_setCommonEventMenuSettings.call(this, name);
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_CommonEventMenu
+    MageStudios.CEMSP1.Game_Interpreter_setCommonEventMenuSettings.call(
+      this,
+      name
+    );
+  };
+}

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Scale Sprites
-// MSEP_ScaleSprites.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_ScaleSprites = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ScSpr = MageStudios.ScSpr || {};
-MageStudios.ScSpr.version = 1.00
+MageStudios.ScSpr.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This is a plugin that lets you scale sprites of
  * smaller or larger sizes to certain dimensions.
  * @author Mage Studios Engine Plugins
@@ -54,33 +48,22 @@ MageStudios.ScSpr.version = 1.00
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_ScaleSprites');
+MageStudios.Parameters = PluginManager.parameters("MSEP_ScaleSprites");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.ScSprSmoothing = eval(String(MageStudios.Parameters['Smoothing']));
+MageStudios.Param.ScSprSmoothing = eval(
+  String(MageStudios.Parameters["Smoothing"])
+);
 
-//=============================================================================
-// ImageManager
-//=============================================================================
-
-ImageManager.loadCharacterSmooth = function(filename, hue) {
+ImageManager.loadCharacterSmooth = function (filename, hue) {
   var smooth = MageStudios.Param.ScSprSmoothing;
-  return this.loadBitmap('img/characters/', filename, hue, smooth);
+  return this.loadBitmap("img/characters/", filename, hue, smooth);
 };
-
-//=============================================================================
-// Sprite_Character
-//=============================================================================
 
 MageStudios.ScSpr.Sprite_Character_setCharacterBitmap =
   Sprite_Character.prototype.setCharacterBitmap;
-Sprite_Character.prototype.setCharacterBitmap = function() {
+Sprite_Character.prototype.setCharacterBitmap = function () {
   if (this._characterName.match(/\[(\d+)x(\d+)\]/i)) {
     this._scaledWidth = parseInt(RegExp.$1);
     this._scaledHeight = parseInt(RegExp.$2);
@@ -94,18 +77,18 @@ Sprite_Character.prototype.setCharacterBitmap = function() {
   }
 };
 
-Sprite_Character.prototype.setCharacterBitmapScaled = function() {
+Sprite_Character.prototype.setCharacterBitmapScaled = function () {
   this.bitmap = ImageManager.loadCharacterSmooth(this._characterName);
   this._isBigCharacter = ImageManager.isBigCharacter(this._characterName);
 };
 
-Sprite_Character.prototype.isCharacterBitmapScaled = function() {
+Sprite_Character.prototype.isCharacterBitmapScaled = function () {
   return this._scaledWidth;
 };
 
 MageStudios.ScSpr.Sprite_Character_patternWidth =
   Sprite_Character.prototype.patternWidth;
-Sprite_Character.prototype.patternWidth = function() {
+Sprite_Character.prototype.patternWidth = function () {
   if (this.isCharacterBitmapScaled()) {
     this.scale.x = this._scaledWidth / this.width;
   }
@@ -114,20 +97,16 @@ Sprite_Character.prototype.patternWidth = function() {
 
 MageStudios.ScSpr.Sprite_Character_patternHeight =
   Sprite_Character.prototype.patternHeight;
-Sprite_Character.prototype.patternHeight = function() {
+Sprite_Character.prototype.patternHeight = function () {
   if (this.isCharacterBitmapScaled()) {
     this.scale.y = this._scaledHeight / this.height;
   }
   return MageStudios.ScSpr.Sprite_Character_patternHeight.call(this);
 };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
 MageStudios.ScSpr.Window_Base_drawCharacter =
   Window_Base.prototype.drawCharacter;
-Window_Base.prototype.drawCharacter = function(name, index, x, y) {
+Window_Base.prototype.drawCharacter = function (name, index, x, y) {
   if (name.match(/\[(\d+)x(\d+)\]/i)) {
     var width = parseInt(RegExp.$1);
     var height = parseInt(RegExp.$1);
@@ -137,18 +116,13 @@ Window_Base.prototype.drawCharacter = function(name, index, x, y) {
   }
 };
 
-Window_Base.prototype.drawScaledCharacter = function(name, index, x, y, w, h) {
+Window_Base.prototype.drawScaledCharacter = function (name, index, x, y, w, h) {
   var bitmap = ImageManager.loadCharacter(name);
   var big = ImageManager.isBigCharacter(name);
   var pw = bitmap.width / (big ? 3 : 12);
   var ph = bitmap.height / (big ? 4 : 8);
   var n = index;
-  var sx = (n % 4 * 3 + 1) * pw;
-  var sy = (Math.floor(n / 4) * 4) * ph;
+  var sx = ((n % 4) * 3 + 1) * pw;
+  var sy = Math.floor(n / 4) * 4 * ph;
   this.contents.blt(bitmap, sx, sy, pw, ph, x - w / 2, y - h, w, h);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================
-

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Message Core Extension - Message Macros 1
-// MSEP_X_MessageMacros1.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MessageMacros1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MsgMacro = MageStudios.MsgMacro || {};
-MageStudios.MsgMacro.version = 1.00;
+MageStudios.MsgMacro.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_MessageCore.js) Adds macros 1 to 100
  * for your game's message system.
  * @author Mage Studios Engine Plugins
@@ -1530,93 +1524,114 @@ MageStudios.MsgMacro.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_MessageCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MessageMacros1");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.QuickMacro = String(
+    MageStudios.Parameters["Enable Quick Macro"]
+  );
+  MageStudios.Param.QuickMacro = eval(MageStudios.Param.QuickMacro);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageMacros1');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.Param.QuickMacro = String(MageStudios.Parameters['Enable Quick Macro']);
-MageStudios.Param.QuickMacro = eval(MageStudios.Param.QuickMacro);
-
-MageStudios.MsgMacroRef = MageStudios.MsgMacroRef || {};
-MageStudios.MsgMacroArr = [undefined];
-MageStudios.Param.MacroMax = 100;
-for (MageStudios.i = 1; MageStudios.i < MageStudios.Param.MacroMax + 1; ++MageStudios.i) {
-  MageStudios.tx = 'Macro ' + MageStudios.i + ' Text';
-  MageStudios.MsgMacro[MageStudios.i] = String(MageStudios.Parameters[MageStudios.tx]);
-  MageStudios.MsgMacro[MageStudios.i] = MageStudios.MsgMacro[MageStudios.i].replace(/\\/g, '\x1b');
-  MageStudios.tx = 'Macro ' + MageStudios.i + ' Name';
-  MageStudios.tx = String(MageStudios.Parameters[MageStudios.tx]);
-  if (!MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()]) {
-    MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()] = MageStudios.i;
-  }
-  MageStudios.MsgMacroArr[MageStudios.i] = new RegExp('\x1b' + MageStudios.tx, 'gi');
-};
-
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-MageStudios.MsgMacro.Window_Base_convertEscapeCharacters =
-    Window_Base.prototype.convertEscapeCharacters;
-Window_Base.prototype.convertEscapeCharacters = function(text) {
-    text = text.replace(/\\V\[(\d+)\]/gi, function() {
-        return $gameVariables.value(parseInt(arguments[1]));
-    }.bind(this));
-    text = text.replace(/\\V\[(\d+)\]/gi, function() {
-        return $gameVariables.value(parseInt(arguments[1]));
-    }.bind(this));
-    text = text.replace(/\\N\[(\d+)\]/gi, function() {
-        return this.actorName(parseInt(arguments[1]));
-    }.bind(this));
-    text = text.replace(/\\P\[(\d+)\]/gi, function() {
-        return this.partyMemberName(parseInt(arguments[1]));
-    }.bind(this));
-    text = this.convertMacroText(text);
-    return MageStudios.MsgMacro.Window_Base_convertEscapeCharacters.call(this, text);
-};
-
-Window_Base.prototype.convertMacroText = function(text) {
-    text = text.replace(/\\M\[(\d+)\]/gi, function() {
-      return MageStudios.MsgMacro[arguments[1]];
-    }.bind(this));
-    text = text.replace(/\\M\[(.*?)\]/gi, function() {
-      var name = arguments[1].toUpperCase();
-      var macro = MageStudios.MsgMacroRef[name];
-      return MageStudios.MsgMacro[macro];
-    }.bind(this));
-    return text;
-};
-
-if (MageStudios.Param.QuickMacro) {
-
-MageStudios.MsgMacro.Window_Base_convertMacroText =
-    Window_Base.prototype.convertMacroText;
-Window_Base.prototype.convertMacroText = function(text) {
-    text = MageStudios.MsgMacro.Window_Base_convertMacroText.call(this, text);
-    text = text.replace(/\\/g, '\x1b');
-    text = text.replace(/\x1b\x1b/g, 'MageMACROTESTREVERSEDOUBLESLASH');
-    var length = MageStudios.MsgMacroArr.length;
-    for (var i = 0; i < length; ++i) {
-      var code = MageStudios.MsgMacroArr[i];
-      if (!code) continue;
-      text = text.replace(code, function() {
-        return MageStudios.MsgMacro[i];
-      }.bind(this));
+  MageStudios.MsgMacroRef = MageStudios.MsgMacroRef || {};
+  MageStudios.MsgMacroArr = [undefined];
+  MageStudios.Param.MacroMax = 100;
+  for (
+    MageStudios.i = 1;
+    MageStudios.i < MageStudios.Param.MacroMax + 1;
+    ++MageStudios.i
+  ) {
+    MageStudios.tx = "Macro " + MageStudios.i + " Text";
+    MageStudios.MsgMacro[MageStudios.i] = String(
+      MageStudios.Parameters[MageStudios.tx]
+    );
+    MageStudios.MsgMacro[MageStudios.i] = MageStudios.MsgMacro[
+      MageStudios.i
+    ].replace(/\\/g, "\x1b");
+    MageStudios.tx = "Macro " + MageStudios.i + " Name";
+    MageStudios.tx = String(MageStudios.Parameters[MageStudios.tx]);
+    if (!MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()]) {
+      MageStudios.MsgMacroRef[MageStudios.tx.toUpperCase()] = MageStudios.i;
     }
-    text = text.replace(/MageMACROTESTREVERSEDOUBLESLASH/g, '\\\\');
+    MageStudios.MsgMacroArr[MageStudios.i] = new RegExp(
+      "\x1b" + MageStudios.tx,
+      "gi"
+    );
+  }
+
+  MageStudios.MsgMacro.Window_Base_convertEscapeCharacters =
+    Window_Base.prototype.convertEscapeCharacters;
+  Window_Base.prototype.convertEscapeCharacters = function (text) {
+    text = text.replace(
+      /\\V\[(\d+)\]/gi,
+      function () {
+        return $gameVariables.value(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\\V\[(\d+)\]/gi,
+      function () {
+        return $gameVariables.value(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\\N\[(\d+)\]/gi,
+      function () {
+        return this.actorName(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = text.replace(
+      /\\P\[(\d+)\]/gi,
+      function () {
+        return this.partyMemberName(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    text = this.convertMacroText(text);
+    return MageStudios.MsgMacro.Window_Base_convertEscapeCharacters.call(
+      this,
+      text
+    );
+  };
+
+  Window_Base.prototype.convertMacroText = function (text) {
+    text = text.replace(
+      /\\M\[(\d+)\]/gi,
+      function () {
+        return MageStudios.MsgMacro[arguments[1]];
+      }.bind(this)
+    );
+    text = text.replace(
+      /\\M\[(.*?)\]/gi,
+      function () {
+        var name = arguments[1].toUpperCase();
+        var macro = MageStudios.MsgMacroRef[name];
+        return MageStudios.MsgMacro[macro];
+      }.bind(this)
+    );
     return text;
-};
+  };
 
-}; // MageStudios.Param.QuickMacro
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  if (MageStudios.Param.QuickMacro) {
+    MageStudios.MsgMacro.Window_Base_convertMacroText =
+      Window_Base.prototype.convertMacroText;
+    Window_Base.prototype.convertMacroText = function (text) {
+      text = MageStudios.MsgMacro.Window_Base_convertMacroText.call(this, text);
+      text = text.replace(/\\/g, "\x1b");
+      text = text.replace(/\x1b\x1b/g, "MageMACROTESTREVERSEDOUBLESLASH");
+      var length = MageStudios.MsgMacroArr.length;
+      for (var i = 0; i < length; ++i) {
+        var code = MageStudios.MsgMacroArr[i];
+        if (!code) continue;
+        text = text.replace(
+          code,
+          function () {
+            return MageStudios.MsgMacro[i];
+          }.bind(this)
+        );
+      }
+      text = text.replace(/MageMACROTESTREVERSEDOUBLESLASH/g, "\\\\");
+      return text;
+    };
+  }
+}

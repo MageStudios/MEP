@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Stat Allocation
-// MSEP_StatAllocation.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_StatAllocation = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.StatAlc = MageStudios.StatAlc || {};
-MageStudios.StatAlc.version = 1.00;
+MageStudios.StatAlc.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Add a menu to your game to allocate stats for party
  * members. Stats can be allocated through AP, JP, or items!
  * @author Mage Studios Engine Plugins
@@ -69,7 +63,7 @@ MageStudios.StatAlc.version = 1.00;
  *   can allocate points into. Insert as many 'x' entries as you need. They
  *   will appear in the menu in the order they've been placed. Unaffiliated
  *   stats will not appear in the menu. Use any of the stats below:
- *   
+ *
  *   ---
  *
  *   Param:    Stands for:
@@ -82,9 +76,9 @@ MageStudios.StatAlc.version = 1.00;
  *   mdf       Magic Defense
  *   agi       Agility
  *   luk       Luck
- *   
+ *
  *   XParam:
- *   
+ *
  *   hit       Hit Rate
  *   eva       Evasion Rate
  *   cri       Critical Hit Rate
@@ -93,11 +87,11 @@ MageStudios.StatAlc.version = 1.00;
  *   mrf       Magic Reflection Rate
  *   cnt       Counterattack Rate
  *   hrg       HP Regeneration Rate
- *   mrg       MP Regeneration Rate 
+ *   mrg       MP Regeneration Rate
  *   trg       TP Regeneration Rate
- *   
+ *
  *   SParam:
- *   
+ *
  *   tgr       Target Rate
  *   grd       Guard Effect Rate
  *   rec       Recovery Rate
@@ -108,7 +102,7 @@ MageStudios.StatAlc.version = 1.00;
  *   mdr       Magical Damage Rate
  *   fdr       Floor Damage Rate
  *   exr       Experience Rate
- *   
+ *
  *   ---
  *
  * These can be inserted into the 'Default Parameters' plugin parameter, too,
@@ -126,7 +120,7 @@ MageStudios.StatAlc.version = 1.00;
  *     Symbol: statAllocate
  *       Show: $gameSystem.isShowStatAllocate()
  *    Enabled: $gameSystem.isEnableStatAllocate()
- *        Ext: 
+ *        Ext:
  *  Main Bind: this.commandPersonal.bind(this)
  * Actor Bind: SceneManager.push(Scene_StatAllocation)
  *
@@ -169,7 +163,7 @@ MageStudios.StatAlc.version = 1.00;
  * ============================================================================
  * Lunatic Mode - Script Calls
  * ============================================================================
- * 
+ *
  * You can use the following script calls to give actors extra AP to use.
  *
  * Script Calls:
@@ -366,7 +360,7 @@ MageStudios.StatAlc.version = 1.00;
  * @parent ---Allocation Window---
  * @type note
  * @desc Code used to draw the parameters.
- * @default "// Initialize Variables\nvar param = this._list[index].ext;\nvar data = this.paramData(param);\nvar rect = this.itemRectForText(index);\n// Draw Gauge\nvar gaugeColor1 = data.gaugeColor1 || '#000000';\nvar gaugeColor2 = data.gaugeColor2 || '#000000';\nvar rate = this.paramAllocationRate(param);\nvar width = this.contentsWidth() - 330;\nthis.drawGauge(rect.x, rect.y, width, rate, gaugeColor1, gaugeColor2);\n// Draw Parameter Name\nthis.drawParamName(param, rect.x + this.textPadding(), rect.y, width);\n// Draw Parameter Values\nthis.drawParamValues(param, rect.x + this.textPadding(), rect.y, width);\n// Draw Parameter Cost\nthis.drawParamCost(param, rect.x + rect.width - width, rect.y, width);"
+ * @default "
  *
  * @param Base Parameters
  * @parent ---Allocation Window---
@@ -644,133 +638,176 @@ MageStudios.StatAlc.version = 1.00;
  * @desc The item cost to upgrade this parameter.
  * cost = final value     times = times already upgraded
  * @default "cost = 1;"
- * 
+ *
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_StatAllocation');
+MageStudios.Parameters = PluginManager.parameters("MSEP_StatAllocation");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.StatAlcCmdName = String(MageStudios.Parameters['Command Text']);
-MageStudios.Param.StatAlcAutoAdd = eval(String(MageStudios.Parameters['Auto Add Menu']));
-MageStudios.Param.StatAlcShowCmd = String(MageStudios.Parameters['Show Command']);
+MageStudios.Param.StatAlcCmdName = String(
+  MageStudios.Parameters["Command Text"]
+);
+MageStudios.Param.StatAlcAutoAdd = eval(
+  String(MageStudios.Parameters["Auto Add Menu"])
+);
+MageStudios.Param.StatAlcShowCmd = String(
+  MageStudios.Parameters["Show Command"]
+);
 MageStudios.Param.StatAlcShowCmd = eval(MageStudios.Param.StatAlcShowCmd);
-MageStudios.Param.StatAlcEnableCmd = String(MageStudios.Parameters['Enable Command']);
+MageStudios.Param.StatAlcEnableCmd = String(
+  MageStudios.Parameters["Enable Command"]
+);
 MageStudios.Param.StatAlcEnableCmd = eval(MageStudios.Param.StatAlcEnableCmd);
-MageStudios.Param.StatAlcAutoPlace = String(MageStudios.Parameters['Auto Place Command']);
+MageStudios.Param.StatAlcAutoPlace = String(
+  MageStudios.Parameters["Auto Place Command"]
+);
 MageStudios.Param.StatAlcAutoPlace = eval(MageStudios.Param.StatAlcAutoPlace);
-MageStudios.Param.StatAlcLfRt = String(MageStudios.Parameters['Left/Right Allocate']);
+MageStudios.Param.StatAlcLfRt = String(
+  MageStudios.Parameters["Left/Right Allocate"]
+);
 MageStudios.Param.StatAlcLfRt = eval(MageStudios.Param.StatAlcLfRt);
 
-MageStudios.Param.StatAlcAP = String(MageStudios.Parameters['AP Name']);
-MageStudios.Param.StatAlcAPIcon = Number(MageStudios.Parameters['AP Icon']);
-MageStudios.Param.StatAlcAPAmtFmt = String(MageStudios.Parameters['AP Amount Format']);
-MageStudios.Param.StatAlcAPMenu = eval(String(MageStudios.Parameters['Show AP in Menu']));
+MageStudios.Param.StatAlcAP = String(MageStudios.Parameters["AP Name"]);
+MageStudios.Param.StatAlcAPIcon = Number(MageStudios.Parameters["AP Icon"]);
+MageStudios.Param.StatAlcAPAmtFmt = String(
+  MageStudios.Parameters["AP Amount Format"]
+);
+MageStudios.Param.StatAlcAPMenu = eval(
+  String(MageStudios.Parameters["Show AP in Menu"])
+);
 
-MageStudios.Param.StatAlcTextAlign = String(MageStudios.Parameters['Text Alignment']);
-MageStudios.Param.StatAlcAllocateCmd = String(MageStudios.Parameters['Allocate Command']);
-MageStudios.Param.StatAlcRevertCmd = String(MageStudios.Parameters['Revert Command']);
-MageStudios.Param.StatAlcRevertShow = eval(String(MageStudios.Parameters['Show Revert']));
-MageStudios.Param.StatAlcRevertEnable = String(MageStudios.Parameters['Enable Revert']);
-MageStudios.Param.StatAlcRevertEnable = eval(MageStudios.Param.StatAlcRevertEnable);
-MageStudios.Param.StatAlcFinishCmd = String(MageStudios.Parameters['Finish Command']);
+MageStudios.Param.StatAlcTextAlign = String(
+  MageStudios.Parameters["Text Alignment"]
+);
+MageStudios.Param.StatAlcAllocateCmd = String(
+  MageStudios.Parameters["Allocate Command"]
+);
+MageStudios.Param.StatAlcRevertCmd = String(
+  MageStudios.Parameters["Revert Command"]
+);
+MageStudios.Param.StatAlcRevertShow = eval(
+  String(MageStudios.Parameters["Show Revert"])
+);
+MageStudios.Param.StatAlcRevertEnable = String(
+  MageStudios.Parameters["Enable Revert"]
+);
+MageStudios.Param.StatAlcRevertEnable = eval(
+  MageStudios.Param.StatAlcRevertEnable
+);
+MageStudios.Param.StatAlcFinishCmd = String(
+  MageStudios.Parameters["Finish Command"]
+);
 
-MageStudios.Param.StatAlcList = JSON.parse(MageStudios.Parameters['Default Parameters']);
-MageStudios.Param.StatAlcRefresh = String(MageStudios.Parameters['Allocate Refresh']);
+MageStudios.Param.StatAlcList = JSON.parse(
+  MageStudios.Parameters["Default Parameters"]
+);
+MageStudios.Param.StatAlcRefresh = String(
+  MageStudios.Parameters["Allocate Refresh"]
+);
 MageStudios.Param.StatAlcRefresh = eval(MageStudios.Param.StatAlcRefresh);
-MageStudios.Param.StatAlcDrawCode = JSON.parse(MageStudios.Parameters['drawCode']);
-MageStudios.Param.StatAlcDrawCode = new Function('index', 
-  MageStudios.Param.StatAlcDrawCode);
-MageStudios.Param.StatAlcSmItemName = String(MageStudios.Parameters['Small Item Names']);
+MageStudios.Param.StatAlcDrawCode = JSON.parse(
+  MageStudios.Parameters["drawCode"]
+);
+MageStudios.Param.StatAlcDrawCode = new Function(
+  "index",
+  MageStudios.Param.StatAlcDrawCode
+);
+MageStudios.Param.StatAlcSmItemName = String(
+  MageStudios.Parameters["Small Item Names"]
+);
 MageStudios.Param.StatAlcSmItemName = eval(MageStudios.Param.StatAlcSmItemName);
 
-MageStudios.Param.StatAlcRevConfirmText = 
-  JSON.parse(MageStudios.Parameters['RevertConfirmationText']);
-MageStudios.Param.StatAlcRevWinWidth = String(MageStudios.Parameters['RevertWinWidth']);
-MageStudios.Param.StatAlcRevYes = String(MageStudios.Parameters['RevertYes']);
-MageStudios.Param.StatAlcRevNo = String(MageStudios.Parameters['RevertNo']);
+MageStudios.Param.StatAlcRevConfirmText = JSON.parse(
+  MageStudios.Parameters["RevertConfirmationText"]
+);
+MageStudios.Param.StatAlcRevWinWidth = String(
+  MageStudios.Parameters["RevertWinWidth"]
+);
+MageStudios.Param.StatAlcRevYes = String(MageStudios.Parameters["RevertYes"]);
+MageStudios.Param.StatAlcRevNo = String(MageStudios.Parameters["RevertNo"]);
 
-MageStudios.SetupParameters = function() {
-  MageStudios.Param.StatAlcAPFormula = new Function('level', 'return ' +
-    String(MageStudios.Parameters['AP Formula']));
+MageStudios.SetupParameters = function () {
+  MageStudios.Param.StatAlcAPFormula = new Function(
+    "level",
+    "return " + String(MageStudios.Parameters["AP Formula"])
+  );
   MageStudios.Param.StatAlcParamSettings = {
-    mhp: MageStudios.ConvertParameterStructure('mhp Settings'),
-    mmp: MageStudios.ConvertParameterStructure('mmp Settings'),
-    atk: MageStudios.ConvertParameterStructure('atk Settings'),
-    def: MageStudios.ConvertParameterStructure('def Settings'),
-    mat: MageStudios.ConvertParameterStructure('mat Settings'),
-    mdf: MageStudios.ConvertParameterStructure('mdf Settings'),
-    agi: MageStudios.ConvertParameterStructure('agi Settings'),
-    luk: MageStudios.ConvertParameterStructure('luk Settings'),
+    mhp: MageStudios.ConvertParameterStructure("mhp Settings"),
+    mmp: MageStudios.ConvertParameterStructure("mmp Settings"),
+    atk: MageStudios.ConvertParameterStructure("atk Settings"),
+    def: MageStudios.ConvertParameterStructure("def Settings"),
+    mat: MageStudios.ConvertParameterStructure("mat Settings"),
+    mdf: MageStudios.ConvertParameterStructure("mdf Settings"),
+    agi: MageStudios.ConvertParameterStructure("agi Settings"),
+    luk: MageStudios.ConvertParameterStructure("luk Settings"),
 
-    hit: MageStudios.ConvertParameterStructure('hit Settings'),
-    eva: MageStudios.ConvertParameterStructure('eva Settings'),
-    cri: MageStudios.ConvertParameterStructure('cri Settings'),
-    cev: MageStudios.ConvertParameterStructure('cev Settings'),
-    mev: MageStudios.ConvertParameterStructure('mev Settings'),
-    mrf: MageStudios.ConvertParameterStructure('mrf Settings'),
-    cnt: MageStudios.ConvertParameterStructure('cnt Settings'),
-    hrg: MageStudios.ConvertParameterStructure('hrg Settings'),
-    mrg: MageStudios.ConvertParameterStructure('mrg Settings'),
-    trg: MageStudios.ConvertParameterStructure('trg Settings'),
+    hit: MageStudios.ConvertParameterStructure("hit Settings"),
+    eva: MageStudios.ConvertParameterStructure("eva Settings"),
+    cri: MageStudios.ConvertParameterStructure("cri Settings"),
+    cev: MageStudios.ConvertParameterStructure("cev Settings"),
+    mev: MageStudios.ConvertParameterStructure("mev Settings"),
+    mrf: MageStudios.ConvertParameterStructure("mrf Settings"),
+    cnt: MageStudios.ConvertParameterStructure("cnt Settings"),
+    hrg: MageStudios.ConvertParameterStructure("hrg Settings"),
+    mrg: MageStudios.ConvertParameterStructure("mrg Settings"),
+    trg: MageStudios.ConvertParameterStructure("trg Settings"),
 
-    tgr: MageStudios.ConvertParameterStructure('tgr Settings'),
-    grd: MageStudios.ConvertParameterStructure('grd Settings'),
-    rec: MageStudios.ConvertParameterStructure('rec Settings'),
-    pha: MageStudios.ConvertParameterStructure('pha Settings'),
-    mcr: MageStudios.ConvertParameterStructure('mcr Settings'),
-    tcr: MageStudios.ConvertParameterStructure('tcr Settings'),
-    pdr: MageStudios.ConvertParameterStructure('pdr Settings'),
-    mdr: MageStudios.ConvertParameterStructure('mdr Settings'),
-    fdr: MageStudios.ConvertParameterStructure('fdr Settings'),
-    exr: MageStudios.ConvertParameterStructure('exr Settings')
-  }
+    tgr: MageStudios.ConvertParameterStructure("tgr Settings"),
+    grd: MageStudios.ConvertParameterStructure("grd Settings"),
+    rec: MageStudios.ConvertParameterStructure("rec Settings"),
+    pha: MageStudios.ConvertParameterStructure("pha Settings"),
+    mcr: MageStudios.ConvertParameterStructure("mcr Settings"),
+    tcr: MageStudios.ConvertParameterStructure("tcr Settings"),
+    pdr: MageStudios.ConvertParameterStructure("pdr Settings"),
+    mdr: MageStudios.ConvertParameterStructure("mdr Settings"),
+    fdr: MageStudios.ConvertParameterStructure("fdr Settings"),
+    exr: MageStudios.ConvertParameterStructure("exr Settings"),
+  };
 };
 
-MageStudios.ConvertParameterStructure = function(parameterName) {
+MageStudios.ConvertParameterStructure = function (parameterName) {
   var data = JSON.parse(MageStudios.Parameters[parameterName]);
   data.description = JSON.parse(data.description);
   data.allocationBonus = Number(data.allocationBonus);
   data.maxAllocations = Math.max(1, Number(data.maxAllocations));
-  data.apCost = new Function('times', 'var cost = 0;\n ' +
-    JSON.parse(data.apCost) + '\nreturn Math.ceil(cost);');
-  data.jpCost = new Function('times', 'var cost = 0;\n ' +
-    JSON.parse(data.jpCost) + '\nreturn Math.ceil(cost);');
+  data.apCost = new Function(
+    "times",
+    "var cost = 0;\n " + JSON.parse(data.apCost) + "\nreturn Math.ceil(cost);"
+  );
+  data.jpCost = new Function(
+    "times",
+    "var cost = 0;\n " + JSON.parse(data.jpCost) + "\nreturn Math.ceil(cost);"
+  );
   data.itemId = Number(data.itemId);
-  data.itemCost = new Function('times', 'var cost = 0;\n ' +
-    JSON.parse(data.itemCost) + '\nreturn Math.ceil(cost);');
+  data.itemCost = new Function(
+    "times",
+    "var cost = 0;\n " + JSON.parse(data.itemCost) + "\nreturn Math.ceil(cost);"
+  );
   return data;
 };
 
 MageStudios.SetupParameters();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
 MageStudios.StatAlc.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.StatAlc.DataManager_isDatabaseLoaded.call(this)) return false;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.StatAlc.DataManager_isDatabaseLoaded.call(this))
+    return false;
 
   if (!MageStudios._loaded_MSEP_StatAllocation) {
     this.processStatAllocationNotetags1($dataClasses);
     MageStudios._loaded_MSEP_StatAllocation = true;
   }
-  
+
   return true;
 };
 
-DataManager.processStatAllocationNotetags1 = function(group) {
+DataManager.processStatAllocationNotetags1 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
 
     obj.statAllocationList = JsonEx.makeDeepCopy(MageStudios.Param.StatAlcList);
-    var customMode = 'none';
+    var customMode = "none";
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -778,22 +815,22 @@ DataManager.processStatAllocationNotetags1 = function(group) {
         obj.statAllocationList = this.extractStatAllocationList(RegExp.$1);
       } else if (line.match(/<Stat[ ](?:Allocation|Allocate)>/i)) {
         obj.statAllocationList = [];
-        var customMode = 'stat allocation';
+        var customMode = "stat allocation";
       } else if (line.match(/<Stat[ ](?:Allocation|Allocate)>/i)) {
-        var customMode = 'none';
-      } else if (customMode === 'stat allocation') {
+        var customMode = "none";
+      } else if (customMode === "stat allocation") {
         line = line.toLowerCase().trim();
-        if (line === 'maxhp') line = 'mhp';
-        if (line === 'maxmp') line = 'mmp';
+        if (line === "maxhp") line = "mhp";
+        if (line === "maxmp") line = "mmp";
         obj.statAllocationList.push(line);
       }
     }
   }
 };
 
-DataManager.extractStatAllocationList = function(data) {
+DataManager.extractStatAllocationList = function (data) {
   var array = [];
-  var list = data.split(',');
+  var list = data.split(",");
   var length = list.length;
   for (var i = 0; i < length; ++i) {
     var str = list[i];
@@ -802,116 +839,100 @@ DataManager.extractStatAllocationList = function(data) {
   return array;
 };
 
-//=============================================================================
-// TextManager
-//=============================================================================
-
-TextManager.ap = function() {
+TextManager.ap = function () {
   return MageStudios.Param.StatAlcAP;
 };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
 MageStudios.StatAlc.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.StatAlc.Game_System_initialize.call(this);
   this.initStatAllocation();
 };
 
-Game_System.prototype.initStatAllocation = function() {
+Game_System.prototype.initStatAllocation = function () {
   this._showStatAlloccate = MageStudios.Param.StatAlcShowCmd;
   this._enableStatAllocate = MageStudios.Param.StatAlcEnableCmd;
   this._showRevertAllocate = MageStudios.Param.StatAlcRevertShow;
   this._enableRevertAllocate = MageStudios.Param.StatAlcRevertEnable;
 };
 
-Game_System.prototype.isShowStatAllocate = function() {
+Game_System.prototype.isShowStatAllocate = function () {
   if (this._showStatAlloccate === undefined) this.initStatAllocation();
   return this._showStatAlloccate;
 };
 
-Game_System.prototype.isEnableStatAllocate = function() {
+Game_System.prototype.isEnableStatAllocate = function () {
   if (this._enableStatAllocate === undefined) this.initStatAllocation();
   return this._enableStatAllocate;
 };
 
-Game_System.prototype.isShowRevertAllocate = function() {
+Game_System.prototype.isShowRevertAllocate = function () {
   if (this._showRevertAllocate === undefined) this.initStatAllocation();
   return this._showRevertAllocate;
 };
 
-Game_System.prototype.isEnableRevertAllocate = function() {
+Game_System.prototype.isEnableRevertAllocate = function () {
   if (this._enableRevertAllocate === undefined) this.initStatAllocation();
   return this._enableRevertAllocate;
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
 MageStudios.StatAlc.Game_BattlerBase_param = Game_BattlerBase.prototype.param;
-Game_BattlerBase.prototype.param = function(paramId) {
+Game_BattlerBase.prototype.param = function (paramId) {
   var value = MageStudios.StatAlc.Game_BattlerBase_param.call(this, paramId);
   value += this.paramAllocationBonus(paramId);
   return value;
 };
 
-Game_BattlerBase.prototype.paramAllocationBonus = function(paramId) {
+Game_BattlerBase.prototype.paramAllocationBonus = function (paramId) {
   return 0;
 };
 
 MageStudios.StatAlc.Game_BattlerBase_xparam = Game_BattlerBase.prototype.xparam;
-Game_BattlerBase.prototype.xparam = function(xparamId) {
+Game_BattlerBase.prototype.xparam = function (xparamId) {
   var value = MageStudios.StatAlc.Game_BattlerBase_xparam.call(this, xparamId);
   value += this.xparamAllocationBonus(xparamId);
   return value;
 };
 
-Game_BattlerBase.prototype.xparamAllocationBonus = function(xparamId) {
+Game_BattlerBase.prototype.xparamAllocationBonus = function (xparamId) {
   return 0;
 };
 
 MageStudios.StatAlc.Game_BattlerBase_sparam = Game_BattlerBase.prototype.sparam;
-Game_BattlerBase.prototype.sparam = function(sparamId) {
+Game_BattlerBase.prototype.sparam = function (sparamId) {
   var value = MageStudios.StatAlc.Game_BattlerBase_sparam.call(this, sparamId);
   value += this.sparamAllocationBonus(sparamId);
   return value;
 };
 
-Game_BattlerBase.prototype.sparamAllocationBonus = function(sparamId) {
+Game_BattlerBase.prototype.sparamAllocationBonus = function (sparamId) {
   return 0;
 };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
 MageStudios.StatAlc.Game_Actor_initMembers = Game_Actor.prototype.initMembers;
-Game_Actor.prototype.initMembers = function() {
+Game_Actor.prototype.initMembers = function () {
   MageStudios.StatAlc.Game_Actor_initMembers.call(this);
   this.initStatAllocation();
   this.initAllocationPoints();
 };
 
-Game_Actor.prototype.initStatAllocation = function() {
+Game_Actor.prototype.initStatAllocation = function () {
   this._paramAllocationTimes = {};
   this._xparamAllocationTimes = {};
   this._sparamAllocationTimes = {};
 };
 
-Game_Actor.prototype.initAllocationPoints = function() {
+Game_Actor.prototype.initAllocationPoints = function () {
   this._bonusAllocationPoints = {};
   this._spentAllocationPoints = {};
 };
 
-Game_Actor.prototype.initAllocationPointsCheck = function() {
+Game_Actor.prototype.initAllocationPointsCheck = function () {
   if (this._bonusAllocationPoints === undefined) this.initAllocationPoints();
   if (this._spentAllocationPoints === undefined) this.initAllocationPoints();
 };
 
-Game_Actor.prototype.getParamAllocateTimes = function(paramId, classId) {
+Game_Actor.prototype.getParamAllocateTimes = function (paramId, classId) {
   classId = classId || this._classId;
   if (this._paramAllocationTimes === undefined) this.initStatAllocation();
   if (this._paramAllocationTimes[classId] === undefined) {
@@ -921,14 +942,22 @@ Game_Actor.prototype.getParamAllocateTimes = function(paramId, classId) {
   return this._paramAllocationTimes[classId][paramId].clamp(0, max);
 };
 
-Game_Actor.prototype.gainParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.gainParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._paramAllocationTimes === undefined) this.initStatAllocation();
   var value = this.getParamAllocateTimes(paramId) + times;
   this.setParamAllocateTimes(paramId, value);
 };
 
-Game_Actor.prototype.setParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.setParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._paramAllocationTimes === undefined) this.initStatAllocation();
   if (this._paramAllocationTimes[classId] === undefined) {
@@ -936,12 +965,13 @@ Game_Actor.prototype.setParamAllocateTimes = function(paramId, times, classId) {
   }
   this._paramAllocationTimes[classId][paramId] = times;
   var max = this.getParamAllocateMax(paramId);
-  this._paramAllocationTimes[classId][paramId] = 
-    this._paramAllocationTimes[classId][paramId].clamp(0, max);
+  this._paramAllocationTimes[classId][paramId] = this._paramAllocationTimes[
+    classId
+  ][paramId].clamp(0, max);
   if (MageStudios.Param.StatAlcRefresh) this.refresh();
 };
 
-Game_Actor.prototype.getParamAllocateBoost = function(paramId) {
+Game_Actor.prototype.getParamAllocateBoost = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.mhp.allocationBonus;
   if (paramId === 1) return data.mmp.allocationBonus;
@@ -954,7 +984,7 @@ Game_Actor.prototype.getParamAllocateBoost = function(paramId) {
   return 1;
 };
 
-Game_Actor.prototype.getParamAllocateMax = function(paramId) {
+Game_Actor.prototype.getParamAllocateMax = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.mhp.maxAllocations;
   if (paramId === 1) return data.mmp.maxAllocations;
@@ -967,13 +997,14 @@ Game_Actor.prototype.getParamAllocateMax = function(paramId) {
   return 100;
 };
 
-Game_Actor.prototype.paramAllocationBonus = function(paramId) {
+Game_Actor.prototype.paramAllocationBonus = function (paramId) {
   if ($gameTemp._ignoreStatAllocations) return 0;
-  return Math.ceil(this.getParamAllocateTimes(paramId) * 
-      this.getParamAllocateBoost(paramId));
+  return Math.ceil(
+    this.getParamAllocateTimes(paramId) * this.getParamAllocateBoost(paramId)
+  );
 };
 
-Game_Actor.prototype.getXParamAllocateTimes = function(paramId, classId) {
+Game_Actor.prototype.getXParamAllocateTimes = function (paramId, classId) {
   classId = classId || this._classId;
   if (this._xparamAllocationTimes === undefined) this.initStatAllocation();
   if (this._xparamAllocationTimes[classId] === undefined) {
@@ -983,14 +1014,22 @@ Game_Actor.prototype.getXParamAllocateTimes = function(paramId, classId) {
   return this._xparamAllocationTimes[classId][paramId].clamp(0, max);
 };
 
-Game_Actor.prototype.gainXParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.gainXParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._xparamAllocationTimes === undefined) this.initStatAllocation();
   var value = this.getXParamAllocateTimes(paramId) + times;
   this.setXParamAllocateTimes(paramId, value);
 };
 
-Game_Actor.prototype.setXParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.setXParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._xparamAllocationTimes === undefined) this.initStatAllocation();
   if (this._xparamAllocationTimes[classId] === undefined) {
@@ -998,12 +1037,13 @@ Game_Actor.prototype.setXParamAllocateTimes = function(paramId, times, classId) 
   }
   this._xparamAllocationTimes[classId][paramId] = times;
   var max = this.getXParamAllocateMax(paramId);
-  this._xparamAllocationTimes[classId][paramId] = 
-    this._xparamAllocationTimes[classId][paramId].clamp(0, max);
+  this._xparamAllocationTimes[classId][paramId] = this._xparamAllocationTimes[
+    classId
+  ][paramId].clamp(0, max);
   if (MageStudios.Param.StatAlcRefresh) this.refresh();
 };
 
-Game_Actor.prototype.getXParamAllocateBoost = function(paramId) {
+Game_Actor.prototype.getXParamAllocateBoost = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.hit.allocationBonus;
   if (paramId === 1) return data.eva.allocationBonus;
@@ -1018,7 +1058,7 @@ Game_Actor.prototype.getXParamAllocateBoost = function(paramId) {
   return 1;
 };
 
-Game_Actor.prototype.getXParamAllocateMax = function(paramId) {
+Game_Actor.prototype.getXParamAllocateMax = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.hit.maxAllocations;
   if (paramId === 1) return data.eva.maxAllocations;
@@ -1033,13 +1073,14 @@ Game_Actor.prototype.getXParamAllocateMax = function(paramId) {
   return 100;
 };
 
-Game_Actor.prototype.xparamAllocationBonus = function(paramId) {
+Game_Actor.prototype.xparamAllocationBonus = function (paramId) {
   if ($gameTemp._ignoreStatAllocations) return 0;
-  return this.getXParamAllocateTimes(paramId) * 
-      this.getXParamAllocateBoost(paramId);
+  return (
+    this.getXParamAllocateTimes(paramId) * this.getXParamAllocateBoost(paramId)
+  );
 };
 
-Game_Actor.prototype.getSParamAllocateTimes = function(paramId, classId) {
+Game_Actor.prototype.getSParamAllocateTimes = function (paramId, classId) {
   classId = classId || this._classId;
   if (this._sparamAllocationTimes === undefined) this.initStatAllocation();
   if (this._sparamAllocationTimes[classId] === undefined) {
@@ -1049,14 +1090,22 @@ Game_Actor.prototype.getSParamAllocateTimes = function(paramId, classId) {
   return this._sparamAllocationTimes[classId][paramId].clamp(0, max);
 };
 
-Game_Actor.prototype.gainSParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.gainSParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._sparamAllocationTimes === undefined) this.initStatAllocation();
   var value = this.getSParamAllocateTimes(paramId) + times;
   this.setSParamAllocateTimes(paramId, value);
 };
 
-Game_Actor.prototype.setSParamAllocateTimes = function(paramId, times, classId) {
+Game_Actor.prototype.setSParamAllocateTimes = function (
+  paramId,
+  times,
+  classId
+) {
   classId = classId || this._classId;
   if (this._sparamAllocationTimes === undefined) this.initStatAllocation();
   if (this._sparamAllocationTimes[classId] === undefined) {
@@ -1064,12 +1113,13 @@ Game_Actor.prototype.setSParamAllocateTimes = function(paramId, times, classId) 
   }
   this._sparamAllocationTimes[classId][paramId] = times;
   var max = this.getSParamAllocateMax(paramId);
-  this._sparamAllocationTimes[classId][paramId] = 
-    this._sparamAllocationTimes[classId][paramId].clamp(0, max);
+  this._sparamAllocationTimes[classId][paramId] = this._sparamAllocationTimes[
+    classId
+  ][paramId].clamp(0, max);
   if (MageStudios.Param.StatAlcRefresh) this.refresh();
 };
 
-Game_Actor.prototype.getSParamAllocateBoost = function(paramId) {
+Game_Actor.prototype.getSParamAllocateBoost = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.tgr.allocationBonus;
   if (paramId === 1) return data.grd.allocationBonus;
@@ -1084,7 +1134,7 @@ Game_Actor.prototype.getSParamAllocateBoost = function(paramId) {
   return 1;
 };
 
-Game_Actor.prototype.getSParamAllocateMax = function(paramId) {
+Game_Actor.prototype.getSParamAllocateMax = function (paramId) {
   var data = MageStudios.Param.StatAlcParamSettings;
   if (paramId === 0) return data.tgr.maxAllocations;
   if (paramId === 1) return data.grd.maxAllocations;
@@ -1099,52 +1149,53 @@ Game_Actor.prototype.getSParamAllocateMax = function(paramId) {
   return 100;
 };
 
-Game_Actor.prototype.sparamAllocationBonus = function(paramId) {
+Game_Actor.prototype.sparamAllocationBonus = function (paramId) {
   if ($gameTemp._ignoreStatAllocations) return 0;
-  return this.getSParamAllocateTimes(paramId) * 
-      this.getSParamAllocateBoost(paramId);
+  return (
+    this.getSParamAllocateTimes(paramId) * this.getSParamAllocateBoost(paramId)
+  );
 };
 
-Game_Actor.prototype.baseAp = function() {
+Game_Actor.prototype.baseAp = function () {
   return Math.max(0, MageStudios.Param.StatAlcAPFormula.call(this, this.level));
 };
 
-Game_Actor.prototype.bonusAp = function() {
+Game_Actor.prototype.bonusAp = function () {
   this.initAllocationPointsCheck();
   this._bonusAllocationPoints[this._classId] =
     this._bonusAllocationPoints[this._classId] || 0;
   return Math.max(0, this._bonusAllocationPoints[this._classId]);
 };
 
-Game_Actor.prototype.spentAp = function() {
+Game_Actor.prototype.spentAp = function () {
   this.initAllocationPointsCheck();
   this._spentAllocationPoints[this._classId] =
     this._spentAllocationPoints[this._classId] || 0;
   return Math.max(0, this._spentAllocationPoints[this._classId]);
 };
 
-Game_Actor.prototype.totalAp = function() {
+Game_Actor.prototype.totalAp = function () {
   return Math.max(0, this.baseAp() + this.bonusAp());
 };
 
-Game_Actor.prototype.availableAp = function() {
+Game_Actor.prototype.availableAp = function () {
   return Math.max(0, this.totalAp() - this.spentAp());
 };
 
-Game_Actor.prototype.spendAp = function(value) {
+Game_Actor.prototype.spendAp = function (value) {
   this.initAllocationPointsCheck();
   this._spentAllocationPoints[this._classId] =
     this._spentAllocationPoints[this._classId] || 0;
   this._spentAllocationPoints[this._classId] += value;
 };
 
-Game_Actor.prototype.setBonusAp = function(value, classId) {
+Game_Actor.prototype.setBonusAp = function (value, classId) {
   this.initAllocationPointsCheck();
   classId = classId || this._classId;
   this._bonusAllocationPoints[classId] = value;
 };
 
-Game_Actor.prototype.gainBonusAp = function(value, classId) {
+Game_Actor.prototype.gainBonusAp = function (value, classId) {
   this.initAllocationPointsCheck();
   classId = classId || this._classId;
   var ap = this._bonusAllocationPoints[classId] || 0;
@@ -1152,13 +1203,9 @@ Game_Actor.prototype.gainBonusAp = function(value, classId) {
   this.setBonusAp(value, classId);
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.StatAlc.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.StatAlc.Game_Interpreter_pluginCommand.call(this, command, args);
   if (command.match(/ShowStatAllocate/i)) {
     $gameSystem._showStatAlloccate = true;
@@ -1178,30 +1225,26 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
     $gameSystem._enableRevertAllocate = false;
   } else if (command.match(/OpenStatAllocat/i)) {
     var index = args.shift() || 0;
-    $gameParty.members().forEach(function(actor) {
-        ImageManager.reserveFace(actor.faceName());
+    $gameParty.members().forEach(function (actor) {
+      ImageManager.reserveFace(actor.faceName());
     }, this);
     $gameParty.setMenuActor($gameParty.members()[index]);
     SceneManager.push(Scene_StatAllocation);
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-Window_Base.prototype.drawActorAp = function(actor, x, y) {
+Window_Base.prototype.drawActorAp = function (actor, x, y) {
   var fmt = MageStudios.Param.StatAlcAPAmtFmt;
-  var icon = '\\i[' + MageStudios.Param.StatAlcAPIcon + ']';
+  var icon = "\\i[" + MageStudios.Param.StatAlcAPIcon + "]";
   var name = MageStudios.Param.StatAlcAP;
   var amount = actor.availableAp();
   var text = fmt.format(amount, name, icon);
@@ -1210,8 +1253,14 @@ Window_Base.prototype.drawActorAp = function(actor, x, y) {
 
 MageStudios.StatAlc.Window_Base_drawActorStatus =
   Window_Base.prototype.drawActorSimpleStatus;
-Window_Base.prototype.drawActorSimpleStatus = function(actor, x, y, width) {
-  MageStudios.StatAlc.Window_Base_drawActorStatus.call(this, actor, x, y, width);
+Window_Base.prototype.drawActorSimpleStatus = function (actor, x, y, width) {
+  MageStudios.StatAlc.Window_Base_drawActorStatus.call(
+    this,
+    actor,
+    x,
+    y,
+    width
+  );
   if (!MageStudios.Param.StatAlcAPMenu) return;
   if (MageStudios.Param.MenuTpGauge) {
     y += this.lineHeight() * 3;
@@ -1222,84 +1271,74 @@ Window_Base.prototype.drawActorSimpleStatus = function(actor, x, y, width) {
   this.drawActorAp(actor, x, y);
 };
 
-//=============================================================================
-// Window_MenuCommand
-//=============================================================================
-
 MageStudios.StatAlc.Window_MenuCommand_addOriginalCommands =
   Window_MenuCommand.prototype.addOriginalCommands;
-Window_MenuCommand.prototype.addOriginalCommands = function() {
+Window_MenuCommand.prototype.addOriginalCommands = function () {
   MageStudios.StatAlc.Window_MenuCommand_addOriginalCommands.call(this);
   if (MageStudios.Param.StatAlcAutoAdd) this.addStatAllocationCommand();
 };
 
-Window_MenuCommand.prototype.addStatAllocationCommand = function() {
+Window_MenuCommand.prototype.addStatAllocationCommand = function () {
   if (!MageStudios.Param.StatAlcAutoPlace) return;
   if (!$gameSystem.isShowStatAllocate()) return;
-  if (this.findSymbol('statAllocate') > -1) return;
+  if (this.findSymbol("statAllocate") > -1) return;
   var text = MageStudios.Param.StatAlcCmdName;
   var enabled = $gameSystem.isEnableStatAllocate();
-  this.addCommand(text, 'statAllocate', enabled);
+  this.addCommand(text, "statAllocate", enabled);
 };
-
-//=============================================================================
-// Window_StatAllocationCommand
-//=============================================================================
 
 function Window_StatAllocationCommand() {
   this.initialize.apply(this, arguments);
 }
 
-Window_StatAllocationCommand.prototype = Object.create(Window_Command.prototype);
-Window_StatAllocationCommand.prototype.constructor = Window_StatAllocationCommand;
+Window_StatAllocationCommand.prototype = Object.create(
+  Window_Command.prototype
+);
+Window_StatAllocationCommand.prototype.constructor =
+  Window_StatAllocationCommand;
 
-Window_StatAllocationCommand.prototype.initialize = function() {
+Window_StatAllocationCommand.prototype.initialize = function () {
   Window_Command.prototype.initialize.call(this, 0, 0);
 };
 
-Window_StatAllocationCommand.prototype.windowWidth = function() {
+Window_StatAllocationCommand.prototype.windowWidth = function () {
   return 240;
 };
 
-Window_StatAllocationCommand.prototype.numVisibleRows = function() {
+Window_StatAllocationCommand.prototype.numVisibleRows = function () {
   return 4;
 };
 
-Window_StatAllocationCommand.prototype.itemTextAlign = function() {
+Window_StatAllocationCommand.prototype.itemTextAlign = function () {
   return MageStudios.Param.StatAlcTextAlign;
 };
 
-Window_StatAllocationCommand.prototype.makeCommandList = function() {
+Window_StatAllocationCommand.prototype.makeCommandList = function () {
   this.addAllocateCommand();
   this.addCustomCommands();
   this.addRevertCommand();
   this.addFinishCommand();
 };
 
-Window_StatAllocationCommand.prototype.addAllocateCommand = function() {
+Window_StatAllocationCommand.prototype.addAllocateCommand = function () {
   var name = MageStudios.Param.StatAlcAllocateCmd;
-  this.addCommand(name, 'allocate', true);
+  this.addCommand(name, "allocate", true);
 };
 
-Window_StatAllocationCommand.prototype.addCustomCommands = function() {
-};
+Window_StatAllocationCommand.prototype.addCustomCommands = function () {};
 
-Window_StatAllocationCommand.prototype.addRevertCommand = function() {
+Window_StatAllocationCommand.prototype.addRevertCommand = function () {
   if (!$gameSystem.isShowRevertAllocate()) return;
   var name = MageStudios.Param.StatAlcRevertCmd;
   var enabled = $gameSystem.isEnableRevertAllocate();
-  this.addCommand(name, 'revert', enabled);
+  this.addCommand(name, "revert", enabled);
 };
 
-Window_StatAllocationCommand.prototype.addFinishCommand = function() {
-  if (MageStudios.Param.StatAlcFinishCmd === '') return;
+Window_StatAllocationCommand.prototype.addFinishCommand = function () {
+  if (MageStudios.Param.StatAlcFinishCmd === "") return;
   var name = MageStudios.Param.StatAlcFinishCmd;
-  this.addCommand(name, 'cancel', true);
+  this.addCommand(name, "cancel", true);
 };
-
-//=============================================================================
-// Window_AllocationList
-//=============================================================================
 
 function Window_AllocationList() {
   this.initialize.apply(this, arguments);
@@ -1308,7 +1347,7 @@ function Window_AllocationList() {
 Window_AllocationList.prototype = Object.create(Window_Command.prototype);
 Window_AllocationList.prototype.constructor = Window_AllocationList;
 
-Window_AllocationList.prototype.initialize = function(x, y) {
+Window_AllocationList.prototype.initialize = function (x, y) {
   this._windowWidth = Graphics.boxWidth - x;
   this._windowHeight = Graphics.boxHeight - y;
   Window_Command.prototype.initialize.call(this, x, y);
@@ -1318,61 +1357,61 @@ Window_AllocationList.prototype.initialize = function(x, y) {
   this.deselect();
 };
 
-Window_AllocationList.prototype.calculateConstants = function() {
+Window_AllocationList.prototype.calculateConstants = function () {
   var max = 0;
   for (var i = 0; i < 8; ++i) {
     max = Math.max(max, $gameActors.actor(1).paramMax(i));
   }
   max = MageStudios.Util.toGroup(max);
-  this._bonusWidth = this.textWidth('(+' + max + ') ');
-  this._bonusWidth = Math.max(this._bonusWidth, this.textWidth('(+9.99%) '));
+  this._bonusWidth = this.textWidth("(+" + max + ") ");
+  this._bonusWidth = Math.max(this._bonusWidth, this.textWidth("(+9.99%) "));
 };
 
-Window_AllocationList.prototype.paramData = function(param) {
+Window_AllocationList.prototype.paramData = function (param) {
   return MageStudios.Param.StatAlcParamSettings[param];
 };
 
-Window_AllocationList.prototype.windowWidth = function() {
+Window_AllocationList.prototype.windowWidth = function () {
   return this._windowWidth;
 };
 
-Window_AllocationList.prototype.windowHeight = function() {
+Window_AllocationList.prototype.windowHeight = function () {
   return this._windowHeight;
 };
 
-Window_AllocationList.prototype.textWidthEx = function(text) {
+Window_AllocationList.prototype.textWidthEx = function (text) {
   return this.drawTextEx(text, 0, this.contents.height);
 };
 
-Window_AllocationList.prototype.setActor = function(actor) {
+Window_AllocationList.prototype.setActor = function (actor) {
   if (this._actor === actor) return;
   this._actor = actor;
   this.refresh();
 };
 
-Window_AllocationList.prototype.activate = function() {
+Window_AllocationList.prototype.activate = function () {
   Window_Command.prototype.activate.call(this);
   this.select(this._lastIndex);
 };
 
-Window_AllocationList.prototype.deactivate = function() {
+Window_AllocationList.prototype.deactivate = function () {
   this._lastIndex = this.index();
   Window_Command.prototype.deactivate.call(this);
 };
 
-Window_AllocationList.prototype.updateHelp = function() {
-  if (this.currentSymbol() === 'param') {
+Window_AllocationList.prototype.updateHelp = function () {
+  if (this.currentSymbol() === "param") {
     this._helpWindow.setText(this.paramData(this.currentExt()).description);
-  } else if (this.currentSymbol() === 'xparam') {
+  } else if (this.currentSymbol() === "xparam") {
     this._helpWindow.setText(this.paramData(this.currentExt()).description);
-  } else if (this.currentSymbol() === 'sparam') {
+  } else if (this.currentSymbol() === "sparam") {
     this._helpWindow.setText(this.paramData(this.currentExt()).description);
   } else {
     this._helpWindow.clear();
   }
 };
 
-Window_AllocationList.prototype.makeCommandList = function() {
+Window_AllocationList.prototype.makeCommandList = function () {
   if (!this._actor) return;
   var list = this._actor.currentClass().statAllocationList;
   var length = list.length;
@@ -1382,50 +1421,72 @@ Window_AllocationList.prototype.makeCommandList = function() {
   }
 };
 
-Window_AllocationList.prototype.addParameterItem = function(item) {
+Window_AllocationList.prototype.addParameterItem = function (item) {
   var param = item.trim().toLowerCase();
   switch (param) {
-  case 'mhp':
-  case 'mmp':
-  case 'atk':
-  case 'def':
-  case 'mat':
-  case 'mdf':
-  case 'agi':
-  case 'luk':
-    this.addCommand(param, 'param', this.isParamEnabled(param), param);
-    break;
-  case 'hit':
-  case 'eva':
-  case 'cri':
-  case 'cev':
-  case 'mev':
-  case 'mrf':
-  case 'cnt':
-  case 'hrg':
-  case 'mrg':
-  case 'trg':
-    this.addCommand(param, 'xparam', this.isParamEnabled(param), param);
-    break;
-  case 'tgr':
-  case 'grd':
-  case 'rec':
-  case 'pha':
-  case 'mcr':
-  case 'tcr':
-  case 'pdr':
-  case 'mdr':
-  case 'fdr':
-  case 'exr':
-    this.addCommand(param, 'sparam', this.isParamEnabled(param), param);
-    break;
+    case "mhp":
+    case "mmp":
+    case "atk":
+    case "def":
+    case "mat":
+    case "mdf":
+    case "agi":
+    case "luk":
+      this.addCommand(param, "param", this.isParamEnabled(param), param);
+      break;
+    case "hit":
+    case "eva":
+    case "cri":
+    case "cev":
+    case "mev":
+    case "mrf":
+    case "cnt":
+    case "hrg":
+    case "mrg":
+    case "trg":
+      this.addCommand(param, "xparam", this.isParamEnabled(param), param);
+      break;
+    case "tgr":
+    case "grd":
+    case "rec":
+    case "pha":
+    case "mcr":
+    case "tcr":
+    case "pdr":
+    case "mdr":
+    case "fdr":
+    case "exr":
+      this.addCommand(param, "sparam", this.isParamEnabled(param), param);
+      break;
   }
 };
 
-Window_AllocationList.prototype.isParamEnabled = function(param) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+Window_AllocationList.prototype.isParamEnabled = function (param) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -1446,18 +1507,22 @@ Window_AllocationList.prototype.isParamEnabled = function(param) {
   return true;
 };
 
-Window_AllocationList.prototype.meetApCost = function(param, paramId, times) {
+Window_AllocationList.prototype.meetApCost = function (param, paramId, times) {
   var apCost = this.paramData(param).apCost.call(this, times);
   return this._actor.availableAp() >= apCost;
 };
 
-Window_AllocationList.prototype.meetJpCost = function(param, paramId, times) {
+Window_AllocationList.prototype.meetJpCost = function (param, paramId, times) {
   if (!Imported.MSEP_JobPoints) return true;
   var jpCost = this.paramData(param).jpCost.call(this, times);
   return this._actor.jp() >= jpCost;
 };
 
-Window_AllocationList.prototype.meetItemCost = function(param, paramId, times) {
+Window_AllocationList.prototype.meetItemCost = function (
+  param,
+  paramId,
+  times
+) {
   var itemId = this.paramData(param).itemId;
   if (itemId <= 0) return true;
   var item = $dataItems[itemId];
@@ -1466,190 +1531,193 @@ Window_AllocationList.prototype.meetItemCost = function(param, paramId, times) {
   return $gameParty.numItems(item) >= itemCost;
 };
 
-Window_AllocationList.prototype.drawItem = function(index) {
+Window_AllocationList.prototype.drawItem = function (index) {
   this.changePaintOpacity(true);
   var symbol = this.commandSymbol(index);
   this.drawParamItem(index);
 };
 
-Window_AllocationList.prototype.drawParamItem = function(index) {
+Window_AllocationList.prototype.drawParamItem = function (index) {
   var data = this.paramData(this._list[index].ext);
   MageStudios.Param.StatAlcDrawCode.call(this, index);
   return;
   var param = this._list[index].ext;
   var data = this.paramData(param);
   var rect = this.itemRectForText(index);
-  // Draw Gauge
-  var gaugeColor1 = data.gaugeColor1 || '#000000';
-  var gaugeColor2 = data.gaugeColor2 || '#000000';
+
+  var gaugeColor1 = data.gaugeColor1 || "#000000";
+  var gaugeColor2 = data.gaugeColor2 || "#000000";
   var rate = this.paramAllocationRate(param);
   var width = this.contentsWidth() - 330;
   this.drawGauge(rect.x, rect.y, width, rate, gaugeColor1, gaugeColor2);
-  // Draw Parameter Name
+
   this.drawParamName(param, rect.x + this.textPadding(), rect.y, width);
-  // Draw Parameter Values
+
   this.drawParamValues(param, rect.x + this.textPadding(), rect.y, width);
-  // Draw Parameter Cost
+
   this.drawParamCost(param, rect.x + rect.width - width, rect.y, width);
 };
 
-Window_AllocationList.prototype.paramAllocationRate = function(param) {
+Window_AllocationList.prototype.paramAllocationRate = function (param) {
   var a = 0;
-  // Base
-  if (param === 'mhp') var a = this._actor.getParamAllocateTimes(0);
-  if (param === 'mmp') var a = this._actor.getParamAllocateTimes(1);
-  if (param === 'atk') var a = this._actor.getParamAllocateTimes(2);
-  if (param === 'def') var a = this._actor.getParamAllocateTimes(3);
-  if (param === 'mat') var a = this._actor.getParamAllocateTimes(4);
-  if (param === 'mdf') var a = this._actor.getParamAllocateTimes(5);
-  if (param === 'agi') var a = this._actor.getParamAllocateTimes(6);
-  if (param === 'luk') var a = this._actor.getParamAllocateTimes(7);
-  // Extra
-  if (param === 'hit') var a = this._actor.getXParamAllocateTimes(0);
-  if (param === 'eva') var a = this._actor.getXParamAllocateTimes(1);
-  if (param === 'cri') var a = this._actor.getXParamAllocateTimes(2);
-  if (param === 'cev') var a = this._actor.getXParamAllocateTimes(3);
-  if (param === 'mev') var a = this._actor.getXParamAllocateTimes(4);
-  if (param === 'mrf') var a = this._actor.getXParamAllocateTimes(5);
-  if (param === 'cnt') var a = this._actor.getXParamAllocateTimes(6);
-  if (param === 'hrg') var a = this._actor.getXParamAllocateTimes(7);
-  if (param === 'mrg') var a = this._actor.getXParamAllocateTimes(8);
-  if (param === 'trg') var a = this._actor.getXParamAllocateTimes(9);
-  // Special
-  if (param === 'tgr') var a = this._actor.getSParamAllocateTimes(0);
-  if (param === 'grd') var a = this._actor.getSParamAllocateTimes(1);
-  if (param === 'rec') var a = this._actor.getSParamAllocateTimes(2);
-  if (param === 'pha') var a = this._actor.getSParamAllocateTimes(3);
-  if (param === 'mcr') var a = this._actor.getSParamAllocateTimes(4);
-  if (param === 'tcr') var a = this._actor.getSParamAllocateTimes(5);
-  if (param === 'pdr') var a = this._actor.getSParamAllocateTimes(6);
-  if (param === 'mdr') var a = this._actor.getSParamAllocateTimes(7);
-  if (param === 'fdr') var a = this._actor.getSParamAllocateTimes(8);
-  if (param === 'exr') var a = this._actor.getSParamAllocateTimes(9);
+
+  if (param === "mhp") var a = this._actor.getParamAllocateTimes(0);
+  if (param === "mmp") var a = this._actor.getParamAllocateTimes(1);
+  if (param === "atk") var a = this._actor.getParamAllocateTimes(2);
+  if (param === "def") var a = this._actor.getParamAllocateTimes(3);
+  if (param === "mat") var a = this._actor.getParamAllocateTimes(4);
+  if (param === "mdf") var a = this._actor.getParamAllocateTimes(5);
+  if (param === "agi") var a = this._actor.getParamAllocateTimes(6);
+  if (param === "luk") var a = this._actor.getParamAllocateTimes(7);
+
+  if (param === "hit") var a = this._actor.getXParamAllocateTimes(0);
+  if (param === "eva") var a = this._actor.getXParamAllocateTimes(1);
+  if (param === "cri") var a = this._actor.getXParamAllocateTimes(2);
+  if (param === "cev") var a = this._actor.getXParamAllocateTimes(3);
+  if (param === "mev") var a = this._actor.getXParamAllocateTimes(4);
+  if (param === "mrf") var a = this._actor.getXParamAllocateTimes(5);
+  if (param === "cnt") var a = this._actor.getXParamAllocateTimes(6);
+  if (param === "hrg") var a = this._actor.getXParamAllocateTimes(7);
+  if (param === "mrg") var a = this._actor.getXParamAllocateTimes(8);
+  if (param === "trg") var a = this._actor.getXParamAllocateTimes(9);
+
+  if (param === "tgr") var a = this._actor.getSParamAllocateTimes(0);
+  if (param === "grd") var a = this._actor.getSParamAllocateTimes(1);
+  if (param === "rec") var a = this._actor.getSParamAllocateTimes(2);
+  if (param === "pha") var a = this._actor.getSParamAllocateTimes(3);
+  if (param === "mcr") var a = this._actor.getSParamAllocateTimes(4);
+  if (param === "tcr") var a = this._actor.getSParamAllocateTimes(5);
+  if (param === "pdr") var a = this._actor.getSParamAllocateTimes(6);
+  if (param === "mdr") var a = this._actor.getSParamAllocateTimes(7);
+  if (param === "fdr") var a = this._actor.getSParamAllocateTimes(8);
+  if (param === "exr") var a = this._actor.getSParamAllocateTimes(9);
 
   var b = 1;
-  // Base
-  if (param === 'mhp') var b = this._actor.getParamAllocateMax(0);
-  if (param === 'mmp') var b = this._actor.getParamAllocateMax(1);
-  if (param === 'atk') var b = this._actor.getParamAllocateMax(2);
-  if (param === 'def') var b = this._actor.getParamAllocateMax(3);
-  if (param === 'mat') var b = this._actor.getParamAllocateMax(4);
-  if (param === 'mdf') var b = this._actor.getParamAllocateMax(5);
-  if (param === 'agi') var b = this._actor.getParamAllocateMax(6);
-  if (param === 'luk') var b = this._actor.getParamAllocateMax(7);
-  // Extra
-  if (param === 'hit') var b = this._actor.getXParamAllocateMax(0);
-  if (param === 'eva') var b = this._actor.getXParamAllocateMax(1);
-  if (param === 'cri') var b = this._actor.getXParamAllocateMax(2);
-  if (param === 'cev') var b = this._actor.getXParamAllocateMax(3);
-  if (param === 'mev') var b = this._actor.getXParamAllocateMax(4);
-  if (param === 'mrf') var b = this._actor.getXParamAllocateMax(5);
-  if (param === 'cnt') var b = this._actor.getXParamAllocateMax(6);
-  if (param === 'hrg') var b = this._actor.getXParamAllocateMax(7);
-  if (param === 'mrg') var b = this._actor.getXParamAllocateMax(8);
-  if (param === 'trg') var b = this._actor.getXParamAllocateMax(9);
-  // Special
-  if (param === 'tgr') var b = this._actor.getSParamAllocateMax(0);
-  if (param === 'grd') var b = this._actor.getSParamAllocateMax(1);
-  if (param === 'rec') var b = this._actor.getSParamAllocateMax(2);
-  if (param === 'pha') var b = this._actor.getSParamAllocateMax(3);
-  if (param === 'mcr') var b = this._actor.getSParamAllocateMax(4);
-  if (param === 'tcr') var b = this._actor.getSParamAllocateMax(5);
-  if (param === 'pdr') var b = this._actor.getSParamAllocateMax(6);
-  if (param === 'mdr') var b = this._actor.getSParamAllocateMax(7);
-  if (param === 'fdr') var b = this._actor.getSParamAllocateMax(8);
-  if (param === 'exr') var b = this._actor.getSParamAllocateMax(9);
+
+  if (param === "mhp") var b = this._actor.getParamAllocateMax(0);
+  if (param === "mmp") var b = this._actor.getParamAllocateMax(1);
+  if (param === "atk") var b = this._actor.getParamAllocateMax(2);
+  if (param === "def") var b = this._actor.getParamAllocateMax(3);
+  if (param === "mat") var b = this._actor.getParamAllocateMax(4);
+  if (param === "mdf") var b = this._actor.getParamAllocateMax(5);
+  if (param === "agi") var b = this._actor.getParamAllocateMax(6);
+  if (param === "luk") var b = this._actor.getParamAllocateMax(7);
+
+  if (param === "hit") var b = this._actor.getXParamAllocateMax(0);
+  if (param === "eva") var b = this._actor.getXParamAllocateMax(1);
+  if (param === "cri") var b = this._actor.getXParamAllocateMax(2);
+  if (param === "cev") var b = this._actor.getXParamAllocateMax(3);
+  if (param === "mev") var b = this._actor.getXParamAllocateMax(4);
+  if (param === "mrf") var b = this._actor.getXParamAllocateMax(5);
+  if (param === "cnt") var b = this._actor.getXParamAllocateMax(6);
+  if (param === "hrg") var b = this._actor.getXParamAllocateMax(7);
+  if (param === "mrg") var b = this._actor.getXParamAllocateMax(8);
+  if (param === "trg") var b = this._actor.getXParamAllocateMax(9);
+
+  if (param === "tgr") var b = this._actor.getSParamAllocateMax(0);
+  if (param === "grd") var b = this._actor.getSParamAllocateMax(1);
+  if (param === "rec") var b = this._actor.getSParamAllocateMax(2);
+  if (param === "pha") var b = this._actor.getSParamAllocateMax(3);
+  if (param === "mcr") var b = this._actor.getSParamAllocateMax(4);
+  if (param === "tcr") var b = this._actor.getSParamAllocateMax(5);
+  if (param === "pdr") var b = this._actor.getSParamAllocateMax(6);
+  if (param === "mdr") var b = this._actor.getSParamAllocateMax(7);
+  if (param === "fdr") var b = this._actor.getSParamAllocateMax(8);
+  if (param === "exr") var b = this._actor.getSParamAllocateMax(9);
   return a / b;
 };
 
-Window_AllocationList.prototype.getParamAutoName = function(param) {
-  // Basic
-  if (param === 'mhp') return TextManager.param(0);
-  if (param === 'mmp') return TextManager.param(1);
-  if (param === 'atk') return TextManager.param(2);
-  if (param === 'def') return TextManager.param(3);
-  if (param === 'mat') return TextManager.param(4);
-  if (param === 'mdf') return TextManager.param(5);
-  if (param === 'agi') return TextManager.param(6);
-  if (param === 'luk') return TextManager.param(7);
-  // Extra
-  if (param === 'hit') return 'Physical Hit Rate';
-  if (param === 'eva') return 'Physical Evasion Rate';
-  if (param === 'cri') return 'Critical Hit Rate';
-  if (param === 'cev') return 'Critical Evasion';
-  if (param === 'mev') return 'Magical Evasion';
-  if (param === 'mrf') return 'Magical Reflection';
-  if (param === 'cnt') return 'Counterattack';
-  if (param === 'hrg') return 'HP Regeneration';
-  if (param === 'mrg') return 'MP Regeneration';
-  if (param === 'trg') return 'TP Regeneration';
-  // Special
-  if (param === 'tgr') return 'Target Rate';
-  if (param === 'grd') return 'Guard Power';
-  if (param === 'rec') return 'Recovery';
-  if (param === 'pha') return 'Item Effect';
-  if (param === 'mcr') return 'MP Cost';
-  if (param === 'tcr') return 'TP Charge';
-  if (param === 'pdr') return 'Physical Damage Received';
-  if (param === 'mdr') return 'Magical Damage Received';
-  if (param === 'fdr') return 'Floor Damage Received';
-  if (param === 'exr') return 'EXP Multiplier';
-  return '';
+Window_AllocationList.prototype.getParamAutoName = function (param) {
+  if (param === "mhp") return TextManager.param(0);
+  if (param === "mmp") return TextManager.param(1);
+  if (param === "atk") return TextManager.param(2);
+  if (param === "def") return TextManager.param(3);
+  if (param === "mat") return TextManager.param(4);
+  if (param === "mdf") return TextManager.param(5);
+  if (param === "agi") return TextManager.param(6);
+  if (param === "luk") return TextManager.param(7);
+
+  if (param === "hit") return "Physical Hit Rate";
+  if (param === "eva") return "Physical Evasion Rate";
+  if (param === "cri") return "Critical Hit Rate";
+  if (param === "cev") return "Critical Evasion";
+  if (param === "mev") return "Magical Evasion";
+  if (param === "mrf") return "Magical Reflection";
+  if (param === "cnt") return "Counterattack";
+  if (param === "hrg") return "HP Regeneration";
+  if (param === "mrg") return "MP Regeneration";
+  if (param === "trg") return "TP Regeneration";
+
+  if (param === "tgr") return "Target Rate";
+  if (param === "grd") return "Guard Power";
+  if (param === "rec") return "Recovery";
+  if (param === "pha") return "Item Effect";
+  if (param === "mcr") return "MP Cost";
+  if (param === "tcr") return "TP Charge";
+  if (param === "pdr") return "Physical Damage Received";
+  if (param === "mdr") return "Magical Damage Received";
+  if (param === "fdr") return "Floor Damage Received";
+  if (param === "exr") return "EXP Multiplier";
+  return "";
 };
 
-Window_AllocationList.prototype.getParamValue = function(param) {
-  // Basic
-  if (param === 'mhp') return this._actor.mhp;
-  if (param === 'mmp') return this._actor.mmp;
-  if (param === 'atk') return this._actor.atk;
-  if (param === 'def') return this._actor.def;
-  if (param === 'mat') return this._actor.mat;
-  if (param === 'mdf') return this._actor.mdf;
-  if (param === 'agi') return this._actor.agi;
-  if (param === 'luk') return this._actor.luk;
-  // Extra
-  if (param === 'hit') return this._actor.hit;
-  if (param === 'eva') return this._actor.eva;
-  if (param === 'cri') return this._actor.cri;
-  if (param === 'cev') return this._actor.cev;
-  if (param === 'mev') return this._actor.mev;
-  if (param === 'mrf') return this._actor.mrf;
-  if (param === 'cnt') return this._actor.cnt;
-  if (param === 'hrg') return this._actor.hrg;
-  if (param === 'mrg') return this._actor.mrg;
-  if (param === 'trg') return this._actor.trg;
-  // Special
-  if (param === 'tgr') return this._actor.tgr;
-  if (param === 'grd') return this._actor.grd;
-  if (param === 'rec') return this._actor.rec;
-  if (param === 'pha') return this._actor.pha;
-  if (param === 'mcr') return this._actor.mcr;
-  if (param === 'tcr') return this._actor.tcr;
-  if (param === 'pdr') return this._actor.pdr;
-  if (param === 'mdr') return this._actor.mdr;
-  if (param === 'fdr') return this._actor.fdr;
-  if (param === 'exr') return this._actor.exr;
+Window_AllocationList.prototype.getParamValue = function (param) {
+  if (param === "mhp") return this._actor.mhp;
+  if (param === "mmp") return this._actor.mmp;
+  if (param === "atk") return this._actor.atk;
+  if (param === "def") return this._actor.def;
+  if (param === "mat") return this._actor.mat;
+  if (param === "mdf") return this._actor.mdf;
+  if (param === "agi") return this._actor.agi;
+  if (param === "luk") return this._actor.luk;
+
+  if (param === "hit") return this._actor.hit;
+  if (param === "eva") return this._actor.eva;
+  if (param === "cri") return this._actor.cri;
+  if (param === "cev") return this._actor.cev;
+  if (param === "mev") return this._actor.mev;
+  if (param === "mrf") return this._actor.mrf;
+  if (param === "cnt") return this._actor.cnt;
+  if (param === "hrg") return this._actor.hrg;
+  if (param === "mrg") return this._actor.mrg;
+  if (param === "trg") return this._actor.trg;
+
+  if (param === "tgr") return this._actor.tgr;
+  if (param === "grd") return this._actor.grd;
+  if (param === "rec") return this._actor.rec;
+  if (param === "pha") return this._actor.pha;
+  if (param === "mcr") return this._actor.mcr;
+  if (param === "tcr") return this._actor.tcr;
+  if (param === "pdr") return this._actor.pdr;
+  if (param === "mdr") return this._actor.mdr;
+  if (param === "fdr") return this._actor.fdr;
+  if (param === "exr") return this._actor.exr;
   return 0;
 };
 
-Window_AllocationList.prototype.isFlatParam = function(param) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
+Window_AllocationList.prototype.isFlatParam = function (param) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
   return params.contains(param);
 };
 
-Window_AllocationList.prototype.drawParamName = function(param, x, y, width) {
+Window_AllocationList.prototype.drawParamName = function (param, x, y, width) {
   var data = this.paramData(param);
   if (data.iconIndex > 0) {
     this.drawIcon(data.iconIndex, x, y + 2);
     x += Window_Base._iconWidth + 4;
   }
   var name = data.name;
-  if (name === 'auto') name = this.getParamAutoName(param);
+  if (name === "auto") name = this.getParamAutoName(param);
   this.changeTextColor(this.systemColor());
   this.drawText(name, x, y, width - x);
 };
 
-Window_AllocationList.prototype.drawParamValues = function(param, x, y, width) {
+Window_AllocationList.prototype.drawParamValues = function (
+  param,
+  x,
+  y,
+  width
+) {
   width -= this.textPadding();
   $gameTemp._ignoreStatAllocations = true;
   var bonus = this.getParamValue(param);
@@ -1660,23 +1728,22 @@ Window_AllocationList.prototype.drawParamValues = function(param, x, y, width) {
     var bonusText = MageStudios.Util.toGroup(bonus);
     var fullText = MageStudios.Util.toGroup(full);
   } else {
-    var bonusText = (bonus * 100).toFixed(1) + '%';
-    var fullText = (full * 100).toFixed(1) + '%';
+    var bonusText = (bonus * 100).toFixed(1) + "%";
+    var fullText = (full * 100).toFixed(1) + "%";
   }
   if (bonus >= 0) {
-    bonusText = '(+' + bonusText + ')';
+    bonusText = "(+" + bonusText + ")";
   } else {
-    bonusText = '(' + bonusText + ')';
+    bonusText = "(" + bonusText + ")";
   }
   this.changeTextColor(this.powerUpColor());
-  this.drawText(bonusText, x, y, width, 'right');
+  this.drawText(bonusText, x, y, width, "right");
   width -= this._bonusWidth;
   this.changeTextColor(this.normalColor());
-  this.drawText(fullText, x, y, width, 'right');
-
+  this.drawText(fullText, x, y, width, "right");
 };
 
-Window_AllocationList.prototype.drawParamCost = function(param, x, y, width) {
+Window_AllocationList.prototype.drawParamCost = function (param, x, y, width) {
   this.resetFontSettings();
   width -= this.textPadding();
   this.changePaintOpacity(this.isParamEnabled(param));
@@ -1685,14 +1752,36 @@ Window_AllocationList.prototype.drawParamCost = function(param, x, y, width) {
   width = this.drawCostAp(param, x, y, width);
 };
 
-Window_AllocationList.prototype.drawItemCost = function(param, x, y, width) {
+Window_AllocationList.prototype.drawItemCost = function (param, x, y, width) {
   var data = this.paramData(param);
   if (data.itemId <= 0) return width;
   var item = $dataItems[data.itemId];
   if (!item) return width;
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -1708,16 +1797,16 @@ Window_AllocationList.prototype.drawItemCost = function(param, x, y, width) {
   var itemCost = data.itemCost.call(this, times);
   if (itemCost <= 0) return width;
   if (itemCost > $gameParty.numItems(item)) {
-    var fmt = '×\\c[25]%1\\c[0]/%2';
+    var fmt = "×\\c[25]%1\\c[0]/%2";
   } else {
-    var fmt = '×%1/%2';
+    var fmt = "×%1/%2";
   }
   var amount = MageStudios.Util.toGroup($gameParty.numItems(item));
   var total = fmt.format(MageStudios.Util.toGroup(itemCost), amount);
   var text = total;
-  if (item.iconIndex > 0) text += '\\i[' + item.iconIndex + ']';
+  if (item.iconIndex > 0) text += "\\i[" + item.iconIndex + "]";
   if (MageStudios.Param.StatAlcSmItemName) {
-    text += '\\}' + item.name + '\\{';
+    text += "\\}" + item.name + "\\{";
   } else {
     text += item.name;
   }
@@ -1728,11 +1817,33 @@ Window_AllocationList.prototype.drawItemCost = function(param, x, y, width) {
   return width;
 };
 
-Window_AllocationList.prototype.drawJpCost = function(param, x, y, width) {
+Window_AllocationList.prototype.drawJpCost = function (param, x, y, width) {
   if (!Imported.MSEP_JobPoints) return width;
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -1747,12 +1858,12 @@ Window_AllocationList.prototype.drawJpCost = function(param, x, y, width) {
   }
   var jpCost = this.paramData(param).jpCost.call(this, times);
   if (jpCost <= 0) return width;
-  var icon = '\\i[' + MageStudios.Icon.Jp + ']';
+  var icon = "\\i[" + MageStudios.Icon.Jp + "]";
   var fmt = MageStudios.Param.JpMenuFormat;
   if (jpCost > this._actor.jp()) {
-    var fmt2 = '\\c[25]%1\\c[0]/%2';
+    var fmt2 = "\\c[25]%1\\c[0]/%2";
   } else {
-    var fmt2 = '%1/%2';
+    var fmt2 = "%1/%2";
   }
   var amount = MageStudios.Util.toGroup(this._actor.jp());
   var total = fmt2.format(MageStudios.Util.toGroup(jpCost), amount);
@@ -1764,10 +1875,32 @@ Window_AllocationList.prototype.drawJpCost = function(param, x, y, width) {
   return width;
 };
 
-Window_AllocationList.prototype.drawCostAp = function(param, x, y, width) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+Window_AllocationList.prototype.drawCostAp = function (param, x, y, width) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -1784,14 +1917,14 @@ Window_AllocationList.prototype.drawCostAp = function(param, x, y, width) {
   if (apCost <= 0) return width;
   var fmt = MageStudios.Param.StatAlcAPAmtFmt;
   if (apCost > this._actor.availableAp()) {
-    var fmt2 = '\\c[25]%1\\c[0]/%2';
+    var fmt2 = "\\c[25]%1\\c[0]/%2";
   } else {
-    var fmt2 = '%1/%2';
+    var fmt2 = "%1/%2";
   }
   var amount = MageStudios.Util.toGroup(this._actor.availableAp());
   var total = fmt2.format(MageStudios.Util.toGroup(apCost), amount);
   var apText = TextManager.ap();
-  var apIcon = '\\i[' + MageStudios.Param.StatAlcAPIcon + ']';
+  var apIcon = "\\i[" + MageStudios.Param.StatAlcAPIcon + "]";
   var text = fmt.format(total, apText, apIcon);
   var textWidth = this.textWidthEx(text);
   x = x + width - textWidth;
@@ -1801,64 +1934,80 @@ Window_AllocationList.prototype.drawCostAp = function(param, x, y, width) {
 };
 
 if (MageStudios.Param.StatAlcLfRt) {
+  Window_AllocationList.prototype.cursorRight = function (wrap) {
+    if (!this.isCommandEnabled(this.index())) return;
+    this.processOk();
+  };
 
-Window_AllocationList.prototype.cursorRight = function(wrap) {
-  if (!this.isCommandEnabled(this.index())) return;
-  this.processOk();
-};
-
-Window_AllocationList.prototype.cursorLeft = function(wrap) {
-  if (!this._actor) return;
-  var param = this.currentExt();
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
-  if (params.contains(param)) {
-    var paramId = params.indexOf(param);
-    var times = this._actor.getParamAllocateTimes(paramId);
-  } else if (xparams.contains(param)) {
-    var paramId = xparams.indexOf(param);
-    var times = this._actor.getXParamAllocateTimes(paramId);
-  } else if (sparams.contains(param)) {
-    var paramId = sparams.indexOf(param);
-    var times = this._actor.getSParamAllocateTimes(paramId);
-  } else {
-    return;
-  }
-  if (times <= 0) return;
-  times -= 1;
-  if (params.contains(param)) {
-    this._actor.gainParamAllocateTimes(paramId, -1);
-  } else if (xparams.contains(param)) {
-    this._actor.gainXParamAllocateTimes(paramId, -1);
-  } else if (sparams.contains(param)) {
-    this._actor.gainSParamAllocateTimes(paramId, -1);
-  }
-  var data = MageStudios.Param.StatAlcParamSettings[param];
-  var apCost = data.apCost.call(this, times);
-  this._actor.spendAp(-apCost);
-  if (Imported.MSEP_JobPoints) {
-    var jp = data.jpCost.call(this, times);
-    this._actor.gainJp(jp);
-  }
-  if (data.itemId > 0) {
-    var item = $dataItems[data.itemId];
-    var cost = data.itemCost.call(this, times);
-    $gameParty.gainItem(item, cost);
-  }
-  if (param === 'mhp' || param === 'mmp') {
-    this._actor._hp = Math.min(this._actor._hp, this._actor.mhp);
-    this._actor._mp = Math.min(this._actor._mp, this._actor.mmp);
-  }
-  SoundManager.playCancel();
-  SceneManager._scene.refreshWindows();
-};
-
-}; // MageStudios.Param.StatAlcLfRt
-
-//=============================================================================
-// Window_AllocationRevert
-//=============================================================================
+  Window_AllocationList.prototype.cursorLeft = function (wrap) {
+    if (!this._actor) return;
+    var param = this.currentExt();
+    var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+    var xparams = [
+      "hit",
+      "eva",
+      "cri",
+      "cev",
+      "mev",
+      "mrf",
+      "cnt",
+      "hrg",
+      "mrg",
+      "trg",
+    ];
+    var sparams = [
+      "tgr",
+      "grd",
+      "rec",
+      "pha",
+      "mcr",
+      "tcr",
+      "pdr",
+      "mdr",
+      "fdr",
+      "exr",
+    ];
+    if (params.contains(param)) {
+      var paramId = params.indexOf(param);
+      var times = this._actor.getParamAllocateTimes(paramId);
+    } else if (xparams.contains(param)) {
+      var paramId = xparams.indexOf(param);
+      var times = this._actor.getXParamAllocateTimes(paramId);
+    } else if (sparams.contains(param)) {
+      var paramId = sparams.indexOf(param);
+      var times = this._actor.getSParamAllocateTimes(paramId);
+    } else {
+      return;
+    }
+    if (times <= 0) return;
+    times -= 1;
+    if (params.contains(param)) {
+      this._actor.gainParamAllocateTimes(paramId, -1);
+    } else if (xparams.contains(param)) {
+      this._actor.gainXParamAllocateTimes(paramId, -1);
+    } else if (sparams.contains(param)) {
+      this._actor.gainSParamAllocateTimes(paramId, -1);
+    }
+    var data = MageStudios.Param.StatAlcParamSettings[param];
+    var apCost = data.apCost.call(this, times);
+    this._actor.spendAp(-apCost);
+    if (Imported.MSEP_JobPoints) {
+      var jp = data.jpCost.call(this, times);
+      this._actor.gainJp(jp);
+    }
+    if (data.itemId > 0) {
+      var item = $dataItems[data.itemId];
+      var cost = data.itemCost.call(this, times);
+      $gameParty.gainItem(item, cost);
+    }
+    if (param === "mhp" || param === "mmp") {
+      this._actor._hp = Math.min(this._actor._hp, this._actor.mhp);
+      this._actor._mp = Math.min(this._actor._mp, this._actor.mmp);
+    }
+    SoundManager.playCancel();
+    SceneManager._scene.refreshWindows();
+  };
+}
 
 function Window_AllocationRevert() {
   this.initialize.apply(this, arguments);
@@ -1867,8 +2016,8 @@ function Window_AllocationRevert() {
 Window_AllocationRevert.prototype = Object.create(Window_Command.prototype);
 Window_AllocationRevert.prototype.constructor = Window_AllocationRevert;
 
-Window_AllocationRevert.prototype.initialize = function() {
-  this._lines = MageStudios.Param.StatAlcRevConfirmText.split('\n').length;
+Window_AllocationRevert.prototype.initialize = function () {
+  this._lines = MageStudios.Param.StatAlcRevConfirmText.split("\n").length;
   this._lines += 2;
   Window_Command.prototype.initialize.call(this, 0, 0);
   this.refresh();
@@ -1878,62 +2027,60 @@ Window_AllocationRevert.prototype.initialize = function() {
   this.openness = 0;
 };
 
-Window_AllocationRevert.prototype.windowWidth = function() {
+Window_AllocationRevert.prototype.windowWidth = function () {
   return MageStudios.Param.StatAlcRevWinWidth;
 };
 
-Window_AllocationRevert.prototype.itemTextAlign = function() {
-  return 'center';
+Window_AllocationRevert.prototype.itemTextAlign = function () {
+  return "center";
 };
 
-Window_AllocationRevert.prototype.numVisibleRows = function() {
+Window_AllocationRevert.prototype.numVisibleRows = function () {
   return this._lines;
 };
 
-Window_AllocationRevert.prototype.itemRect = function(index) {
+Window_AllocationRevert.prototype.itemRect = function (index) {
   var rect = new Rectangle();
   var maxCols = this.maxCols();
   rect.width = this.itemWidth();
   rect.height = this.itemHeight();
-  rect.x = index % maxCols * (rect.width + this.spacing()) - this._scrollX;
+  rect.x = (index % maxCols) * (rect.width + this.spacing()) - this._scrollX;
   rect.y = (this._lines - 2 + index) * this.lineHeight();
   return rect;
 };
 
-Window_AllocationRevert.prototype.makeCommandList = function() {
-  this.addCommand(MageStudios.Param.StatAlcRevYes, 'revertYes', true);
-  this.addCommand(MageStudios.Param.StatAlcRevNo, 'cancel', true);
+Window_AllocationRevert.prototype.makeCommandList = function () {
+  this.addCommand(MageStudios.Param.StatAlcRevYes, "revertYes", true);
+  this.addCommand(MageStudios.Param.StatAlcRevNo, "cancel", true);
 };
 
-Window_AllocationRevert.prototype.refresh = function() {
+Window_AllocationRevert.prototype.refresh = function () {
   Window_Command.prototype.refresh.call(this);
-  this.drawTextEx(MageStudios.Param.StatAlcRevConfirmText, this.textPadding(), 0);
+  this.drawTextEx(
+    MageStudios.Param.StatAlcRevConfirmText,
+    this.textPadding(),
+    0
+  );
 };
-
-//=============================================================================
-// Scene_Menu
-//=============================================================================
 
 MageStudios.StatAlc.Scene_Menu_createCommandWindow =
   Scene_Menu.prototype.createCommandWindow;
-Scene_Menu.prototype.createCommandWindow = function() {
+Scene_Menu.prototype.createCommandWindow = function () {
   MageStudios.StatAlc.Scene_Menu_createCommandWindow.call(this);
-  this._commandWindow.setHandler('statAllocate',
-    this.commandPersonal.bind(this));
+  this._commandWindow.setHandler(
+    "statAllocate",
+    this.commandPersonal.bind(this)
+  );
 };
 
 MageStudios.StatAlc.Scene_Menu_onPersonalOk = Scene_Menu.prototype.onPersonalOk;
-Scene_Menu.prototype.onPersonalOk = function() {
-  if (this._commandWindow.currentSymbol() === 'statAllocate') {
+Scene_Menu.prototype.onPersonalOk = function () {
+  if (this._commandWindow.currentSymbol() === "statAllocate") {
     SceneManager.push(Scene_StatAllocation);
   } else {
     MageStudios.StatAlc.Scene_Menu_onPersonalOk.call(this);
   }
 };
-
-//=============================================================================
-// Scene_StatAllocation
-//=============================================================================
 
 function Scene_StatAllocation() {
   this.initialize.apply(this, arguments);
@@ -1942,11 +2089,11 @@ function Scene_StatAllocation() {
 Scene_StatAllocation.prototype = Object.create(Scene_MenuBase.prototype);
 Scene_StatAllocation.prototype.constructor = Scene_StatAllocation;
 
-Scene_StatAllocation.prototype.initialize = function() {
+Scene_StatAllocation.prototype.initialize = function () {
   Scene_MenuBase.prototype.initialize.call(this);
 };
 
-Scene_StatAllocation.prototype.create = function() {
+Scene_StatAllocation.prototype.create = function () {
   Scene_MenuBase.prototype.create.call(this);
   this.createHelpWindow();
   this.createCommandWindow();
@@ -1956,19 +2103,19 @@ Scene_StatAllocation.prototype.create = function() {
   this.refreshActor();
 };
 
-Scene_StatAllocation.prototype.createCommandWindow = function() {
+Scene_StatAllocation.prototype.createCommandWindow = function () {
   this._commandWindow = new Window_StatAllocationCommand();
   var win = this._commandWindow;
   win.y = this._helpWindow.height;
-  win.setHandler('pagedown', this.nextActor.bind(this));
-  win.setHandler('pageup', this.previousActor.bind(this));
-  win.setHandler('cancel', this.commandCancel.bind(this));
-  win.setHandler('allocate', this.commandAllocate.bind(this));
-  win.setHandler('revert', this.commandRevert.bind(this));
+  win.setHandler("pagedown", this.nextActor.bind(this));
+  win.setHandler("pageup", this.previousActor.bind(this));
+  win.setHandler("cancel", this.commandCancel.bind(this));
+  win.setHandler("allocate", this.commandAllocate.bind(this));
+  win.setHandler("revert", this.commandRevert.bind(this));
   this.addWindow(win);
 };
 
-Scene_StatAllocation.prototype.createStatusWindow = function() {
+Scene_StatAllocation.prototype.createStatusWindow = function () {
   var wx = this._commandWindow.width;
   var wy = this._helpWindow.height;
   var ww = Graphics.boxWidth - wx;
@@ -1977,19 +2124,19 @@ Scene_StatAllocation.prototype.createStatusWindow = function() {
   this.addWindow(this._statusWindow);
 };
 
-Scene_StatAllocation.prototype.createAllocationWindow = function() {
+Scene_StatAllocation.prototype.createAllocationWindow = function () {
   var y = this._commandWindow.y + this._commandWindow.height;
   this._allocationWindow = new Window_AllocationList(0, y);
   var win = this._allocationWindow;
   win.setHelpWindow(this._helpWindow);
-  win.setHandler('cancel', this.onAllocationCancel.bind(this));
-  win.setHandler('param', this.onAllocationParam.bind(this));
-  win.setHandler('xparam', this.onAllocationParam.bind(this));
-  win.setHandler('sparam', this.onAllocationParam.bind(this));
+  win.setHandler("cancel", this.onAllocationCancel.bind(this));
+  win.setHandler("param", this.onAllocationParam.bind(this));
+  win.setHandler("xparam", this.onAllocationParam.bind(this));
+  win.setHandler("sparam", this.onAllocationParam.bind(this));
   this.addWindow(win);
 };
 
-Scene_StatAllocation.prototype.refreshActor = function() {
+Scene_StatAllocation.prototype.refreshActor = function () {
   this.actor().refresh();
   var actor = this.actor();
   actor.refresh();
@@ -1998,44 +2145,44 @@ Scene_StatAllocation.prototype.refreshActor = function() {
   this._allocationWindow.setActor(actor);
 };
 
-Scene_StatAllocation.prototype.refreshWindows = function() {
+Scene_StatAllocation.prototype.refreshWindows = function () {
   this._commandWindow.refresh();
   this._statusWindow.refresh();
   this._allocationWindow.refresh();
 };
 
-Scene_StatAllocation.prototype.onActorChange = function() {
+Scene_StatAllocation.prototype.onActorChange = function () {
   this.refreshActor();
   this._commandWindow.activate();
 };
 
-Scene_StatAllocation.prototype.commandCancel = function() {
+Scene_StatAllocation.prototype.commandCancel = function () {
   this._actor.refresh();
   this.popScene();
 };
 
-Scene_StatAllocation.prototype.commandAllocate = function() {
+Scene_StatAllocation.prototype.commandAllocate = function () {
   this._allocationWindow.activate();
 };
 
-Scene_StatAllocation.prototype.onAllocationCancel = function() {
+Scene_StatAllocation.prototype.onAllocationCancel = function () {
   this._commandWindow.activate();
   this._allocationWindow.deselect();
   this._helpWindow.clear();
 };
 
-Scene_StatAllocation.prototype.onAllocationParam = function() {
+Scene_StatAllocation.prototype.onAllocationParam = function () {
   this.processAllocationCost();
-  if (this._allocationWindow.currentSymbol() === 'param') {
+  if (this._allocationWindow.currentSymbol() === "param") {
     this.processAllocateParam();
-  } else if (this._allocationWindow.currentSymbol() === 'xparam') {
+  } else if (this._allocationWindow.currentSymbol() === "xparam") {
     this.processAllocateXParam();
-  } else if (this._allocationWindow.currentSymbol() === 'sparam') {
+  } else if (this._allocationWindow.currentSymbol() === "sparam") {
     this.processAllocateSParam();
   }
 };
 
-Scene_StatAllocation.prototype.processAllocationCost = function() {
+Scene_StatAllocation.prototype.processAllocationCost = function () {
   var param = this._allocationWindow.currentExt();
   var data = this._allocationWindow.paramData(param);
   this.processAllocationCostAp(param, data);
@@ -2043,10 +2190,35 @@ Scene_StatAllocation.prototype.processAllocationCost = function() {
   this.processAllocationCostItems(param, data);
 };
 
-Scene_StatAllocation.prototype.processAllocationCostAp = function(param, data) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+Scene_StatAllocation.prototype.processAllocationCostAp = function (
+  param,
+  data
+) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -2064,10 +2236,35 @@ Scene_StatAllocation.prototype.processAllocationCostAp = function(param, data) {
   this._actor.spendAp(apCost);
 };
 
-Scene_StatAllocation.prototype.processAllocationCostJp = function(param, data) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+Scene_StatAllocation.prototype.processAllocationCostJp = function (
+  param,
+  data
+) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -2085,15 +2282,39 @@ Scene_StatAllocation.prototype.processAllocationCostJp = function(param, data) {
   this._actor.gainJp(-jpCost);
 };
 
-Scene_StatAllocation.prototype.processAllocationCostItems = 
-function(param, data) {
+Scene_StatAllocation.prototype.processAllocationCostItems = function (
+  param,
+  data
+) {
   var itemId = data.itemId;
   if (itemId <= 0) return;
   var item = $dataItems[itemId];
   if (!item) return;
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -2111,9 +2332,9 @@ function(param, data) {
   $gameParty.loseItem(item, itemCost);
 };
 
-Scene_StatAllocation.prototype.processAllocateParam = function() {
+Scene_StatAllocation.prototype.processAllocateParam = function () {
   var param = this._allocationWindow.currentExt();
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
   var paramId = params.indexOf(param);
   var maxHp = this._actor.mhp;
   var maxMp = this._actor.mmp;
@@ -2126,44 +2347,66 @@ Scene_StatAllocation.prototype.processAllocateParam = function() {
   this.refreshWindows();
 };
 
-Scene_StatAllocation.prototype.processAllocateXParam = function() {
+Scene_StatAllocation.prototype.processAllocateXParam = function () {
   var param = this._allocationWindow.currentExt();
-  var params = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
+  var params = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
   var paramId = params.indexOf(param);
   this._actor.gainXParamAllocateTimes(paramId, 1);
   this._allocationWindow.activate();
   this.refreshWindows();
 };
 
-Scene_StatAllocation.prototype.processAllocateSParam = function() {
+Scene_StatAllocation.prototype.processAllocateSParam = function () {
   var param = this._allocationWindow.currentExt();
-  var params = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+  var params = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   var paramId = params.indexOf(param);
   this._actor.gainSParamAllocateTimes(paramId, 1);
   this._allocationWindow.activate();
   this.refreshWindows();
 };
 
-Scene_StatAllocation.prototype.createRevertWindow = function() {
+Scene_StatAllocation.prototype.createRevertWindow = function () {
   this._revertWindow = new Window_AllocationRevert();
   this.addChild(this._revertWindow);
   var win = this._revertWindow;
-  win.setHandler('cancel', this.onRevertCancel.bind(this));
-  win.setHandler('revertYes', this.onRevertConfirm.bind(this));
+  win.setHandler("cancel", this.onRevertCancel.bind(this));
+  win.setHandler("revertYes", this.onRevertConfirm.bind(this));
 };
 
-Scene_StatAllocation.prototype.commandRevert = function() {
+Scene_StatAllocation.prototype.commandRevert = function () {
   this._revertWindow.activate();
   this._revertWindow.select(0);
   this._revertWindow.open();
 };
 
-Scene_StatAllocation.prototype.onRevertCancel = function() {
+Scene_StatAllocation.prototype.onRevertCancel = function () {
   this._revertWindow.close();
   this._commandWindow.activate();
 };
 
-Scene_StatAllocation.prototype.onRevertConfirm = function() {
+Scene_StatAllocation.prototype.onRevertConfirm = function () {
   this.processRevertAllParams();
   this._revertWindow.close();
   this._commandWindow.activate();
@@ -2171,10 +2414,32 @@ Scene_StatAllocation.prototype.onRevertConfirm = function() {
   this.refreshWindows();
 };
 
-Scene_StatAllocation.prototype.processRevertAllParams = function() {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
+Scene_StatAllocation.prototype.processRevertAllParams = function () {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
   var allParams = params.concat(xparams).concat(sparams);
   var length = allParams.length;
   for (var i = 0; i < length; ++i) {
@@ -2183,11 +2448,33 @@ Scene_StatAllocation.prototype.processRevertAllParams = function() {
   }
 };
 
-Scene_StatAllocation.prototype.processRevertParam = function(param) {
-  var params = ['mhp','mmp','atk','def','mat','mdf','agi','luk'];
-  var xparams = ['hit','eva','cri','cev','mev','mrf','cnt','hrg','mrg','trg'];
-  var sparams = ['tgr','grd','rec','pha','mcr','tcr','pdr','mdr','fdr','exr'];
-  // Identify Basic Variables
+Scene_StatAllocation.prototype.processRevertParam = function (param) {
+  var params = ["mhp", "mmp", "atk", "def", "mat", "mdf", "agi", "luk"];
+  var xparams = [
+    "hit",
+    "eva",
+    "cri",
+    "cev",
+    "mev",
+    "mrf",
+    "cnt",
+    "hrg",
+    "mrg",
+    "trg",
+  ];
+  var sparams = [
+    "tgr",
+    "grd",
+    "rec",
+    "pha",
+    "mcr",
+    "tcr",
+    "pdr",
+    "mdr",
+    "fdr",
+    "exr",
+  ];
+
   if (params.contains(param)) {
     var paramId = params.indexOf(param);
     var times = this._actor.getParamAllocateTimes(paramId);
@@ -2200,7 +2487,7 @@ Scene_StatAllocation.prototype.processRevertParam = function(param) {
   } else {
     return;
   }
-  // Loop through all times and their costs
+
   var jp = 0;
   var items = {};
   while (times > 0) {
@@ -2223,33 +2510,23 @@ Scene_StatAllocation.prototype.processRevertParam = function(param) {
       items[data.itemId] += data.itemCost.call(this, times);
     }
   }
-  // Return consumed resources
+
   if (Imported.MSEP_JobPoints) this._actor.gainJp(jp);
   for (var key in items) {
     var item = $dataItems[key];
     var amount = items[key];
     $gameParty.gainItem(item, amount);
   }
-  if (param === 'mhp' || param === 'mmp') {
+  if (param === "mhp" || param === "mmp") {
     this._actor._hp = Math.min(this._actor._hp, this._actor.mhp);
     this._actor._mp = Math.min(this._actor._mp, this._actor.mmp);
   }
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
 if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
+  MageStudios.Util.toGroup = function (inVal) {
+    return inVal;
+  };
 }
-
-}; // MageStudios.Util.toGroup
-
-//=============================================================================
-// End of File
-//=============================================================================

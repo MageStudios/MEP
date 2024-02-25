@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Quest Journal Extension - Map Quest Window
-// MSEP_X_MapQuestWindow.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_MapQuestWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AMQW = MageStudios.AMQW || {};
-MageStudios.AMQW.version = 1.00;
+MageStudios.AMQW.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_QuestJournal.js) Adds a window on the
  * map scene to display an active quest.
  * @author Mage Studios Engine Plugins
@@ -102,7 +96,7 @@ MageStudios.AMQW.version = 1.00;
  * ---------
  * Settings:
  * ---------
- * 
+ *
  * Name:
  * \i[87]Quest Window
  *
@@ -125,7 +119,7 @@ MageStudios.AMQW.version = 1.00;
  * ----------
  * Functions:
  * ----------
- * 
+ *
  * Make Option Code:
  * this.addCommand(name, symbol, enabled, ext);
  *
@@ -149,7 +143,7 @@ MageStudios.AMQW.version = 1.00;
  * var symbol = this.commandSymbol(index);
  * var value = this.getConfigValue(symbol);
  * this.changeValue(symbol, true);
- * 
+ *
  * Cursor Left Code:
  * var index = this.index();
  * var symbol = this.commandSymbol(index);
@@ -157,13 +151,13 @@ MageStudios.AMQW.version = 1.00;
  * this.changeValue(symbol, false);
  *
  * Default Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Save Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Load Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * ============================================================================
  * Changelog
@@ -270,7 +264,7 @@ MageStudios.AMQW.version = 1.00;
  * @default true
  *
  */
-//=============================================================================
+
 /* Plugin Parameter Structure Settings
  *=============================================================================
  */
@@ -297,7 +291,7 @@ MageStudios.AMQW.version = 1.00;
  * @off Hide
  * @desc Show active quest window by default?
  * @default true
- * 
+ *
  * @param ---Window Settings---
  * @default
  *
@@ -417,577 +411,577 @@ MageStudios.AMQW.version = 1.00;
  * @dir img/system/
  * @desc Window skin used.
  * @default Window
- * 
+ *
  */
-//=============================================================================
 
 if (Imported.MSEP_QuestJournal) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_MapQuestWindow");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.MQWSettings = JSON.parse(
+    MageStudios.Parameters["Window Settings"]
+  );
+  MageStudios.Param.MQWSetActive = String(MageStudios.Parameters["Set Active"]);
+  MageStudios.Param.MQWCurActive = String(
+    MageStudios.Parameters["Currently Active"]
+  );
+  MageStudios.Param.MQWClearActive = String(
+    MageStudios.Parameters["Clear Active"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_MapQuestWindow');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.MQWOptionCmd = String(
+    MageStudios.Parameters["Options Command"]
+  );
+  MageStudios.Param.MQWOptionSetting = eval(
+    MageStudios.Parameters["Options Enable"]
+  );
 
-MageStudios.Param.MQWSettings =
-  JSON.parse(MageStudios.Parameters['Window Settings']);
-MageStudios.Param.MQWSetActive = String(MageStudios.Parameters['Set Active']);
-MageStudios.Param.MQWCurActive = String(MageStudios.Parameters['Currently Active']);
-MageStudios.Param.MQWClearActive = String(MageStudios.Parameters['Clear Active']);
+  MageStudios.Param.MQWAddQuest = eval(MageStudios.Parameters["Quest Add"]);
+  MageStudios.Param.MQWQuestComplete = eval(
+    MageStudios.Parameters["Quest Complete"]
+  );
+  MageStudios.Param.MQWQuestFailed = eval(
+    MageStudios.Parameters["Quest Failed"]
+  );
+  MageStudios.Param.MQWChangeObj = eval(
+    MageStudios.Parameters["Change Objectives"]
+  );
+  MageStudios.Param.MQWEventUpdate = eval(
+    MageStudios.Parameters["Event Update"]
+  );
 
-MageStudios.Param.MQWOptionCmd = String(MageStudios.Parameters['Options Command']);
-MageStudios.Param.MQWOptionSetting = eval(MageStudios.Parameters['Options Enable']);
+  MageStudios.getDefaultMapQuestWindowOption = function () {
+    if (MageStudios.Param.MQWOptionSetting) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-MageStudios.Param.MQWAddQuest = eval(MageStudios.Parameters['Quest Add']);
-MageStudios.Param.MQWQuestComplete = eval(MageStudios.Parameters['Quest Complete']);
-MageStudios.Param.MQWQuestFailed = eval(MageStudios.Parameters['Quest Failed']);
-MageStudios.Param.MQWChangeObj = eval(MageStudios.Parameters['Change Objectives']);
-MageStudios.Param.MQWEventUpdate = eval(MageStudios.Parameters['Event Update']);
+  ConfigManager.mapQuestWindow = MageStudios.getDefaultMapQuestWindowOption();
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
+  MageStudios.AMQW.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
+    var config = MageStudios.AMQW.ConfigManager_makeData.call(this);
+    config.mapQuestWindow = this.mapQuestWindow;
+    return config;
+  };
 
-MageStudios.getDefaultMapQuestWindowOption = function() {
-  if (MageStudios.Param.MQWOptionSetting) {
-    return true;
-  } else {
-    return false;
-  }
-};
+  MageStudios.AMQW.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
+    MageStudios.AMQW.ConfigManager_applyData.call(this, config);
+    this.mapQuestWindow = this.readConfigMapQuestWindow(
+      config,
+      "mapQuestWindow"
+    );
+  };
 
-ConfigManager.mapQuestWindow = MageStudios.getDefaultMapQuestWindowOption();
-
-MageStudios.AMQW.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
-  var config = MageStudios.AMQW.ConfigManager_makeData.call(this);
-  config.mapQuestWindow = this.mapQuestWindow;
-  return config;
-};
-
-MageStudios.AMQW.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
-  MageStudios.AMQW.ConfigManager_applyData.call(this, config);
-  this.mapQuestWindow = this.readConfigMapQuestWindow(config, 'mapQuestWindow');
-};
-
-ConfigManager.readConfigMapQuestWindow = function(config, name) {
-  var value = config[name];
-  if (value !== undefined) {
+  ConfigManager.readConfigMapQuestWindow = function (config, name) {
+    var value = config[name];
+    if (value !== undefined) {
       return value;
-  } else {
+    } else {
       return MageStudios.getDefaultMapQuestWindowOption();
-  }
-};
+    }
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
+  MageStudios.AMQW.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    MageStudios.AMQW.Game_System_initialize.call(this);
+    this.initMapQuestWindowSettings();
+  };
 
-MageStudios.AMQW.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-  MageStudios.AMQW.Game_System_initialize.call(this);
-  this.initMapQuestWindowSettings();
-};
+  Game_System.prototype.initMapQuestWindowSettings = function () {
+    this._showMapQuestWindow = eval(
+      MageStudios.Param.MQWSettings["Default Show"] || "true"
+    );
+    this._activeQuestId = 0;
+  };
 
-Game_System.prototype.initMapQuestWindowSettings = function() {
-  this._showMapQuestWindow = 
-    eval(MageStudios.Param.MQWSettings['Default Show'] || 'true');
-  this._activeQuestId = 0;
-};
+  Game_System.prototype.isShowMapQuestWindow = function () {
+    if (this._showMapQuestWindow === undefined)
+      this.initMapQuestWindowSettings();
+    return this._showMapQuestWindow;
+  };
 
-Game_System.prototype.isShowMapQuestWindow = function() {
-  if (this._showMapQuestWindow === undefined) this.initMapQuestWindowSettings();
-  return this._showMapQuestWindow;
-};
+  Game_System.prototype.setShowMapQuestWindow = function (value) {
+    if (this._showMapQuestWindow === undefined)
+      this.initMapQuestWindowSettings();
+    this._showMapQuestWindow = value;
+  };
 
-Game_System.prototype.setShowMapQuestWindow = function(value) {
-  if (this._showMapQuestWindow === undefined) this.initMapQuestWindowSettings();
-  this._showMapQuestWindow = value;
-};
+  Game_System.prototype.getActiveQuestId = function () {
+    if (this._activeQuestId === undefined) this.initMapQuestWindowSettings();
+    return this._activeQuestId;
+  };
 
-Game_System.prototype.getActiveQuestId = function() {
-  if (this._activeQuestId === undefined) this.initMapQuestWindowSettings();
-  return this._activeQuestId;
-};
-
-Game_System.prototype.setActiveQuestId = function(questId) {
-  if (this._activeQuestId === undefined) this.initMapQuestWindowSettings();
-  if (questId === 0 || $dataQuests[questId]) this._activeQuestId = questId;
-  this.refreshActiveQuestWindow();
-};
-
-Game_System.prototype.refreshActiveQuestWindow = function() {
-  if (SceneManager._scene instanceof Scene_Map) {
-    SceneManager._scene.refreshActiveQuestWindow();
-  }
-};
-
-if (MageStudios.Param.MQWAddQuest) {
-
-MageStudios.AMQW.Game_System_questAdd = Game_System.prototype.questAdd;
-Game_System.prototype.questAdd = function(questId) {
-  MageStudios.AMQW.Game_System_questAdd.call(this, questId);
-  this.setActiveQuestId(questId);
-};
-
-}; // MageStudios.Param.MQWAddQuest
-
-MageStudios.AMQW.Game_System_questRemove = Game_System.prototype.questRemove;
-Game_System.prototype.questRemove = function(questId) {
-  MageStudios.AMQW.Game_System_questRemove.call(this, questId);
-  if (this.getActiveQuestId() === questId) {
-    this.setActiveQuestId(0);
+  Game_System.prototype.setActiveQuestId = function (questId) {
+    if (this._activeQuestId === undefined) this.initMapQuestWindowSettings();
+    if (questId === 0 || $dataQuests[questId]) this._activeQuestId = questId;
     this.refreshActiveQuestWindow();
-  }
-};
+  };
 
-Game_System.prototype.setNextAvailableQuestActive = function(condition) {
-  if (condition) {
-    var questId = this.getQuestsAvailable()[0];
-    if (questId) {
+  Game_System.prototype.refreshActiveQuestWindow = function () {
+    if (SceneManager._scene instanceof Scene_Map) {
+      SceneManager._scene.refreshActiveQuestWindow();
+    }
+  };
+
+  if (MageStudios.Param.MQWAddQuest) {
+    MageStudios.AMQW.Game_System_questAdd = Game_System.prototype.questAdd;
+    Game_System.prototype.questAdd = function (questId) {
+      MageStudios.AMQW.Game_System_questAdd.call(this, questId);
       this.setActiveQuestId(questId);
+    };
+  }
+
+  MageStudios.AMQW.Game_System_questRemove = Game_System.prototype.questRemove;
+  Game_System.prototype.questRemove = function (questId) {
+    MageStudios.AMQW.Game_System_questRemove.call(this, questId);
+    if (this.getActiveQuestId() === questId) {
+      this.setActiveQuestId(0);
+      this.refreshActiveQuestWindow();
+    }
+  };
+
+  Game_System.prototype.setNextAvailableQuestActive = function (condition) {
+    if (condition) {
+      var questId = this.getQuestsAvailable()[0];
+      if (questId) {
+        this.setActiveQuestId(questId);
+      } else {
+        this.setActiveQuestId(0);
+      }
     } else {
       this.setActiveQuestId(0);
     }
-  } else {
-    this.setActiveQuestId(0);
-  }
-  this.refreshActiveQuestWindow();
-};
-
-MageStudios.AMQW.Game_System_questSetCompleted = 
-  Game_System.prototype.questSetCompleted;
-Game_System.prototype.questSetCompleted = function(questId) {
-  MageStudios.AMQW.Game_System_questSetCompleted.call(this, questId);
-  if (this.getActiveQuestId() === questId) {
-    this.setNextAvailableQuestActive(MageStudios.Param.MQWQuestComplete);
-  };
-};
-
-MageStudios.AMQW.Game_System_questSetFailed =
-  Game_System.prototype.questSetFailed;
-Game_System.prototype.questSetFailed = function(questId) {
-  MageStudios.AMQW.Game_System_questSetFailed.call(this, questId);
-  if (this.getActiveQuestId() === questId) {
-    this.setNextAvailableQuestActive(MageStudios.Param.MQWQuestComplete);
-  };
-};
-
-if (MageStudios.Param.MQWChangeObj) {
-
-MageStudios.AMQW.Game_System_questObjectivesShow =
-  Game_System.prototype.questObjectivesShow;
-Game_System.prototype.questObjectivesShow = function(questId, objId) {
-  MageStudios.AMQW.Game_System_questObjectivesShow.call(this, questId, objId);
-  if (this.getActiveQuestId() === questId) {
     this.refreshActiveQuestWindow();
   };
-};
 
-MageStudios.AMQW.Game_System_questObjectivesHide =
-  Game_System.prototype.questObjectivesHide;
-Game_System.prototype.questObjectivesHide = function(questId, objId) {
-  MageStudios.AMQW.Game_System_questObjectivesHide.call(this, questId, objId);
-  if (this.getActiveQuestId() === questId) {
-    this.refreshActiveQuestWindow();
-  };
-};
-
-MageStudios.AMQW.Game_System_questObjectivesNormal =
-  Game_System.prototype.questObjectivesNormal;
-Game_System.prototype.questObjectivesNormal = function(questId, objId) {
-  MageStudios.AMQW.Game_System_questObjectivesNormal.call(this, questId, objId);
-  if (this.getActiveQuestId() === questId) {
-    this.refreshActiveQuestWindow();
-  };
-};
-
-MageStudios.AMQW.Game_System_questObjectivesComplete =
-  Game_System.prototype.questObjectivesComplete;
-Game_System.prototype.questObjectivesComplete = function(questId, objId) {
-  MageStudios.AMQW.Game_System_questObjectivesComplete.call(this, questId, objId);
-  if (this.getActiveQuestId() === questId) {
-    this.refreshActiveQuestWindow();
-  };
-};
-
-MageStudios.AMQW.Game_System_questObjectivesFail =
-  Game_System.prototype.questObjectivesFail;
-Game_System.prototype.questObjectivesFail = function(questId, objId) {
-  MageStudios.AMQW.Game_System_questObjectivesFail.call(this, questId, objId);
-  if (this.getActiveQuestId() === questId) {
-    this.refreshActiveQuestWindow();
-  };
-};
-
-}; // MageStudios.Param.MQWChangeObj
-
-//=============================================================================
-// Game_Map
-//=============================================================================
-
-if (MageStudios.Param.MQWEventUpdate) {
-
-MageStudios.AMQW.Game_Map_requestRefresh = Game_Map.prototype.requestRefresh;
-Game_Map.prototype.requestRefresh = function(mapId) {
-  MageStudios.AMQW.Game_Map_requestRefresh.call(this, mapId);
-  if (SceneManager._scene instanceof Scene_Map) {
-    SceneManager._scene.refreshActiveQuestWindow();
-  }
-};
-
-}; // MageStudios.Param.MQWEventUpdate
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.AMQW.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.AMQW.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'SetActiveQuest') {
-    $gameSystem.setActiveQuestId(parseInt(args[0]));
-  } else if (command === 'RefreshActiveQuestWindow') {
-    this.refreshActiveQuestWindow();
-  } else if (command === 'ShowActiveQuestWindow') {
-    $gameSystem.setShowMapQuestWindow(true);
-  } else if (command === 'HideActiveQuestWindow') {
-    $gameSystem.setShowMapQuestWindow(false);
-  }
-};
-
-Game_Interpreter.prototype.refreshActiveQuestWindow = function() {
-  if (SceneManager._scene instanceof Scene_Map) {
-    SceneManager._scene.refreshActiveQuestWindow();
-  }
-};
-
-//=============================================================================
-// Window_Options
-//=============================================================================
-
-MageStudios.AMQW.Window_Options_addGeneralOptions =
-  Window_Options.prototype.addGeneralOptions;
-Window_Options.prototype.addGeneralOptions = function() {
-  MageStudios.AMQW.Window_Options_addGeneralOptions.call(this);
-  if (Imported.MSEP_OptionsCore) return;
-  this.addCommand(MageStudios.Param.MQWOptionCmd, 'mapQuestWindow');
-};
-
-//=============================================================================
-// Window_QuestList
-//=============================================================================
-
-MageStudios.AMQW.Window_QuestList_makeExtraListC =
-  Window_QuestList.prototype.makeExtraListC;
-Window_QuestList.prototype.makeExtraListC = function() {
-  MageStudios.AMQW.Window_QuestList_makeExtraListC.call(this);
-  this.addSetActiveCommand();
-  this.addClearActiveCommand();
-};
-
-Window_QuestList.prototype.addSetActiveCommand = function() {
-  var questId = this._forcedExt;
-  if (questId === $gameSystem.getActiveQuestId()) {
-    var text = String(MageStudios.Param.MQWCurActive);
-    this.addCommand(text, 'curActive', false);
-  } else {
-    var text = String(MageStudios.Param.MQWSetActive);
-    var enable = this.canBeMadeActive(questId);
-    this.addCommand(text, 'setActive', enable);
-  }
-};
-
-Window_QuestList.prototype.canBeMadeActive = function(questId) {
-  return $gameSystem.getQuestsAvailable().contains(questId);
-};
-
-Window_QuestList.prototype.addClearActiveCommand = function() {
-  var text = String(MageStudios.Param.MQWClearActive);
-  var enable = $gameSystem.getActiveQuestId() > 0;
-  this.addCommand(text, 'clearActive', enable);
-};
-
-//=============================================================================
-// Window_MapActiveQuest
-//=============================================================================
-
-function Window_MapActiveQuest() {
-  this.initialize.apply(this, arguments);
-};
-
-Window_MapActiveQuest.prototype = Object.create(Window_Base.prototype);
-Window_MapActiveQuest.prototype.constructor = Window_MapActiveQuest;
-
-Window_MapActiveQuest.prototype.initialize = function() {
-  this._windowHeight = this.standardPadding() * 2 + this.lineHeight() * 2;
-  var scale = parseFloat(this.settings('Scale'));
-  var width = this.windowWidth();
-  var height = this.windowHeight();
-  var x = Math.round(eval(this.settings('X')));
-  var y = Math.round(eval(this.settings('Y')));
-  width = Math.ceil(width / scale);
-  this._allTextHeight = 0;
-  this._requestRefresh = false;
-  this._visibleCounter = 0;
-  Window_Base.prototype.initialize.call(this, x, y, width, height);
-  this.scale.x = scale;
-  this.scale.y = scale;
-  this.refresh();
-  if (!this.activeQuest()) this.visible = false;
-};
-
-Window_MapActiveQuest.prototype.settings = function(key) {
-  return MageStudios.Param.MQWSettings[key];
-};
-
-Window_MapActiveQuest.prototype.wordWrap = function() {
-  if (!Imported.MSEP_MessageCore) return false;
-  if (this._wordWrapSetting === undefined) {
-    this._wordWrapSetting = eval(this.settings('Word Wrap Objectives'));
-  }
-  return this._wordWrapSetting;
-};
-
-Window_MapActiveQuest.prototype.windowWidth = function() {
-  if (this._windowWidth === undefined) {
-    this._windowWidth = Math.round(eval(this.settings('Width')));
-  }
-  return this._windowWidth;
-};
-
-Window_MapActiveQuest.prototype.windowHeight = function() {
-  return this._windowHeight;
-};
-
-Window_MapActiveQuest.prototype.lineHeight = function() {
-  if (this._windowLineHeight === undefined) {
-    this._windowLineHeight = parseInt(this.settings('Line Height'));
-  }
-  return this._windowLineHeight;
-};
-
-Window_MapActiveQuest.prototype.standardFontFace = function() {
-  if (this._windowFontFace === undefined) {
-    this._windowFontFace = this.settings('Font Face');
-  }
-  return this._windowFontFace;
-};
-
-Window_MapActiveQuest.prototype.standardFontSize = function() {
-  if (this._windowFontSize === undefined) {
-    this._windowFontSize = Math.round(eval(this.settings('Font Size')));
-  }
-  return this._windowFontSize;
-};
-
-Window_MapActiveQuest.prototype.standardPadding = function() {
-  if (this._windowStandardPadding === undefined) {
-    this._windowStandardPadding = 
-      Math.round(eval(this.settings('Standard Padding')));
-  }
-  return this._windowStandardPadding;
-};
-
-Window_MapActiveQuest.prototype.textPadding = function() {
-  if (this._windowTextPadding === undefined) {
-    this._windowTextPadding = Math.round(eval(this.settings('Text Padding')));
-  }
-  return this._windowTextPadding;
-};
-
-Window_MapActiveQuest.prototype.standardBackOpacity = function() {
-  if (this._windowBackOpacity === undefined) {
-    this._windowBackOpacity = Math.round(eval(this.settings('Back Opacity')));
-  }
-  return this._windowBackOpacity;
-};
-
-Window_MapActiveQuest.prototype.loadWindowskin = function() {
-  this.windowskin = ImageManager.loadSystem(this.settings('Window Skin'));
-};
-
-Window_MapActiveQuest.prototype.activeQuest = function() {
-  return $dataQuests[$gameSystem.getActiveQuestId()];
-};
-
-Window_MapActiveQuest.prototype.refresh = function() {
-  this.contents.clear();
-  if (!this.activeQuest()) return;
-  this.drawQuestData();
-};
-
-Window_MapActiveQuest.prototype.textWidthEx = function(text) {
-  return this.drawTextEx(text, 0, this.contents.height);
-};
-
-Window_MapActiveQuest.prototype.drawHorzLine = function(y) {
-  var lineY = y;
-  this.contents.paintOpacity = 128;
-  this.contents.fillRect(0, lineY, this.contentsWidth(), 2, this.normalColor());
-  this.contents.paintOpacity = 255;
-};
-
-Window_MapActiveQuest.prototype.drawQuestData = function() {
-  this.resetFontSettings();
-  this.height = Graphics.boxHeight;
-  this._windowHeight = this.height;
-  this.createContents();
-  this.drawQuestDataName();
-  this.drawHorzLine(this.lineHeight());
-  this.drawQuestDataObjectives();
-  this.height = this._allTextHeight + this.lineHeight() +
-    this.standardPadding() * 2;
-  this._windowHeight = this.height;
-};
-
-Window_MapActiveQuest.prototype.drawQuestDataName = function() {
-  var text = this.activeQuest().name;
-  var ww = this.textWidthEx(text);
-  var wx = (this.contents.width - ww) / 2;
-  this.drawTextEx(text, wx, 0);
-};
-
-Window_MapActiveQuest.prototype.drawQuestDataObjectives = function() {
-  var text = this.wordWrap() ? '<WordWrap>' : '';
-  var questId = this.activeQuest().id;
-  var lineData = this.activeQuest().objectives;
-  var objectives = $gameSystem.getQuestObjectives(questId);
-  var length = objectives.length;
-  var first = false;
-  for (var i = 0; i < length; ++i) {
-    var objId = objectives[i];
-    var key = $gameSystem.getQuestObjectiveStatus(questId, objId);
-    var status = $gameSystem.getQuestObjectiveStatus(questId, objId)
-    if (status !== 'Uncleared Objective') continue;
-    if (first) text += this.wordWrap() ? '<br>' : '\n';
-    first = true;
-    var fmt = MageStudios.Param.QuestDataWindow[key];
-    text += fmt.format(JSON.parse(lineData[objId]));
-  }
-  this.drawQuestTextEx(text, 0, this.lineHeight());
-};
-
-Window_MapActiveQuest.prototype.drawQuestTextEx = function(text, x, y) {
-  if (text) {
-    var textState = { index: 0, x: x, y: y, left: x };
-    textState.text = this.convertEscapeCharacters(text);
-    textState.height = this.calcTextHeight(textState, false);
-    this.resetFontSettings();
-    while (textState.index < textState.text.length) {
-      this.processCharacter(textState);
+  MageStudios.AMQW.Game_System_questSetCompleted =
+    Game_System.prototype.questSetCompleted;
+  Game_System.prototype.questSetCompleted = function (questId) {
+    MageStudios.AMQW.Game_System_questSetCompleted.call(this, questId);
+    if (this.getActiveQuestId() === questId) {
+      this.setNextAvailableQuestActive(MageStudios.Param.MQWQuestComplete);
     }
-    this._allTextHeight = textState.y - y + this.lineHeight();
-    return textState.x - x;
-  } else {
-    return 0;
+  };
+
+  MageStudios.AMQW.Game_System_questSetFailed =
+    Game_System.prototype.questSetFailed;
+  Game_System.prototype.questSetFailed = function (questId) {
+    MageStudios.AMQW.Game_System_questSetFailed.call(this, questId);
+    if (this.getActiveQuestId() === questId) {
+      this.setNextAvailableQuestActive(MageStudios.Param.MQWQuestComplete);
+    }
+  };
+
+  if (MageStudios.Param.MQWChangeObj) {
+    MageStudios.AMQW.Game_System_questObjectivesShow =
+      Game_System.prototype.questObjectivesShow;
+    Game_System.prototype.questObjectivesShow = function (questId, objId) {
+      MageStudios.AMQW.Game_System_questObjectivesShow.call(
+        this,
+        questId,
+        objId
+      );
+      if (this.getActiveQuestId() === questId) {
+        this.refreshActiveQuestWindow();
+      }
+    };
+
+    MageStudios.AMQW.Game_System_questObjectivesHide =
+      Game_System.prototype.questObjectivesHide;
+    Game_System.prototype.questObjectivesHide = function (questId, objId) {
+      MageStudios.AMQW.Game_System_questObjectivesHide.call(
+        this,
+        questId,
+        objId
+      );
+      if (this.getActiveQuestId() === questId) {
+        this.refreshActiveQuestWindow();
+      }
+    };
+
+    MageStudios.AMQW.Game_System_questObjectivesNormal =
+      Game_System.prototype.questObjectivesNormal;
+    Game_System.prototype.questObjectivesNormal = function (questId, objId) {
+      MageStudios.AMQW.Game_System_questObjectivesNormal.call(
+        this,
+        questId,
+        objId
+      );
+      if (this.getActiveQuestId() === questId) {
+        this.refreshActiveQuestWindow();
+      }
+    };
+
+    MageStudios.AMQW.Game_System_questObjectivesComplete =
+      Game_System.prototype.questObjectivesComplete;
+    Game_System.prototype.questObjectivesComplete = function (questId, objId) {
+      MageStudios.AMQW.Game_System_questObjectivesComplete.call(
+        this,
+        questId,
+        objId
+      );
+      if (this.getActiveQuestId() === questId) {
+        this.refreshActiveQuestWindow();
+      }
+    };
+
+    MageStudios.AMQW.Game_System_questObjectivesFail =
+      Game_System.prototype.questObjectivesFail;
+    Game_System.prototype.questObjectivesFail = function (questId, objId) {
+      MageStudios.AMQW.Game_System_questObjectivesFail.call(
+        this,
+        questId,
+        objId
+      );
+      if (this.getActiveQuestId() === questId) {
+        this.refreshActiveQuestWindow();
+      }
+    };
   }
-};
 
-Window_MapActiveQuest.prototype.update = function() {
-  this.updateRefresh();
-  Window_Base.prototype.update.call(this);
-  this.updateVisible();
-};
+  if (MageStudios.Param.MQWEventUpdate) {
+    MageStudios.AMQW.Game_Map_requestRefresh =
+      Game_Map.prototype.requestRefresh;
+    Game_Map.prototype.requestRefresh = function (mapId) {
+      MageStudios.AMQW.Game_Map_requestRefresh.call(this, mapId);
+      if (SceneManager._scene instanceof Scene_Map) {
+        SceneManager._scene.refreshActiveQuestWindow();
+      }
+    };
+  }
 
-Window_MapActiveQuest.prototype.updateRefresh = function() {
-  if (this._requestRefresh) {
-    this.refresh()
+  MageStudios.AMQW.Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.AMQW.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "SetActiveQuest") {
+      $gameSystem.setActiveQuestId(parseInt(args[0]));
+    } else if (command === "RefreshActiveQuestWindow") {
+      this.refreshActiveQuestWindow();
+    } else if (command === "ShowActiveQuestWindow") {
+      $gameSystem.setShowMapQuestWindow(true);
+    } else if (command === "HideActiveQuestWindow") {
+      $gameSystem.setShowMapQuestWindow(false);
+    }
+  };
+
+  Game_Interpreter.prototype.refreshActiveQuestWindow = function () {
+    if (SceneManager._scene instanceof Scene_Map) {
+      SceneManager._scene.refreshActiveQuestWindow();
+    }
+  };
+
+  MageStudios.AMQW.Window_Options_addGeneralOptions =
+    Window_Options.prototype.addGeneralOptions;
+  Window_Options.prototype.addGeneralOptions = function () {
+    MageStudios.AMQW.Window_Options_addGeneralOptions.call(this);
+    if (Imported.MSEP_OptionsCore) return;
+    this.addCommand(MageStudios.Param.MQWOptionCmd, "mapQuestWindow");
+  };
+
+  MageStudios.AMQW.Window_QuestList_makeExtraListC =
+    Window_QuestList.prototype.makeExtraListC;
+  Window_QuestList.prototype.makeExtraListC = function () {
+    MageStudios.AMQW.Window_QuestList_makeExtraListC.call(this);
+    this.addSetActiveCommand();
+    this.addClearActiveCommand();
+  };
+
+  Window_QuestList.prototype.addSetActiveCommand = function () {
+    var questId = this._forcedExt;
+    if (questId === $gameSystem.getActiveQuestId()) {
+      var text = String(MageStudios.Param.MQWCurActive);
+      this.addCommand(text, "curActive", false);
+    } else {
+      var text = String(MageStudios.Param.MQWSetActive);
+      var enable = this.canBeMadeActive(questId);
+      this.addCommand(text, "setActive", enable);
+    }
+  };
+
+  Window_QuestList.prototype.canBeMadeActive = function (questId) {
+    return $gameSystem.getQuestsAvailable().contains(questId);
+  };
+
+  Window_QuestList.prototype.addClearActiveCommand = function () {
+    var text = String(MageStudios.Param.MQWClearActive);
+    var enable = $gameSystem.getActiveQuestId() > 0;
+    this.addCommand(text, "clearActive", enable);
+  };
+
+  function Window_MapActiveQuest() {
+    this.initialize.apply(this, arguments);
+  }
+
+  Window_MapActiveQuest.prototype = Object.create(Window_Base.prototype);
+  Window_MapActiveQuest.prototype.constructor = Window_MapActiveQuest;
+
+  Window_MapActiveQuest.prototype.initialize = function () {
+    this._windowHeight = this.standardPadding() * 2 + this.lineHeight() * 2;
+    var scale = parseFloat(this.settings("Scale"));
+    var width = this.windowWidth();
+    var height = this.windowHeight();
+    var x = Math.round(eval(this.settings("X")));
+    var y = Math.round(eval(this.settings("Y")));
+    width = Math.ceil(width / scale);
+    this._allTextHeight = 0;
     this._requestRefresh = false;
-  }
-};
+    this._visibleCounter = 0;
+    Window_Base.prototype.initialize.call(this, x, y, width, height);
+    this.scale.x = scale;
+    this.scale.y = scale;
+    this.refresh();
+    if (!this.activeQuest()) this.visible = false;
+  };
 
-Window_MapActiveQuest.prototype.updateVisible = function() {
-  var visible = this.isWindowVisible();
-  if (visible && this._visibleCounter <= 0) {
-    this.visible = true;
-  } else if (visible) {
-    this._visibleCounter -= 1;
-    this.visible = false;
-  } else {
-    this._visibleCounter = 10;
-    this.visible = false;
-  }
-};
+  Window_MapActiveQuest.prototype.settings = function (key) {
+    return MageStudios.Param.MQWSettings[key];
+  };
 
-Window_MapActiveQuest.prototype.isWindowVisible = function() {
-  if (!ConfigManager.mapQuestWindow) return false;
-  if (!this.activeQuest()) return false;
-  if ($gameMessage.isBusy()) return false;
-  if (SceneManager.isSceneChanging()) return false;
-  return $gameSystem.isShowMapQuestWindow();
-};
+  Window_MapActiveQuest.prototype.wordWrap = function () {
+    if (!Imported.MSEP_MessageCore) return false;
+    if (this._wordWrapSetting === undefined) {
+      this._wordWrapSetting = eval(this.settings("Word Wrap Objectives"));
+    }
+    return this._wordWrapSetting;
+  };
 
-Window_MapActiveQuest.prototype.requestRefresh = function(value) {
-  this._requestRefresh = value;
-};
+  Window_MapActiveQuest.prototype.windowWidth = function () {
+    if (this._windowWidth === undefined) {
+      this._windowWidth = Math.round(eval(this.settings("Width")));
+    }
+    return this._windowWidth;
+  };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
+  Window_MapActiveQuest.prototype.windowHeight = function () {
+    return this._windowHeight;
+  };
 
-MageStudios.AMQW.Scene_Map_createAllWindows = Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
-  MageStudios.AMQW.Scene_Map_createAllWindows.call(this);
-  this.createMapQuestWindow();
-};
+  Window_MapActiveQuest.prototype.lineHeight = function () {
+    if (this._windowLineHeight === undefined) {
+      this._windowLineHeight = parseInt(this.settings("Line Height"));
+    }
+    return this._windowLineHeight;
+  };
 
-Scene_Map.prototype.createMapQuestWindow = function() {
-  this._activeQuestWindow = new Window_MapActiveQuest();
-  this.addWindow(this._activeQuestWindow);
-};
+  Window_MapActiveQuest.prototype.standardFontFace = function () {
+    if (this._windowFontFace === undefined) {
+      this._windowFontFace = this.settings("Font Face");
+    }
+    return this._windowFontFace;
+  };
 
-Scene_Map.prototype.refreshActiveQuestWindow = function() {
-  if (this._activeQuestWindow) this._activeQuestWindow.requestRefresh(true);
-};
+  Window_MapActiveQuest.prototype.standardFontSize = function () {
+    if (this._windowFontSize === undefined) {
+      this._windowFontSize = Math.round(eval(this.settings("Font Size")));
+    }
+    return this._windowFontSize;
+  };
 
-//=============================================================================
-// Scene_Quest
-//=============================================================================
+  Window_MapActiveQuest.prototype.standardPadding = function () {
+    if (this._windowStandardPadding === undefined) {
+      this._windowStandardPadding = Math.round(
+        eval(this.settings("Standard Padding"))
+      );
+    }
+    return this._windowStandardPadding;
+  };
 
-MageStudios.AMQW.Scene_Quest_createListWindow =
-  Scene_Quest.prototype.createListWindow;
-Scene_Quest.prototype.createListWindow = function() {
-  MageStudios.AMQW.Scene_Quest_createListWindow.call(this);
-  this._listWindow.setHandler('setActive', this.onListSetActive.bind(this));
-  this._listWindow.setHandler('clearActive', this.onListClearActive.bind(this));
-};
+  Window_MapActiveQuest.prototype.textPadding = function () {
+    if (this._windowTextPadding === undefined) {
+      this._windowTextPadding = Math.round(eval(this.settings("Text Padding")));
+    }
+    return this._windowTextPadding;
+  };
 
-MageStudios.AMQW.Scene_Quest_isQuestExtraCommand =
-  Scene_Quest.prototype.isQuestExtraCommand;
-Scene_Quest.prototype.isQuestExtraCommand = function() {
-  return true;
-};
+  Window_MapActiveQuest.prototype.standardBackOpacity = function () {
+    if (this._windowBackOpacity === undefined) {
+      this._windowBackOpacity = Math.round(eval(this.settings("Back Opacity")));
+    }
+    return this._windowBackOpacity;
+  };
 
-Scene_Quest.prototype.onListSetActive = function() {
-  this._listWindow.activate();
-  $gameSystem.setActiveQuestId(this._listWindow.currentExt());
-  this._listWindow.refresh();
-};
+  Window_MapActiveQuest.prototype.loadWindowskin = function () {
+    this.windowskin = ImageManager.loadSystem(this.settings("Window Skin"));
+  };
 
-Scene_Quest.prototype.onListClearActive = function() {
-  this._listWindow.activate();
-  $gameSystem.setActiveQuestId(0);
-  this._listWindow.refresh();
-};
+  Window_MapActiveQuest.prototype.activeQuest = function () {
+    return $dataQuests[$gameSystem.getActiveQuestId()];
+  };
 
-//=============================================================================
-// End of Main Functions
-//=============================================================================
+  Window_MapActiveQuest.prototype.refresh = function () {
+    this.contents.clear();
+    if (!this.activeQuest()) return;
+    this.drawQuestData();
+  };
+
+  Window_MapActiveQuest.prototype.textWidthEx = function (text) {
+    return this.drawTextEx(text, 0, this.contents.height);
+  };
+
+  Window_MapActiveQuest.prototype.drawHorzLine = function (y) {
+    var lineY = y;
+    this.contents.paintOpacity = 128;
+    this.contents.fillRect(
+      0,
+      lineY,
+      this.contentsWidth(),
+      2,
+      this.normalColor()
+    );
+    this.contents.paintOpacity = 255;
+  };
+
+  Window_MapActiveQuest.prototype.drawQuestData = function () {
+    this.resetFontSettings();
+    this.height = Graphics.boxHeight;
+    this._windowHeight = this.height;
+    this.createContents();
+    this.drawQuestDataName();
+    this.drawHorzLine(this.lineHeight());
+    this.drawQuestDataObjectives();
+    this.height =
+      this._allTextHeight + this.lineHeight() + this.standardPadding() * 2;
+    this._windowHeight = this.height;
+  };
+
+  Window_MapActiveQuest.prototype.drawQuestDataName = function () {
+    var text = this.activeQuest().name;
+    var ww = this.textWidthEx(text);
+    var wx = (this.contents.width - ww) / 2;
+    this.drawTextEx(text, wx, 0);
+  };
+
+  Window_MapActiveQuest.prototype.drawQuestDataObjectives = function () {
+    var text = this.wordWrap() ? "<WordWrap>" : "";
+    var questId = this.activeQuest().id;
+    var lineData = this.activeQuest().objectives;
+    var objectives = $gameSystem.getQuestObjectives(questId);
+    var length = objectives.length;
+    var first = false;
+    for (var i = 0; i < length; ++i) {
+      var objId = objectives[i];
+      var key = $gameSystem.getQuestObjectiveStatus(questId, objId);
+      var status = $gameSystem.getQuestObjectiveStatus(questId, objId);
+      if (status !== "Uncleared Objective") continue;
+      if (first) text += this.wordWrap() ? "<br>" : "\n";
+      first = true;
+      var fmt = MageStudios.Param.QuestDataWindow[key];
+      text += fmt.format(JSON.parse(lineData[objId]));
+    }
+    this.drawQuestTextEx(text, 0, this.lineHeight());
+  };
+
+  Window_MapActiveQuest.prototype.drawQuestTextEx = function (text, x, y) {
+    if (text) {
+      var textState = { index: 0, x: x, y: y, left: x };
+      textState.text = this.convertEscapeCharacters(text);
+      textState.height = this.calcTextHeight(textState, false);
+      this.resetFontSettings();
+      while (textState.index < textState.text.length) {
+        this.processCharacter(textState);
+      }
+      this._allTextHeight = textState.y - y + this.lineHeight();
+      return textState.x - x;
+    } else {
+      return 0;
+    }
+  };
+
+  Window_MapActiveQuest.prototype.update = function () {
+    this.updateRefresh();
+    Window_Base.prototype.update.call(this);
+    this.updateVisible();
+  };
+
+  Window_MapActiveQuest.prototype.updateRefresh = function () {
+    if (this._requestRefresh) {
+      this.refresh();
+      this._requestRefresh = false;
+    }
+  };
+
+  Window_MapActiveQuest.prototype.updateVisible = function () {
+    var visible = this.isWindowVisible();
+    if (visible && this._visibleCounter <= 0) {
+      this.visible = true;
+    } else if (visible) {
+      this._visibleCounter -= 1;
+      this.visible = false;
+    } else {
+      this._visibleCounter = 10;
+      this.visible = false;
+    }
+  };
+
+  Window_MapActiveQuest.prototype.isWindowVisible = function () {
+    if (!ConfigManager.mapQuestWindow) return false;
+    if (!this.activeQuest()) return false;
+    if ($gameMessage.isBusy()) return false;
+    if (SceneManager.isSceneChanging()) return false;
+    return $gameSystem.isShowMapQuestWindow();
+  };
+
+  Window_MapActiveQuest.prototype.requestRefresh = function (value) {
+    this._requestRefresh = value;
+  };
+
+  MageStudios.AMQW.Scene_Map_createAllWindows =
+    Scene_Map.prototype.createAllWindows;
+  Scene_Map.prototype.createAllWindows = function () {
+    MageStudios.AMQW.Scene_Map_createAllWindows.call(this);
+    this.createMapQuestWindow();
+  };
+
+  Scene_Map.prototype.createMapQuestWindow = function () {
+    this._activeQuestWindow = new Window_MapActiveQuest();
+    this.addWindow(this._activeQuestWindow);
+  };
+
+  Scene_Map.prototype.refreshActiveQuestWindow = function () {
+    if (this._activeQuestWindow) this._activeQuestWindow.requestRefresh(true);
+  };
+
+  MageStudios.AMQW.Scene_Quest_createListWindow =
+    Scene_Quest.prototype.createListWindow;
+  Scene_Quest.prototype.createListWindow = function () {
+    MageStudios.AMQW.Scene_Quest_createListWindow.call(this);
+    this._listWindow.setHandler("setActive", this.onListSetActive.bind(this));
+    this._listWindow.setHandler(
+      "clearActive",
+      this.onListClearActive.bind(this)
+    );
+  };
+
+  MageStudios.AMQW.Scene_Quest_isQuestExtraCommand =
+    Scene_Quest.prototype.isQuestExtraCommand;
+  Scene_Quest.prototype.isQuestExtraCommand = function () {
+    return true;
+  };
+
+  Scene_Quest.prototype.onListSetActive = function () {
+    this._listWindow.activate();
+    $gameSystem.setActiveQuestId(this._listWindow.currentExt());
+    this._listWindow.refresh();
+  };
+
+  Scene_Quest.prototype.onListClearActive = function () {
+    this._listWindow.activate();
+    $gameSystem.setActiveQuestId(0);
+    this._listWindow.refresh();
+  };
 } else {
-
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_MapQuestWindow without MSEP_QuestJournal. Please visit MageStudios.moe ';
-text += 'and install MSEP_QuestJournal in your game project before you can use ';
-text += 'this plugin.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text +=
+    "MSEP_X_MapQuestWindow without MSEP_QuestJournal. Please visit MageStudios.moe ";
+  text +=
+    "and install MSEP_QuestJournal in your game project before you can use ";
+  text += "this plugin.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-//=============================================================================
-// End of File
-//=============================================================================

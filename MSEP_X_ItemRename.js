@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Item Rename
-// MSEP_X_ItemRename.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ItemRename = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemRename = MageStudios.ItemRename || {};
-MageStudios.ItemRename.version = 1.00;
+MageStudios.ItemRename.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Allows the player to
  * rename independent items in their inventory.
  * @author Mage Studios Engine Plugins + Sylvester Collaboration
@@ -93,112 +87,109 @@ MageStudios.ItemRename.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-if (Imported.MSEP_ItemCore &&
-  MageStudios.Item.version && MageStudios.Item.version >= 1.27) {
+if (
+  Imported.MSEP_ItemCore &&
+  MageStudios.Item.version &&
+  MageStudios.Item.version >= 1.27
+) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ItemRename");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.ItemRenameCmd = String(
+    MageStudios.Parameters["Rename Command"]
+  );
+  MageStudios.Param.ItemRenameDefault = String(
+    MageStudios.Parameters["Default Rename"]
+  );
+  MageStudios.Param.ItemRenameDefault = eval(
+    MageStudios.Param.ItemRenameDefault
+  );
+  MageStudios.Param.ItemRenameMaxLength = Number(
+    MageStudios.Parameters["Max Length"]
+  );
+  MageStudios.Param.ItemRenameText = String(
+    MageStudios.Parameters["Rename Text"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemRename');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.ItemRename.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.ItemRename.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.ItemRenameCmd = String(MageStudios.Parameters['Rename Command']);
-MageStudios.Param.ItemRenameDefault = String(MageStudios.Parameters['Default Rename']);
-MageStudios.Param.ItemRenameDefault = eval(MageStudios.Param.ItemRenameDefault);
-MageStudios.Param.ItemRenameMaxLength = Number(MageStudios.Parameters['Max Length']);
-MageStudios.Param.ItemRenameText = String(MageStudios.Parameters['Rename Text']);
+    if (!MageStudios._loaded_MSEP_X_ItemRename) {
+      this.processItemRenameNotetags1($dataItems);
+      this.processItemRenameNotetags1($dataWeapons);
+      this.processItemRenameNotetags1($dataArmors);
+      MageStudios._loaded_MSEP_X_ItemRename = true;
+    }
 
-//=============================================================================
-// DataManager
-// ----------------------------------------------------------------------------
-// Notetags added by Mage
-//=============================================================================
+    return true;
+  };
 
-MageStudios.ItemRename.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.ItemRename.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processItemRenameNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_X_ItemRename) {
-    this.processItemRenameNotetags1($dataItems);
-    this.processItemRenameNotetags1($dataWeapons);
-    this.processItemRenameNotetags1($dataArmors);
-    MageStudios._loaded_MSEP_X_ItemRename = true;
-  }
-  
-  return true;
-};
+      obj.canRename = MageStudios.Param.ItemRenameDefault;
 
-DataManager.processItemRenameNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.canRename = MageStudios.Param.ItemRenameDefault;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<CAN RENAME>/i)) {
-        obj.canRename = true;
-      } else if (line.match(/<CANNOT RENAME>/i)) {
-        obj.canRename = false;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<CAN RENAME>/i)) {
+          obj.canRename = true;
+        } else if (line.match(/<CANNOT RENAME>/i)) {
+          obj.canRename = false;
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Window_ItemActionCommand
-//=============================================================================
+  MageStudios.ItemRename.Window_ItemActionCommand_addCustomCommandsE =
+    Window_ItemActionCommand.prototype.addCustomCommandsE;
+  Window_ItemActionCommand.prototype.addCustomCommandsE = function () {
+    MageStudios.ItemRename.Window_ItemActionCommand_addCustomCommandsE.call(
+      this
+    );
+    if (this.isShowRenameCommand()) this.addRenameCommand();
+  };
 
-MageStudios.ItemRename.Window_ItemActionCommand_addCustomCommandsE =
-  Window_ItemActionCommand.prototype.addCustomCommandsE;
-Window_ItemActionCommand.prototype.addCustomCommandsE = function() {
-  MageStudios.ItemRename.Window_ItemActionCommand_addCustomCommandsE.call(this);
-  if (this.isShowRenameCommand()) this.addRenameCommand();
-};
+  Window_ItemActionCommand.prototype.isShowRenameCommand = function () {
+    if (this._item && this._item.baseItemId && this._item.canRename) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-Window_ItemActionCommand.prototype.isShowRenameCommand = function() {
-  if (this._item && this._item.baseItemId && this._item.canRename) {
-    return true;
-  } else {
-    return false;
-  }
-};
+  Window_ItemActionCommand.prototype.addRenameCommand = function () {
+    if (!this._item) {
+      return false;
+    }
+    var text = this.createRenameCommandName();
+    this.addCommand(text, "rename", true);
+  };
 
-Window_ItemActionCommand.prototype.addRenameCommand = function() {
-  if (!this._item) {
-    return false;
-  }
-  var text = this.createRenameCommandName();
-  this.addCommand(text, 'rename', true);
-};
+  Window_ItemActionCommand.prototype.createRenameCommandName = function () {
+    var fmt = MageStudios.Param.ItemRenameCmd;
+    var name = "\\i[" + this._item.iconIndex + "]";
+    if (this._item.textColor !== undefined) {
+      name += "\\c[" + this._item.textColor + "]";
+    }
+    name += this._item.name + "\\c[0]";
+    var text = fmt.format(name);
+    return text;
+  };
 
-Window_ItemActionCommand.prototype.createRenameCommandName = function() {
-  var fmt = MageStudios.Param.ItemRenameCmd;
-  var name = '\\i[' + this._item.iconIndex + ']';
-  if (this._item.textColor !== undefined) {
-    name += '\\c[' + this._item.textColor + ']';
-  }
-  name += this._item.name + '\\c[0]';
-  var text = fmt.format(name);
-  return text;
-};
-
-//=============================================================================
-// Window_ItemNameEdit
-//=============================================================================
-
-function Window_ItemNameEdit() {
+  function Window_ItemNameEdit() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_ItemNameEdit.prototype = Object.create(Window_Base.prototype);
-Window_ItemNameEdit.prototype.constructor = Window_ItemNameEdit;
+  Window_ItemNameEdit.prototype = Object.create(Window_Base.prototype);
+  Window_ItemNameEdit.prototype.constructor = Window_ItemNameEdit;
 
-Window_ItemNameEdit.prototype.initialize = function(item, maxLength) {
+  Window_ItemNameEdit.prototype.initialize = function (item, maxLength) {
     var width = this.windowWidth();
     var height = this.windowHeight();
     var x = (Graphics.boxWidth - width) / 2;
@@ -211,211 +202,202 @@ Window_ItemNameEdit.prototype.initialize = function(item, maxLength) {
     this._defaultName = this._name;
     this.deactivate();
     this.refresh();
-};
+  };
 
-Window_ItemNameEdit.prototype.windowWidth = function() {
-  return 480;
-};
+  Window_ItemNameEdit.prototype.windowWidth = function () {
+    return 480;
+  };
 
-Window_ItemNameEdit.prototype.windowHeight = function() {
-  return this.fittingHeight(4);
-};
+  Window_ItemNameEdit.prototype.windowHeight = function () {
+    return this.fittingHeight(4);
+  };
 
-Window_ItemNameEdit.prototype.name = function() {
-  return this._name;
-};
+  Window_ItemNameEdit.prototype.name = function () {
+    return this._name;
+  };
 
-Window_ItemNameEdit.prototype.restoreDefault = function() {
-  this._name = this._defaultName;
-  this._index = this._name.length;
-  this.refresh();
-  return this._name.length > 0;
-};
-
-Window_ItemNameEdit.prototype.add = function(ch) {
-  if (this._index < this._maxLength) {
-    this._name += ch;
-    this._index++;
+  Window_ItemNameEdit.prototype.restoreDefault = function () {
+    this._name = this._defaultName;
+    this._index = this._name.length;
     this.refresh();
-    return true;
-  } else {
-    return false;
-  }
-};
+    return this._name.length > 0;
+  };
 
-Window_ItemNameEdit.prototype.back = function() {
-  if (this._index > 0) {
-    this._index--;
-    this._name = this._name.slice(0, this._index);
-    this.refresh();
-    return true;
-  } else {
-    return false;
-  }
-};
+  Window_ItemNameEdit.prototype.add = function (ch) {
+    if (this._index < this._maxLength) {
+      this._name += ch;
+      this._index++;
+      this.refresh();
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-Window_ItemNameEdit.prototype.faceWidth = function() {
-  return 0;
-};
+  Window_ItemNameEdit.prototype.back = function () {
+    if (this._index > 0) {
+      this._index--;
+      this._name = this._name.slice(0, this._index);
+      this.refresh();
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-Window_ItemNameEdit.prototype.charWidth = function() {
-  var text = $gameSystem.isJapanese() ? '\uff21' : 'A';
-  return this.textWidth(text);
-};
+  Window_ItemNameEdit.prototype.faceWidth = function () {
+    return 0;
+  };
 
-Window_ItemNameEdit.prototype.left = function() {
-  var nameCenter = (this.contentsWidth() + this.faceWidth()) / 2;
-  var nameWidth = (this._maxLength + 1) * this.charWidth();
-  return Math.min(nameCenter - nameWidth / 2, this.contentsWidth() - nameWidth);
-};
+  Window_ItemNameEdit.prototype.charWidth = function () {
+    var text = $gameSystem.isJapanese() ? "\uff21" : "A";
+    return this.textWidth(text);
+  };
 
-Window_ItemNameEdit.prototype.itemRect = function(index) {
-  return {
+  Window_ItemNameEdit.prototype.left = function () {
+    var nameCenter = (this.contentsWidth() + this.faceWidth()) / 2;
+    var nameWidth = (this._maxLength + 1) * this.charWidth();
+    return Math.min(
+      nameCenter - nameWidth / 2,
+      this.contentsWidth() - nameWidth
+    );
+  };
+
+  Window_ItemNameEdit.prototype.itemRect = function (index) {
+    return {
       x: this.left() + index * this.charWidth(),
       y: this.lineHeight() * 2.5,
       width: this.charWidth(),
-      height: this.lineHeight()
+      height: this.lineHeight(),
+    };
   };
-};
 
-Window_ItemNameEdit.prototype.underlineRect = function(index) {
-  var rect = this.itemRect(index);
-  rect.x++;
-  rect.y += rect.height - 4;
-  rect.width -= 2;
-  rect.height = 2;
-  return rect;
-};
+  Window_ItemNameEdit.prototype.underlineRect = function (index) {
+    var rect = this.itemRect(index);
+    rect.x++;
+    rect.y += rect.height - 4;
+    rect.width -= 2;
+    rect.height = 2;
+    return rect;
+  };
 
-Window_ItemNameEdit.prototype.underlineColor = function() {
-  return this.normalColor();
-};
+  Window_ItemNameEdit.prototype.underlineColor = function () {
+    return this.normalColor();
+  };
 
-Window_ItemNameEdit.prototype.drawUnderline = function(index) {
-  var rect = this.underlineRect(index);
-  var color = this.underlineColor();
-  this.contents.paintOpacity = 48;
-  this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, color);
-  this.contents.paintOpacity = 255;
-};
+  Window_ItemNameEdit.prototype.drawUnderline = function (index) {
+    var rect = this.underlineRect(index);
+    var color = this.underlineColor();
+    this.contents.paintOpacity = 48;
+    this.contents.fillRect(rect.x, rect.y, rect.width, rect.height, color);
+    this.contents.paintOpacity = 255;
+  };
 
-Window_ItemNameEdit.prototype.drawChar = function(index) {
-  var rect = this.itemRect(index);
-  this.resetTextColor();
-  this.drawText(this._name[index] || '', rect.x, rect.y);
-};
+  Window_ItemNameEdit.prototype.drawChar = function (index) {
+    var rect = this.itemRect(index);
+    this.resetTextColor();
+    this.drawText(this._name[index] || "", rect.x, rect.y);
+  };
 
-Window_ItemNameEdit.prototype.refresh = function() {
-  this.contents.clear();
-  var lh = this.lineHeight();
-  var name = this._item.name;
-  var width = this.textWidth(name);
-  var iconWidth = Window_Base._iconWidth;
-  var x = this.contents.width / 2 - (iconWidth / 2) - 4 - (width/2);
-  this.drawItemName(this._item, x, lh * 0.5, this.contents.width);
-  var text = MageStudios.Param.ItemRenameText;
-  this.drawText(text, 0, lh * 1.5, this.contents.width, 'center');
-  for (var i = 0; i < this._maxLength; i++) {
-    this.drawUnderline(i);
-  }
-  for (var j = 0; j < this._name.length; j++) {
-    this.drawChar(j);
-  }
-  var rect = this.itemRect(this._index);
-  this.setCursorRect(rect.x, rect.y, rect.width, rect.height);
-};
+  Window_ItemNameEdit.prototype.refresh = function () {
+    this.contents.clear();
+    var lh = this.lineHeight();
+    var name = this._item.name;
+    var width = this.textWidth(name);
+    var iconWidth = Window_Base._iconWidth;
+    var x = this.contents.width / 2 - iconWidth / 2 - 4 - width / 2;
+    this.drawItemName(this._item, x, lh * 0.5, this.contents.width);
+    var text = MageStudios.Param.ItemRenameText;
+    this.drawText(text, 0, lh * 1.5, this.contents.width, "center");
+    for (var i = 0; i < this._maxLength; i++) {
+      this.drawUnderline(i);
+    }
+    for (var j = 0; j < this._name.length; j++) {
+      this.drawChar(j);
+    }
+    var rect = this.itemRect(this._index);
+    this.setCursorRect(rect.x, rect.y, rect.width, rect.height);
+  };
 
-//=============================================================================
-// Scene_Item
-//=============================================================================
+  MageStudios.ItemRename.Scene_Item_createActionWindow =
+    Scene_Item.prototype.createActionWindow;
+  Scene_Item.prototype.createActionWindow = function () {
+    MageStudios.ItemRename.Scene_Item_createActionWindow.call(this);
+    this._itemActionWindow.setHandler("rename", this.onActionRename.bind(this));
+  };
 
-MageStudios.ItemRename.Scene_Item_createActionWindow =
-  Scene_Item.prototype.createActionWindow;
-Scene_Item.prototype.createActionWindow = function() {
-  MageStudios.ItemRename.Scene_Item_createActionWindow.call(this);
-  this._itemActionWindow.setHandler('rename', this.onActionRename.bind(this));
-};
+  Scene_Item.prototype.onActionRename = function () {
+    var item = this._itemActionWindow._item;
+    this.preItemRename();
+    SceneManager.push(Scene_ItemRename);
+    SceneManager.prepareNextScene(item);
+  };
 
-Scene_Item.prototype.onActionRename = function() {
-  var item = this._itemActionWindow._item;
-  this.preItemRename();
-  SceneManager.push(Scene_ItemRename);
-  SceneManager.prepareNextScene(item);
-};
+  Scene_Item.prototype.preItemRename = function () {
+    $gameTemp._itemCategoryIndex = this._categoryWindow.index();
+    $gameTemp._itemListIndex = this._itemWindow.index();
+    $gameTemp._itemActionIndex = this._itemActionWindow.index();
+    $gameTemp._itemRename = this.item();
+  };
 
-Scene_Item.prototype.preItemRename = function() {
-  $gameTemp._itemCategoryIndex = this._categoryWindow.index();
-  $gameTemp._itemListIndex = this._itemWindow.index();
-  $gameTemp._itemActionIndex = this._itemActionWindow.index();
-  $gameTemp._itemRename = this.item();
-};
+  Scene_Item.prototype.postItemRename = function () {
+    this._categoryWindow.select($gameTemp._itemCategoryIndex);
+    this._categoryWindow.update();
+    $gameTemp._itemCategoryIndex = undefined;
+    this._itemWindow.update();
+    this._itemWindow.select($gameTemp._itemListIndex);
+    this._itemWindow.updateHelp();
+    $gameTemp._itemListIndex = undefined;
+    this._itemActionWindow.setItem($gameTemp._itemRename);
+    this._itemActionWindow.select($gameTemp._itemActionIndex);
+    $gameTemp._itemActionIndex = undefined;
+    $gameTemp._itemRename = undefined;
+    this._categoryWindow.deactivate();
+  };
 
-Scene_Item.prototype.postItemRename = function() {
-  this._categoryWindow.select($gameTemp._itemCategoryIndex);
-  this._categoryWindow.update();
-  $gameTemp._itemCategoryIndex = undefined;
-  this._itemWindow.update();
-  this._itemWindow.select($gameTemp._itemListIndex);
-  this._itemWindow.updateHelp();
-  $gameTemp._itemListIndex = undefined;
-  this._itemActionWindow.setItem($gameTemp._itemRename);
-  this._itemActionWindow.select($gameTemp._itemActionIndex);
-  $gameTemp._itemActionIndex = undefined;
-  $gameTemp._itemRename = undefined;
-  this._categoryWindow.deactivate();
-};
+  MageStudios.ItemRename.Scene_Item_create = Scene_Item.prototype.create;
+  Scene_Item.prototype.create = function () {
+    MageStudios.ItemRename.Scene_Item_create.call(this);
+    if ($gameTemp._itemCategoryIndex) {
+      this.postItemRename();
+    }
+  };
 
-MageStudios.ItemRename.Scene_Item_create = Scene_Item.prototype.create;
-Scene_Item.prototype.create = function() {
-  MageStudios.ItemRename.Scene_Item_create.call(this);
-  if ($gameTemp._itemCategoryIndex) {
-    this.postItemRename();
-  }
-};
-
-//=============================================================================
-// Scene_ItemRename
-//=============================================================================
-
-function Scene_ItemRename() {
+  function Scene_ItemRename() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Scene_ItemRename.prototype = Object.create(Scene_Name.prototype);
-Scene_ItemRename.prototype.constructor = Scene_ItemRename;
+  Scene_ItemRename.prototype = Object.create(Scene_Name.prototype);
+  Scene_ItemRename.prototype.constructor = Scene_ItemRename;
 
-Scene_ItemRename.prototype.initialize = function() {
-  Scene_Name.prototype.initialize.call(this);
-};
+  Scene_ItemRename.prototype.initialize = function () {
+    Scene_Name.prototype.initialize.call(this);
+  };
 
-Scene_ItemRename.prototype.prepare = function(item) {
-  this._item = item;
-  this._maxLength = MageStudios.Param.ItemRenameMaxLength;
-};
+  Scene_ItemRename.prototype.prepare = function (item) {
+    this._item = item;
+    this._maxLength = MageStudios.Param.ItemRenameMaxLength;
+  };
 
-Scene_ItemRename.prototype.createEditWindow = function() {
-  this._editWindow = new Window_ItemNameEdit(this._item, this._maxLength);
-  this.addWindow(this._editWindow);
-};
+  Scene_ItemRename.prototype.createEditWindow = function () {
+    this._editWindow = new Window_ItemNameEdit(this._item, this._maxLength);
+    this.addWindow(this._editWindow);
+  };
 
-Scene_ItemRename.prototype.onInputOk = function() {
-  ItemManager.setPriorityName(this._item, this._editWindow.name());
-  ItemManager.updateItemName(this._item);
-  this.popScene();
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
+  Scene_ItemRename.prototype.onInputOk = function () {
+    ItemManager.setPriorityName(this._item, this._editWindow.name());
+    ItemManager.updateItemName(this._item);
+    this.popScene();
+  };
 } else {
-
-var text = '================================================================\n';
-text += 'MSEP_X_ItemRename requires MSEP_ItemCore and to be at the latest '
-text += 'version to run properly. '
-text += '\n\nPlease go to www.MageStudios.moe and update to the latest version for ';
-text += 'the MSEP_ItemCore plugin.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // if (Imported.MSEP_ItemCore) {
+  var text =
+    "================================================================\n";
+  text += "MSEP_X_ItemRename requires MSEP_ItemCore and to be at the latest ";
+  text += "version to run properly. ";
+  text +=
+    "\n\nPlease go to www.MageStudios.moe and update to the latest version for ";
+  text += "the MSEP_ItemCore plugin.\n";
+  text += "================================================================\n";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

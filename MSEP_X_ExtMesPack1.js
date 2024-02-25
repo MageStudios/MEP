@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Message Core Extension - Extended Message Pack 1
-// MSEP_X_ExtMesPack1.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ExtMesPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EMP1 = MageStudios.EMP1 || {};
-MageStudios.EMP1.version = 1.00;
+MageStudios.EMP1.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_MessageCore.js) Letter Sounds, NameBox
  * Background Types, Choice Control, and more!
  * @author Mage Studios Engine Plugins
@@ -466,7 +460,7 @@ MageStudios.EMP1.version = 1.00;
  *  *Note: Works for message window only.
  *
  * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
- * 
+ *
  *  MessagePosition  Effect:
  *  \msgposx[x]      - Sets the X position of the Message Window to x.
  *  \msgposx[auto]   - Sets the X position of the Message Window to default.
@@ -766,63 +760,68 @@ MageStudios.EMP1.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_MessageCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ExtMesPack1");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.EMP1LetterSound = eval(
+    String(MageStudios.Parameters["Enable Sound"])
+  );
+  MageStudios.Param.EMP1SoundName = String(
+    MageStudios.Parameters["Sound Name"]
+  );
+  MageStudios.Param.EMP1SoundVolume = Number(
+    MageStudios.Parameters["Sound Volume"]
+  );
+  MageStudios.Param.EMP1SoundPitch = Number(
+    MageStudios.Parameters["Sound Pitch"]
+  );
+  MageStudios.Param.EMP1PitchVar = Number(
+    MageStudios.Parameters["Pitch Variance"]
+  );
+  MageStudios.Param.EMP1SoundPan = Number(MageStudios.Parameters["Sound Pan"]);
+  MageStudios.Param.EMP1PanVar = Number(MageStudios.Parameters["Pan Variance"]);
+  MageStudios.Param.EMP1SoundInterval = Number(
+    MageStudios.Parameters["Sound Interval"]
+  );
+  MageStudios.Param.EMP1LetterReset = eval(
+    String(MageStudios.Parameters["Reset Sounds"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ExtMesPack1');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.EMP1DefaultX = String(MageStudios.Parameters["Default X"]);
+  MageStudios.Param.EMP1DefaultY = String(MageStudios.Parameters["Default Y"]);
+  MageStudios.Param.EMP1FullFace = eval(
+    String(MageStudios.Parameters["Auto Row Full Face"])
+  );
 
-MageStudios.Param.EMP1LetterSound = eval(String(MageStudios.Parameters['Enable Sound']));
-MageStudios.Param.EMP1SoundName = String(MageStudios.Parameters['Sound Name']);
-MageStudios.Param.EMP1SoundVolume = Number(MageStudios.Parameters['Sound Volume']);
-MageStudios.Param.EMP1SoundPitch = Number(MageStudios.Parameters['Sound Pitch']);
-MageStudios.Param.EMP1PitchVar = Number(MageStudios.Parameters['Pitch Variance']);
-MageStudios.Param.EMP1SoundPan = Number(MageStudios.Parameters['Sound Pan']);
-MageStudios.Param.EMP1PanVar = Number(MageStudios.Parameters['Pan Variance']);
-MageStudios.Param.EMP1SoundInterval = Number(MageStudios.Parameters['Sound Interval']);
-MageStudios.Param.EMP1LetterReset = eval(String(MageStudios.Parameters['Reset Sounds']));
+  MageStudios.Param.EMP1MaxRows = Number(MageStudios.Parameters["Max Rows"]);
+  MageStudios.Param.EMP1ChoiceShow = [];
+  MageStudios.Param.EMP1ChoiceOn = [];
+  for (MageStudios.i = 1; MageStudios.i < 21; MageStudios.i += 1) {
+    MageStudios.sName = "Choice " + MageStudios.i + " Show Switch";
+    MageStudios.oName = "Choice " + MageStudios.i + " On Switch";
+    MageStudios.Param.EMP1ChoiceShow.push(
+      Number(MageStudios.Parameters[MageStudios.sName])
+    );
+    MageStudios.Param.EMP1ChoiceOn.push(
+      Number(MageStudios.Parameters[MageStudios.oName])
+    );
+  }
 
-MageStudios.Param.EMP1DefaultX = String(MageStudios.Parameters['Default X']);
-MageStudios.Param.EMP1DefaultY = String(MageStudios.Parameters['Default Y']);
-MageStudios.Param.EMP1FullFace = 
-  eval(String(MageStudios.Parameters['Auto Row Full Face']));
-
-MageStudios.Param.EMP1MaxRows = Number(MageStudios.Parameters['Max Rows']);
-MageStudios.Param.EMP1ChoiceShow = [];
-MageStudios.Param.EMP1ChoiceOn = [];
-for (MageStudios.i = 1; MageStudios.i < 21; MageStudios.i += 1) {
-  MageStudios.sName = 'Choice ' + MageStudios.i + ' Show Switch';
-  MageStudios.oName = 'Choice ' + MageStudios.i + ' On Switch';
-  MageStudios.Param.EMP1ChoiceShow.push(Number(MageStudios.Parameters[MageStudios.sName]));
-  MageStudios.Param.EMP1ChoiceOn.push(Number(MageStudios.Parameters[MageStudios.oName]));
-};
-
-//=============================================================================
-// SoundManager
-//=============================================================================
-
-SoundManager.playMessageSound = function() {
+  SoundManager.playMessageSound = function () {
     AudioManager.playSe($gameSystem.getMessageSound());
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.EMP1.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.EMP1.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.EMP1.Game_System_initialize.call(this);
     this.initMessageSounds();
     this.initMessageChoiceRowsMax();
     this.initMessagePosition();
-};
+  };
 
-Game_System.prototype.initMessageSounds = function() {
+  Game_System.prototype.initMessageSounds = function () {
     this._msgSoundEnable = MageStudios.Param.EMP1LetterSound;
     this._msgSoundName = MageStudios.Param.EMP1SoundName;
     this._msgSoundVol = MageStudios.Param.EMP1SoundVolume;
@@ -831,45 +830,45 @@ Game_System.prototype.initMessageSounds = function() {
     this._msgSoundPan = MageStudios.Param.EMP1SoundPan;
     this._msgSoundPanVar = MageStudios.Param.EMP1PanVar;
     this._msgSoundInterval = MageStudios.Param.EMP1SoundInterval;
-};
+  };
 
-Game_System.prototype.getMessageSound = function() {
+  Game_System.prototype.getMessageSound = function () {
     if (this._msgSoundName === undefined) this.initMessageSounds();
     var obj = {
       name: this._msgSoundName,
       volume: this._msgSoundVol,
       pitch: this._msgSoundPitch,
-      pan: this._msgSoundPan
-    }
+      pan: this._msgSoundPan,
+    };
     var max = this._msgSoundPitch + this._msgSoundPitchVar;
     var min = this._msgSoundPitch - this._msgSoundPitchVar;
-    obj['pitch'] = Math.floor(Math.random() * ( max - min + 1) + min);
+    obj["pitch"] = Math.floor(Math.random() * (max - min + 1) + min);
     var max = this._msgSoundPan + this._msgSoundPanVar;
     var min = this._msgSoundPan - this._msgSoundPanVar;
-    obj['pan'] = Math.floor(Math.random() * ( max - min + 1) + min);
+    obj["pan"] = Math.floor(Math.random() * (max - min + 1) + min);
     return obj;
-};
+  };
 
-Game_System.prototype.isMessageSoundEnabled = function() {
+  Game_System.prototype.isMessageSoundEnabled = function () {
     if (this._msgSoundEnable === undefined) this.initMessageSounds();
     return this._msgSoundEnable;
-};
+  };
 
-Game_System.prototype.messageSoundInterval = function() {
+  Game_System.prototype.messageSoundInterval = function () {
     if (this._msgSoundInterval === undefined) this.initMessageSounds();
     return this._msgSoundInterval;
-};
+  };
 
-Game_System.prototype.initMessageChoiceRowsMax = function() {
+  Game_System.prototype.initMessageChoiceRowsMax = function () {
     this._msgChoiceMax = MageStudios.Param.EMP1MaxRows;
-};
+  };
 
-Game_System.prototype.getMessageChoiceRows = function() {
+  Game_System.prototype.getMessageChoiceRows = function () {
     if (this._msgChoiceMax === undefined) this.initMessageChoiceRowsMax();
     return Math.max(1, this._msgChoiceMax);
-};
+  };
 
-Game_System.prototype.initChoiceShow = function() {
+  Game_System.prototype.initChoiceShow = function () {
     if (this._msgChoiceShowInitialized) return;
     this._hideChoices = [];
     var length = MageStudios.Param.EMP1ChoiceShow.length;
@@ -879,9 +878,9 @@ Game_System.prototype.initChoiceShow = function() {
       $gameSwitches.setValue(switchId, true);
     }
     this._msgChoiceShowInitialized = true;
-};
+  };
 
-Game_System.prototype.initChoiceEnable = function() {
+  Game_System.prototype.initChoiceEnable = function () {
     if (this._msgChoiceEnableInitialized) return;
     this._disableChoices = [];
     var length = MageStudios.Param.EMP1ChoiceOn.length;
@@ -891,17 +890,17 @@ Game_System.prototype.initChoiceEnable = function() {
       $gameSwitches.setValue(switchId, true);
     }
     this._msgChoiceEnableInitialized = true;
-};
+  };
 
-Game_System.prototype.isChoiceShown = function(id) {
+  Game_System.prototype.isChoiceShown = function (id) {
     if (this._hideChoices === undefined) this._hideChoices = [];
     if (this._hideChoices.contains(id)) return false;
     if (id >= 20) return true;
     if (MageStudios.Param.EMP1ChoiceShow[id] <= 0) return true;
     return $gameSwitches.value(MageStudios.Param.EMP1ChoiceShow[id]);
-};
+  };
 
-Game_System.prototype.hideChoice = function(id) {
+  Game_System.prototype.hideChoice = function (id) {
     if (this._hideChoices === undefined) this._hideChoices = [];
     id -= 1;
     if (id < 0) return;
@@ -909,9 +908,9 @@ Game_System.prototype.hideChoice = function(id) {
     this._hideChoices.push(id);
     var switchId = MageStudios.Param.EMP1ChoiceShow[id];
     if (switchId) $gameSwitches.setValue(switchId, false);
-};
+  };
 
-Game_System.prototype.showChoice = function(id) {
+  Game_System.prototype.showChoice = function (id) {
     if (this._hideChoices === undefined) this._hideChoices = [];
     id -= 1;
     if (id < 0) return;
@@ -920,17 +919,17 @@ Game_System.prototype.showChoice = function(id) {
     this._hideChoices.splice(index, 1);
     var switchId = MageStudios.Param.EMP1ChoiceShow[id];
     if (switchId) $gameSwitches.setValue(switchId, true);
-};
+  };
 
-Game_System.prototype.isChoiceEnabled = function(id) {
+  Game_System.prototype.isChoiceEnabled = function (id) {
     if (this._disableChoices === undefined) this._disableChoices = [];
     if (this._disableChoices.contains(id)) return false;
     if (id >= 20) return true;
     if (MageStudios.Param.EMP1ChoiceOn[id] <= 0) return true;
     return $gameSwitches.value(MageStudios.Param.EMP1ChoiceOn[id]);
-};
+  };
 
-Game_System.prototype.disableChoice = function(id) {
+  Game_System.prototype.disableChoice = function (id) {
     if (this._disableChoices === undefined) this._disableChoices = [];
     id -= 1;
     if (id < 0) return;
@@ -938,9 +937,9 @@ Game_System.prototype.disableChoice = function(id) {
     this._disableChoices.push(id);
     var switchId = MageStudios.Param.EMP1ChoiceOn[id];
     if (switchId) $gameSwitches.setValue(switchId, false);
-};
+  };
 
-Game_System.prototype.enableChoice = function(id) {
+  Game_System.prototype.enableChoice = function (id) {
     if (this._disableChoices === undefined) this._disableChoices = [];
     id -= 1;
     if (id < 0) return;
@@ -949,26 +948,26 @@ Game_System.prototype.enableChoice = function(id) {
     this._disableChoices.splice(index, 1);
     var switchId = MageStudios.Param.EMP1ChoiceOn[id];
     if (switchId) $gameSwitches.setValue(switchId, true);
-};
+  };
 
-Game_System.prototype.clearHiddenChoices = function() {
+  Game_System.prototype.clearHiddenChoices = function () {
     this._msgChoiceShowInitialized = false;
     this.initChoiceShow();
-};
+  };
 
-Game_System.prototype.clearDisabledChoices = function() {
+  Game_System.prototype.clearDisabledChoices = function () {
     this._msgChoiceEnableInitialized = false;
     this.initChoiceEnable();
-};
+  };
 
-Game_System.prototype.clearChoiceSettings = function() {
+  Game_System.prototype.clearChoiceSettings = function () {
     this.clearHiddenChoices();
     this.clearDisabledChoices();
-};
+  };
 
-Game_System.prototype.initMessagePosition = function() {
-    this._msgWindowPositionX = 'auto';
-    this._msgWindowPositionY = 'auto';
+  Game_System.prototype.initMessagePosition = function () {
+    this._msgWindowPositionX = "auto";
+    this._msgWindowPositionY = "auto";
     if (MageStudios.Param.EMP1DefaultX.match(/center/i)) {
       this._msgWindowAnchorX = 0.5;
     } else if (MageStudios.Param.EMP1DefaultX.match(/right/i)) {
@@ -983,53 +982,49 @@ Game_System.prototype.initMessagePosition = function() {
     } else {
       this._msgWindowAnchorY = 0;
     }
-};
+  };
 
-Game_System.prototype.getMessagePositionX = function() {
+  Game_System.prototype.getMessagePositionX = function () {
     if (this._msgWindowPositionX === undefined) this.initMessagePosition();
     return this._msgWindowPositionX;
-};
+  };
 
-Game_System.prototype.getMessagePositionY = function() {
+  Game_System.prototype.getMessagePositionY = function () {
     if (this._msgWindowPositionY === undefined) this.initMessagePosition();
     return this._msgWindowPositionY;
-};
+  };
 
-Game_System.prototype.getMessageAnchorX = function() {
+  Game_System.prototype.getMessageAnchorX = function () {
     if (this._msgWindowAnchorX === undefined) this.initMessagePosition();
     return this._msgWindowAnchorX;
-};
+  };
 
-Game_System.prototype.getMessageAnchorY = function() {
+  Game_System.prototype.getMessageAnchorY = function () {
     if (this._msgWindowAnchorY === undefined) this.initMessagePosition();
     return this._msgWindowAnchorY;
-};
+  };
 
-Game_System.prototype.setMessagePositionX = function(value) {
+  Game_System.prototype.setMessagePositionX = function (value) {
     if (this._msgWindowPositionX === undefined) this.initMessagePosition();
     this._msgWindowPositionX = value;
-};
+  };
 
-Game_System.prototype.setMessagePositionY = function(value) {
+  Game_System.prototype.setMessagePositionY = function (value) {
     if (this._msgWindowPositionY === undefined) this.initMessagePosition();
     this._msgWindowPositionY = value;
-};
+  };
 
-Game_System.prototype.setMessageAnchorX = function(value) {
+  Game_System.prototype.setMessageAnchorX = function (value) {
     if (this._msgWindowAnchorX === undefined) this.initMessagePosition();
     this._msgWindowAnchorX = value;
-};
+  };
 
-Game_System.prototype.setMessageAnchorY = function(value) {
+  Game_System.prototype.setMessageAnchorY = function (value) {
     if (this._msgWindowAnchorY === undefined) this.initMessagePosition();
     this._msgWindowAnchorY = value;
-};
+  };
 
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
-
-Game_CharacterBase.prototype.spriteHeight = function() {
+  Game_CharacterBase.prototype.spriteHeight = function () {
     if (this._spriteHeight !== undefined) return this._spriteHeight;
     if (this.tileId() > 0) return $gameMap.tileHeight();
     var bitmap = ImageManager.loadCharacter(this.characterName());
@@ -1039,89 +1034,85 @@ Game_CharacterBase.prototype.spriteHeight = function() {
     }
     var bigCharacter = ImageManager.isBigCharacter(this.characterName());
     this._spriteHeight = bitmap.height;
-    this._spriteHeight /= (bigCharacter) ? 4 : 8;
+    this._spriteHeight /= bigCharacter ? 4 : 8;
     return this._spriteHeight;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.EMP1.Game_Interpreter_pluginCommand =
+  MageStudios.EMP1.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.EMP1.Game_Interpreter_pluginCommand.call(this, command, args);
-  if ($gameSystem._msgSoundEnable === undefined) {
-    $gameSystem.initMessageSounds();
-  } else if (command === 'EnableLetterSound') {
-    $gameSystem._msgSoundEnable = true;
-  } else if (command === 'DisableLetterSound') {
-    $gameSystem._msgSoundEnable = false;
-  } else if (command === 'LetterSoundName') {
-    this.changeLetterSoundName(args);
-  } else if (command === 'LetterSoundVolume') {
-    $gameSystem._msgSoundVol = parseInt(args[0]);
-  } else if (command === 'LetterSoundPitch') {
-    $gameSystem._msgSoundPitch = parseInt(args[0]);
-  } else if (command === 'LetterSoundPitchVariance') {
-    $gameSystem._msgSoundPitchVar = parseInt(args[0]);
-  } else if (command === 'LetterSoundPan') {
-    $gameSystem._msgSoundPan = parseInt(args[0]);
-  } else if (command === 'LetterSoundPanVariance') {
-    $gameSystem._msgSoundPanVar = parseInt(args[0]);
-  } else if (command === 'LetterSoundInterval') {
-    $gameSystem._msgSoundInterval = parseInt(args[0]);
-  } else if (command === 'LetterSoundReset') {
-    $gameSystem.initMessageSounds();
-  } else if (command === 'ChoiceRowMax') {
-    $gameSystem._msgChoiceMax = parseInt(args[0]);
-  } else if (command === 'HideChoice') {
-    $gameSystem.hideChoice(parseInt(args[0]));
-  } else if (command === 'ShowChoice') {
-    $gameSystem.showChoice(parseInt(args[0]));
-  } else if (command === 'ClearHiddenChoices') {
-    $gameSystem.clearHiddenChoices();
-  } else if (command === 'DisableChoice') {
-    $gameSystem.disableChoice(parseInt(args[0]));
-  } else if (command === 'EnableChoice') {
-    $gameSystem.enableChoice(parseInt(args[0]));
-  } else if (command === 'ClearDisabledChoices') {
-    $gameSystem.clearDisabledChoices();
-  } else if (command === 'ClearChoiceSettings') {
-    $gameSystem.clearChoiceSettings();
-  } else if (command === 'MessagePositionX') {
-    $gameSystem.setMessagePositionX(parseInt(args[0]));
-  } else if (command === 'MessagePositionY') {
-    $gameSystem.setMessagePositionY(parseInt(args[0]));
-  } else if (command === 'MessagePositionXAuto') {
-    $gameSystem.setMessagePositionX('auto');
-  } else if (command === 'MessagePositionYAuto') {
-    $gameSystem.setMessagePositionY('auto');
-  } else if (command === 'MessageAnchorX') {
-    this.setMessageAnchor(args[0], 'x');
-  } else if (command === 'MessageAnchorY') {
-    this.setMessageAnchor(args[0], 'y');
-  } else if (command === 'MessagePositionReset') {
-    $gameSystem.initMessagePosition();
-    $gameSystem._messageRows = eval(MageStudios.Param.MSGDefaultRows);
-    $gameSystem._messageWidth = eval(MageStudios.Param.MSGDefaultWidth);
-  }
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.EMP1.Game_Interpreter_pluginCommand.call(this, command, args);
+    if ($gameSystem._msgSoundEnable === undefined) {
+      $gameSystem.initMessageSounds();
+    } else if (command === "EnableLetterSound") {
+      $gameSystem._msgSoundEnable = true;
+    } else if (command === "DisableLetterSound") {
+      $gameSystem._msgSoundEnable = false;
+    } else if (command === "LetterSoundName") {
+      this.changeLetterSoundName(args);
+    } else if (command === "LetterSoundVolume") {
+      $gameSystem._msgSoundVol = parseInt(args[0]);
+    } else if (command === "LetterSoundPitch") {
+      $gameSystem._msgSoundPitch = parseInt(args[0]);
+    } else if (command === "LetterSoundPitchVariance") {
+      $gameSystem._msgSoundPitchVar = parseInt(args[0]);
+    } else if (command === "LetterSoundPan") {
+      $gameSystem._msgSoundPan = parseInt(args[0]);
+    } else if (command === "LetterSoundPanVariance") {
+      $gameSystem._msgSoundPanVar = parseInt(args[0]);
+    } else if (command === "LetterSoundInterval") {
+      $gameSystem._msgSoundInterval = parseInt(args[0]);
+    } else if (command === "LetterSoundReset") {
+      $gameSystem.initMessageSounds();
+    } else if (command === "ChoiceRowMax") {
+      $gameSystem._msgChoiceMax = parseInt(args[0]);
+    } else if (command === "HideChoice") {
+      $gameSystem.hideChoice(parseInt(args[0]));
+    } else if (command === "ShowChoice") {
+      $gameSystem.showChoice(parseInt(args[0]));
+    } else if (command === "ClearHiddenChoices") {
+      $gameSystem.clearHiddenChoices();
+    } else if (command === "DisableChoice") {
+      $gameSystem.disableChoice(parseInt(args[0]));
+    } else if (command === "EnableChoice") {
+      $gameSystem.enableChoice(parseInt(args[0]));
+    } else if (command === "ClearDisabledChoices") {
+      $gameSystem.clearDisabledChoices();
+    } else if (command === "ClearChoiceSettings") {
+      $gameSystem.clearChoiceSettings();
+    } else if (command === "MessagePositionX") {
+      $gameSystem.setMessagePositionX(parseInt(args[0]));
+    } else if (command === "MessagePositionY") {
+      $gameSystem.setMessagePositionY(parseInt(args[0]));
+    } else if (command === "MessagePositionXAuto") {
+      $gameSystem.setMessagePositionX("auto");
+    } else if (command === "MessagePositionYAuto") {
+      $gameSystem.setMessagePositionY("auto");
+    } else if (command === "MessageAnchorX") {
+      this.setMessageAnchor(args[0], "x");
+    } else if (command === "MessageAnchorY") {
+      this.setMessageAnchor(args[0], "y");
+    } else if (command === "MessagePositionReset") {
+      $gameSystem.initMessagePosition();
+      $gameSystem._messageRows = eval(MageStudios.Param.MSGDefaultRows);
+      $gameSystem._messageWidth = eval(MageStudios.Param.MSGDefaultWidth);
+    }
+  };
 
-Game_Interpreter.prototype.changeLetterSoundName = function(args) {
-  var text = '';
-  if (args.length === 1) {
-    $gameSystem._msgSoundName = String(args[0]);
-    return;
-  }
-  for (var i = 0; i < args.length; ++i) {
-    text = text + ' ' + args[i];
-  }
-  $gameSystem._msgSoundName = text;
-};
+  Game_Interpreter.prototype.changeLetterSoundName = function (args) {
+    var text = "";
+    if (args.length === 1) {
+      $gameSystem._msgSoundName = String(args[0]);
+      return;
+    }
+    for (var i = 0; i < args.length; ++i) {
+      text = text + " " + args[i];
+    }
+    $gameSystem._msgSoundName = text;
+  };
 
-Game_Interpreter.prototype.setMessageAnchor = function(string, type) {
-    if (type === 'x') {
+  Game_Interpreter.prototype.setMessageAnchor = function (string, type) {
+    if (type === "x") {
       if (string.match(/center/i)) {
         $gameSystem.setMessageAnchorX(0.5);
       } else if (string.match(/right/i)) {
@@ -1138,24 +1129,24 @@ Game_Interpreter.prototype.setMessageAnchor = function(string, type) {
         $gameSystem.setMessageAnchorY(0);
       }
     }
-};
+  };
 
-MageStudios.EMP1.Game_Interpreter_setupChoices =
+  MageStudios.EMP1.Game_Interpreter_setupChoices =
     Game_Interpreter.prototype.setupChoices;
-Game_Interpreter.prototype.setupChoices = function(params) {
+  Game_Interpreter.prototype.setupChoices = function (params) {
     params = this.setupExtendedChoices();
     MageStudios.EMP1.Game_Interpreter_setupChoices.call(this, params);
-};
+  };
 
-Game_Interpreter.prototype.setupExtendedChoices = function() {
+  Game_Interpreter.prototype.setupExtendedChoices = function () {
     this._currentIndex = this._index;
     var totalChoices = 0;
     ++this._index;
     while (this._index < this._list.length) {
-      var cmd = this._list[this._index]
+      var cmd = this._list[this._index];
       if (cmd.indent === this._indent) {
         if (cmd.code === 404 && this._list[this._index + 1].code !== 102) {
-          break
+          break;
         } else if (cmd.code === 102) {
           this.adjustChoiceDefault(totalChoices, cmd);
           this.adjustChoiceCancel(totalChoices, cmd);
@@ -1170,201 +1161,215 @@ Game_Interpreter.prototype.setupExtendedChoices = function() {
     }
     this._index = this._currentIndex;
     return this._list[this._currentIndex].parameters;
-};
+  };
 
-Game_Interpreter.prototype.adjustChoiceDefault = function(total, cmd) {
+  Game_Interpreter.prototype.adjustChoiceDefault = function (total, cmd) {
     if (cmd.parameters[2] < 0) return;
     var value = cmd.parameters[2] + total;
     this._list[this._currentIndex].parameters[2] = value;
-};
+  };
 
-Game_Interpreter.prototype.adjustChoiceCancel = function(total, cmd) {
+  Game_Interpreter.prototype.adjustChoiceCancel = function (total, cmd) {
     if (cmd.parameters[1] >= 0) {
       var value = cmd.parameters[1] + total;
       this._list[this._currentIndex].parameters[1] = value;
     } else if (cmd.parameters[1] === -2) {
       this._list[this._currentIndex].parameters[1] = cmd.parameters[1];
     }
-};
+  };
 
-Game_Interpreter.prototype.pushExtraChoices = function(cmd) {
+  Game_Interpreter.prototype.pushExtraChoices = function (cmd) {
     for (var i = 0; i < cmd.parameters[0].length; i++) {
       var choice = cmd.parameters[0][i];
       this._list[this._currentIndex].parameters[0].push(choice);
     }
-    this._list.splice(this._index - 1, 2)
-};
+    this._list.splice(this._index - 1, 2);
+  };
 
-//=============================================================================
-// Window_Base
-//=============================================================================
-
-MageStudios.EMP1.Window_Base_convertExtraEscapeCharacters =
+  MageStudios.EMP1.Window_Base_convertExtraEscapeCharacters =
     Window_Base.prototype.convertExtraEscapeCharacters;
-Window_Base.prototype.convertExtraEscapeCharacters = function(text) {
-  text = this.convertPlaytime(text);
-  text = this.convertMapName(text);
-  text = this.convertEnemyName(text);
-  text = MageStudios.EMP1.Window_Base_convertExtraEscapeCharacters.call(this, text);
-  text = this.convertDigitGrouping(text);
-  return text;
-};
-
-Window_Base.prototype.convertPlaytime = function(text) {
-    text = text.replace(/\x1bPLAYTIME/gi, function() {
-      return $gameSystem.playtimeText();
-    }.bind(this));
+  Window_Base.prototype.convertExtraEscapeCharacters = function (text) {
+    text = this.convertPlaytime(text);
+    text = this.convertMapName(text);
+    text = this.convertEnemyName(text);
+    text = MageStudios.EMP1.Window_Base_convertExtraEscapeCharacters.call(
+      this,
+      text
+    );
+    text = this.convertDigitGrouping(text);
     return text;
-};
+  };
 
-Window_Base.prototype.convertMapName = function(text) {
-    text = text.replace(/\x1bMAP\[(\d+)\]/gi, function() {
-      var mapId = arguments[1];
-      if (mapId <= 0) mapId = $gameMap.mapId();
-      name = $dataMapInfos[mapId].name;
-      return name;
-    }.bind(this));
+  Window_Base.prototype.convertPlaytime = function (text) {
+    text = text.replace(
+      /\x1bPLAYTIME/gi,
+      function () {
+        return $gameSystem.playtimeText();
+      }.bind(this)
+    );
     return text;
-};
+  };
 
-Window_Base.prototype.convertEnemyName = function(text) {
-    text = text.replace(/\x1bEN\[(\d+)\]/gi, function() {
-      var enemyId = arguments[1];
-      if (enemyId <= 0) return '';
-      name = $dataEnemies[enemyId].name;
-      return name;
-    }.bind(this));
-    text = text.replace(/\x1bET\[(\d+)\]/gi, function() {
-      var index = Math.max(1, arguments[1] - 1);
-      var enemy = $gameTroop.allMembers()[index];
-      if (enemy) {
-        return enemy.name();
-      } else {
-        return '';
-      }
-    }.bind(this));
+  Window_Base.prototype.convertMapName = function (text) {
+    text = text.replace(
+      /\x1bMAP\[(\d+)\]/gi,
+      function () {
+        var mapId = arguments[1];
+        if (mapId <= 0) mapId = $gameMap.mapId();
+        name = $dataMapInfos[mapId].name;
+        return name;
+      }.bind(this)
+    );
     return text;
-};
+  };
 
-Window_Base.prototype.convertDigitGrouping = function(text) {
-    text = text.replace(/\x1bDG\[(\d+)\]/gi, function() {
-      return this.groupDigits(parseInt(arguments[1]));
-    }.bind(this));
+  Window_Base.prototype.convertEnemyName = function (text) {
+    text = text.replace(
+      /\x1bEN\[(\d+)\]/gi,
+      function () {
+        var enemyId = arguments[1];
+        if (enemyId <= 0) return "";
+        name = $dataEnemies[enemyId].name;
+        return name;
+      }.bind(this)
+    );
+    text = text.replace(
+      /\x1bET\[(\d+)\]/gi,
+      function () {
+        var index = Math.max(1, arguments[1] - 1);
+        var enemy = $gameTroop.allMembers()[index];
+        if (enemy) {
+          return enemy.name();
+        } else {
+          return "";
+        }
+      }.bind(this)
+    );
     return text;
-};
+  };
 
-Window_Base.prototype.groupDigits = function(number) {
+  Window_Base.prototype.convertDigitGrouping = function (text) {
+    text = text.replace(
+      /\x1bDG\[(\d+)\]/gi,
+      function () {
+        return this.groupDigits(parseInt(arguments[1]));
+      }.bind(this)
+    );
+    return text;
+  };
+
+  Window_Base.prototype.groupDigits = function (number) {
     return MageStudios.Util.forceGroup(number);
-};
+  };
 
-Window_Base.prototype.obtainColorString = function(textState) {
+  Window_Base.prototype.obtainColorString = function (textState) {
     var arr = /^\[(.*?)\]/.exec(textState.text.slice(textState.index));
     if (arr) {
-        textState.index += arr[0].length;
-        return '#' + String(arr[0].slice(1, arr[0].length - 1));
+      textState.index += arr[0].length;
+      return "#" + String(arr[0].slice(1, arr[0].length - 1));
     } else {
-        return '#ffffff';
+      return "#ffffff";
     }
-};
+  };
 
-MageStudios.EMP1.Window_Base_processEscapeCharacter =
+  MageStudios.EMP1.Window_Base_processEscapeCharacter =
     Window_Base.prototype.processEscapeCharacter;
-Window_Base.prototype.processEscapeCharacter = function(code, textState) {
-  switch (code) {
-  case 'HC':
-    var value = this.obtainColorString(textState).toLowerCase();
-    this.changeTextColor(value);
-    break;
-  default:
-    MageStudios.EMP1.Window_Base_processEscapeCharacter.call(this, code, textState);
-    break;
-  }
-};
+  Window_Base.prototype.processEscapeCharacter = function (code, textState) {
+    switch (code) {
+      case "HC":
+        var value = this.obtainColorString(textState).toLowerCase();
+        this.changeTextColor(value);
+        break;
+      default:
+        MageStudios.EMP1.Window_Base_processEscapeCharacter.call(
+          this,
+          code,
+          textState
+        );
+        break;
+    }
+  };
 
-Window_Base.prototype.textHeightEx = function(text) {
+  Window_Base.prototype.textHeightEx = function (text) {
     return this.getTextExHeight(text, 0, 0);
-};
+  };
 
-Window_Base.prototype.getTextExHeight = function(text, x, y) {
+  Window_Base.prototype.getTextExHeight = function (text, x, y) {
     if (text) {
-        var textState = { index: 0, x: x, y: y, left: x };
-        textState.text = this.convertEscapeCharacters(text);
-        textState.height = this.calcTextHeight(textState, true);
-        return textState.height;
+      var textState = { index: 0, x: x, y: y, left: x };
+      textState.text = this.convertEscapeCharacters(text);
+      textState.height = this.calcTextHeight(textState, true);
+      return textState.height;
     } else {
-        return 0;
+      return 0;
     }
-};
+  };
 
-//=============================================================================
-// Window_ChoiceList
-//=============================================================================
-
-MageStudios.EMP1.Window_ChoiceList_numVisibleRows =
+  MageStudios.EMP1.Window_ChoiceList_numVisibleRows =
     Window_ChoiceList.prototype.numVisibleRows;
-Window_ChoiceList.prototype.numVisibleRows = function() {
-  var messageY = this._messageWindow.y;
-  var messageHeight = this._messageWindow.height;
-  var centerY = Graphics.boxHeight / 2;
-  // var choices = $gameMessage.choices();
-  // var numLines = choices.length;
-  this.makeCommandList();
-  var numLines = this._maxChoices;
-  var maxLines = $gameSystem.getMessageChoiceRows();
-  if (messageY < centerY && messageY + messageHeight > centerY) {
-    maxLines = 4;
-  }
-  if (numLines > maxLines) {
-    numLines = maxLines;
-  }
-  return Math.max(1, numLines);
-};
+  Window_ChoiceList.prototype.numVisibleRows = function () {
+    var messageY = this._messageWindow.y;
+    var messageHeight = this._messageWindow.height;
+    var centerY = Graphics.boxHeight / 2;
 
-Window_ChoiceList.prototype.makeCommandList = function() {
-  this._maxChoices = 0;
-  this._cancelAllowed = true;
-  var choices = $gameMessage.choices();
-  for (var i = 0; i < choices.length; i++) {
-    if (!$gameSystem.isChoiceShown(i)) {
-      if ($gameMessage.choiceCancelType() === i) this._cancelAllowed = false;
-      continue;
+    this.makeCommandList();
+    var numLines = this._maxChoices;
+    var maxLines = $gameSystem.getMessageChoiceRows();
+    if (messageY < centerY && messageY + messageHeight > centerY) {
+      maxLines = 4;
     }
-    this._maxChoices += 1;
-    var enabled = $gameSystem.isChoiceEnabled(i);
-    this.addCommand(choices[i], 'choice', enabled, i);
-    if (!enabled) {
-      if ($gameMessage.choiceCancelType() === i) this._cancelAllowed = false;
+    if (numLines > maxLines) {
+      numLines = maxLines;
     }
-  }
-};
+    return Math.max(1, numLines);
+  };
 
-MageStudios.EMP1.Window_ChoiceList_drawItem = Window_ChoiceList.prototype.drawItem;
-Window_ChoiceList.prototype.drawItem = function(index) {
+  Window_ChoiceList.prototype.makeCommandList = function () {
+    this._maxChoices = 0;
+    this._cancelAllowed = true;
+    var choices = $gameMessage.choices();
+    for (var i = 0; i < choices.length; i++) {
+      if (!$gameSystem.isChoiceShown(i)) {
+        if ($gameMessage.choiceCancelType() === i) this._cancelAllowed = false;
+        continue;
+      }
+      this._maxChoices += 1;
+      var enabled = $gameSystem.isChoiceEnabled(i);
+      this.addCommand(choices[i], "choice", enabled, i);
+      if (!enabled) {
+        if ($gameMessage.choiceCancelType() === i) this._cancelAllowed = false;
+      }
+    }
+  };
+
+  MageStudios.EMP1.Window_ChoiceList_drawItem =
+    Window_ChoiceList.prototype.drawItem;
+  Window_ChoiceList.prototype.drawItem = function (index) {
     var enabled = this.isCommandEnabled(index);
     this.changePaintOpacity(enabled);
     MageStudios.EMP1.Window_ChoiceList_drawItem.call(this, index);
-};
+  };
 
-Window_ChoiceList.prototype.callOkHandler = function() {
+  Window_ChoiceList.prototype.callOkHandler = function () {
     $gameMessage.onChoice(this.currentExt());
     this._messageWindow.terminateMessage();
     this.close();
-};
+  };
 
-MageStudios.EMP1.Window_ChoiceList_isCancelEnabled =
+  MageStudios.EMP1.Window_ChoiceList_isCancelEnabled =
     Window_ChoiceList.prototype.isCancelEnabled;
-Window_ChoiceList.prototype.isCancelEnabled = function() {
+  Window_ChoiceList.prototype.isCancelEnabled = function () {
     if (!this._cancelAllowed) return false;
     return MageStudios.EMP1.Window_ChoiceList_isCancelEnabled.call(this);
-};
+  };
 
-//=============================================================================
-// Window_NameBox
-//=============================================================================
-
-MageStudios.EMP1.Window_NameBox_refresh = Window_NameBox.prototype.refresh;
-Window_NameBox.prototype.refresh = function(text, position) {
-    var text = MageStudios.EMP1.Window_NameBox_refresh.call(this, text, position);
+  MageStudios.EMP1.Window_NameBox_refresh = Window_NameBox.prototype.refresh;
+  Window_NameBox.prototype.refresh = function (text, position) {
+    var text = MageStudios.EMP1.Window_NameBox_refresh.call(
+      this,
+      text,
+      position
+    );
     this.setBackgroundType(0);
     if (eval(MageStudios.Param.MSGNameBoxClear)) {
       this.backOpacity = 0;
@@ -1374,305 +1379,352 @@ Window_NameBox.prototype.refresh = function(text, position) {
       this.opacity = 255;
     }
     return text;
-};
+  };
 
-Window_NameBox.prototype.refreshDimmed = function(text, position) {
-    var text = MageStudios.EMP1.Window_NameBox_refresh.call(this, text, position);
+  Window_NameBox.prototype.refreshDimmed = function (text, position) {
+    var text = MageStudios.EMP1.Window_NameBox_refresh.call(
+      this,
+      text,
+      position
+    );
     this.setBackgroundType(1);
     return text;
-};
+  };
 
-Window_NameBox.prototype.refreshTransparent = function(text, position) {
-    var text = MageStudios.EMP1.Window_NameBox_refresh.call(this, text, position);
+  Window_NameBox.prototype.refreshTransparent = function (text, position) {
+    var text = MageStudios.EMP1.Window_NameBox_refresh.call(
+      this,
+      text,
+      position
+    );
     this.setBackgroundType(2);
     return text;
-};
+  };
 
-//=============================================================================
-// Window_Message
-//=============================================================================
-
-MageStudios.EMP1.Window_Message_initialize = Window_Message.prototype.initialize;
-Window_Message.prototype.initialize = function() {
+  MageStudios.EMP1.Window_Message_initialize =
+    Window_Message.prototype.initialize;
+  Window_Message.prototype.initialize = function () {
     $gameSystem.initChoiceShow();
     $gameSystem.initChoiceEnable();
     this._needsMessageReset = false;
     MageStudios.EMP1.Window_Message_initialize.call(this);
-};
+  };
 
-MageStudios.EMP1.Window_Message_update = Window_Message.prototype.update;
-Window_Message.prototype.update = function() {
+  MageStudios.EMP1.Window_Message_update = Window_Message.prototype.update;
+  Window_Message.prototype.update = function () {
     MageStudios.EMP1.Window_Message_update.call(this);
     if (this._lockPositionToEvent !== undefined) this.updateLockedPosition();
-};
+  };
 
-MageStudios.EMP1.Window_Message_newPage = Window_Message.prototype.newPage;
-Window_Message.prototype.newPage = function(textState) {
+  MageStudios.EMP1.Window_Message_newPage = Window_Message.prototype.newPage;
+  Window_Message.prototype.newPage = function (textState) {
     this._soundCount = 0;
     MageStudios.EMP1.Window_Message_newPage.call(this, textState);
-};
+  };
 
-MageStudios.EMP1.Window_Message_terminateMessage =
+  MageStudios.EMP1.Window_Message_terminateMessage =
     Window_Message.prototype.terminateMessage;
-Window_Message.prototype.terminateMessage = function() {
+  Window_Message.prototype.terminateMessage = function () {
     MageStudios.EMP1.Window_Message_terminateMessage.call(this);
     if (MageStudios.Param.EMP1LetterReset) $gameSystem.initMessageSounds();
     if (this._needsMessageReset) this.messagePositionReset();
     this._lockPositionToEvent = undefined;
-};
+  };
 
-MageStudios.EMP1.Window_Message_updateMessage =
+  MageStudios.EMP1.Window_Message_updateMessage =
     Window_Message.prototype.updateMessage;
-Window_Message.prototype.updateMessage = function() {
-  var state = MageStudios.EMP1.Window_Message_updateMessage.call(this);
-  if (state) {
-    this._soundCount = this._soundCount || 0;
-    if (this._soundCount-- <= 0) {
-      this._soundCount = $gameSystem.messageSoundInterval();
-      if ($gameSystem.isMessageSoundEnabled()) SoundManager.playMessageSound();
+  Window_Message.prototype.updateMessage = function () {
+    var state = MageStudios.EMP1.Window_Message_updateMessage.call(this);
+    if (state) {
+      this._soundCount = this._soundCount || 0;
+      if (this._soundCount-- <= 0) {
+        this._soundCount = $gameSystem.messageSoundInterval();
+        if ($gameSystem.isMessageSoundEnabled())
+          SoundManager.playMessageSound();
+      }
     }
-  }
-  return state;
-};
+    return state;
+  };
 
-MageStudios.EMP1.Window_Message_updatePlacement =
+  MageStudios.EMP1.Window_Message_updatePlacement =
     Window_Message.prototype.updatePlacement;
-Window_Message.prototype.updatePlacement = function() {
+  Window_Message.prototype.updatePlacement = function () {
     MageStudios.EMP1.Window_Message_updatePlacement.call(this);
     this.updatePositionPlacement();
-};
+  };
 
-Window_Message.prototype.updatePositionPlacement = function() {
-    if ($gameSystem.getMessagePositionX() !== 'auto') {
+  Window_Message.prototype.updatePositionPlacement = function () {
+    if ($gameSystem.getMessagePositionX() !== "auto") {
       this.updatePositionPlacementX();
     }
-    if ($gameSystem.getMessagePositionY() !== 'auto') {
+    if ($gameSystem.getMessagePositionY() !== "auto") {
       this.updatePositionPlacementY();
     }
-};
+  };
 
-Window_Message.prototype.updatePositionPlacementX = function() {
+  Window_Message.prototype.updatePositionPlacementX = function () {
     this.x = $gameSystem.getMessagePositionX();
-    this.x -= Math.floor(this.width * $gameSystem.getMessageAnchorX())
+    this.x -= Math.floor(this.width * $gameSystem.getMessageAnchorX());
     this.x = Math.max(0, this.x);
     this.x = Math.min(this.x, Graphics.boxWidth - this.width);
-};
+  };
 
-Window_Message.prototype.updatePositionPlacementY = function() {
+  Window_Message.prototype.updatePositionPlacementY = function () {
     this.y = $gameSystem.getMessagePositionY();
     this.y -= Math.floor(this.height * $gameSystem.getMessageAnchorY());
     this.y = Math.max(0, this.y);
     this.y = Math.min(this.y, Graphics.boxHeight - this.height);
-};
+  };
 
-MageStudios.EMP1.Window_Message_convertNameBox =
+  MageStudios.EMP1.Window_Message_convertNameBox =
     Window_Message.prototype.convertNameBox;
-Window_Message.prototype.convertNameBox = function(text) {
+  Window_Message.prototype.convertNameBox = function (text) {
     text = this.convertMessagePositions(text);
     text = this.convertLetterSounds(text);
     text = this.convertExtraNameBoxEffects(text);
     return MageStudios.EMP1.Window_Message_convertNameBox.call(this, text);
-};
+  };
 
-Window_Message.prototype.convertLetterSounds = function(text) {
-    text = text.replace(/\x1bLSON/gi, '\x1bEMP[0]');
-    text = text.replace(/\x1bLSOFF/gi, '\x1bEMP[1]');
-    text = text.replace(/\x1bLSR/gi, '\x1bEMP[2]');
+  Window_Message.prototype.convertLetterSounds = function (text) {
+    text = text.replace(/\x1bLSON/gi, "\x1bEMP[0]");
+    text = text.replace(/\x1bLSOFF/gi, "\x1bEMP[1]");
+    text = text.replace(/\x1bLSR/gi, "\x1bEMP[2]");
     return text;
-};
+  };
 
-Window_Message.prototype.convertMessagePositions = function(text) {
-    // MSGPOSX
-    text = text.replace(/\x1bMSGPOSX\[(.*?)\]/gi, function() {
-      var value = 0;
-      this._needsMessageReset = true;
-      value = (arguments[1].match(/auto/i)) ? 'auto' : parseInt(arguments[1]);
-      $gameSystem.setMessagePositionX(value);
-      return '';
-    }.bind(this));
-    // MSGPOSY
-    text = text.replace(/\x1bMSGPOSY\[(.*?)\]/gi, function() {
-      var value = 0;
-      this._needsMessageReset = true;
-      value = (arguments[1].match(/auto/i)) ? 'auto' : parseInt(arguments[1]);
-      $gameSystem.setMessagePositionY(value);
-      return '';
-    }.bind(this));
-    // MSGEVENT
-    text = text.replace(/\x1bMSGEVENT\[(\d+)\]/gi, function() {
-      if (!$gameParty.inBattle()) {
-        this._needsMessageReset = true;
-        this.setMessagePositionEvent(arguments[1]);
-      }
-      return '';
-    }.bind(this));
-    // MSGACTOR
-    text = text.replace(/\x1bMSGACTOR\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle()) {
-        this._needsMessageReset = true;
-        var actorId = arguments[1];
-        if (actorId === 0) actorId = $gameParty.members()[0]._actorId;
-        this.setMessagePositionEvent(actorId);
-      }
-      return '';
-    }.bind(this));
-    // MSGPARTY
-    text = text.replace(/\x1bMSGPARTY\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle()) {
-        this._needsMessageReset = true;
-        var actorId = Math.max(0, arguments[1] - 1);
-        var battler = $gameParty.allMembers()[actorId];
-        if (battler) {
-          actorId = battler._actorId;
-        } else {
-          actorId = Graphics.boxHeight * 495;
-        }
-        this.setMessagePositionEvent(actorId);
-      }
-      return '';
-    }.bind(this));
-    // MSGENEMY
-    text = text.replace(/\x1bMSGENEMY\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle()) {
-        this._needsMessageReset = true;
-        var enemyId = Math.max(0, arguments[1] - 1);
-        var battler = $gameTroop.members()[enemyId];
-        if (battler) {
-          this.setMessagePositionEvent(-enemyId);
-        }
-      }
-      return '';
-    }.bind(this));
-    // AUTOEVENT
-    text = text.replace(/\x1bAUTOEVENT\[(\d+)\]/gi, function() {
-      if (!$gameParty.inBattle() && !this._checkingWidth) {
-        this._needsMessageReset = true;
-        this.setMessagePositionEvent(arguments[1]);
-        this._checkingWidth = true;
-        this.getFittedMessageRows(text);
-        var value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // AUTOACTOR
-    text = text.replace(/\x1bAUTOACTOR\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle() && !this._checkingWidth) {
-        this._needsMessageReset = true;
-        var actorId = arguments[1];
-        if (actorId === 0) actorId = $gameParty.members()[0]._actorId;
-        this.setMessagePositionEvent(actorId);
-        this._checkingWidth = true;
-        this.getFittedMessageRows(text);
-        var value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // AUTOPARTY
-    text = text.replace(/\x1bAUTOPARTY\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle() && !this._checkingWidth) {
-        this._needsMessageReset = true;
-        var actorId = Math.max(0, arguments[1] - 1);
-        var battler = $gameParty.allMembers()[actorId];
-        if (battler) {
-          actorId = battler._actorId;
-        } else {
-          actorId = Graphics.boxHeight * 495;
-        }
-        this.setMessagePositionEvent(actorId);
-        this._checkingWidth = true;
-        this.getFittedMessageRows(text);
-        var value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // AUTOENEMY
-    text = text.replace(/\x1bAUTOENEMY\[(\d+)\]/gi, function() {
-      if ($gameParty.inBattle() && !this._checkingWidth) {
-        this._needsMessageReset = true;
-        var enemyId = Math.max(0, arguments[1] - 1);
-        var battler = $gameTroop.members()[enemyId];
-        if (battler) {
-          this.setMessagePositionEvent(-enemyId);
-        }
-        this._checkingWidth = true;
-        this.getFittedMessageRows(text);
-        var value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // MSGROWS
-    text = text.replace(/\x1bMSGROWS\[(.*?)\]/gi, function() {
-      if (!this._checkingWidth) {
-        this._checkingWidth = true;
-        this._needsMessageReset = true;
+  Window_Message.prototype.convertMessagePositions = function (text) {
+    text = text.replace(
+      /\x1bMSGPOSX\[(.*?)\]/gi,
+      function () {
         var value = 0;
-        value = (arguments[1].match(/auto/i)) ? 'auto' : parseInt(arguments[1]);
-        if (value === 'auto') {
+        this._needsMessageReset = true;
+        value = arguments[1].match(/auto/i) ? "auto" : parseInt(arguments[1]);
+        $gameSystem.setMessagePositionX(value);
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGPOSY\[(.*?)\]/gi,
+      function () {
+        var value = 0;
+        this._needsMessageReset = true;
+        value = arguments[1].match(/auto/i) ? "auto" : parseInt(arguments[1]);
+        $gameSystem.setMessagePositionY(value);
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGEVENT\[(\d+)\]/gi,
+      function () {
+        if (!$gameParty.inBattle()) {
+          this._needsMessageReset = true;
+          this.setMessagePositionEvent(arguments[1]);
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGACTOR\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle()) {
+          this._needsMessageReset = true;
+          var actorId = arguments[1];
+          if (actorId === 0) actorId = $gameParty.members()[0]._actorId;
+          this.setMessagePositionEvent(actorId);
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGPARTY\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle()) {
+          this._needsMessageReset = true;
+          var actorId = Math.max(0, arguments[1] - 1);
+          var battler = $gameParty.allMembers()[actorId];
+          if (battler) {
+            actorId = battler._actorId;
+          } else {
+            actorId = Graphics.boxHeight * 495;
+          }
+          this.setMessagePositionEvent(actorId);
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGENEMY\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle()) {
+          this._needsMessageReset = true;
+          var enemyId = Math.max(0, arguments[1] - 1);
+          var battler = $gameTroop.members()[enemyId];
+          if (battler) {
+            this.setMessagePositionEvent(-enemyId);
+          }
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bAUTOEVENT\[(\d+)\]/gi,
+      function () {
+        if (!$gameParty.inBattle() && !this._checkingWidth) {
+          this._needsMessageReset = true;
+          this.setMessagePositionEvent(arguments[1]);
+          this._checkingWidth = true;
           this.getFittedMessageRows(text);
-        } else {
-          $gameSystem._messageRows = value;
+          var value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
         }
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // MSGWIDTH
-    text = text.replace(/\x1bMSGWIDTH\[(.*?)\]/gi, function() {
-      if (!this._checkingWidth) {
-        this._checkingWidth = true;
-        var value = 0;
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bAUTOACTOR\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle() && !this._checkingWidth) {
+          this._needsMessageReset = true;
+          var actorId = arguments[1];
+          if (actorId === 0) actorId = $gameParty.members()[0]._actorId;
+          this.setMessagePositionEvent(actorId);
+          this._checkingWidth = true;
+          this.getFittedMessageRows(text);
+          var value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bAUTOPARTY\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle() && !this._checkingWidth) {
+          this._needsMessageReset = true;
+          var actorId = Math.max(0, arguments[1] - 1);
+          var battler = $gameParty.allMembers()[actorId];
+          if (battler) {
+            actorId = battler._actorId;
+          } else {
+            actorId = Graphics.boxHeight * 495;
+          }
+          this.setMessagePositionEvent(actorId);
+          this._checkingWidth = true;
+          this.getFittedMessageRows(text);
+          var value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bAUTOENEMY\[(\d+)\]/gi,
+      function () {
+        if ($gameParty.inBattle() && !this._checkingWidth) {
+          this._needsMessageReset = true;
+          var enemyId = Math.max(0, arguments[1] - 1);
+          var battler = $gameTroop.members()[enemyId];
+          if (battler) {
+            this.setMessagePositionEvent(-enemyId);
+          }
+          this._checkingWidth = true;
+          this.getFittedMessageRows(text);
+          var value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGROWS\[(.*?)\]/gi,
+      function () {
+        if (!this._checkingWidth) {
+          this._checkingWidth = true;
+          this._needsMessageReset = true;
+          var value = 0;
+          value = arguments[1].match(/auto/i) ? "auto" : parseInt(arguments[1]);
+          if (value === "auto") {
+            this.getFittedMessageRows(text);
+          } else {
+            $gameSystem._messageRows = value;
+          }
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGWIDTH\[(.*?)\]/gi,
+      function () {
+        if (!this._checkingWidth) {
+          this._checkingWidth = true;
+          var value = 0;
+          this._needsMessageReset = true;
+          value = arguments[1].match(/auto/i) ? "auto" : parseInt(arguments[1]);
+          if (value === "auto") value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bAUTO/gi,
+      function () {
+        if (!this._checkingWidth) {
+          this._checkingWidth = true;
+          this._needsMessageReset = true;
+          this.getFittedMessageRows(text);
+          var value = this.getFittedMessageWidth(text);
+          $gameSystem._messageWidth = value;
+          this._checkingWidth = false;
+        }
+        return "";
+      }.bind(this)
+    );
+
+    text = text.replace(
+      /\x1bMSGRESET/gi,
+      function () {
+        this.messagePositionReset();
         this._needsMessageReset = true;
-        value = (arguments[1].match(/auto/i)) ? 'auto' : parseInt(arguments[1]);
-        if (value === 'auto') value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // AUTO
-    text = text.replace(/\x1bAUTO/gi, function() {
-      if (!this._checkingWidth) {
-        this._checkingWidth = true;
-        this._needsMessageReset = true;
-        this.getFittedMessageRows(text);
-        var value = this.getFittedMessageWidth(text);
-        $gameSystem._messageWidth = value;
-        this._checkingWidth = false;
-      }
-      return '';
-    }.bind(this));
-    // MSGRESET
-    text = text.replace(/\x1bMSGRESET/gi, function() {
-      this.messagePositionReset();
-      this._needsMessageReset = true;
-      return '';
-    }.bind(this));
+        return "";
+      }.bind(this)
+    );
     return text;
-};
+  };
 
-Window_Message.prototype.setMessagePositionEvent = function(eventId) {
+  Window_Message.prototype.setMessagePositionEvent = function (eventId) {
     this._lockPositionToEvent = eventId;
-};
+  };
 
-Window_Message.prototype.getFittedMessageRows = function(text) {
+  Window_Message.prototype.getFittedMessageRows = function (text) {
     var height = this.textHeightEx(text);
     if (MageStudios.Param.EMP1FullFace && this.newLineX() > 0) {
       height = Math.max(height, Window_Base._faceHeight);
     }
     $gameSystem._messageRows = height / this.lineHeight();
-};
+  };
 
-Window_Message.prototype.getFittedMessageWidth = function(text) {
+  Window_Message.prototype.getFittedMessageWidth = function (text) {
     var value = 0;
-    var lines = text.split('\n');
+    var lines = text.split("\n");
     var length = lines.length;
     for (var i = 0; i < length; ++i) {
       var line = lines[i];
@@ -1683,135 +1735,206 @@ Window_Message.prototype.getFittedMessageWidth = function(text) {
     value += this.standardPadding() * 2;
     value += this.textPadding();
     return value;
-};
+  };
 
-Window_Message.prototype.messagePositionReset = function() {
+  Window_Message.prototype.messagePositionReset = function () {
     $gameSystem.initMessagePosition();
     $gameSystem._messageRows = eval(MageStudios.Param.MSGDefaultRows);
     $gameSystem._messageWidth = eval(MageStudios.Param.MSGDefaultWidth);
     this._needsMessageReset = false;
-};
+  };
 
-Window_Message.prototype.convertExtraNameBoxEffects = function(text) {
-    // Dimmed Namebox
-    text = text.replace(/\x1bND\<(.*?)\>/gi, function() {
+  Window_Message.prototype.convertExtraNameBoxEffects = function (text) {
+    text = text.replace(
+      /\x1bND\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 1);
-    }, this);
-    text = text.replace(/\x1bND1\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bND1\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 1);
-    }, this);
-    text = text.replace(/\x1bND2\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bND2\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 2);
-    }, this);
-    text = text.replace(/\x1bND3\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bND3\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 3);
-    }, this);
-    text = text.replace(/\x1bNDC\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNDC\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 3);
-    }, this);
-    text = text.replace(/\x1bND4\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bND4\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 4);
-    }, this);
-    text = text.replace(/\x1bND5\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bND5\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 5);
-    }, this);
-    text = text.replace(/\x1bNDR\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNDR\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshDimmed(arguments[1], 5);
-    }, this);
-    // Transparent Namebox
-    text = text.replace(/\x1bNT\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+
+    text = text.replace(
+      /\x1bNT\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 1);
-    }, this);
-    text = text.replace(/\x1bNT1\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNT1\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 1);
-    }, this);
-    text = text.replace(/\x1bNT2\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNT2\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 2);
-    }, this);
-    text = text.replace(/\x1bNT3\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNT3\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 3);
-    }, this);
-    text = text.replace(/\x1bNTC\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNTC\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 3);
-    }, this);
-    text = text.replace(/\x1bNT4\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNT4\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 4);
-    }, this);
-    text = text.replace(/\x1bNT5\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNT5\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 5);
-    }, this);
-    text = text.replace(/\x1bNTR\<(.*?)\>/gi, function() {
+      },
+      this
+    );
+    text = text.replace(
+      /\x1bNTR\<(.*?)\>/gi,
+      function () {
         return MageStudios.nameWindow.refreshTransparent(arguments[1], 5);
-    }, this);
+      },
+      this
+    );
     return text;
-};
+  };
 
-Window_Message.prototype.convertFaceIndexChange = function(text) {
-  // FACEINDEX
-  text = text.replace(/\x1bFACEINDEX\[(\d+)\]/gi, function() {
-    var i = parseInt(arguments[1]);
-    $gameMessage._faceIndex = i;
-    return '';
-  }.bind(this));
-  return text
-};
+  Window_Message.prototype.convertFaceIndexChange = function (text) {
+    text = text.replace(
+      /\x1bFACEINDEX\[(\d+)\]/gi,
+      function () {
+        var i = parseInt(arguments[1]);
+        $gameMessage._faceIndex = i;
+        return "";
+      }.bind(this)
+    );
+    return text;
+  };
 
-MageStudios.EMP1.Window_Message_convertMessageCharacters =
+  MageStudios.EMP1.Window_Message_convertMessageCharacters =
     Window_Message.prototype.convertMessageCharacters;
-Window_Message.prototype.convertMessageCharacters = function(text) {
-  text = MageStudios.EMP1.Window_Message_convertMessageCharacters.call(this, text);
-  text = this.convertFaceIndexChange(text);
-  return text;
-};
+  Window_Message.prototype.convertMessageCharacters = function (text) {
+    text = MageStudios.EMP1.Window_Message_convertMessageCharacters.call(
+      this,
+      text
+    );
+    text = this.convertFaceIndexChange(text);
+    return text;
+  };
 
-MageStudios.EMP1.Window_Message_processEscapeCharacter =
+  MageStudios.EMP1.Window_Message_processEscapeCharacter =
     Window_Message.prototype.processEscapeCharacter;
-Window_Message.prototype.processEscapeCharacter = function(code, textState) {
-  switch (code) {
-  case 'EMP':
-    var id = this.obtainEscapeParam(textState);
-    if (id === 0) $gameSystem._msgSoundEnable = true;
-    if (id === 1) $gameSystem._msgSoundEnable = false;
-    if (id === 2) $gameSystem.initMessageSounds();
-    break;
-  case 'LSN':
-    var name = this.obtainEscapeString(textState);
-    $gameSystem._msgSoundName = name;
-    break;
-  case 'LSV':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundVol = value;
-    break;
-  case 'LSPIV':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundPitchVar = value;
-    break;
-  case 'LSPI':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundPitch = value;
-    break;
-  case 'LSPAV':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundPanVar = value;
-  case 'LSPA':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundPan = value;
-    break;
-  case 'LSI':
-    var value = this.obtainEscapeParam(textState);
-    $gameSystem._msgSoundInterval = value;
-    break;
-  case 'LSRESET':
-    $gameSystem.initMessageSounds();
-    break;
-  default:
-    MageStudios.EMP1.Window_Message_processEscapeCharacter.call(this, code,
-      textState);
-    break;
-  }
-};
+  Window_Message.prototype.processEscapeCharacter = function (code, textState) {
+    switch (code) {
+      case "EMP":
+        var id = this.obtainEscapeParam(textState);
+        if (id === 0) $gameSystem._msgSoundEnable = true;
+        if (id === 1) $gameSystem._msgSoundEnable = false;
+        if (id === 2) $gameSystem.initMessageSounds();
+        break;
+      case "LSN":
+        var name = this.obtainEscapeString(textState);
+        $gameSystem._msgSoundName = name;
+        break;
+      case "LSV":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundVol = value;
+        break;
+      case "LSPIV":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundPitchVar = value;
+        break;
+      case "LSPI":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundPitch = value;
+        break;
+      case "LSPAV":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundPanVar = value;
+      case "LSPA":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundPan = value;
+        break;
+      case "LSI":
+        var value = this.obtainEscapeParam(textState);
+        $gameSystem._msgSoundInterval = value;
+        break;
+      case "LSRESET":
+        $gameSystem.initMessageSounds();
+        break;
+      default:
+        MageStudios.EMP1.Window_Message_processEscapeCharacter.call(
+          this,
+          code,
+          textState
+        );
+        break;
+    }
+  };
 
-Window_Message.prototype.updateLockedPosition = function() {
+  Window_Message.prototype.updateLockedPosition = function () {
     eventId = this._lockPositionToEvent;
     var x = Graphics.boxWidth / 2;
     var y = Graphics.boxHeight;
@@ -1848,35 +1971,31 @@ Window_Message.prototype.updateLockedPosition = function() {
     this.updatePositionPlacement();
     this._nameWindow.adjustPositionX();
     this._nameWindow.adjustPositionY();
-};
+  };
 
-MageStudios.EMP1.Window_Message_startWait = Window_Message.prototype.startWait;
-Window_Message.prototype.startWait = function(count) {
+  MageStudios.EMP1.Window_Message_startWait =
+    Window_Message.prototype.startWait;
+  Window_Message.prototype.startWait = function (count) {
     if (this._checkingWidth) return;
     MageStudios.EMP1.Window_Message_startWait.call(this, count);
     this._soundCount = 0;
-};
+  };
 
-MageStudios.EMP1.Window_Message_startPause = Window_Message.prototype.startPause;
-Window_Message.prototype.startPause = function() {
-  if (this._checkingWidth) return;
-  MageStudios.EMP1.Window_Message_startPause.call(this);
-};
+  MageStudios.EMP1.Window_Message_startPause =
+    Window_Message.prototype.startPause;
+  Window_Message.prototype.startPause = function () {
+    if (this._checkingWidth) return;
+    MageStudios.EMP1.Window_Message_startPause.call(this);
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.forceGroup = function(inVal) {
-  if (typeof inVal !== 'string') { inVal = String(inVal); }
-  return inVal.replace(/(^|[^\w.])(\d{4,})/g, function($0, $1, $2) {
-    return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, "$&,");
-  });
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  MageStudios.Util.forceGroup = function (inVal) {
+    if (typeof inVal !== "string") {
+      inVal = String(inVal);
+    }
+    return inVal.replace(/(^|[^\w.])(\d{4,})/g, function ($0, $1, $2) {
+      return $1 + $2.replace(/\d(?=(?:\d\d\d)+(?!\d))/g, "$&,");
+    });
+  };
+}

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Plugin Commands - Switches & Variables Access
-// MSEP_PluginCmdSwVar.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_PluginCmdSwVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PCSV = MageStudios.PCSV || {};
-MageStudios.PCSV.version = 1.00;
+MageStudios.PCSV.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Make it easier to use Switch and Variable values for
  * plugin commands across the board!
  * @author Mage Studios Engine Plugins
@@ -38,7 +32,7 @@ MageStudios.PCSV.version = 1.00;
  *
  * ---
  *
- * Variables: 
+ * Variables:
  *
  *  v[x]
  *  - Replaces v[x] with the value of variable x.
@@ -105,14 +99,10 @@ MageStudios.PCSV.version = 1.00;
  * End of Helpfile
  * ============================================================================
  */
-//=============================================================================
 
-//=============================================================================
-// MainCode
-//=============================================================================
-
-MageStudios.PCSV.Game_Interpreter_command356 = Game_Interpreter.prototype.command356;
-Game_Interpreter.prototype.command356 = function() {
+MageStudios.PCSV.Game_Interpreter_command356 =
+  Game_Interpreter.prototype.command356;
+Game_Interpreter.prototype.command356 = function () {
   var originalString = this._params[0];
   this.processPluginCommandSwitchVariables();
   var value = MageStudios.PCSV.Game_Interpreter_command356.call(this);
@@ -120,29 +110,36 @@ Game_Interpreter.prototype.command356 = function() {
   return value;
 };
 
-Game_Interpreter.prototype.processPluginCommandSwitchVariables = function() {
-  // Set text variable
+Game_Interpreter.prototype.processPluginCommandSwitchVariables = function () {
   var text = this._params[0];
-  // Switch Replacement
-  text = text.replace(/\{S\[(\d+)\][ ]\?[ ](.*)[ ]:[ ](.*)\}/gi, function() {
-    var text1 = String(arguments[2]);
-    var text2 = String(arguments[3]);
-    return $gameSwitches.value(parseInt(arguments[1])) ? text1 : text2;
-  }.bind(this));
-  // Variable Replacement v[x]
-  text = text.replace(/V\[(\d+)\]/gi, function() {
-    return $gameVariables.value(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/V\[(\d+)\]/gi, function() {
-    return $gameVariables.value(parseInt(arguments[1]));
-  }.bind(this));
-  text = text.replace(/V\[(\d+)\]/gi, function() {
-    return $gameVariables.value(parseInt(arguments[1]));
-  }.bind(this));
-  // Set Parameters to text string
+
+  text = text.replace(
+    /\{S\[(\d+)\][ ]\?[ ](.*)[ ]:[ ](.*)\}/gi,
+    function () {
+      var text1 = String(arguments[2]);
+      var text2 = String(arguments[3]);
+      return $gameSwitches.value(parseInt(arguments[1])) ? text1 : text2;
+    }.bind(this)
+  );
+
+  text = text.replace(
+    /V\[(\d+)\]/gi,
+    function () {
+      return $gameVariables.value(parseInt(arguments[1]));
+    }.bind(this)
+  );
+  text = text.replace(
+    /V\[(\d+)\]/gi,
+    function () {
+      return $gameVariables.value(parseInt(arguments[1]));
+    }.bind(this)
+  );
+  text = text.replace(
+    /V\[(\d+)\]/gi,
+    function () {
+      return $gameVariables.value(parseInt(arguments[1]));
+    }.bind(this)
+  );
+
   this._params[0] = text;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

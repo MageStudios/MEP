@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Load Custom Fonts
-// MSEP_LoadCustomFonts.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_LoadCustomFonts = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LCF = MageStudios.LCF || {};
-MageStudios.LCF.version = 1.00;
+MageStudios.LCF.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Load custom fonts from the /fonts/ folder. This will
  * allow you to use custom fonts without installing them.
  * @author Mage Studios Engine Plugins
@@ -61,49 +55,41 @@ MageStudios.LCF.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_LoadCustomFonts');
+MageStudios.Parameters = PluginManager.parameters("MSEP_LoadCustomFonts");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.LCFFontFilenames = String(MageStudios.Parameters['Font Filenames']);
-MageStudios.Param.LCFFontFamilies = String(MageStudios.Parameters['Font Families']);
-
-//=============================================================================
-// Utilities
-//=============================================================================
+MageStudios.Param.LCFFontFilenames = String(
+  MageStudios.Parameters["Font Filenames"]
+);
+MageStudios.Param.LCFFontFamilies = String(
+  MageStudios.Parameters["Font Families"]
+);
 
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.loadCustomFonts = function() {
-  var filenames = MageStudios.Param.LCFFontFilenames.split(',');
-  var fontfamilies = MageStudios.Param.LCFFontFamilies.split(',');
+MageStudios.Util.loadCustomFonts = function () {
+  var filenames = MageStudios.Param.LCFFontFilenames.split(",");
+  var fontfamilies = MageStudios.Param.LCFFontFamilies.split(",");
   if (filenames.length !== fontfamilies.length) {
     if (filenames.length > fontfamilies.length) {
-      console.log('You are missing fonts in the Font Families parameter.');
+      console.log("You are missing fonts in the Font Families parameter.");
     }
     if (filenames.length < fontfamilies.length) {
-      console.log('You are missing fonts in the Font Filenames parameter.');
+      console.log("You are missing fonts in the Font Filenames parameter.");
     }
-    console.log('Loading custom fonts aborted.');
+    console.log("Loading custom fonts aborted.");
     return;
   }
-  var projectDirectory = window.location.pathname.substring(0,
-    window.location.pathname.lastIndexOf('/'));
+  var projectDirectory = window.location.pathname.substring(
+    0,
+    window.location.pathname.lastIndexOf("/")
+  );
   var length = filenames.length;
   for (var i = 0; i < length; ++i) {
     var filename = filenames[i].trim();
     var fontfamily = fontfamilies[i].trim();
-    Graphics.loadFont(fontfamily, projectDirectory + '/fonts/' + filename);
+    Graphics.loadFont(fontfamily, projectDirectory + "/fonts/" + filename);
   }
 };
 MageStudios.Util.loadCustomFonts();
-
-//=============================================================================
-// End of File
-//=============================================================================
-

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Battle BGM Control
-// MSEP_BattleBgmControl.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_BattleBgmControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BattleBgm = MageStudios.BattleBgm || {};
-MageStudios.BattleBgm.version = 1.00;
+MageStudios.BattleBgm.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Assign BGM's to certain troops. Make BGM's change
  * during battle when certain enemies reach different HP values.
  * @author Mage Studios Engine Plugins
@@ -46,7 +40,7 @@ MageStudios.BattleBgm.version = 1.00;
  *   sensitive. For example, if you wish to play Battle3.m4a, replace
  *   'filename' with only 'Battle3' and no '.m4a' in the tag. This is the only
  *   required tag. Once this tag is detected, only the remainder of the event
- *   page will be scanned. Other pages in the troop will be ignored. 
+ *   page will be scanned. Other pages in the troop will be ignored.
  *
  *   <Battle BGM Volume: x>
  *   - Replace 'x' with a number between 0 and 100. This determines the volume
@@ -69,7 +63,7 @@ MageStudios.BattleBgm.version = 1.00;
  * ============================================================================
  *
  * You can insert these notetag settings into an enemy's notebox to make the
- * music play a different BGM when the enemy is at different HP values. 
+ * music play a different BGM when the enemy is at different HP values.
  *
  * Enemy Notetags:
  *
@@ -104,28 +98,23 @@ MageStudios.BattleBgm.version = 1.00;
  *   such order.
  *
  */
-//=============================================================================
 
-//=============================================================================
-// DataManager
-// ----------------------------------------------------------------------------
-// Notetags added by Mage
-//=============================================================================
-
-MageStudios.BattleBgm.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.BattleBgm.DataManager_isDatabaseLoaded.call(this)) return false;
+MageStudios.BattleBgm.DataManager_isDatabaseLoaded =
+  DataManager.isDatabaseLoaded;
+DataManager.isDatabaseLoaded = function () {
+  if (!MageStudios.BattleBgm.DataManager_isDatabaseLoaded.call(this))
+    return false;
 
   if (!MageStudios._loaded_MSEP_BattleBgmControl) {
     this.processBattleBgmNotetags1($dataTroops);
     this.processBattleBgmNotetags2($dataEnemies);
     MageStudios._loaded_MSEP_BattleBgmControl = true;
   }
-  
+
   return true;
 };
 
-DataManager.processBattleBgmNotetags1 = function(group) {
+DataManager.processBattleBgmNotetags1 = function (group) {
   var length = group.length;
   for (var t = 1; t < length; t++) {
     var troop = group[t];
@@ -135,8 +124,8 @@ DataManager.processBattleBgmNotetags1 = function(group) {
       volume: 90,
       pitch: 100,
       pan: 0,
-      pos: 0
-    }
+      pos: 0,
+    };
     var pageLength = troop.pages.length;
     for (var p = 0; p < pageLength; ++p) {
       var page = troop.pages[p];
@@ -145,7 +134,7 @@ DataManager.processBattleBgmNotetags1 = function(group) {
   }
 };
 
-DataManager.processBattleBgmTroopData = function(troop, page) {
+DataManager.processBattleBgmTroopData = function (troop, page) {
   var length = page.list.length;
   var checked = false;
   for (var i = 0; i < length; i++) {
@@ -155,16 +144,16 @@ DataManager.processBattleBgmTroopData = function(troop, page) {
         var line = pageItem.parameters[0];
         if (line) {
           if (line.match(/<BATTLE BGM NAME:[ ](.*)>/i)) {
-            troop.specificBgm['name'] = String(RegExp.$1);
+            troop.specificBgm["name"] = String(RegExp.$1);
             checked = true;
           } else if (line.match(/<BATTLE BGM VOLUME:[ ](\d+)>/i)) {
-            troop.specificBgm['volume'] = parseInt(RegExp.$1);
+            troop.specificBgm["volume"] = parseInt(RegExp.$1);
           } else if (line.match(/<BATTLE BGM PITCH:[ ](\d+)>/i)) {
-            troop.specificBgm['pitch'] = parseInt(RegExp.$1);
+            troop.specificBgm["pitch"] = parseInt(RegExp.$1);
           } else if (line.match(/<BATTLE BGM PAN:[ ]([\+\-]\d+)>/i)) {
-            troop.specificBgm['pan'] = parseInt(RegExp.$1);
+            troop.specificBgm["pan"] = parseInt(RegExp.$1);
           } else if (line.match(/<BATTLE BGM POSITION:[ ](\d+)>/i)) {
-            troop.specificBgm['pos'] = parseInt(RegExp.$1);
+            troop.specificBgm["pos"] = parseInt(RegExp.$1);
           }
         }
       }
@@ -175,7 +164,7 @@ DataManager.processBattleBgmTroopData = function(troop, page) {
   }
 };
 
-DataManager.processBattleBgmNotetags2 = function(group) {
+DataManager.processBattleBgmNotetags2 = function (group) {
   for (var n = 1; n < group.length; n++) {
     var obj = group[n];
     var notedata = obj.note.split(/[\r\n]+/);
@@ -198,8 +187,8 @@ DataManager.processBattleBgmNotetags2 = function(group) {
   }
 };
 
-DataManager.convertBattleBgmData = function(str) {
-  var data = str.split(',');
+DataManager.convertBattleBgmData = function (str) {
+  var data = str.split(",");
   for (var i = 0; i < data.length; i++) {
     data[i] = data[i].trim();
     if (i > 0) {
@@ -211,17 +200,13 @@ DataManager.convertBattleBgmData = function(str) {
     volume: data[1] || 90,
     pitch: data[2] || 100,
     pan: data[3] || 0,
-    pos: data[4] || 0
-  }
+    pos: data[4] || 0,
+  };
   return obj;
 };
 
-//=============================================================================
-// BattleManager
-//=============================================================================
-
 MageStudios.BattleBgm.BattleManager_playBattleBgm = BattleManager.playBattleBgm;
-BattleManager.playBattleBgm = function() {
+BattleManager.playBattleBgm = function () {
   if (AudioManager.getBattleBgmKeyEnemy()) {
     return AudioManager.updateBattleBgmKeyEnemy();
   }
@@ -231,31 +216,26 @@ BattleManager.playBattleBgm = function() {
   } else {
     this.playBattleSpecificBgm(troop.specificBgm);
   }
-
 };
 
-BattleManager.playBattleSpecificBgm = function(settings) {
+BattleManager.playBattleSpecificBgm = function (settings) {
   AudioManager.playBgm(settings, settings.pos);
 };
 
-//=============================================================================
-// AudioManager
-//=============================================================================
-
-AudioManager.clearBattleBgmKeyEnemy = function() {
+AudioManager.clearBattleBgmKeyEnemy = function () {
   this._battleBgmKeyEnemy = undefined;
 };
 
-AudioManager.setBattleBgmKeyEnemy = function(enemy) {
+AudioManager.setBattleBgmKeyEnemy = function (enemy) {
   this._battleBgmKeyEnemy = enemy;
   this.updateBattleBgmKeyEnemy();
 };
 
-AudioManager.getBattleBgmKeyEnemy = function() {
+AudioManager.getBattleBgmKeyEnemy = function () {
   return this._battleBgmKeyEnemy;
 };
 
-AudioManager.updateBattleBgmKeyEnemy = function() {
+AudioManager.updateBattleBgmKeyEnemy = function () {
   var settings = undefined;
   if (this._battleBgmKeyEnemy) {
     for (var key in this._battleBgmKeyEnemy.enemy().battleBgmChanges) {
@@ -271,30 +251,22 @@ AudioManager.updateBattleBgmKeyEnemy = function() {
   }
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
 MageStudios.BattleBgm.Game_BattlerBase_setHp = Game_BattlerBase.prototype.setHp;
-Game_BattlerBase.prototype.setHp = function(hp) {
+Game_BattlerBase.prototype.setHp = function (hp) {
   MageStudios.BattleBgm.Game_BattlerBase_setHp.call(this, hp);
   if (this.isEnemy() && this === AudioManager.getBattleBgmKeyEnemy()) {
     AudioManager.updateBattleBgmKeyEnemy();
   }
 };
 
-//=============================================================================
-// Game_Troop
-//=============================================================================
-
 MageStudios.BattleBgm.Game_Troop_setup = Game_Troop.prototype.setup;
-Game_Troop.prototype.setup = function(troopId) {
+Game_Troop.prototype.setup = function (troopId) {
   AudioManager.clearBattleBgmKeyEnemy();
   MageStudios.BattleBgm.Game_Troop_setup.call(this, troopId);
   this.detectAndSetBattleBgmKeyEnemy();
 };
 
-Game_Troop.prototype.detectAndSetBattleBgmKeyEnemy = function() {
+Game_Troop.prototype.detectAndSetBattleBgmKeyEnemy = function () {
   var members = this.members();
   for (var i = 0; i < members.length; i++) {
     var member = members[i];
@@ -306,7 +278,3 @@ Game_Troop.prototype.detectAndSetBattleBgmKeyEnemy = function() {
     }
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Item Upgrade Slots
-// MSEP_X_ItemUpgradeSlots.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_ItemUpgrades = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IUS = MageStudios.IUS || {};
-MageStudios.IUS.version = 1.00;
+MageStudios.IUS.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Allows independent items to
  * be upgradeable and gain better stats.
  * @author Mage Studios Engine Plugins
@@ -243,72 +237,76 @@ MageStudios.IUS.version = 1.00;
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_ItemCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_ItemUpgradeSlots");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.IUSDefaultSlots = Number(
+    MageStudios.Parameters["Default Slots"]
+  );
+  MageStudios.Param.IUSSlotVariance = Number(
+    MageStudios.Parameters["Slot Variance"]
+  );
+  MageStudios.Param.IUSUpgradeCmd = String(
+    MageStudios.Parameters["Upgrade Command"]
+  );
+  MageStudios.Param.IUSShowOnly = String(MageStudios.Parameters["Show Only"]);
+  MageStudios.Param.IUSSlotsText = String(
+    MageStudios.Parameters["Slots Available"]
+  );
+  MageStudios.Param.IUSShowSlots = String(
+    MageStudios.Parameters["Show Slot Upgrades"]
+  );
+  MageStudios.Param.IUSSlotFmt = String(
+    MageStudios.Parameters["Slot Upgrade Format"]
+  );
+  MageStudios.Param.IUSUpgradeSound = String(
+    MageStudios.Parameters["Default Sound"]
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemUpgradeSlots');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.IUS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.IUS.DataManager_isDatabaseLoaded.call(this)) return false;
+    if (!MageStudios._loaded_MSEP_X_ItemUpgradeSlots) {
+      this.processUpgradeNotetags1($dataItems);
+      this.processUpgradeNotetags1($dataWeapons);
+      this.processUpgradeNotetags1($dataArmors);
+      this.processUpgradeNotetags2($dataItems);
+      MageStudios._loaded_MSEP_X_ItemUpgradeSlots = true;
+    }
+    return true;
+  };
 
-MageStudios.Param.IUSDefaultSlots = Number(MageStudios.Parameters['Default Slots']);
-MageStudios.Param.IUSSlotVariance = Number(MageStudios.Parameters['Slot Variance']);
-MageStudios.Param.IUSUpgradeCmd = String(MageStudios.Parameters['Upgrade Command']);
-MageStudios.Param.IUSShowOnly = String(MageStudios.Parameters['Show Only']);
-MageStudios.Param.IUSSlotsText = String(MageStudios.Parameters['Slots Available']);
-MageStudios.Param.IUSShowSlots = String(MageStudios.Parameters['Show Slot Upgrades']);
-MageStudios.Param.IUSSlotFmt = String(MageStudios.Parameters['Slot Upgrade Format']);
-MageStudios.Param.IUSUpgradeSound = String(MageStudios.Parameters['Default Sound']);
+  DataManager.processUpgradeNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      ItemManager.initSlotUpgradeNotes(obj);
+      this.processUpgradeNotetags(obj);
+    }
+  };
 
-//=============================================================================
-// DataManager
-//=============================================================================
+  DataManager.processUpgradeNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      this.processUpgradeNotetags(obj);
+    }
+  };
 
-MageStudios.IUS.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.IUS.DataManager_isDatabaseLoaded.call(this)) return false;
-  if (!MageStudios._loaded_MSEP_X_ItemUpgradeSlots) {
-    this.processUpgradeNotetags1($dataItems);
-    this.processUpgradeNotetags1($dataWeapons);
-    this.processUpgradeNotetags1($dataArmors);
-    this.processUpgradeNotetags2($dataItems);
-    MageStudios._loaded_MSEP_X_ItemUpgradeSlots = true;
-  }
-	return true;
-};
-
-DataManager.processUpgradeNotetags1 = function(group) {
-	for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		ItemManager.initSlotUpgradeNotes(obj);
-    this.processUpgradeNotetags(obj);
-	}
-};
-
-DataManager.processUpgradeNotetags2 = function(group) {
-	for (var n = 1; n < group.length; n++) {
-		var obj = group[n];
-		this.processUpgradeNotetags(obj);
-	}
-};
-
-DataManager.processUpgradeNotetags = function(item) {
+  DataManager.processUpgradeNotetags = function (item) {
     var note1 = /<(?:TYPE|TYPES):[ ](.*)>/i;
     var notedata = item.note.split(/[\r\n]+/);
 
-    item.types = item.types || ['ALL'];
+    item.types = item.types || ["ALL"];
 
-    if (item.itypeId === 1) item.types.push('REGULAR');
-    if (item.itypeId === 2) item.types.push('KEY');
-    if (item.itypeId === 3) item.types.push('HIDDEN A');
-    if (item.itypeId === 4) item.types.push('HIDDEN B');
-    if (item.occasion === 0) item.types.push('ALWAYS');
-    if (item.occasion === 1) item.types.push('BATTLE');
-    if (item.occasion === 2) item.types.push('MENU');
-    if (item.occasion === 3) item.types.push('NEVER');
+    if (item.itypeId === 1) item.types.push("REGULAR");
+    if (item.itypeId === 2) item.types.push("KEY");
+    if (item.itypeId === 3) item.types.push("HIDDEN A");
+    if (item.itypeId === 4) item.types.push("HIDDEN B");
+    if (item.occasion === 0) item.types.push("ALWAYS");
+    if (item.occasion === 1) item.types.push("BATTLE");
+    if (item.occasion === 2) item.types.push("MENU");
+    if (item.occasion === 3) item.types.push("NEVER");
 
     for (var i = 0; i < notedata.length; i++) {
       var line = notedata[i];
@@ -317,13 +315,9 @@ DataManager.processUpgradeNotetags = function(item) {
         if (!item.types.contain(str)) item.types.push(str);
       }
     }
-};
+  };
 
-//=============================================================================
-// ItemManager
-//=============================================================================
-
-ItemManager.initSlotUpgradeNotes = function(item) {
+  ItemManager.initSlotUpgradeNotes = function (item) {
     var note1 = /<(?:UPGRADE SLOTS|upgrade slot):[ ](\d+)>/i;
     var note2 = /<(?:UPGRADE EFFECT)>/i;
     var note3 = /<\/(?:UPGRADE EFFECT)>/i;
@@ -362,10 +356,10 @@ ItemManager.initSlotUpgradeNotes = function(item) {
         upgradeEffect = false;
       } else if (upgradeEffect && line.match(note4)) {
         item.upgradeSlotCost = parseInt(RegExp.$1);
-        item.upgradeEffect.push('');
+        item.upgradeEffect.push("");
       } else if (upgradeEffect && line.match(note5)) {
         item.boostCountValue = parseInt(RegExp.$1);
-        item.upgradeEffect.push('');
+        item.upgradeEffect.push("");
       } else if (upgradeEffect) {
         item.upgradeEffect.push(line);
       } else if (line.match(note6)) {
@@ -373,41 +367,51 @@ ItemManager.initSlotUpgradeNotes = function(item) {
       } else if (line.match(note7)) {
         item.upgradeItemType.push(String(RegExp.$1).toUpperCase());
       } else if (line.match(note8)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         item.upgradeWeaponType = item.upgradeWeaponType.concat(array);
       } else if (line.match(note9)) {
-        var array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+        var array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
         item.upgradeArmorType = item.upgradeArmorType.concat(array);
       } else if (line.match(note10)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-					parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         item.upgradeWeaponType = item.upgradeWeaponType.concat(range);
       } else if (line.match(note11)) {
-        var range = MageStudios.Util.getRange(parseInt(RegExp.$1),
-					parseInt(RegExp.$2));
+        var range = MageStudios.Util.getRange(
+          parseInt(RegExp.$1),
+          parseInt(RegExp.$2)
+        );
         item.upgradeArmorType = item.upgradeArmorType.concat(range);
       } else if (line.match(note12)) {
         item.upgradeSlotsVariance = parseInt(RegExp.$1);
       }
     }
     if (!DataManager.isIndependent(item)) item.upgradeSlots = 0;
-    if (item.upgradeItemType.length === 0 &&
-    item.upgradeWeaponType.length === 0 &&
-    item.upgradeArmorType.length === 0) {
+    if (
+      item.upgradeItemType.length === 0 &&
+      item.upgradeWeaponType.length === 0 &&
+      item.upgradeArmorType.length === 0
+    ) {
       item.upgradeWeaponType = [0];
       item.upgradeArmorType = [0];
     }
-};
+  };
 
-MageStudios.IUS.ItemManager_randomizeInitialItem =
+  MageStudios.IUS.ItemManager_randomizeInitialItem =
     ItemManager.randomizeInitialItem;
-ItemManager.randomizeInitialItem = function(baseItem, newItem) {
-    MageStudios.IUS.ItemManager_randomizeInitialItem.call(this, baseItem, newItem);
+  ItemManager.randomizeInitialItem = function (baseItem, newItem) {
+    MageStudios.IUS.ItemManager_randomizeInitialItem.call(
+      this,
+      baseItem,
+      newItem
+    );
     if ($gameTemp.varianceStock()) return;
     this.randomizeSlots(baseItem, newItem);
-};
+  };
 
-ItemManager.randomizeSlots = function(baseItem, newItem) {
+  ItemManager.randomizeSlots = function (baseItem, newItem) {
     if (baseItem.upgradeSlots <= 0) return;
     if (baseItem.upgradeSlotsVariance <= 0) return;
     var randomValue = baseItem.upgradeSlotsVariance * 2 + 1;
@@ -415,31 +419,31 @@ ItemManager.randomizeSlots = function(baseItem, newItem) {
     newItem.upgradeSlots += Math.floor(Math.random() * randomValue - offset);
     newItem.upgradeSlots = Math.max(newItem.upgradeSlots, 0);
     newItem.originalUpgradeSlots = newItem.upgradeSlots;
-};
+  };
 
-ItemManager.applyIUSEffects = function(mainItem, effectItem) {
+  ItemManager.applyIUSEffects = function (mainItem, effectItem) {
     if (!DataManager.isIndependent(mainItem)) return;
     this.payIUSEffects(mainItem, effectItem);
     this.checkIUSEffects(mainItem, effectItem);
-};
+  };
 
-ItemManager.payIUSEffects = function(mainItem, effectItem) {
+  ItemManager.payIUSEffects = function (mainItem, effectItem) {
     $gameParty.loseItem(effectItem, 1);
     mainItem.upgradeSlots -= effectItem.upgradeSlotCost;
     this.addIUSLine(mainItem, effectItem);
     for (var i = 1; i < effectItem.upgradeSlotCost; ++i) {
-      mainItem.slotsApplied.push('---');
+      mainItem.slotsApplied.push("---");
     }
     this.increaseItemBoostCount(mainItem, effectItem.boostCountValue);
-};
+  };
 
-ItemManager.addIUSLine = function(mainItem, effectItem) {
+  ItemManager.addIUSLine = function (mainItem, effectItem) {
     if (!mainItem.slotsApplied) this.initSlotUpgradeNotes(mainItem);
-    var line = '\\i[' + effectItem.iconIndex + ']' + effectItem.name;
+    var line = "\\i[" + effectItem.iconIndex + "]" + effectItem.name;
     mainItem.slotsApplied.push(line);
-};
+  };
 
-ItemManager.checkIUSEffects = function(mainItem, effectItem) {
+  ItemManager.checkIUSEffects = function (mainItem, effectItem) {
     for (var i = 0; i < effectItem.upgradeEffect.length; ++i) {
       var line = effectItem.upgradeEffect[i];
       this.processIUSEffect(line, mainItem, effectItem);
@@ -448,10 +452,9 @@ ItemManager.checkIUSEffects = function(mainItem, effectItem) {
         this._resetItem = undefined;
       }
     }
-};
+  };
 
-ItemManager.processIUSEffect = function(line, mainItem, effectItem) {
-    // Imported.MSEP_X_ItemPictureImg
+  ItemManager.processIUSEffect = function (line, mainItem, effectItem) {
     if (Imported.MSEP_X_ItemPictureImg) {
       if (line.match(/PICTURE IMAGE:[ ](.*)/i)) {
         var filename = String(RegExp.$1);
@@ -462,311 +465,311 @@ ItemManager.processIUSEffect = function(line, mainItem, effectItem) {
         return this.effectIUSPictureHue(mainItem, undefined, hue);
       }
     }
-    // BASE NAME: X
+
     if (line.match(/BASE NAME:[ ](.*)/i)) {
       var value = String(RegExp.$1);
       return this.effectIUSBaseName(mainItem, value);
     }
-    // EVAL X
+
     if (line.match(/EVAL:[ ](.*)/i)) {
       var code = String(RegExp.$1);
       return this.effectIUSEval(mainItem, effectItem, code);
     }
-    // ICON: X
+
     if (line.match(/ICON:[ ](\d+)/i)) {
       var value = parseInt(RegExp.$1);
       return this.effectIUSIcon(mainItem, value);
     }
-    // PREFIX: X
+
     if (line.match(/PREFIX:[ ](.*)/i)) {
       var value = String(RegExp.$1);
       return this.effectIUSPrefix(mainItem, value);
     }
-    // PRIORITY NAME: X
+
     if (line.match(/PRIORITY NAME:[ ](.*)/i)) {
       var value = String(RegExp.$1);
       return this.effectIUSPriorityName(mainItem, value);
     }
-    // NAME: X
+
     if (line.match(/NAME:[ ](.*)/i)) {
       var value = String(RegExp.$1);
       return this.effectIUSName(mainItem, value);
     }
-    // RANDOM STAT: X
+
     if (line.match(/RANDOM[ ](.*):[ ](\d+)/i)) {
       var stat = String(RegExp.$1).toUpperCase();
       var value = parseInt(RegExp.$2);
       return this.effectIUSRandomChange1(mainItem, stat, value);
     }
-    // RANDOM STAT: +/-X
+
     if (line.match(/RANDOM[ ](.*):[ ]([\+\-]\d+)/i)) {
       var stat = String(RegExp.$1).toUpperCase();
       var value = parseInt(RegExp.$2);
       return this.effectIUSRandomChange2(mainItem, stat, value);
     }
-    // RESET STAT
+
     if (line.match(/RESET[ ](.*)/i)) {
       var stat = String(RegExp.$1).toUpperCase();
       return this.effectIUSResetStat(mainItem, stat);
     }
-    // TEXT COLOR: X
+
     if (line.match(/TEXT COLOR:[ ](\d+)/i)) {
       var value = parseInt(RegExp.$1);
       return this.effectIUSTextColor(mainItem, value);
     }
-    // STAT: +/-X%
+
     if (line.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
       var stat = String(RegExp.$1).toUpperCase();
       var value = parseInt(RegExp.$2);
       return this.effectIUSParamRateChange(mainItem, stat, value);
     }
-    // STAT: +/-X
+
     if (line.match(/(.*):[ ]([\+\-]\d+)/i)) {
       var stat = String(RegExp.$1).toUpperCase();
       var value = parseInt(RegExp.$2);
       return this.effectIUSParamChange(mainItem, stat, value);
     }
-    // SUFFIX: X
+
     if (line.match(/SUFFIX:[ ](.*)/i)) {
       var value = String(RegExp.$1);
       return this.effectIUSSuffix(mainItem, value);
     }
-};
+  };
 
-ItemManager.adjustItemTrait = function(mainItem, code, dataId, value, add) {
+  ItemManager.adjustItemTrait = function (mainItem, code, dataId, value, add) {
     if (add) {
       this.addTraitToItem(mainItem, code, dataId, value);
     } else {
       this.deleteTraitFromItem(mainItem, code, dataId, value);
     }
-};
+  };
 
-ItemManager.addTraitToItem = function(mainItem, code, dataId, value) {
+  ItemManager.addTraitToItem = function (mainItem, code, dataId, value) {
     var trait = {
       code: code,
       dataId: dataId,
-      value: value
-    }
+      value: value,
+    };
     mainItem.traits.push(trait);
-};
+  };
 
-ItemManager.deleteTraitFromItem = function(mainItem, code, dataId, value) {
+  ItemManager.deleteTraitFromItem = function (mainItem, code, dataId, value) {
     var index = this.getMatchingTraitIndex(mainItem, code, dataId, value);
     if (index >= 0) mainItem.traits.splice(index, 1);
-};
+  };
 
-ItemManager.effectIUSBaseName = function(item, value) {
+  ItemManager.effectIUSBaseName = function (item, value) {
     this.setBaseName(item, value);
     this.updateItemName(item);
-};
+  };
 
-ItemManager.effectIUSEval = function(mainItem, effectItem, code) {
+  ItemManager.effectIUSEval = function (mainItem, effectItem, code) {
     var item = mainItem;
     var baseItem = DataManager.getBaseItem(item);
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ITEM UPGRADE EFFECT ERROR');
+      MageStudios.Util.displayError(e, code, "ITEM UPGRADE EFFECT ERROR");
     }
-};
+  };
 
-ItemManager.effectIUSIcon = function(item, value) {
+  ItemManager.effectIUSIcon = function (item, value) {
     item.iconIndex = value;
-};
+  };
 
-ItemManager.effectIUSPrefix = function(item, value) {
+  ItemManager.effectIUSPrefix = function (item, value) {
     this.setNamePrefix(item, value);
     this.updateItemName(item);
-};
+  };
 
-ItemManager.effectIUSPriorityName = function(item, value) {
+  ItemManager.effectIUSPriorityName = function (item, value) {
     this.setPriorityName(item, value);
     this.updateItemName(item);
-};
+  };
 
-ItemManager.effectIUSName = function(item, value) {
+  ItemManager.effectIUSName = function (item, value) {
     item.name = value;
-};
+  };
 
-ItemManager.effectIUSRandomChange1 = function(item, stat, value) {
+  ItemManager.effectIUSRandomChange1 = function (item, stat, value) {
     var randomValue = (value + 1) * 2;
     var offset = value;
     switch (stat) {
-      case 'HP':
-      case 'MAXHP':
-      case 'MAX HP':
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
         item.params[0] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'MP':
-      case 'MAXMP':
-      case 'MAX MP':
-      case 'SP':
-      case 'MAXSP':
-      case 'MAX SP':
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
         item.params[1] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'ATK':
-      case 'STR':
+      case "ATK":
+      case "STR":
         item.params[2] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'DEF':
+      case "DEF":
         item.params[3] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'MAT':
-      case 'INT':
-      case 'SPI':
+      case "MAT":
+      case "INT":
+      case "SPI":
         item.params[4] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'MDF':
-      case 'RES':
+      case "MDF":
+      case "RES":
         item.params[5] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'AGI':
-      case 'SPD':
+      case "AGI":
+      case "SPD":
         item.params[6] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'LUK':
+      case "LUK":
         item.params[7] += Math.floor(Math.random() * randomValue - offset);
         break;
-      case 'ALL':
+      case "ALL":
         for (var i = 0; i < 8; ++i) {
           item.params[i] += Math.floor(Math.random() * randomValue - offset);
         }
         break;
-      case 'CURRENT':
+      case "CURRENT":
         for (var i = 0; i < 8; ++i) {
           if (item.params[i] === 0) continue;
           item.params[i] += Math.floor(Math.random() * randomValue - offset);
         }
         break;
-      case 'SLOT':
-      case 'SLOTS':
+      case "SLOT":
+      case "SLOTS":
         item.upgradeSlots += Math.floor(Math.random() * randomValue - offset);
         break;
     }
-};
+  };
 
-ItemManager.effectIUSRandomChange2 = function(item, stat, value) {
+  ItemManager.effectIUSRandomChange2 = function (item, stat, value) {
     if (value >= 0) {
       var randomValue = value + 1;
     } else {
       var randomValue = value - 1;
     }
     switch (stat) {
-      case 'HP':
-      case 'MAXHP':
-      case 'MAX HP':
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
         item.params[0] += Math.floor(Math.random() * randomValue);
         break;
-      case 'MP':
-      case 'MAXMP':
-      case 'MAX MP':
-      case 'SP':
-      case 'MAXSP':
-      case 'MAX SP':
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
         item.params[1] += Math.floor(Math.random() * randomValue);
         break;
-      case 'ATK':
-      case 'STR':
+      case "ATK":
+      case "STR":
         item.params[2] += Math.floor(Math.random() * randomValue);
         break;
-      case 'DEF':
+      case "DEF":
         item.params[3] += Math.floor(Math.random() * randomValue);
         break;
-      case 'MAT':
-      case 'INT':
-      case 'SPI':
+      case "MAT":
+      case "INT":
+      case "SPI":
         item.params[4] += Math.floor(Math.random() * randomValue);
         break;
-      case 'MDF':
-      case 'RES':
+      case "MDF":
+      case "RES":
         item.params[5] += Math.floor(Math.random() * randomValue);
         break;
-      case 'AGI':
-      case 'SPD':
+      case "AGI":
+      case "SPD":
         item.params[6] += Math.floor(Math.random() * randomValue);
         break;
-      case 'LUK':
+      case "LUK":
         item.params[7] += Math.floor(Math.random() * randomValue);
         break;
-      case 'ALL':
+      case "ALL":
         for (var i = 0; i < 8; ++i) {
           item.params[i] += Math.floor(Math.random() * randomValue);
         }
         break;
-      case 'CURRENT':
+      case "CURRENT":
         for (var i = 0; i < 8; ++i) {
           if (item.params[i] === 0) continue;
           item.params[i] += Math.floor(Math.random() * randomValue);
         }
         break;
-      case 'SLOT':
-      case 'SLOTS':
+      case "SLOT":
+      case "SLOTS":
         item.upgradeSlots += Math.floor(Math.random() * randomValue);
         break;
     }
-};
+  };
 
-ItemManager.effectIUSResetStat = function(item, stat) {
+  ItemManager.effectIUSResetStat = function (item, stat) {
     if (Imported.MSEP_X_AttachAugments) {
       var augments = this.removeAllAugments(item);
     }
     var baseItem = DataManager.getBaseItem(item);
     switch (stat) {
-      case 'HP':
-      case 'MAXHP':
-      case 'MAX HP':
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
         item.params[0] = baseItem.params[0];
         break;
-      case 'MP':
-      case 'MAXMP':
-      case 'MAX MP':
-      case 'SP':
-      case 'MAXSP':
-      case 'MAX SP':
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
         item.params[1] = baseItem.params[1];
         break;
-      case 'ATK':
-      case 'STR':
+      case "ATK":
+      case "STR":
         item.params[2] = baseItem.params[2];
         break;
-      case 'DEF':
+      case "DEF":
         item.params[3] = baseItem.params[3];
         break;
-      case 'MAT':
-      case 'INT':
-      case 'SPI':
+      case "MAT":
+      case "INT":
+      case "SPI":
         item.params[4] = baseItem.params[4];
         break;
-      case 'MDF':
-      case 'RES':
+      case "MDF":
+      case "RES":
         item.params[5] = baseItem.params[5];
         break;
-      case 'AGI':
-      case 'SPD':
+      case "AGI":
+      case "SPD":
         item.params[6] = baseItem.params[6];
         break;
-      case 'LUK':
+      case "LUK":
         item.params[7] = baseItem.params[7];
         break;
-      case 'ALL':
+      case "ALL":
         for (var i = 0; i < 8; ++i) {
           item.params[i] = baseItem.params[i];
         }
         break;
-      case 'CURRENT':
+      case "CURRENT":
         for (var i = 0; i < 8; ++i) {
           if (item.params[i] === 0) continue;
           item.params[i] = baseItem.params[i];
         }
         break;
-      case 'BOOST':
-      case 'BOOST COUNT':
+      case "BOOST":
+      case "BOOST COUNT":
         item.boostCount = 0;
         this.updateItemName(item);
         break;
-      case 'SLOT':
-      case 'SLOTS':
+      case "SLOT":
+      case "SLOTS":
         if (item.originalUpgradeSlots) {
           item.upgradeSlots = baseItem.originalUpgradeSlots;
         } else {
@@ -776,26 +779,26 @@ ItemManager.effectIUSResetStat = function(item, stat) {
         item.boostCount = 0;
         this.updateItemName(item);
         break;
-      case 'BASE NAME':
+      case "BASE NAME":
         item.baseItemName = baseItem.name;
         this.updateItemName(item);
         break;
-      case 'ICON':
+      case "ICON":
         item.iconIndex = baseItem.iconIndex;
         break;
-      case 'PRIORITY NAME':
-        item.priorityName = '';
+      case "PRIORITY NAME":
+        item.priorityName = "";
         this.updateItemName(item);
         break;
-      case 'PREFIX':
-        item.namePrefix = '';
+      case "PREFIX":
+        item.namePrefix = "";
         this.updateItemName(item);
         break;
-      case 'SUFFIX':
-        item.nameSuffix = '';
+      case "SUFFIX":
+        item.nameSuffix = "";
         this.updateItemName(item);
         break;
-      case 'FULL':
+      case "FULL":
         var id = item.id;
         var item = JsonEx.makeDeepCopy(baseItem);
         item.id = id;
@@ -810,195 +813,185 @@ ItemManager.effectIUSResetStat = function(item, stat) {
     if (Imported.MSEP_X_AttachAugments) {
       this.installAugments(item, augments);
     }
-};
+  };
 
-ItemManager.effectIUSParamRateChange = function(item, stat, value) {
+  ItemManager.effectIUSParamRateChange = function (item, stat, value) {
     var baseItem = DataManager.getBaseItem(item);
     switch (stat) {
-      case 'HP':
-      case 'MAXHP':
-      case 'MAX HP':
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
         item.params[0] += value * 0.01 * baseItem.params[0];
         break;
-      case 'MP':
-      case 'MAXMP':
-      case 'MAX MP':
-      case 'SP':
-      case 'MAXSP':
-      case 'MAX SP':
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
         item.params[1] += value * 0.01 * baseItem.params[1];
         break;
-      case 'ATK':
-      case 'STR':
+      case "ATK":
+      case "STR":
         item.params[2] += value * 0.01 * baseItem.params[2];
         break;
-      case 'DEF':
+      case "DEF":
         item.params[3] += value * 0.01 * baseItem.params[3];
         break;
-      case 'MAT':
-      case 'INT':
-      case 'SPI':
+      case "MAT":
+      case "INT":
+      case "SPI":
         item.params[4] += value * 0.01 * baseItem.params[4];
         break;
-      case 'MDF':
-      case 'RES':
+      case "MDF":
+      case "RES":
         item.params[5] += value * 0.01 * baseItem.params[5];
         break;
-      case 'AGI':
-      case 'SPD':
+      case "AGI":
+      case "SPD":
         item.params[6] += value * 0.01 * baseItem.params[6];
         break;
-      case 'LUK':
+      case "LUK":
         item.params[7] += value * 0.01 * baseItem.params[7];
         break;
-      case 'ALL':
+      case "ALL":
         for (var i = 0; i < 8; ++i) {
           item.params[i] += value * 0.01 * baseItem.params[i];
         }
         break;
-      case 'CURRENT':
+      case "CURRENT":
         for (var i = 0; i < 8; ++i) {
           if (item.params[i] === 0) continue;
           item.params[i] += value * 0.01 * baseItem.params[i];
         }
         break;
-      case 'SLOT':
-      case 'SLOTS':
+      case "SLOT":
+      case "SLOTS":
         item.upgradeSlots += value * 0.01 * baseItem.upgradeSlots;
         break;
     }
-};
+  };
 
-ItemManager.effectIUSParamChange = function(item, stat, value) {
+  ItemManager.effectIUSParamChange = function (item, stat, value) {
     switch (stat) {
-      case 'HP':
-      case 'MAXHP':
-      case 'MAX HP':
+      case "HP":
+      case "MAXHP":
+      case "MAX HP":
         item.params[0] += value;
         break;
-      case 'MP':
-      case 'MAXMP':
-      case 'MAX MP':
-      case 'SP':
-      case 'MAXSP':
-      case 'MAX SP':
+      case "MP":
+      case "MAXMP":
+      case "MAX MP":
+      case "SP":
+      case "MAXSP":
+      case "MAX SP":
         item.params[1] += value;
         break;
-      case 'ATK':
-      case 'STR':
+      case "ATK":
+      case "STR":
         item.params[2] += value;
         break;
-      case 'DEF':
+      case "DEF":
         item.params[3] += value;
         break;
-      case 'MAT':
-      case 'INT':
-      case 'SPI':
+      case "MAT":
+      case "INT":
+      case "SPI":
         item.params[4] += value;
         break;
-      case 'MDF':
-      case 'RES':
+      case "MDF":
+      case "RES":
         item.params[5] += value;
         break;
-      case 'AGI':
-      case 'SPD':
+      case "AGI":
+      case "SPD":
         item.params[6] += value;
         break;
-      case 'LUK':
+      case "LUK":
         item.params[7] += value;
         break;
-      case 'ALL':
-        for (var i = 0; i < 8; ++i) { item.params[i] += value; }
+      case "ALL":
+        for (var i = 0; i < 8; ++i) {
+          item.params[i] += value;
+        }
         break;
-      case 'CURRENT':
+      case "CURRENT":
         for (var i = 0; i < 8; ++i) {
           if (item.params[i] === 0) continue;
           item.params[i] += value;
         }
         break;
-      case 'SLOT':
-      case 'SLOTS':
+      case "SLOT":
+      case "SLOTS":
         item.upgradeSlots += value;
         break;
     }
-};
+  };
 
-ItemManager.effectIUSSuffix = function(item, value) {
+  ItemManager.effectIUSSuffix = function (item, value) {
     this.setNameSuffix(item, value);
     this.updateItemName(item);
-};
+  };
 
-ItemManager.effectIUSTextColor = function(item, value) {
+  ItemManager.effectIUSTextColor = function (item, value) {
     item.textColor = value;
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.IUS.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.IUS.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.IUS.Game_System_initialize.call(this);
     this.initItemUpgradeSlots();
-};
+  };
 
-Game_System.prototype.initItemUpgradeSlots = function() {
+  Game_System.prototype.initItemUpgradeSlots = function () {
     this._itemUpgradeShow = true;
     this._itemUpgradeEnabled = true;
-};
+  };
 
-Game_System.prototype.itemUpgradeShow = function() {
+  Game_System.prototype.itemUpgradeShow = function () {
     if (this._itemUpgradeShow === undefined) this.initItemUpgradeSlots();
     return this._itemUpgradeShow;
-};
+  };
 
-Game_System.prototype.itemUpgradeEnabled = function() {
+  Game_System.prototype.itemUpgradeEnabled = function () {
     if (this._itemUpgradeEnabled === undefined) this.initItemUpgradeSlots();
     return this._itemUpgradeEnabled;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.IUS.Game_Interpreter_pluginCommand =
+  MageStudios.IUS.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-    MageStudios.IUS.Game_Interpreter_pluginCommand.call(this, command, args)
-    if (command === 'ShowItemUpgrade') {
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.IUS.Game_Interpreter_pluginCommand.call(this, command, args);
+    if (command === "ShowItemUpgrade") {
       $gameSystem._itemUpgradeShow = true;
     }
-    if (command === 'HideItemUpgrade') {
+    if (command === "HideItemUpgrade") {
       $gameSystem._itemUpgradeShow = false;
     }
-    if (command === 'DisableItemUpgrade') {
+    if (command === "DisableItemUpgrade") {
       $gameSystem._itemUpgradeEnabled = false;
     }
-    if (command === 'EnableItemUpgrade') {
+    if (command === "EnableItemUpgrade") {
       $gameSystem._itemUpgradeEnabled = true;
     }
-};
+  };
 
-//=============================================================================
-// Window_ItemInfo
-//=============================================================================
-
-MageStudios.IUS.Window_ItemInfo_drawItemInfoD =
+  MageStudios.IUS.Window_ItemInfo_drawItemInfoD =
     Window_ItemInfo.prototype.drawItemInfoD;
-Window_ItemInfo.prototype.drawItemInfoD = function(dy) {
+  Window_ItemInfo.prototype.drawItemInfoD = function (dy) {
     dy = MageStudios.IUS.Window_ItemInfo_drawItemInfoD.call(this, dy);
     dy = this.drawSlotsInfo(dy);
     dy = this.drawSlotUpgradesUsed(dy);
     return dy;
-};
+  };
 
-Window_ItemInfo.prototype.drawSlotsInfo = function(dy) {
+  Window_ItemInfo.prototype.drawSlotsInfo = function (dy) {
     var item = this._item;
     var baseItem = DataManager.getBaseItem(item);
     if (!item.slotsApplied) ItemManager.initSlotUpgradeNotes(item);
     if (!DataManager.isIndependent(item)) return dy;
     if (baseItem.upgradeSlots <= 0) return dy;
-    if (MageStudios.Param.IUSSlotsText === '') return dy;
+    if (MageStudios.Param.IUSSlotsText === "") return dy;
     var dx = this.textPadding();
     var dw = this.contents.width - this.textPadding() * 2;
     this.resetFontSettings();
@@ -1006,20 +999,20 @@ Window_ItemInfo.prototype.drawSlotsInfo = function(dy) {
     var text = MageStudios.Param.IUSSlotsText;
     this.drawText(text, dx, dy, dw);
     if (item.originalUpgradeSlots) {
-      text = '/' + MageStudios.Util.toGroup(item.originalUpgradeSlots);
+      text = "/" + MageStudios.Util.toGroup(item.originalUpgradeSlots);
     } else {
-      text = '/' + MageStudios.Util.toGroup(baseItem.upgradeSlots);
+      text = "/" + MageStudios.Util.toGroup(baseItem.upgradeSlots);
     }
     this.changeTextColor(this.normalColor());
-    this.drawText(text, dx, dy, dw, 'right');
+    this.drawText(text, dx, dy, dw, "right");
     dw -= this.textWidth(text);
     text = MageStudios.Util.toGroup(item.upgradeSlots);
     if (item.upgradeSlots <= 0) this.changeTextColor(this.powerDownColor());
-    this.drawText(text, dx, dy, dw, 'right');
+    this.drawText(text, dx, dy, dw, "right");
     return dy + this.lineHeight();
-};
+  };
 
-Window_ItemInfo.prototype.drawSlotUpgradesUsed = function(dy) {
+  Window_ItemInfo.prototype.drawSlotUpgradesUsed = function (dy) {
     var item = this._item;
     var baseItem = DataManager.getBaseItem(item);
     if (!item.slotsApplied) ItemManager.initSlotUpgradeNotes(item);
@@ -1036,76 +1029,68 @@ Window_ItemInfo.prototype.drawSlotUpgradesUsed = function(dy) {
     }
     this.resetFontSettings();
     return dy;
-};
+  };
 
-//=============================================================================
-// Window_ItemActionCommand
-//=============================================================================
-
-MageStudios.IUS.Window_ItemActionCommand_addCustomCommandsD =
+  MageStudios.IUS.Window_ItemActionCommand_addCustomCommandsD =
     Window_ItemActionCommand.prototype.addCustomCommandsD;
-Window_ItemActionCommand.prototype.addCustomCommandsD = function() {
+  Window_ItemActionCommand.prototype.addCustomCommandsD = function () {
     MageStudios.IUS.Window_ItemActionCommand_addCustomCommandsD.call(this);
     this.addUpgradeCommand();
-};
+  };
 
-Window_ItemActionCommand.prototype.addUpgradeCommand = function() {
-    if (MageStudios.Param.IUSUpgradeCmd === '') return;
+  Window_ItemActionCommand.prototype.addUpgradeCommand = function () {
+    if (MageStudios.Param.IUSUpgradeCmd === "") return;
     if (!$gameSystem.itemUpgradeShow()) return;
     var enabled = DataManager.isIndependent(this._item);
     if (eval(MageStudios.Param.IUSShowOnly) && !enabled) return;
     if (!$gameSystem.itemUpgradeEnabled()) enabled = false;
     var fmt = MageStudios.Param.IUSUpgradeCmd;
-    text = '\\i[' + this._item.iconIndex + ']';
+    text = "\\i[" + this._item.iconIndex + "]";
     if (this._item.textColor !== undefined) {
-      text += '\\c[' + this._item.textColor + ']';
+      text += "\\c[" + this._item.textColor + "]";
     }
     text += this._item.name;
     text = fmt.format(text);
-    this.addCommand(text, 'upgrade', enabled);
-};
+    this.addCommand(text, "upgrade", enabled);
+  };
 
-//=============================================================================
-// Window_UpgradeItemList
-//=============================================================================
-
-function Window_UpgradeItemList() {
+  function Window_UpgradeItemList() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_UpgradeItemList.prototype = Object.create(Window_ItemList.prototype);
-Window_UpgradeItemList.prototype.constructor = Window_UpgradeItemList;
+  Window_UpgradeItemList.prototype = Object.create(Window_ItemList.prototype);
+  Window_UpgradeItemList.prototype.constructor = Window_UpgradeItemList;
 
-Window_UpgradeItemList.prototype.initialize = function(x, y, width, height) {
+  Window_UpgradeItemList.prototype.initialize = function (x, y, width, height) {
     Window_ItemList.prototype.initialize.call(this, x, y, width, height);
     this._item = null;
     this.hide();
     this.deactivate();
-};
+  };
 
-Window_UpgradeItemList.prototype.setItem = function(item) {
+  Window_UpgradeItemList.prototype.setItem = function (item) {
     if (this._item === item) return;
     this._item = item;
     this.refresh();
     this.resetScroll();
     this.select(0);
-};
+  };
 
-Window_UpgradeItemList.prototype.includes = function(item) {
+  Window_UpgradeItemList.prototype.includes = function (item) {
     if (!item) return false;
     if (!this.containsType(item)) return false;
     if (!item.upgradeEffect) ItemManager.initSlotUpgradeNotes(item);
-    return item.upgradeEffect.length > 0
-};
+    return item.upgradeEffect.length > 0;
+  };
 
-Window_UpgradeItemList.prototype.containsType = function(item) {
+  Window_UpgradeItemList.prototype.containsType = function (item) {
     if (!item.upgradeWeaponType) ItemManager.initSlotUpgradeNotes(item);
     if (DataManager.isItem(this._item)) {
       var array1 = item.upgradeItemType;
-      if (array1.contains('ALL')) return true;
+      if (array1.contains("ALL")) return true;
       var array2 = this._item.types;
-      var array3 = array1.filter(function(n) {
-        return array2.indexOf(n) != -1
+      var array3 = array1.filter(function (n) {
+        return array2.indexOf(n) != -1;
       });
       if (array3.length && array3.length > 0) return true;
     }
@@ -1118,76 +1103,76 @@ Window_UpgradeItemList.prototype.containsType = function(item) {
       if (item.upgradeArmorType.contains(this._item.atypeId)) return true;
     }
     return false;
-};
+  };
 
-Window_UpgradeItemList.prototype.isEnabled = function(item) {
+  Window_UpgradeItemList.prototype.isEnabled = function (item) {
     if (!item) return false;
     return this._item.upgradeSlots >= item.upgradeSlotCost;
-};
+  };
 
-Window_UpgradeItemList.prototype.selectLast = function() {
-};
+  Window_UpgradeItemList.prototype.selectLast = function () {};
 
-Window_UpgradeItemList.prototype.playOkSound = function() {
+  Window_UpgradeItemList.prototype.playOkSound = function () {
     if (!this.item()) return;
     var sound = {
-      name:   this.item().upgradeSound,
+      name: this.item().upgradeSound,
       volume: 100,
-      pitch:  100,
-      pan:    100
+      pitch: 100,
+      pan: 100,
     };
     AudioManager.playSe(sound);
-};
+  };
 
-Window_UpgradeItemList.prototype.makeItemList = function() {
-    this._data = $gameParty.allItems().filter(function(item) {
-        return this.includes(item);
+  Window_UpgradeItemList.prototype.makeItemList = function () {
+    this._data = $gameParty.allItems().filter(function (item) {
+      return this.includes(item);
     }, this);
     if (this.includes(null)) this._data.push(null);
-};
+  };
 
-//=============================================================================
-// Scene_Item
-//=============================================================================
-
-MageStudios.IUS.Scene_Item_createItemWindow = Scene_Item.prototype.createItemWindow;
-Scene_Item.prototype.createItemWindow = function() {
+  MageStudios.IUS.Scene_Item_createItemWindow =
+    Scene_Item.prototype.createItemWindow;
+  Scene_Item.prototype.createItemWindow = function () {
     MageStudios.IUS.Scene_Item_createItemWindow.call(this);
     this.createUpgradeListWindow();
-};
+  };
 
-MageStudios.IUS.Scene_Item_createActionWindow =
+  MageStudios.IUS.Scene_Item_createActionWindow =
     Scene_Item.prototype.createActionWindow;
-Scene_Item.prototype.createActionWindow = function() {
+  Scene_Item.prototype.createActionWindow = function () {
     MageStudios.IUS.Scene_Item_createActionWindow.call(this);
-    this._itemActionWindow.setHandler('upgrade',
-      this.onActionUpgrade.bind(this));
-};
+    this._itemActionWindow.setHandler(
+      "upgrade",
+      this.onActionUpgrade.bind(this)
+    );
+  };
 
-Scene_Item.prototype.createUpgradeListWindow = function() {
+  Scene_Item.prototype.createUpgradeListWindow = function () {
     var wy = this._itemWindow.y;
     var ww = this._itemWindow.width;
     var wh = this._itemWindow.height;
     this._upgradeListWindow = new Window_UpgradeItemList(0, wy, ww, wh);
     this._upgradeListWindow.setHelpWindow(this._helpWindow);
-    this._upgradeListWindow.setHandler('ok', this.onUpgradeListOk.bind(this));
-    this._upgradeListWindow.setHandler('cancel',
-      this.onUpgradeListCancel.bind(this));
+    this._upgradeListWindow.setHandler("ok", this.onUpgradeListOk.bind(this));
+    this._upgradeListWindow.setHandler(
+      "cancel",
+      this.onUpgradeListCancel.bind(this)
+    );
     this.addWindow(this._upgradeListWindow);
-};
+  };
 
-Scene_Item.prototype.onActionUpgrade = function() {
+  Scene_Item.prototype.onActionUpgrade = function () {
     this._itemActionWindow.hide();
     this._itemActionWindow.deactivate();
     this._upgradeListWindow.show();
     this._upgradeListWindow.activate();
     this._upgradeItem = this.item();
     this._upgradeListWindow.setItem(this.item());
-};
+  };
 
-Scene_Item.prototype.onUpgradeListOk = function() {
+  Scene_Item.prototype.onUpgradeListOk = function () {
     var effectItem = this._upgradeListWindow.item();
-    ItemManager.applyIUSEffects(this._upgradeItem, effectItem)
+    ItemManager.applyIUSEffects(this._upgradeItem, effectItem);
     if (ItemManager._fullReset) return this.onUpgradeFullReset();
     this._upgradeListWindow.refresh();
     this._upgradeListWindow.activate();
@@ -1200,9 +1185,9 @@ Scene_Item.prototype.onUpgradeListOk = function() {
       index = this._upgradeListWindow.maxItems() - 1;
       this._upgradeListWindow.select(index);
     }
-};
+  };
 
-Scene_Item.prototype.onUpgradeFullReset = function() {
+  Scene_Item.prototype.onUpgradeFullReset = function () {
     ItemManager._fullReset = false;
     this.onUpgradeListCancel();
     this.onActionCancel();
@@ -1211,41 +1196,33 @@ Scene_Item.prototype.onUpgradeFullReset = function() {
     this._itemWindow.refresh();
     this._itemWindow.updateHelp();
     this._itemActionWindow.refresh();
-};
+  };
 
-Scene_Item.prototype.onUpgradeListCancel = function() {
+  Scene_Item.prototype.onUpgradeListCancel = function () {
     this._upgradeListWindow.hide();
     this._upgradeListWindow.deactivate();
     this._itemActionWindow.show();
     this._itemActionWindow.activate();
     this._helpWindow.setItem(this.item());
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.getRange = function(n, m) {
+  MageStudios.Util.getRange = function (n, m) {
     var result = [];
     for (var i = n; i <= m; ++i) result.push(i);
     return result;
-};
+  };
 
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

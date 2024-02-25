@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Target Extension - Selection Control
-// MSEP_X_SelectionControl.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_SelectionControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Sel = MageStudios.Sel || {};
-MageStudios.Sel.version = 1.00;
+MageStudios.Sel.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_TargetCore.js)
  * Control what targets can and can't be selected for actions.
  * @author Mage Studios Engine Plugins
@@ -122,7 +116,7 @@ MageStudios.Sel.version = 1.00;
  * This is a formula.
  * @default this.fittingHeight(1)
  *
-  * @param Visual Ally X
+ * @param Visual Ally X
  * @parent ---Visual All Window Select---
  * @desc X coordinate of the All Allies window.
  * This is a formula.
@@ -363,7 +357,7 @@ MageStudios.Sel.version = 1.00;
  * ie: Param HP% <= 0.30
  * ie: Param Level === 25
  * - This makes the selection have a check on the target's parameter values
- * before deciding if the target is a valid target for selection. You can 
+ * before deciding if the target is a valid target for selection. You can
  * replace 'stat' with 'MaxHP', 'MaxMP', 'MaxTP', 'HP', 'MP', 'TP', 'HP%',
  * 'MP%', 'TP%', 'ATK', 'DEF', 'MAT', 'MDF', 'AGI', 'LUK', or 'LEVEL'. This
  * run an eval check against that parameter owned by the target.
@@ -489,336 +483,336 @@ MageStudios.Sel.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_BattleEngineCore && Imported.MSEP_TargetCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_SelectionControl");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.SelectSoleMulti = String(
+    MageStudios.Parameters["Single Multiple"]
+  );
+  MageStudios.Param.SelectSoleMulti = eval(MageStudios.Param.SelectSoleMulti);
+  MageStudios.Param.SelectDisperse = String(
+    MageStudios.Parameters["Disperse Damage"]
+  );
+  MageStudios.Param.SelectDisperse = eval(MageStudios.Param.SelectDisperse);
+  MageStudios.Param.SelectActorEnemy = String(
+    MageStudios.Parameters["Actor or Enemy"]
+  );
+  MageStudios.Param.SelectActorEnemy = eval(MageStudios.Param.SelectActorEnemy);
+  MageStudios.Param.SelectMelee = String(
+    MageStudios.Parameters["Physical Front Row"]
+  );
+  MageStudios.Param.SelectMelee = eval(MageStudios.Param.SelectMelee);
+  MageStudios.Param.SelectWpn = String(
+    MageStudios.Parameters["Physical Weapon Range"]
+  );
+  MageStudios.Param.SelectWpn = eval(MageStudios.Param.SelectWpn);
+  MageStudios.Param.SelectWpnRng = String(
+    MageStudios.Parameters["Default Weapon Range"]
+  );
+  MageStudios.Param.SelectWpnRng = eval(MageStudios.Param.SelectWpnRng);
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_SelectionControl');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.SelectAllFoes = String(
+    MageStudios.Parameters["All Enemies"]
+  );
+  MageStudios.Param.SelectAllAllies = String(
+    MageStudios.Parameters["All Allies"]
+  );
 
-MageStudios.Param.SelectSoleMulti = String(MageStudios.Parameters['Single Multiple']);
-MageStudios.Param.SelectSoleMulti = eval(MageStudios.Param.SelectSoleMulti);
-MageStudios.Param.SelectDisperse = String(MageStudios.Parameters['Disperse Damage']);
-MageStudios.Param.SelectDisperse = eval(MageStudios.Param.SelectDisperse);
-MageStudios.Param.SelectActorEnemy = String(MageStudios.Parameters['Actor or Enemy']);
-MageStudios.Param.SelectActorEnemy = eval(MageStudios.Param.SelectActorEnemy);
-MageStudios.Param.SelectMelee = String(MageStudios.Parameters['Physical Front Row']);
-MageStudios.Param.SelectMelee = eval(MageStudios.Param.SelectMelee);
-MageStudios.Param.SelectWpn = String(MageStudios.Parameters['Physical Weapon Range']);
-MageStudios.Param.SelectWpn = eval(MageStudios.Param.SelectWpn);
-MageStudios.Param.SelectWpnRng = String(MageStudios.Parameters['Default Weapon Range']);
-MageStudios.Param.SelectWpnRng = eval(MageStudios.Param.SelectWpnRng);
+  MageStudios.Param.BECEnemySelect = true;
+  MageStudios.Param.BECActorSelect = true;
 
-MageStudios.Param.SelectAllFoes = String(MageStudios.Parameters['All Enemies']);
-MageStudios.Param.SelectAllAllies = String(MageStudios.Parameters['All Allies']);
+  MageStudios.Param.SelectVisualAll = String(
+    MageStudios.Parameters["Enable Visual All"]
+  );
+  MageStudios.Param.SelectVisualAll = eval(MageStudios.Param.SelectVisualAll);
+  MageStudios.Param.SelectVisualEnemy = {
+    x: String(MageStudios.Parameters["Visual Enemy X"]),
+    y: String(MageStudios.Parameters["Visual Enemy Y"]),
+    width: String(MageStudios.Parameters["Visual Enemy Width"]),
+    height: String(MageStudios.Parameters["Visual Enemy Height"]),
+  };
+  MageStudios.Param.SelectVisualAlly = {
+    x: String(MageStudios.Parameters["Visual Ally X"]),
+    y: String(MageStudios.Parameters["Visual Ally Y"]),
+    width: String(MageStudios.Parameters["Visual Ally Width"]),
+    height: String(MageStudios.Parameters["Visual Ally Height"]),
+  };
 
-MageStudios.Param.BECEnemySelect = true;
-MageStudios.Param.BECActorSelect = true;
+  MageStudios.Sel.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.Sel.DataManager_isDatabaseLoaded.call(this)) return false;
 
-MageStudios.Param.SelectVisualAll = String(MageStudios.Parameters['Enable Visual All']);
-MageStudios.Param.SelectVisualAll = eval(MageStudios.Param.SelectVisualAll);
-MageStudios.Param.SelectVisualEnemy = {
-  x: String(MageStudios.Parameters['Visual Enemy X']),
-  y: String(MageStudios.Parameters['Visual Enemy Y']),
-  width: String(MageStudios.Parameters['Visual Enemy Width']),
-  height: String(MageStudios.Parameters['Visual Enemy Height'])
-}
-MageStudios.Param.SelectVisualAlly = {
-  x: String(MageStudios.Parameters['Visual Ally X']),
-  y: String(MageStudios.Parameters['Visual Ally Y']),
-  width: String(MageStudios.Parameters['Visual Ally Width']),
-  height: String(MageStudios.Parameters['Visual Ally Height'])
-}
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.Sel.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.Sel.DataManager_isDatabaseLoaded.call(this)) return false;
-
-  if (!MageStudios._loaded_MSEP_X_SelectionControl) {
-    this.processSelectNotetagsI($dataItems);
-    this.processSelectNotetagsS($dataSkills);
-    this.processSelectNotetagsT($dataStates);
-    this.processSelectNotetagsSys($dataSystem);
-    this.processSelectNotetags1($dataSkills, true);
-    this.processSelectNotetags1($dataItems, false);
-    this.processSelectNotetags2($dataActors);
-    this.processSelectNotetags2($dataClasses);
-    this.processSelectNotetags2($dataEnemies);
-    this.processSelectNotetags2($dataWeapons);
-    this.processSelectNotetags2($dataArmors);
-    this.processSelectNotetags2($dataStates);
-    this.processSelectNotetags3($dataWeapons);
-    this.processSelectNotetags3($dataEnemies);
-    MageStudios._loaded_MSEP_X_SelectionControl = true;
-  }
-  
-  return true;
-};
-
-DataManager.processSelectNotetagsI = function(group) {
-  if (MageStudios.ItemIdRef) return;
-  MageStudios.ItemIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processSelectNotetagsS = function(group) {
-  if (MageStudios.SkillIdRef) return;
-  MageStudios.SkillIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processSelectNotetagsT = function(group) {
-  if (MageStudios.StateIdRef) return;
-  MageStudios.StateIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.StateIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processSelectNotetagsSys = function(group) {
-  MageStudios.STypeIdRef = {};
-  for (var i = 1; i < group.skillTypes.length; ++i) {
-    var name = group.skillTypes[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
-    MageStudios.STypeIdRef[name] = i;
-  }
-  MageStudios.ElementIdRef = {};
-  for (var i = 1; i < group.elements.length; ++i) {
-    var name = group.elements[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
-    MageStudios.ElementIdRef[name] = i;
-  }
-};
-
-DataManager.processSelectNotetags1 = function(group, isSkill) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.selectConditions = [];
-    var changed = false;
-    var evalMode = 'none';
-    obj.selectConditionEval = '';
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:SELECT CONDITION|SELECT CONDITIONS)>/i)) {
-        evalMode = 'select conditions';
-        obj.selectConditions = [];
-        changed = true;
-      } else if (line.match(/<\/(?:SELECT CONDITION|SELECT CONDITIONS)>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'select conditions') {
-        obj.selectConditions.push(line.trim());
-      } else if (line.match(/<CUSTOM SELECT CONDITION>/i)) {
-        evalMode = 'custom select condition';
-      } else if (line.match(/<\/CUSTOM SELECT CONDITION>/i)) {
-        evalMode = 'none';
-      } else if (evalMode === 'custom select condition') {
-        obj.selectConditionEval += line + '\n';
-      }
+    if (!MageStudios._loaded_MSEP_X_SelectionControl) {
+      this.processSelectNotetagsI($dataItems);
+      this.processSelectNotetagsS($dataSkills);
+      this.processSelectNotetagsT($dataStates);
+      this.processSelectNotetagsSys($dataSystem);
+      this.processSelectNotetags1($dataSkills, true);
+      this.processSelectNotetags1($dataItems, false);
+      this.processSelectNotetags2($dataActors);
+      this.processSelectNotetags2($dataClasses);
+      this.processSelectNotetags2($dataEnemies);
+      this.processSelectNotetags2($dataWeapons);
+      this.processSelectNotetags2($dataArmors);
+      this.processSelectNotetags2($dataStates);
+      this.processSelectNotetags3($dataWeapons);
+      this.processSelectNotetags3($dataEnemies);
+      MageStudios._loaded_MSEP_X_SelectionControl = true;
     }
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<SINGLE OR MULTIPLE SELECT>/i)) {
-        obj.selectConditions.push('SINGLE OR MULTIPLE SELECT');
-        changed = true;
-      } else if (line.match(/<DISPERSE DAMAGE>/i)) {
-        obj.selectConditions.push('DISPERSE DAMAGE SELECT');
-        changed = true;
-      } else if (line.match(/<ENEMY OR ACTOR SELECT>/i)) {
-        obj.selectConditions.push('ENEMY OR ACTOR SELECT');
-        obj.scope = 1;
-        changed = true;
-      } else if (line.match(/<ACTOR OR ENEMY SELECT>/i)) {
-        obj.selectConditions.push('ACTOR OR ENEMY SELECT');
-        obj.scope = 7;
-        changed = true;
-      } else if (line.match(/<(?:WEAPON RANGE|WEAPON RANGED)>/i)) {
-        obj.selectConditions.push('WEAPON RANGE');
-        changed = true;
-      }
-    }
+    return true;
+  };
 
-    if (!changed) {
-      if (isSkill && obj.hitType === Game_Action.HITTYPE_MAGICAL) {
-        if (MageStudios.Param.SelectSoleMulti && [1, 7].contains(obj.scope)) {
-          obj.selectConditions.push('SINGLE OR MULTIPLE SELECT');
-        }
-      } else if (isSkill && obj.hitType === Game_Action.HITTYPE_PHYSICAL) {
-        if (MageStudios.Param.SelectMelee && [1].contains(obj.scope)) {
-          obj.selectConditions.push('FRONT ROW ONLY');
-        } else if (MageStudios.Param.SelectWpn && [1].contains(obj.scope)) {
-          obj.selectConditions.push('WEAPON RANGE');
+  DataManager.processSelectNotetagsI = function (group) {
+    if (MageStudios.ItemIdRef) return;
+    MageStudios.ItemIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.ItemIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
+
+  DataManager.processSelectNotetagsS = function (group) {
+    if (MageStudios.SkillIdRef) return;
+    MageStudios.SkillIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
+
+  DataManager.processSelectNotetagsT = function (group) {
+    if (MageStudios.StateIdRef) return;
+    MageStudios.StateIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.StateIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
+
+  DataManager.processSelectNotetagsSys = function (group) {
+    MageStudios.STypeIdRef = {};
+    for (var i = 1; i < group.skillTypes.length; ++i) {
+      var name = group.skillTypes[i].toUpperCase();
+      name = name.replace(/\\I\[(\d+)\]/gi, "");
+      MageStudios.STypeIdRef[name] = i;
+    }
+    MageStudios.ElementIdRef = {};
+    for (var i = 1; i < group.elements.length; ++i) {
+      var name = group.elements[i].toUpperCase();
+      name = name.replace(/\\I\[(\d+)\]/gi, "");
+      MageStudios.ElementIdRef[name] = i;
+    }
+  };
+
+  DataManager.processSelectNotetags1 = function (group, isSkill) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.selectConditions = [];
+      var changed = false;
+      var evalMode = "none";
+      obj.selectConditionEval = "";
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:SELECT CONDITION|SELECT CONDITIONS)>/i)) {
+          evalMode = "select conditions";
+          obj.selectConditions = [];
+          changed = true;
+        } else if (line.match(/<\/(?:SELECT CONDITION|SELECT CONDITIONS)>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "select conditions") {
+          obj.selectConditions.push(line.trim());
+        } else if (line.match(/<CUSTOM SELECT CONDITION>/i)) {
+          evalMode = "custom select condition";
+        } else if (line.match(/<\/CUSTOM SELECT CONDITION>/i)) {
+          evalMode = "none";
+        } else if (evalMode === "custom select condition") {
+          obj.selectConditionEval += line + "\n";
         }
       }
-      if (MageStudios.Param.SelectActorEnemy) {
-        if (obj.scope === 1) obj.selectConditions.push('ENEMY OR ACTOR SELECT');
-        if (obj.scope === 7) obj.selectConditions.push('ACTOR OR ENEMY SELECT');
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<SINGLE OR MULTIPLE SELECT>/i)) {
+          obj.selectConditions.push("SINGLE OR MULTIPLE SELECT");
+          changed = true;
+        } else if (line.match(/<DISPERSE DAMAGE>/i)) {
+          obj.selectConditions.push("DISPERSE DAMAGE SELECT");
+          changed = true;
+        } else if (line.match(/<ENEMY OR ACTOR SELECT>/i)) {
+          obj.selectConditions.push("ENEMY OR ACTOR SELECT");
+          obj.scope = 1;
+          changed = true;
+        } else if (line.match(/<ACTOR OR ENEMY SELECT>/i)) {
+          obj.selectConditions.push("ACTOR OR ENEMY SELECT");
+          obj.scope = 7;
+          changed = true;
+        } else if (line.match(/<(?:WEAPON RANGE|WEAPON RANGED)>/i)) {
+          obj.selectConditions.push("WEAPON RANGE");
+          changed = true;
+        }
       }
-      if (MageStudios.Param.SelectDisperse) {
-        obj.selectConditions.push('DISPERSE DAMAGE SELECT');
+
+      if (!changed) {
+        if (isSkill && obj.hitType === Game_Action.HITTYPE_MAGICAL) {
+          if (MageStudios.Param.SelectSoleMulti && [1, 7].contains(obj.scope)) {
+            obj.selectConditions.push("SINGLE OR MULTIPLE SELECT");
+          }
+        } else if (isSkill && obj.hitType === Game_Action.HITTYPE_PHYSICAL) {
+          if (MageStudios.Param.SelectMelee && [1].contains(obj.scope)) {
+            obj.selectConditions.push("FRONT ROW ONLY");
+          } else if (MageStudios.Param.SelectWpn && [1].contains(obj.scope)) {
+            obj.selectConditions.push("WEAPON RANGE");
+          }
+        }
+        if (MageStudios.Param.SelectActorEnemy) {
+          if (obj.scope === 1)
+            obj.selectConditions.push("ENEMY OR ACTOR SELECT");
+          if (obj.scope === 7)
+            obj.selectConditions.push("ACTOR OR ENEMY SELECT");
+        }
+        if (MageStudios.Param.SelectDisperse) {
+          obj.selectConditions.push("DISPERSE DAMAGE SELECT");
+        }
+      }
+
+      this.removeAoeEffects(obj);
+    }
+  };
+
+  DataManager.removeAoeEffects = function (obj) {
+    if (obj.selectConditions.contains("SINGLE OR MULTIPLE SELECT")) {
+      obj.aoeCircleRadius = 0;
+      obj.aoeRectColumn = 0;
+      obj.aoeRectRow = 0;
+      obj.aoeRectAll = false;
+    }
+  };
+
+  DataManager.processSelectNotetags2 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      obj.cannotSelect = [];
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<CANNOT SELECT:[ ](.*)>/i)) {
+          var text = String(RegExp.$1).trim();
+          obj.cannotSelect.push(text);
+        }
       }
     }
+  };
 
-    this.removeAoeEffects(obj);
-  }
-};
+  DataManager.processSelectNotetags3 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-DataManager.removeAoeEffects = function(obj) {
-  if (obj.selectConditions.contains('SINGLE OR MULTIPLE SELECT')) {
-    obj.aoeCircleRadius = 0;
-    obj.aoeRectColumn = 0;
-    obj.aoeRectRow = 0;
-    obj.aoeRectAll = false;
-  }
-};
+      obj.weaponRanged = MageStudios.Param.SelectWpnRng;
 
-DataManager.processSelectNotetags2 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.cannotSelect = [];
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<CANNOT SELECT:[ ](.*)>/i)) {
-        var text = String(RegExp.$1).trim();
-        obj.cannotSelect.push(text);
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<MELEE>/i)) {
+          obj.weaponRanged = false;
+        } else if (line.match(/<(?:RANGE|RANGED)>/i)) {
+          obj.weaponRanged = true;
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.processSelectNotetags3 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.weaponRanged = MageStudios.Param.SelectWpnRng;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<MELEE>/i)) {
-        obj.weaponRanged = false;
-      } else if (line.match(/<(?:RANGE|RANGED)>/i)) {
-        obj.weaponRanged = true;
-      }
-    }
-  }
-};
-
-//=============================================================================
-// BattleManager
-//=============================================================================
-
-MageStudios.Sel.BattleManager_makeActionTargets = BattleManager.makeActionTargets;
-BattleManager.makeActionTargets = function(string) {
+  MageStudios.Sel.BattleManager_makeActionTargets =
+    BattleManager.makeActionTargets;
+  BattleManager.makeActionTargets = function (string) {
     this._action.bypassForceSelectedUnit(true);
-    var targets = MageStudios.Sel.BattleManager_makeActionTargets.call(this, string);
+    var targets = MageStudios.Sel.BattleManager_makeActionTargets.call(
+      this,
+      string
+    );
     this._action.bypassForceSelectedUnit(false);
     return targets;
-};
+  };
 
-if (Imported.MSEP_X_BattleSysCTB) {
-
-MageStudios.Sel.BattleManager_ctbTurnOrder = BattleManager.ctbTurnOrder;
-BattleManager.ctbTurnOrder = function() {
-  $gameTemp._checkAllAliveMembers = true;
-  var battlers = MageStudios.Sel.BattleManager_ctbTurnOrder.call(this);
-  $gameTemp._checkAllAliveMembers = undefined;
-  return battlers;
-};
-
-}; // Imported.MSEP_X_BattleSysCTB
-
-//=============================================================================
-// Game_Temp
-//=============================================================================
-
-Game_Temp.prototype.clearSelectionControlCache = function() {
-  this._selectionControlItemCache = undefined;
-  this._selectionControlSkillCache = undefined;
-};
-
-Game_Temp.prototype.isSelectionControlCached = function(item) {
-  var id = item.id;
-  if (DataManager.isItem) {
-    if (this._selectionControlItemCache === undefined) return false;
-    return this._selectionControlItemCache[id] !== undefined;
-  } else {
-    if (this._selectionControlSkillCache === undefined) return false;
-    return this._selectionControlSkillCache[id] !== undefined;
+  if (Imported.MSEP_X_BattleSysCTB) {
+    MageStudios.Sel.BattleManager_ctbTurnOrder = BattleManager.ctbTurnOrder;
+    BattleManager.ctbTurnOrder = function () {
+      $gameTemp._checkAllAliveMembers = true;
+      var battlers = MageStudios.Sel.BattleManager_ctbTurnOrder.call(this);
+      $gameTemp._checkAllAliveMembers = undefined;
+      return battlers;
+    };
   }
-};
 
-Game_Temp.prototype.getSelectionControlCache = function(item) {
-  var id = item.id;
-  if (DataManager.isItem) {
-    this._selectionControlItemCache = this._selectionControlItemCache || {};
-    return this._selectionControlItemCache[id];
-  } else {
-    this._selectionControlSkillCache = this._selectionControlSkillCache || {};
-    return this._selectionControlSkillCache[id];
-  }
-};
+  Game_Temp.prototype.clearSelectionControlCache = function () {
+    this._selectionControlItemCache = undefined;
+    this._selectionControlSkillCache = undefined;
+  };
 
-Game_Temp.prototype.setSelectionControlCache = function(item, value) {
-  var id = item.id;
-  if (DataManager.isItem) {
-    this._selectionControlItemCache = this._selectionControlItemCache || {};
-    this._selectionControlItemCache[id] = value;
-  } else {
-    this._selectionControlSkillCache = this._selectionControlSkillCache || {};
-    this._selectionControlSkillCache[id] = value;
-  }
-};
+  Game_Temp.prototype.isSelectionControlCached = function (item) {
+    var id = item.id;
+    if (DataManager.isItem) {
+      if (this._selectionControlItemCache === undefined) return false;
+      return this._selectionControlItemCache[id] !== undefined;
+    } else {
+      if (this._selectionControlSkillCache === undefined) return false;
+      return this._selectionControlSkillCache[id] !== undefined;
+    }
+  };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
+  Game_Temp.prototype.getSelectionControlCache = function (item) {
+    var id = item.id;
+    if (DataManager.isItem) {
+      this._selectionControlItemCache = this._selectionControlItemCache || {};
+      return this._selectionControlItemCache[id];
+    } else {
+      this._selectionControlSkillCache = this._selectionControlSkillCache || {};
+      return this._selectionControlSkillCache[id];
+    }
+  };
 
-MageStudios.Sel.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
-Game_BattlerBase.prototype.refresh = function() {
-  $gameTemp.clearSelectionControlCache();
-  MageStudios.Sel.Game_BattlerBase_refresh.call(this);
-};
+  Game_Temp.prototype.setSelectionControlCache = function (item, value) {
+    var id = item.id;
+    if (DataManager.isItem) {
+      this._selectionControlItemCache = this._selectionControlItemCache || {};
+      this._selectionControlItemCache[id] = value;
+    } else {
+      this._selectionControlSkillCache = this._selectionControlSkillCache || {};
+      this._selectionControlSkillCache[id] = value;
+    }
+  };
 
-MageStudios.Sel.Game_BattlerBase_canUse = Game_BattlerBase.prototype.canUse;
-Game_BattlerBase.prototype.canUse = function(item) {
+  MageStudios.Sel.Game_BattlerBase_refresh = Game_BattlerBase.prototype.refresh;
+  Game_BattlerBase.prototype.refresh = function () {
+    $gameTemp.clearSelectionControlCache();
+    MageStudios.Sel.Game_BattlerBase_refresh.call(this);
+  };
+
+  MageStudios.Sel.Game_BattlerBase_canUse = Game_BattlerBase.prototype.canUse;
+  Game_BattlerBase.prototype.canUse = function (item) {
     var value = MageStudios.Sel.Game_BattlerBase_canUse.call(this, item);
     if (!value) return false;
     if (!$gameParty.inBattle()) return true;
     return this.hasValidTargets(item);
-};
+  };
 
-Game_BattlerBase.prototype.hasValidTargets = function(item) {
+  Game_BattlerBase.prototype.hasValidTargets = function (item) {
     if ($gameTemp.isSelectionControlCached(item)) {
       return $gameTemp.getSelectionControlCache(item);
     }
     var action = new Game_Action(this);
     action.setItemObject(item);
-    var targets = []
+    var targets = [];
     if (action.isSpanBothParties()) {
       targets = targets.concat(this.friendsUnit().aliveMembers());
       targets = targets.concat(this.opponentsUnit().aliveMembers());
@@ -841,24 +835,20 @@ Game_BattlerBase.prototype.hasValidTargets = function(item) {
     }
     $gameTemp.setSelectionControlCache(item, false);
     return false;
-};
+  };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
-MageStudios.Sel.Game_Battler_isSelected = Game_Battler.prototype.isSelected;
-Game_Battler.prototype.isSelected = function() {
+  MageStudios.Sel.Game_Battler_isSelected = Game_Battler.prototype.isSelected;
+  Game_Battler.prototype.isSelected = function () {
     if ($gameParty.inBattle()) {
       var action = BattleManager.inputtingAction();
       if (action && action.item()) {
         if (!this.isSelectable(action)) return false;
-      };
+      }
     }
     return MageStudios.Sel.Game_Battler_isSelected.call(this);
-};
+  };
 
-Game_Battler.prototype.isSelectable = function(action) {
+  Game_Battler.prototype.isSelectable = function (action) {
     if (!action) return true;
     var length = this.states().length;
     for (var i = 0; i < length; ++i) {
@@ -867,9 +857,9 @@ Game_Battler.prototype.isSelectable = function(action) {
       if (!this.isSelectableObj(obj, action)) return false;
     }
     return true;
-};
+  };
 
-Game_Battler.prototype.isSelectableObj = function(obj, action) {
+  Game_Battler.prototype.isSelectableObj = function (obj, action) {
     var array = obj.cannotSelect;
     var length = array.length;
     for (var i = 0; i < length; ++i) {
@@ -877,23 +867,23 @@ Game_Battler.prototype.isSelectableObj = function(obj, action) {
       if (!this.checkActionSelectable(line, action)) return false;
     }
     return true;
-};
+  };
 
-Game_Battler.prototype.checkActionSelectable = function(line, action) {
+  Game_Battler.prototype.checkActionSelectable = function (line, action) {
     if (action.isForUser()) return true;
-    // ALL
-    if (line.toUpperCase() === 'ALL') return false;
-    // PHYSICAL HIT
-    if (line.toUpperCase() === 'PHYSICAL HIT') return !action.isPhysical();
-    // MAGICAL HIT
-    if (line.toUpperCase() === 'MAGICAL HIT') return !action.isMagical();
-    // CERTAIN HIT
-    if (line.toUpperCase() === 'CERTAIN HIT') return !action.isCertainHit();
-    // SKILLS
-    if (line.toUpperCase() === 'SKILLS') return !action.isSkill();
-    // ITEMS
-    if (line.toUpperCase() === 'ITEMS') return !action.isItem();
-    // ITEM X
+
+    if (line.toUpperCase() === "ALL") return false;
+
+    if (line.toUpperCase() === "PHYSICAL HIT") return !action.isPhysical();
+
+    if (line.toUpperCase() === "MAGICAL HIT") return !action.isMagical();
+
+    if (line.toUpperCase() === "CERTAIN HIT") return !action.isCertainHit();
+
+    if (line.toUpperCase() === "SKILLS") return !action.isSkill();
+
+    if (line.toUpperCase() === "ITEMS") return !action.isItem();
+
     if (line.match(/ITEM[ ](.*)/i)) {
       if (action.isItem()) {
         var text = String(RegExp.$1).toUpperCase().trim();
@@ -908,7 +898,7 @@ Game_Battler.prototype.checkActionSelectable = function(line, action) {
         }
       }
     }
-    // SKILL X
+
     if (line.match(/SKILL[ ](.*)/i)) {
       if (action.isSkill()) {
         var text = String(RegExp.$1).toUpperCase().trim();
@@ -923,7 +913,7 @@ Game_Battler.prototype.checkActionSelectable = function(line, action) {
         }
       }
     }
-    // STYPE X
+
     if (line.match(/STYPE[ ](.*)/i)) {
       if (action.isSkill()) {
         var text = String(RegExp.$1).toUpperCase().trim();
@@ -938,7 +928,7 @@ Game_Battler.prototype.checkActionSelectable = function(line, action) {
         }
       }
     }
-    // ELEMENT X
+
     if (line.match(/ELEMENT[ ](.*)/i)) {
       var text = String(RegExp.$1).toUpperCase().trim();
       if (text.match(/(\d+)/i)) {
@@ -951,178 +941,167 @@ Game_Battler.prototype.checkActionSelectable = function(line, action) {
         return true;
       }
     }
-    // ALL CLEARED
+
     return true;
-};
+  };
 
-Game_Battler.prototype.isWeaponRanged = function() {
-  return false;
-};
+  Game_Battler.prototype.isWeaponRanged = function () {
+    return false;
+  };
 
-MageStudios.Sel.Game_Battler_gainSilentTp = Game_Battler.prototype.gainSilentTp;
-Game_Battler.prototype.gainSilentTp = function(value) {
+  MageStudios.Sel.Game_Battler_gainSilentTp =
+    Game_Battler.prototype.gainSilentTp;
+  Game_Battler.prototype.gainSilentTp = function (value) {
     if ($gameParty.inBattle() && $gameTemp._selectedDmgMod !== undefined) {
       value = Math.floor(value * $gameTemp._selectedDmgMod);
     }
     MageStudios.Sel.Game_Battler_gainSilentTp.call(this, value);
-};
+  };
 
-//=============================================================================
-// Game_Actor
-//=============================================================================
-
-Game_Actor.prototype.isSelectable = function(action) {
-  if (!Game_Battler.prototype.isSelectable.call(this, action)) return false;
-  var length = this.equips().length;
-  for (var i = 0; i < length; ++i) {
-    var obj = this.equips()[i];
-    if (!obj) continue;
-    if (!this.isSelectableObj(obj, action)) return false;
-  }
-  if (!this.isSelectableObj(this.actor(), action)) return false;
-  if (!this.isSelectableObj(this.currentClass(), action)) return false;
-  return true;
-};
-
-Game_Actor.prototype.isWeaponRanged = function() {
-  var weapons = this.weapons();
-  for (var i = 0; i < weapons.length; ++i) {
-    var weapon = weapons[i];
-    if (!weapon) continue;
-    if (weapon.weaponRanged === undefined && weapon.baseItemId) {
-      weapon.weaponRanged = DataManager.getBaseItem(weapon).weaponRanged;
+  Game_Actor.prototype.isSelectable = function (action) {
+    if (!Game_Battler.prototype.isSelectable.call(this, action)) return false;
+    var length = this.equips().length;
+    for (var i = 0; i < length; ++i) {
+      var obj = this.equips()[i];
+      if (!obj) continue;
+      if (!this.isSelectableObj(obj, action)) return false;
     }
-    if (weapon.weaponRanged) return true;
-  }
-  return false;
-};
+    if (!this.isSelectableObj(this.actor(), action)) return false;
+    if (!this.isSelectableObj(this.currentClass(), action)) return false;
+    return true;
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.isSelectable = function(action) {
-  if (!Game_Battler.prototype.isSelectable.call(this, action)) return false;
-  if (!this.isSelectableObj(this.enemy(), action)) return false;
-  return true;
-};
-
-Game_Enemy.prototype.isWeaponRanged = function() {
-  return this.enemy().weaponRanged;
-};
-
-//=============================================================================
-// Game_Unit
-//=============================================================================
-
-MageStudios.Sel.Game_Unit_aliveMembers = Game_Unit.prototype.aliveMembers;
-Game_Unit.prototype.aliveMembers = function() {
-  var members = MageStudios.Sel.Game_Unit_aliveMembers.call(this);
-  if ($gameTemp._checkAllAliveMembers) return members;
-  if ($gameTemp._selectionFilterInProgress) return members;
-  if ($gameTemp._selectionFilter) return this.filterSelection(members);
-  return members;
-};
-
-MageStudios.Sel.Game_Unit_deadMembers = Game_Unit.prototype.deadMembers;
-Game_Unit.prototype.deadMembers = function() {
-  var members = MageStudios.Sel.Game_Unit_deadMembers.call(this);
-  if ($gameTemp._selectionFilterInProgress) return members;
-  if ($gameTemp._selectionFilter) return this.filterSelection(members);
-  return members;
-};
-
-if (!Imported.MSEP_X_StateCategories) {
-
-MageStudios.Sel.Game_Unit_isAllDead = Game_Unit.prototype.isAllDead;
-Game_Unit.prototype.isAllDead = function() {
-  $gameTemp._checkAllAliveMembers = true;
-  var value = MageStudios.Sel.Game_Unit_isAllDead.call(this);
-  $gameTemp._checkAllAliveMembers = undefined;
-  return value;
-};
-
-}; // Imported.MSEP_X_StateCategories
-
-Game_Unit.prototype.filterSelection = function(members) {
-  $gameTemp._selectionFilterInProgress = true;
-  var user = $gameTemp._selectionSubject;
-  var action = $gameTemp._selectionAction;
-  var length = members.length;
-  var targets = [];
-  for (var i = 0; i < length; ++i) {
-    var target = members[i];
-    if (!target) continue;
-    if (action.checkAllSelectionConditions(user, target)) {
-      targets.push(target);
+  Game_Actor.prototype.isWeaponRanged = function () {
+    var weapons = this.weapons();
+    for (var i = 0; i < weapons.length; ++i) {
+      var weapon = weapons[i];
+      if (!weapon) continue;
+      if (weapon.weaponRanged === undefined && weapon.baseItemId) {
+        weapon.weaponRanged = DataManager.getBaseItem(weapon).weaponRanged;
+      }
+      if (weapon.weaponRanged) return true;
     }
+    return false;
+  };
+
+  Game_Enemy.prototype.isSelectable = function (action) {
+    if (!Game_Battler.prototype.isSelectable.call(this, action)) return false;
+    if (!this.isSelectableObj(this.enemy(), action)) return false;
+    return true;
+  };
+
+  Game_Enemy.prototype.isWeaponRanged = function () {
+    return this.enemy().weaponRanged;
+  };
+
+  MageStudios.Sel.Game_Unit_aliveMembers = Game_Unit.prototype.aliveMembers;
+  Game_Unit.prototype.aliveMembers = function () {
+    var members = MageStudios.Sel.Game_Unit_aliveMembers.call(this);
+    if ($gameTemp._checkAllAliveMembers) return members;
+    if ($gameTemp._selectionFilterInProgress) return members;
+    if ($gameTemp._selectionFilter) return this.filterSelection(members);
+    return members;
+  };
+
+  MageStudios.Sel.Game_Unit_deadMembers = Game_Unit.prototype.deadMembers;
+  Game_Unit.prototype.deadMembers = function () {
+    var members = MageStudios.Sel.Game_Unit_deadMembers.call(this);
+    if ($gameTemp._selectionFilterInProgress) return members;
+    if ($gameTemp._selectionFilter) return this.filterSelection(members);
+    return members;
+  };
+
+  if (!Imported.MSEP_X_StateCategories) {
+    MageStudios.Sel.Game_Unit_isAllDead = Game_Unit.prototype.isAllDead;
+    Game_Unit.prototype.isAllDead = function () {
+      $gameTemp._checkAllAliveMembers = true;
+      var value = MageStudios.Sel.Game_Unit_isAllDead.call(this);
+      $gameTemp._checkAllAliveMembers = undefined;
+      return value;
+    };
   }
-  $gameTemp._selectionFilterInProgress = false;
-  targets = this.filterTauntMembers(user, action, targets);
-  return targets;
-};
 
-Game_Unit.prototype.filterTauntMembers = function(user, action, targets) {
-  if (!Imported.MSEP_Taunt) return targets;
-  if (!action.isForOne()) return targets;
-  if (action.item().bypassTaunt) return targets;
-  if (user.opponentsUnit() !== this) return targets;
-  $gameTemp._tauntAction = action;
-  var tauntMembers = [];
-  if (action.isPhysical() && this.physicalTauntMembers().length > 0) {
-    if (user.ignoreTauntPhysical()) return targets;
-    tauntMembers = this.physicalTauntMembers();
-  } else if (action.isMagical() && this.magicalTauntMembers().length > 0) {
-    if (user.ignoreTauntMagical()) return targets;
-    tauntMembers = this.magicalTauntMembers();
-  } else if (action.isCertainHit() && this.certainTauntMembers().length > 0) {
-    if (user.ignoreTauntCertain()) return targets;
-    tauntMembers = this.certainTauntMembers();
-  }
-  var common = MageStudios.Util.getCommonElements(targets, tauntMembers);
-  if (common.length > 0) targets = common;
-  return targets;
-};
+  Game_Unit.prototype.filterSelection = function (members) {
+    $gameTemp._selectionFilterInProgress = true;
+    var user = $gameTemp._selectionSubject;
+    var action = $gameTemp._selectionAction;
+    var length = members.length;
+    var targets = [];
+    for (var i = 0; i < length; ++i) {
+      var target = members[i];
+      if (!target) continue;
+      if (action.checkAllSelectionConditions(user, target)) {
+        targets.push(target);
+      }
+    }
+    $gameTemp._selectionFilterInProgress = false;
+    targets = this.filterTauntMembers(user, action, targets);
+    return targets;
+  };
 
-//=============================================================================
-// Game_Action
-//=============================================================================
+  Game_Unit.prototype.filterTauntMembers = function (user, action, targets) {
+    if (!Imported.MSEP_Taunt) return targets;
+    if (!action.isForOne()) return targets;
+    if (action.item().bypassTaunt) return targets;
+    if (user.opponentsUnit() !== this) return targets;
+    $gameTemp._tauntAction = action;
+    var tauntMembers = [];
+    if (action.isPhysical() && this.physicalTauntMembers().length > 0) {
+      if (user.ignoreTauntPhysical()) return targets;
+      tauntMembers = this.physicalTauntMembers();
+    } else if (action.isMagical() && this.magicalTauntMembers().length > 0) {
+      if (user.ignoreTauntMagical()) return targets;
+      tauntMembers = this.magicalTauntMembers();
+    } else if (action.isCertainHit() && this.certainTauntMembers().length > 0) {
+      if (user.ignoreTauntCertain()) return targets;
+      tauntMembers = this.certainTauntMembers();
+    }
+    var common = MageStudios.Util.getCommonElements(targets, tauntMembers);
+    if (common.length > 0) targets = common;
+    return targets;
+  };
 
-MageStudios.Sel.Game_Action_clear = Game_Action.prototype.clear;
-Game_Action.prototype.clear = function() {
+  MageStudios.Sel.Game_Action_clear = Game_Action.prototype.clear;
+  Game_Action.prototype.clear = function () {
     MageStudios.Sel.Game_Action_clear.call(this);
-    this._selectedTargetType = '';
+    this._selectedTargetType = "";
     this._selectedDmgMod = 1;
     this._forcedSelectedUnit = false;
     this._bypassForceSelectedUnit = false;
-};
+  };
 
-MageStudios.Sel.Game_Action_mDV = Game_Action.prototype.makeDamageValue;
-Game_Action.prototype.makeDamageValue = function(target, critical) {
+  MageStudios.Sel.Game_Action_mDV = Game_Action.prototype.makeDamageValue;
+  Game_Action.prototype.makeDamageValue = function (target, critical) {
     var value = MageStudios.Sel.Game_Action_mDV.call(this, target, critical);
     if (!Imported.MSEP_DamageCore) value *= this._selectedDmgMod;
     return Math.round(value);
-};
+  };
 
-if (Imported.MSEP_DamageCore) {
+  if (Imported.MSEP_DamageCore) {
+    MageStudios.Sel.Game_Action_modifyBaseDamage =
+      Game_Action.prototype.modifyBaseDamage;
+    Game_Action.prototype.modifyBaseDamage = function (
+      value,
+      baseDamage,
+      target
+    ) {
+      baseDamage = MageStudios.Sel.Game_Action_modifyBaseDaMageStudios.call(
+        this,
+        value,
+        baseDamage,
+        target
+      );
+      baseDamage *= this._selectedDmgMod;
+      return baseDamage;
+    };
+  }
 
-MageStudios.Sel.Game_Action_modifyBaseDamage =
-  Game_Action.prototype.modifyBaseDamage;
-Game_Action.prototype.modifyBaseDamage = function(value, baseDamage, target) {
-  baseDamage = MageStudios.Sel.Game_Action_modifyBaseDaMageStudios.call(this, value,
-    baseDamage, target);
-  baseDamage *= this._selectedDmgMod;
-  return baseDamage;
-};
-
-}; // Imported.MSEP_DamageCore
-
-Game_Action.prototype.selectConditions = function() {
+  Game_Action.prototype.selectConditions = function () {
     if (!this.item()) return [];
     return this.item().selectConditions;
-};
+  };
 
-Game_Action.prototype.matchSelectConditions = function(line) {
+  Game_Action.prototype.matchSelectConditions = function (line) {
     var conditions = this.selectConditions().slice();
     var length = conditions.length;
     for (var i = 0; i < length; ++i) {
@@ -1130,106 +1109,108 @@ Game_Action.prototype.matchSelectConditions = function(line) {
       if (condition.match(line)) return true;
     }
     return false;
-};
+  };
 
-Game_Action.prototype.isSingleOrMultiple = function() {
+  Game_Action.prototype.isSingleOrMultiple = function () {
     return this.matchSelectConditions(/SINGLE OR MULTIPLE SELECT/i);
-};
+  };
 
-Game_Action.prototype.isDisperseDamage = function() {
+  Game_Action.prototype.isDisperseDamage = function () {
     return this.matchSelectConditions(/DISPERSE DAMAGE SELECT/i);
-};
+  };
 
-Game_Action.prototype.isForEnemyOrActor = function() {
+  Game_Action.prototype.isForEnemyOrActor = function () {
     return this.matchSelectConditions(/ENEMY OR ACTOR SELECT/i);
-};
+  };
 
-Game_Action.prototype.isForActorOrEnemy = function() {
+  Game_Action.prototype.isForActorOrEnemy = function () {
     return this.matchSelectConditions(/ACTOR OR ENEMY SELECT/i);
-};
+  };
 
-Game_Action.prototype.isWeaponRanged = function() {
+  Game_Action.prototype.isWeaponRanged = function () {
     return this.matchSelectConditions(/WEAPON RANGE/i);
-};
+  };
 
-Game_Action.prototype.isNotForUser = function() {
+  Game_Action.prototype.isNotForUser = function () {
     return this.matchSelectConditions(/NOT USER/i);
-};
+  };
 
-Game_Action.prototype.isSpanBothParties = function() {
+  Game_Action.prototype.isSpanBothParties = function () {
     if (this.isForEnemyOrActor()) return true;
     if (this.isForActorOrEnemy()) return true;
     return false;
-};
+  };
 
-MageStudios.Sel.Game_Action_needsSelection = Game_Action.prototype.needsSelection;
-Game_Action.prototype.needsSelection = function() {
+  MageStudios.Sel.Game_Action_needsSelection =
+    Game_Action.prototype.needsSelection;
+  Game_Action.prototype.needsSelection = function () {
     if (this.isSingleOrMultiple()) return true;
     return MageStudios.Sel.Game_Action_needsSelection.call(this);
-};
+  };
 
-MageStudios.Sel.Game_Action_setTarget = Game_Action.prototype.setTarget;
-Game_Action.prototype.setTarget = function(targetIndex) {
-    if (typeof targetIndex === 'string') {
+  MageStudios.Sel.Game_Action_setTarget = Game_Action.prototype.setTarget;
+  Game_Action.prototype.setTarget = function (targetIndex) {
+    if (typeof targetIndex === "string") {
       if (targetIndex.match(/ACTOR[ ](\d+)[ ]SELECT/i)) {
         targetIndex = parseInt(RegExp.$1);
-        this.chooseSelectionUnit('party');
+        this.chooseSelectionUnit("party");
       } else if (targetIndex.match(/ENEMY[ ](\d+)[ ]SELECT/i)) {
         targetIndex = parseInt(RegExp.$1);
-        this.chooseSelectionUnit('troop');
+        this.chooseSelectionUnit("troop");
       } else {
         this._selectedTargetType = targetIndex;
         targetIndex = -1;
       }
     }
     MageStudios.Sel.Game_Action_setTarget.call(this, targetIndex);
-};
+  };
 
-Game_Action.prototype.chooseSelectionUnit = function(unit) {
+  Game_Action.prototype.chooseSelectionUnit = function (unit) {
     if (this.isForEverybody()) return;
     this._forcedSelectedUnit = unit;
-};
+  };
 
-Game_Action.prototype.isForceSelectedUnit = function() {
+  Game_Action.prototype.isForceSelectedUnit = function () {
     if (this._bypassForceSelectedUnit) return false;
     return this._forcedSelectedUnit;
-};
+  };
 
-Game_Action.prototype.bypassForceSelectedUnit = function(value) {
+  Game_Action.prototype.bypassForceSelectedUnit = function (value) {
     this._bypassForceSelectedUnit = value;
-};
+  };
 
-MageStudios.Sel.Game_Action_friendsUnit = Game_Action.prototype.friendsUnit;
-Game_Action.prototype.friendsUnit = function() {
+  MageStudios.Sel.Game_Action_friendsUnit = Game_Action.prototype.friendsUnit;
+  Game_Action.prototype.friendsUnit = function () {
     if (this.isForceSelectedUnit()) return this.forcedSelectedUnit();
     return MageStudios.Sel.Game_Action_friendsUnit.call(this);
-};
+  };
 
-MageStudios.Sel.Game_Action_opponentsUnit = Game_Action.prototype.opponentsUnit;
-Game_Action.prototype.opponentsUnit = function() {
+  MageStudios.Sel.Game_Action_opponentsUnit =
+    Game_Action.prototype.opponentsUnit;
+  Game_Action.prototype.opponentsUnit = function () {
     if (this.isForceSelectedUnit()) return this.forcedSelectedUnit();
     return MageStudios.Sel.Game_Action_opponentsUnit.call(this);
-};
+  };
 
-Game_Action.prototype.forcedSelectedUnit = function() {
-    if (this._forcedSelectedUnit === 'party') {
+  Game_Action.prototype.forcedSelectedUnit = function () {
+    if (this._forcedSelectedUnit === "party") {
       return $gameParty;
-    } else if (this._forcedSelectedUnit === 'troop') {
+    } else if (this._forcedSelectedUnit === "troop") {
       return $gameTroop;
     } else {
       return false;
     }
-};
+  };
 
-Game_Action.prototype.setSelectionFilter = function(enabled) {
+  Game_Action.prototype.setSelectionFilter = function (enabled) {
     $gameTemp._taunt = false;
     $gameTemp._selectionFilter = enabled ? true : undefined;
     $gameTemp._selectionSubject = enabled ? this.subject() : undefined;
     $gameTemp._selectionAction = enabled ? this : undefined;
-};
+  };
 
-MageStudios.Sel.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
-Game_Action.prototype.makeTargets = function() {
+  MageStudios.Sel.Game_Action_makeTargets = Game_Action.prototype.makeTargets;
+  Game_Action.prototype.makeTargets = function () {
     if ($gameParty.inBattle()) this.setSelectionFilter(true);
     var targets = this.makeTargetChoices();
     if ($gameParty.inBattle()) {
@@ -1242,27 +1223,27 @@ Game_Action.prototype.makeTargets = function() {
     } else {
       return targets;
     }
-};
+  };
 
-MageStudios.Sel.Game_Action_applyItemUserEffect =
-  Game_Action.prototype.applyItemUserEffect;
-Game_Action.prototype.applyItemUserEffect = function(target) {
+  MageStudios.Sel.Game_Action_applyItemUserEffect =
+    Game_Action.prototype.applyItemUserEffect;
+  Game_Action.prototype.applyItemUserEffect = function (target) {
     $gameTemp._selectedDmgMod = this._selectedDmgMod || 1;
     MageStudios.Sel.Game_Action_applyItemUserEffect.call(this, target);
     $gameTemp._selectedDmgMod = undefined;
-};
+  };
 
-Game_Action.prototype.fallbackFilter = function() {
+  Game_Action.prototype.fallbackFilter = function () {
     this._targetIndex = -1;
     return this.makeTargets();
-};
+  };
 
-Game_Action.prototype.makeTargetChoices = function() {
-    if (this._selectedTargetType === 'ALL ENEMIES') {
+  Game_Action.prototype.makeTargetChoices = function () {
+    if (this._selectedTargetType === "ALL ENEMIES") {
       var targets = this.opponentsUnit().aliveMembers();
       var mod = Math.max(1, targets.length);
       if (this.isDisperseDamage()) this._selectedDmgMod = 1 / mod;
-    } else if (this._selectedTargetType === 'ALL ALLIES') {
+    } else if (this._selectedTargetType === "ALL ALLIES") {
       var targets = this.friendsUnit().aliveMembers();
       var mod = Math.max(1, targets.length);
       if (this.isDisperseDamage()) this._selectedDmgMod = 1 / mod;
@@ -1270,9 +1251,9 @@ Game_Action.prototype.makeTargetChoices = function() {
       var targets = MageStudios.Sel.Game_Action_makeTargets.call(this);
     }
     return targets;
-};
+  };
 
-Game_Action.prototype.filterSelection = function(user, group) {
+  Game_Action.prototype.filterSelection = function (user, group) {
     if (!$gameParty.inBattle()) return group;
     var targets = [];
     var length = group.length;
@@ -1282,9 +1263,9 @@ Game_Action.prototype.filterSelection = function(user, group) {
       if (this.checkAllSelectionConditions(user, target)) targets.push(target);
     }
     return targets;
-}
+  };
 
-Game_Action.prototype.checkAllSelectionConditions = function(user, target) {
+  Game_Action.prototype.checkAllSelectionConditions = function (user, target) {
     if (!target.isSelectable(this)) return false;
     var conditions = this.item().selectConditions;
     var length = conditions.length;
@@ -1297,61 +1278,60 @@ Game_Action.prototype.checkAllSelectionConditions = function(user, target) {
     }
     if (!this.meetSelectionConditionEval(user, target)) return false;
     return true;
-};
+  };
 
-Game_Action.prototype.meetSelectionCondition = function(line, user, target) {
-    // Not User
+  Game_Action.prototype.meetSelectionCondition = function (line, user, target) {
     if (line.match(/NOT USER/i)) {
       return this.subject() !== target;
     }
-    // Weapon Range - Requires MSEP_RowFormation.js
+
     if (line.match(/WEAPON RANGE/i)) {
       return this.selectConditionWeaponRange(target);
     }
-    // Back Row Only - Requires MSEP_RowFormation.js
+
     if (line.match(/BACK ROW ONLY/i)) {
       return this.selectConditionBackRow(target);
     }
-    // Front Row Only - Requires MSEP_RowFormation.js
+
     if (line.match(/FRONT ROW ONLY/i)) {
       return this.selectConditionFrontRow(target);
     }
-    // Row x Only - Requires MSEP_RowFormation.js
+
     if (line.match(/ROW[ ](\d+)[ ]ONLY/i)) {
       var id = parseInt(RegExp.$1);
       return this.selectConditionSpecificRow(target, id);
     }
-    // Row x Max - Requires MSEP_RowFormation.js
+
     if (line.match(/ROW[ ](\d+)[ ]MAX/i)) {
       var id = parseInt(RegExp.$1);
       return this.selectConditionRowMax(target, id);
     }
-    // Row x Min - Requires MSEP_RowFormation.js
+
     if (line.match(/ROW[ ](\d+)[ ]MIN/i)) {
       var id = parseInt(RegExp.$1);
       return this.selectConditionRowMin(target, id);
     }
-    // Parameter Eval
+
     if (line.match(/PARAM[ ](.*?)[ ](.*)/i)) {
       var param = String(RegExp.$1).toUpperCase().trim();
       var code = String(RegExp.$2).trim();
       return this.selectConditionParam(user, target, param, code);
     }
-    // Not State
+
     if (line.match(/NOT STATE:[ ](.*)/i)) {
       var text = String(RegExp.$1).toUpperCase().trim();
       return this.selectConditionNotState(target, text);
     }
-    // State
+
     if (line.match(/STATE:[ ](.*)/i)) {
       var text = String(RegExp.$1).toUpperCase().trim();
       return this.selectConditionState(target, text);
     }
     return true;
-};
+  };
 
-Game_Action.prototype.meetSelectionConditionEval = function(user, target) {
-    if (this.item().selectConditionEval === '') return true;
+  Game_Action.prototype.meetSelectionConditionEval = function (user, target) {
+    if (this.item().selectConditionEval === "") return true;
     var condition = true;
     var item = this.item();
     var skill = this.item();
@@ -1364,21 +1344,21 @@ Game_Action.prototype.meetSelectionConditionEval = function(user, target) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'SELECTION CONDITION EVAL');
+      MageStudios.Util.displayError(e, code, "SELECTION CONDITION EVAL");
     }
     return condition;
-};
+  };
 
-Game_Action.prototype.selectConditionWeaponRange = function(target) {
+  Game_Action.prototype.selectConditionWeaponRange = function (target) {
     if (!Imported.MSEP_RowFormation) return true;
     if (this.subject().isWeaponRanged()) {
       return true;
     } else {
       return this.selectConditionFrontRow(target);
     }
-};
+  };
 
-Game_Action.prototype.selectConditionBackRow = function(target) {
+  Game_Action.prototype.selectConditionBackRow = function (target) {
     if (!Imported.MSEP_RowFormation) return true;
     if (target.isActor() === this.subject().isActor()) return true;
     var unit = target.friendsUnit();
@@ -1387,9 +1367,9 @@ Game_Action.prototype.selectConditionBackRow = function(target) {
       return unit.rowMembers(i).contains(target);
     }
     return true;
-};
+  };
 
-Game_Action.prototype.selectConditionFrontRow = function(target) {
+  Game_Action.prototype.selectConditionFrontRow = function (target) {
     if (!Imported.MSEP_RowFormation) return true;
     if (target.isActor() === this.subject().isActor()) return true;
     var length = MageStudios.Param.RowMaximum + 1;
@@ -1399,59 +1379,64 @@ Game_Action.prototype.selectConditionFrontRow = function(target) {
       return unit.rowMembers(i).contains(target);
     }
     return true;
-};
+  };
 
-Game_Action.prototype.selectConditionSpecificRow = function(target, rowId) {
+  Game_Action.prototype.selectConditionSpecificRow = function (target, rowId) {
     if (!Imported.MSEP_RowFormation) return true;
     if (target.isActor() === this.subject().isActor()) return true;
     return target.row() === rowId;
-};
+  };
 
-Game_Action.prototype.selectConditionRowMax = function(target, rowId) {
+  Game_Action.prototype.selectConditionRowMax = function (target, rowId) {
     if (!Imported.MSEP_RowFormation) return true;
     if (target.isActor() === this.subject().isActor()) return true;
     return target.row() <= rowId;
-};
+  };
 
-Game_Action.prototype.selectConditionRowMin = function(target, rowId) {
+  Game_Action.prototype.selectConditionRowMin = function (target, rowId) {
     if (!Imported.MSEP_RowFormation) return true;
     if (target.isActor() === this.subject().isActor()) return true;
     return target.row() >= rowId;
-};
+  };
 
-Game_Action.prototype.selectConditionParam = function(user, target, param, code) {
-    if (['MAXHP', 'MHP'].contains(param)) {
-      code = 'target.mhp ' + code;
-    } else if (['MAXMP', 'MMP'].contains(param)) {
-      code = 'target.mmp ' + code;
-    } else if (['MAXTP', 'MTP'].contains(param)) {
-      code = 'target.maxTp() ' + code;
-    } else if (['HP'].contains(param)) {
-      code = 'target.hp ' + code;
-    } else if (['MP'].contains(param)) {
-      code = 'target.mp ' + code;
-    } else if (['TP'].contains(param)) {
-      code = 'target.tp ' + code;
-    } else if (['ATK', 'STR'].contains(param)) {
-      code = 'target.atk ' + code;
-    } else if (['DEF'].contains(param)) {
-      code = 'target.def ' + code;
-    } else if (['MAT', 'INT', 'SPI'].contains(param)) {
-      code = 'target.mat ' + code;
-    } else if (['MDF', 'RES'].contains(param)) {
-      code = 'target.mdf ' + code;
-    } else if (['AGI'].contains(param)) {
-      code = 'target.agi ' + code;
-    } else if (['LUK'].contains(param)) {
-      code = 'target.luk ' + code;
-    } else if (['LEVEL'].contains(param)) {
-      code = 'target.level ' + code;
-    } else if (['HP%'].contains(param)) {
-      code = 'target.hpRate() ' + code;
-    } else if (['MP%'].contains(param)) {
-      code = 'target.mpRate() ' + code;
-    } else if (['TP%'].contains(param)) {
-      code = 'target.tpRate() ' + code;
+  Game_Action.prototype.selectConditionParam = function (
+    user,
+    target,
+    param,
+    code
+  ) {
+    if (["MAXHP", "MHP"].contains(param)) {
+      code = "target.mhp " + code;
+    } else if (["MAXMP", "MMP"].contains(param)) {
+      code = "target.mmp " + code;
+    } else if (["MAXTP", "MTP"].contains(param)) {
+      code = "target.maxTp() " + code;
+    } else if (["HP"].contains(param)) {
+      code = "target.hp " + code;
+    } else if (["MP"].contains(param)) {
+      code = "target.mp " + code;
+    } else if (["TP"].contains(param)) {
+      code = "target.tp " + code;
+    } else if (["ATK", "STR"].contains(param)) {
+      code = "target.atk " + code;
+    } else if (["DEF"].contains(param)) {
+      code = "target.def " + code;
+    } else if (["MAT", "INT", "SPI"].contains(param)) {
+      code = "target.mat " + code;
+    } else if (["MDF", "RES"].contains(param)) {
+      code = "target.mdf " + code;
+    } else if (["AGI"].contains(param)) {
+      code = "target.agi " + code;
+    } else if (["LUK"].contains(param)) {
+      code = "target.luk " + code;
+    } else if (["LEVEL"].contains(param)) {
+      code = "target.level " + code;
+    } else if (["HP%"].contains(param)) {
+      code = "target.hpRate() " + code;
+    } else if (["MP%"].contains(param)) {
+      code = "target.mpRate() " + code;
+    } else if (["TP%"].contains(param)) {
+      code = "target.tpRate() " + code;
     } else {
       return;
     }
@@ -1465,12 +1450,12 @@ Game_Action.prototype.selectConditionParam = function(user, target, param, code)
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'SELECTION PARAM CONDITION ERROR');
+      MageStudios.Util.displayError(e, code, "SELECTION PARAM CONDITION ERROR");
       return false;
     }
-};
+  };
 
-Game_Action.prototype.selectConditionNotState = function(target, text) {
+  Game_Action.prototype.selectConditionNotState = function (target, text) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else if (MageStudios.StateIdRef[text]) {
@@ -1481,9 +1466,9 @@ Game_Action.prototype.selectConditionNotState = function(target, text) {
     var state = $dataStates[id];
     if (!state) return false;
     return !target.states().contains(state);
-};
+  };
 
-Game_Action.prototype.selectConditionState = function(target, text) {
+  Game_Action.prototype.selectConditionState = function (target, text) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else if (MageStudios.StateIdRef[text]) {
@@ -1494,44 +1479,36 @@ Game_Action.prototype.selectConditionState = function(target, text) {
     var state = $dataStates[id];
     if (!state) return false;
     return target.states().contains(state);
-};
+  };
 
-//=============================================================================
-// Window_Help
-//=============================================================================
-
-MageStudios.Sel.Window_Help_setBattler = Window_Help.prototype.setBattler;
-Window_Help.prototype.setBattler = function(battler) {
-    if (typeof battler === 'string') return this.drawSelectionControl(battler);
+  MageStudios.Sel.Window_Help_setBattler = Window_Help.prototype.setBattler;
+  Window_Help.prototype.setBattler = function (battler) {
+    if (typeof battler === "string") return this.drawSelectionControl(battler);
     MageStudios.Sel.Window_Help_setBattler.call(this, battler);
-};
+  };
 
-Window_Help.prototype.drawSelectionControl = function(battler) {
+  Window_Help.prototype.drawSelectionControl = function (battler) {
     this.contents.clear();
     this.clear();
     var wx = 0;
     var wy = (this.contents.height - this.lineHeight()) / 2;
-    var text = '';
-    if (battler === 'ALL ENEMIES') text = MageStudios.Param.SelectAllFoes;
-    if (battler === 'ALL ALLIES') text = MageStudios.Param.SelectAllAllies;
-    this.drawText(text, wx, wy, this.contents.width, 'center');
-};
+    var text = "";
+    if (battler === "ALL ENEMIES") text = MageStudios.Param.SelectAllFoes;
+    if (battler === "ALL ALLIES") text = MageStudios.Param.SelectAllAllies;
+    this.drawText(text, wx, wy, this.contents.width, "center");
+  };
 
-//=============================================================================
-// Window_BattleEnemy
-//=============================================================================
-
-Window_BattleEnemy.prototype.action = function() {
+  Window_BattleEnemy.prototype.action = function () {
     return BattleManager.inputtingAction();
-};
+  };
 
-Window_BattleEnemy.prototype.actorWindow = function() {
+  Window_BattleEnemy.prototype.actorWindow = function () {
     return SceneManager._scene._statusWindow;
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_allowedTargets =
+  MageStudios.Sel.Window_BattleEnemy_allowedTargets =
     Window_BattleEnemy.prototype.allowedTargets;
-Window_BattleEnemy.prototype.allowedTargets = function() {
+  Window_BattleEnemy.prototype.allowedTargets = function () {
     this._inputLock = false;
     this._selectDead = false;
     if (!this.action()) return [];
@@ -1549,29 +1526,29 @@ Window_BattleEnemy.prototype.allowedTargets = function() {
     this.action().setSelectionFilter(false);
     targets = this.action().filterSelection(this.action().subject(), targets);
     return targets;
-};
+  };
 
-Window_BattleEnemy.prototype.sortTargets = function() {
-    this._enemies.sort(function(a, b) {
+  Window_BattleEnemy.prototype.sortTargets = function () {
+    this._enemies.sort(function (a, b) {
       if (a.spritePosX() === b.spritePosX()) {
         return a.spritePosY() - b.spritePosY();
       }
       return a.spritePosX() - b.spritePosX();
     });
     if (this.action()) this.addExtraSelectTargets();
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_autoSelect =
+  MageStudios.Sel.Window_BattleEnemy_autoSelect =
     Window_BattleEnemy.prototype.autoSelect;
-Window_BattleEnemy.prototype.autoSelect = function() {
+  Window_BattleEnemy.prototype.autoSelect = function () {
     if (this.action().isForOpponent()) {
       MageStudios.Sel.Window_BattleEnemy_autoSelect.call(this);
     } else {
       this.actorAutoSelect();
     }
-};
+  };
 
-Window_BattleEnemy.prototype.actorAutoSelect = function() {
+  Window_BattleEnemy.prototype.actorAutoSelect = function () {
     if (!this.action()) return this.select(0);
     var index = 0;
     this._inputLock = false;
@@ -1587,7 +1564,7 @@ Window_BattleEnemy.prototype.actorAutoSelect = function() {
       var length = this._enemies.length;
       for (var i = 0; i < length; ++i) {
         var member = this._enemies[i];
-        if (typeof member === 'string') continue;
+        if (typeof member === "string") continue;
         if (member && member.isActor()) {
           index = i;
           break;
@@ -1595,294 +1572,285 @@ Window_BattleEnemy.prototype.actorAutoSelect = function() {
       }
     }
     this.select(index);
-};
+  };
 
-Window_BattleEnemy.prototype.autoSelectFirstDeadActor = function() {
+  Window_BattleEnemy.prototype.autoSelectFirstDeadActor = function () {
     var length = this._enemies.length;
     for (var i = 0; i < length; ++i) {
       var member = this._enemies[i];
       if (member && member.isActor() && member.isDead()) return i;
     }
     return 0;
-};
+  };
 
-Window_BattleEnemy.prototype.furthestRight = function() {
+  Window_BattleEnemy.prototype.furthestRight = function () {
     var index = -1;
     var length = this._enemies.length;
     for (var i = 0; i < length; ++i) {
       var target = this._enemies[i];
       if (!target) continue;
-      if (typeof target === 'string') {
+      if (typeof target === "string") {
         continue;
       } else if (target && target.isEnemy()) {
         index = i;
       }
     }
     return Math.max(0, index);
-};
+  };
 
-Window_BattleEnemy.prototype.isOkEnabled = function() {
+  Window_BattleEnemy.prototype.isOkEnabled = function () {
     if (this._selectDead) return this.enemy().isDead();
     return Window_Selectable.prototype.isOkEnabled.call(this);
-};
+  };
 
-Window_BattleEnemy.prototype.addExtraSelectTargets = function() {
-  var action = this.action();
-  if (action.isSingleOrMultiple()) {
-    var enemyCount = 0;
-    var allyCount = 0;
-    var length = this._enemies.length;
-    for (var i = 0; i < length; ++i) {
-      var target = this._enemies[i];
-      if (!target) continue;
-      if (target.isEnemy()) enemyCount += 1;
-      if (target.isActor()) allyCount += 1;
-    }
-    if (enemyCount > 1) {
-      var add = true;
-      if (Imported.MSEP_Taunt) {
-        var unit = $gameTroop;
-        if (action.isPhysical() &&
-        unit.physicalTauntMembers().length > 1) {
-          add = false;
-        } else if (action.isMagical() &&
-        unit.magicalTauntMembers().length > 1) {
-          add = false;
-        } else if (action.isCertainHit() &&
-        unit.certainTauntMembers().length > 1) {
-          add = false;
-        }
+  Window_BattleEnemy.prototype.addExtraSelectTargets = function () {
+    var action = this.action();
+    if (action.isSingleOrMultiple()) {
+      var enemyCount = 0;
+      var allyCount = 0;
+      var length = this._enemies.length;
+      for (var i = 0; i < length; ++i) {
+        var target = this._enemies[i];
+        if (!target) continue;
+        if (target.isEnemy()) enemyCount += 1;
+        if (target.isActor()) allyCount += 1;
       }
-      if (add) this._enemies.unshift('ALL ENEMIES');
+      if (enemyCount > 1) {
+        var add = true;
+        if (Imported.MSEP_Taunt) {
+          var unit = $gameTroop;
+          if (action.isPhysical() && unit.physicalTauntMembers().length > 1) {
+            add = false;
+          } else if (
+            action.isMagical() &&
+            unit.magicalTauntMembers().length > 1
+          ) {
+            add = false;
+          } else if (
+            action.isCertainHit() &&
+            unit.certainTauntMembers().length > 1
+          ) {
+            add = false;
+          }
+        }
+        if (add) this._enemies.unshift("ALL ENEMIES");
+      }
+      if (allyCount > 1) {
+        this._enemies.push("ALL ALLIES");
+      }
     }
-    if (allyCount > 1) {
-      this._enemies.push('ALL ALLIES');
-    }
-  }
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_isMouseOverEnemy =
+  MageStudios.Sel.Window_BattleEnemy_isMouseOverEnemy =
     Window_BattleEnemy.prototype.isMouseOverEnemy;
-Window_BattleEnemy.prototype.isMouseOverEnemy = function(enemy) {
-    if (typeof enemy === 'string') return false;
-    return MageStudios.Sel.Window_BattleEnemy_isMouseOverEnemy.call(this, enemy);
-};
+  Window_BattleEnemy.prototype.isMouseOverEnemy = function (enemy) {
+    if (typeof enemy === "string") return false;
+    return MageStudios.Sel.Window_BattleEnemy_isMouseOverEnemy.call(
+      this,
+      enemy
+    );
+  };
 
-MageStudios.Sel.Window_BattleEnemy_isClickedEnemy =
+  MageStudios.Sel.Window_BattleEnemy_isClickedEnemy =
     Window_BattleEnemy.prototype.isClickedEnemy;
-Window_BattleEnemy.prototype.isClickedEnemy = function(enemy) {
-    if (typeof enemy === 'string') return false;
+  Window_BattleEnemy.prototype.isClickedEnemy = function (enemy) {
+    if (typeof enemy === "string") return false;
     return MageStudios.Sel.Window_BattleEnemy_isClickedEnemy.call(this, enemy);
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_hide = Window_BattleEnemy.prototype.hide;
-Window_BattleEnemy.prototype.hide = function() {
+  MageStudios.Sel.Window_BattleEnemy_hide = Window_BattleEnemy.prototype.hide;
+  Window_BattleEnemy.prototype.hide = function () {
     MageStudios.Sel.Window_BattleEnemy_hide.call(this);
     $gameParty.select(null);
     if (BattleManager.actor()) {
       this.actorWindow().select(BattleManager.actor().index());
     }
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_select =
+  MageStudios.Sel.Window_BattleEnemy_select =
     Window_BattleEnemy.prototype.select;
-Window_BattleEnemy.prototype.select = function(index) {
+  Window_BattleEnemy.prototype.select = function (index) {
     $gameTroop.select(null);
     $gameParty.select(null);
     MageStudios.Sel.Window_BattleEnemy_select.call(this, index);
-    if (this.enemy() === 'ALL ENEMIES') {
+    if (this.enemy() === "ALL ENEMIES") {
       var length = this._enemies.length;
       for (var i = 0; i < length; ++i) {
         var target = this._enemies[i];
         if (!target) continue;
-        if (typeof target === 'string') continue;
+        if (typeof target === "string") continue;
         if (target.isEnemy()) target.select();
       }
-    } else if (this.enemy() === 'ALL ALLIES') {
+    } else if (this.enemy() === "ALL ALLIES") {
       var length = this._enemies.length;
       for (var i = 0; i < length; ++i) {
         var target = this._enemies[i];
         if (!target) continue;
-        if (typeof target === 'string') continue;
+        if (typeof target === "string") continue;
         if (target.isActor()) target.select();
       }
     } else if (this.enemy() && this.enemy().isActor()) {
       $gameParty.select(this.enemy());
       this.actorWindow().select(this.enemy().index());
     }
-};
+  };
 
-MageStudios.Sel.Window_BattleEnemy_enemyIndex =
+  MageStudios.Sel.Window_BattleEnemy_enemyIndex =
     Window_BattleEnemy.prototype.enemyIndex;
-Window_BattleEnemy.prototype.enemyIndex = function() {
-    if (typeof this.enemy() === 'string') return this.enemy();
+  Window_BattleEnemy.prototype.enemyIndex = function () {
+    if (typeof this.enemy() === "string") return this.enemy();
     if (this.action().isSpanBothParties()) {
       var index = this.enemy().index();
-      if (this.enemy().isActor()) return 'ACTOR ' + index + ' SELECT';
-      if (this.enemy().isEnemy()) return 'ENEMY ' + index + ' SELECT';
+      if (this.enemy().isActor()) return "ACTOR " + index + " SELECT";
+      if (this.enemy().isEnemy()) return "ENEMY " + index + " SELECT";
     }
     return MageStudios.Sel.Window_BattleEnemy_enemyIndex.call(this);
-};
+  };
 
-//=============================================================================
-// Window_BattleStatus
-//=============================================================================
+  Window_BattleStatus.prototype.setEnemySelectionWindow = function (win) {
+    this._enemySelectWindow = win;
+  };
 
-Window_BattleStatus.prototype.setEnemySelectionWindow = function(win) {
-  this._enemySelectWindow = win;
-};
+  MageStudios.Sel.Window_BattleStatus_update =
+    Window_BattleStatus.prototype.update;
+  Window_BattleStatus.prototype.update = function () {
+    MageStudios.Sel.Window_BattleStatus_update.call(this);
+    this.processInactiveSelectTouch();
+  };
 
-MageStudios.Sel.Window_BattleStatus_update = Window_BattleStatus.prototype.update;
-Window_BattleStatus.prototype.update = function() {
-  MageStudios.Sel.Window_BattleStatus_update.call(this);
-  this.processInactiveSelectTouch();
-};
+  Window_BattleStatus.prototype.processInactiveSelectTouch = function () {
+    if (!this._enemySelectWindow) return;
+    if (!this._enemySelectWindow.active) return;
+    if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
+      this.onInactiveSelectTouch();
+    }
+  };
 
-Window_BattleStatus.prototype.processInactiveSelectTouch = function() {
-  if (!this._enemySelectWindow) return;
-  if (!this._enemySelectWindow.active) return;
-  if (TouchInput.isTriggered() && this.isTouchedInsideFrame()) {
-    this.onInactiveSelectTouch();
-  }
-};
-
-Window_BattleStatus.prototype.onInactiveSelectTouch = function() {
-  var lastIndex = this.index();
-  var x = this.canvasToLocalX(TouchInput.x);
-  var y = this.canvasToLocalY(TouchInput.y);
-  var hitIndex = this.hitTest(x, y);
-  if (hitIndex >= 0) {
-    var actor = $gameParty.battleMembers()[hitIndex];
-    var win = this._enemySelectWindow;
-    if (actor && win) {
-      var winIndex = win._enemies.indexOf(actor);
-      if (winIndex >= 0) {
-        if (winIndex !== win.index()) {
-          win.select(winIndex);
-          SoundManager.playCursor();
-        } else {
-          win.processOk();
+  Window_BattleStatus.prototype.onInactiveSelectTouch = function () {
+    var lastIndex = this.index();
+    var x = this.canvasToLocalX(TouchInput.x);
+    var y = this.canvasToLocalY(TouchInput.y);
+    var hitIndex = this.hitTest(x, y);
+    if (hitIndex >= 0) {
+      var actor = $gameParty.battleMembers()[hitIndex];
+      var win = this._enemySelectWindow;
+      if (actor && win) {
+        var winIndex = win._enemies.indexOf(actor);
+        if (winIndex >= 0) {
+          if (winIndex !== win.index()) {
+            win.select(winIndex);
+            SoundManager.playCursor();
+          } else {
+            win.processOk();
+          }
         }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// Window_VisualSelectAll
-//=============================================================================
-
-function Window_VisualSelectAll() {
+  function Window_VisualSelectAll() {
     this.initialize.apply(this, arguments);
-}
-
-Window_VisualSelectAll.prototype = Object.create(Window_Base.prototype);
-Window_VisualSelectAll.prototype.constructor = Window_VisualSelectAll;
-
-Window_VisualSelectAll.prototype.initialize = function(actor) {
-  this._isActorSelect = actor;
-  if (this._isActorSelect) {
-    this._text = MageStudios.Param.SelectAllAllies;
-    var settings = MageStudios.Param.SelectVisualAlly;
-  } else {
-    this._text = MageStudios.Param.SelectAllFoes;
-    var settings = MageStudios.Param.SelectVisualEnemy;
   }
-  var width = eval(settings.width);
-  var height = eval(settings.height);
-  var x = eval(settings.x);
-  var y = eval(settings.y);
-  Window_Base.prototype.initialize.call(this, x, y, width, height);
-  this.hide();
-  this.refresh();
-};
 
-Window_VisualSelectAll.prototype.refresh = function() {
-  this.contents.clear();
-  this.drawText(this._text, 0, 0, this.contents.width, 'center');
-};
+  Window_VisualSelectAll.prototype = Object.create(Window_Base.prototype);
+  Window_VisualSelectAll.prototype.constructor = Window_VisualSelectAll;
 
-Window_VisualSelectAll.prototype.setEnemySelectionWindow = function(win) {
-  this._enemySelectWindow = win;
-};
-
-Window_VisualSelectAll.prototype.update = function() {
-  Window_Base.prototype.update.call(this);
-  this.updateVisible();
-  this.processMouseOver();
-  this.processTouch();
-};
-
-Window_VisualSelectAll.prototype.updateVisible = function() {
-  if (!this._enemySelectWindow) return this.visible = false;
-  if (!this._enemySelectWindow.active) return this.visible = false;
-  if (this._isActorSelect) {
-    var index = this._enemySelectWindow._enemies.indexOf('ALL ALLIES');
-  } else {
-    var index = this._enemySelectWindow._enemies.indexOf('ALL ENEMIES');
-  }
-  this.visible = index >= 0;
-};
-
-Window_VisualSelectAll.prototype.processMouseOver = function() {
-  if (!this.visible) return $gameTemp._disableMouseOverSelect = false;;
-  var x = this.canvasToLocalX(TouchInput._mouseOverX);
-  var y = this.canvasToLocalY(TouchInput._mouseOverY);
-  var inside = x >= 0 && y >= 0 && x < this.width && y < this.height;
-  if (inside) {
+  Window_VisualSelectAll.prototype.initialize = function (actor) {
+    this._isActorSelect = actor;
     if (this._isActorSelect) {
-      var index = this._enemySelectWindow._enemies.indexOf('ALL ALLIES');
+      this._text = MageStudios.Param.SelectAllAllies;
+      var settings = MageStudios.Param.SelectVisualAlly;
     } else {
-      var index = this._enemySelectWindow._enemies.indexOf('ALL ENEMIES');
+      this._text = MageStudios.Param.SelectAllFoes;
+      var settings = MageStudios.Param.SelectVisualEnemy;
     }
-    if (index !== this._enemySelectWindow.index()) SoundManager.playCursor();
-    this._enemySelectWindow.select(index);
-    $gameTemp._disableMouseOverSelect = true;
-  } else {
-    $gameTemp._disableMouseOverSelect = false;
-  }
-};
+    var width = eval(settings.width);
+    var height = eval(settings.height);
+    var x = eval(settings.x);
+    var y = eval(settings.y);
+    Window_Base.prototype.initialize.call(this, x, y, width, height);
+    this.hide();
+    this.refresh();
+  };
 
-Window_VisualSelectAll.prototype.processTouch = function() {
-  if (!this.visible) return;
-  if (!TouchInput.isTriggered()) return;
-  var x = this.canvasToLocalX(TouchInput._mouseOverX);
-  var y = this.canvasToLocalY(TouchInput._mouseOverY);
-  var inside = x >= 0 && y >= 0 && x < this.width && y < this.height;
-  if (inside) {
-    this._enemySelectWindow.processOk();
-  }
-};
+  Window_VisualSelectAll.prototype.refresh = function () {
+    this.contents.clear();
+    this.drawText(this._text, 0, 0, this.contents.width, "center");
+  };
 
-//=============================================================================
-// Scene_Battle
-//=============================================================================
+  Window_VisualSelectAll.prototype.setEnemySelectionWindow = function (win) {
+    this._enemySelectWindow = win;
+  };
 
-Scene_Battle.prototype.selectActorSelection = function() {
-  this.selectEnemySelection();
-};
+  Window_VisualSelectAll.prototype.update = function () {
+    Window_Base.prototype.update.call(this);
+    this.updateVisible();
+    this.processMouseOver();
+    this.processTouch();
+  };
 
-MageStudios.Sel.Scene_Battle_createEnemyWindow =
-  Scene_Battle.prototype.createEnemyWindow;
-Scene_Battle.prototype.createEnemyWindow = function() {
-  MageStudios.Sel.Scene_Battle_createEnemyWindow.call(this);
-  this._statusWindow.setEnemySelectionWindow(this._enemyWindow);
-  if (!MageStudios.Param.SelectVisualAll) return;
-  this._visualSelectAllyWindow = new Window_VisualSelectAll(true);
-  this._visualSelectAllyWindow.setEnemySelectionWindow(this._enemyWindow);
-  this.addChild(this._visualSelectAllyWindow);
-  this._visualSelectEnemyWindow = new Window_VisualSelectAll(false);
-  this._visualSelectEnemyWindow.setEnemySelectionWindow(this._enemyWindow);
-  this.addChild(this._visualSelectEnemyWindow);
-};
+  Window_VisualSelectAll.prototype.updateVisible = function () {
+    if (!this._enemySelectWindow) return (this.visible = false);
+    if (!this._enemySelectWindow.active) return (this.visible = false);
+    if (this._isActorSelect) {
+      var index = this._enemySelectWindow._enemies.indexOf("ALL ALLIES");
+    } else {
+      var index = this._enemySelectWindow._enemies.indexOf("ALL ENEMIES");
+    }
+    this.visible = index >= 0;
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  Window_VisualSelectAll.prototype.processMouseOver = function () {
+    if (!this.visible) return ($gameTemp._disableMouseOverSelect = false);
+    var x = this.canvasToLocalX(TouchInput._mouseOverX);
+    var y = this.canvasToLocalY(TouchInput._mouseOverY);
+    var inside = x >= 0 && y >= 0 && x < this.width && y < this.height;
+    if (inside) {
+      if (this._isActorSelect) {
+        var index = this._enemySelectWindow._enemies.indexOf("ALL ALLIES");
+      } else {
+        var index = this._enemySelectWindow._enemies.indexOf("ALL ENEMIES");
+      }
+      if (index !== this._enemySelectWindow.index()) SoundManager.playCursor();
+      this._enemySelectWindow.select(index);
+      $gameTemp._disableMouseOverSelect = true;
+    } else {
+      $gameTemp._disableMouseOverSelect = false;
+    }
+  };
 
-MageStudios.Util = MageStudios.Util || {};
+  Window_VisualSelectAll.prototype.processTouch = function () {
+    if (!this.visible) return;
+    if (!TouchInput.isTriggered()) return;
+    var x = this.canvasToLocalX(TouchInput._mouseOverX);
+    var y = this.canvasToLocalY(TouchInput._mouseOverY);
+    var inside = x >= 0 && y >= 0 && x < this.width && y < this.height;
+    if (inside) {
+      this._enemySelectWindow.processOk();
+    }
+  };
 
-MageStudios.Util.getCommonElements = function(array1, array2) {
+  Scene_Battle.prototype.selectActorSelection = function () {
+    this.selectEnemySelection();
+  };
+
+  MageStudios.Sel.Scene_Battle_createEnemyWindow =
+    Scene_Battle.prototype.createEnemyWindow;
+  Scene_Battle.prototype.createEnemyWindow = function () {
+    MageStudios.Sel.Scene_Battle_createEnemyWindow.call(this);
+    this._statusWindow.setEnemySelectionWindow(this._enemyWindow);
+    if (!MageStudios.Param.SelectVisualAll) return;
+    this._visualSelectAllyWindow = new Window_VisualSelectAll(true);
+    this._visualSelectAllyWindow.setEnemySelectionWindow(this._enemyWindow);
+    this.addChild(this._visualSelectAllyWindow);
+    this._visualSelectEnemyWindow = new Window_VisualSelectAll(false);
+    this._visualSelectEnemyWindow.setEnemySelectionWindow(this._enemyWindow);
+    this.addChild(this._visualSelectEnemyWindow);
+  };
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  MageStudios.Util.getCommonElements = function (array1, array2) {
     var elements = [];
     var length = array1.length;
     for (var i = 0; i < length; ++i) {
@@ -1890,20 +1858,16 @@ MageStudios.Util.getCommonElements = function(array1, array2) {
       if (array2.contains(element)) elements.push(element);
     }
     return elements;
-};
+  };
 
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-}; // Imported.MSEP_BattleEngineCore && Imported.MSEP_TargetCore
+  };
+}

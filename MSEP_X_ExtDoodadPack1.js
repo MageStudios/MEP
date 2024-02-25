@@ -1,7 +1,7 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Grid-Free Doodads Extension - Extended Doodad Pack 1
-// MSEP_X_ExtDoodadPack1.js
-//=============================================================================
+
+
+
+
 
 var Imported = Imported || {};
 Imported.MSEP_X_ExtDoodadPack1 = true;
@@ -10,7 +10,7 @@ var MageStudios = MageStudios || {};
 MageStudios.EDP1 = MageStudios.EDP1 || {};
 MageStudios.EDP1.version = 1.00;
 
-//=============================================================================
+
  /*:
  * @plugindesc (Requires MSEP_GridFreeDoodads.js) Adds extra options
  * to the Grid-Free Doodads plugin's doodad settings.
@@ -73,15 +73,15 @@ MageStudios.EDP1.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
+
 
 if (Imported.MSEP_GridFreeDoodads) {
 
 if (MageStudios.GFD.version && MageStudios.GFD.version >= 1.03) {
 
-//=============================================================================
-// Sprite_Doodad
-//=============================================================================
+
+
+
 
 MageStudios.EDP1.Sprite_Doodad_initCustomDataZ =
   Sprite_Doodad.prototype.initCustomDataZ;
@@ -121,7 +121,7 @@ Sprite_Doodad.prototype.updateCustomZ = function() {
 
 Sprite_Doodad.prototype.updateCustomEDP1Z = function() {
   if ($gameTemp._modeGFD) return;
-  // Party
+  
   var length = this.partyHave.length;
   for (var i = 0; i < length; ++i) {
     var actorId = this.partyHave[i];
@@ -138,7 +138,7 @@ Sprite_Doodad.prototype.updateCustomEDP1Z = function() {
       return;
     }
   }
-  // Switches
+  
   var length = this.switchOn.length;
   for (var i = 0; i < length; ++i) {
     var switchId = this.switchOn[i];
@@ -157,15 +157,15 @@ Sprite_Doodad.prototype.updateCustomEDP1Z = function() {
   }
 };
 
-//=============================================================================
-// Play Test Only
-//=============================================================================
+
+
+
 
 if (Utils.isNwjs() && Utils.isOptionValid('test')) {
 
-//=============================================================================
-// Window_GFD_Settings
-//=============================================================================
+
+
+
 
 MageStudios.EDP1.Window_GFD_Settings_addCustomCommands =
   Window_GFD_Settings.prototype.addCustomCommands;
@@ -433,9 +433,9 @@ DoodadManager.inputRight = function(doodad, symbol, value) {
   this.updateNewSettings();
 };
 
-//=============================================================================
-// Window_GFD_SettingsTonePresets
-//=============================================================================
+
+
+
 
 function Window_GFD_SettingsTonePresets() {
   this.initialize.apply(this, arguments);
@@ -479,9 +479,9 @@ Window_GFD_SettingsTonePresets.prototype.itemTextAlign = function() {
   return 'center';
 };
 
-//=============================================================================
-// Window_GFD_SettingsToneRGB
-//=============================================================================
+
+
+
 
 function Window_GFD_SettingsToneRGB() {
   this.initialize.apply(this, arguments);
@@ -526,9 +526,9 @@ Window_GFD_SettingsToneRGB.prototype.itemTextAlign = function() {
   return 'center';
 };
 
-//=============================================================================
-// Window_GFD_SettingsToneGrey
-//=============================================================================
+
+
+
 
 function Window_GFD_SettingsToneGrey() {
   this.initialize.apply(this, arguments);
@@ -559,9 +559,9 @@ Window_GFD_SettingsToneGrey.prototype.itemTextAlign = function() {
   return 'center';
 };
 
-//=============================================================================
-// Window_GFD_SettingsParty
-//=============================================================================
+
+
+
 
 function Window_GFD_SettingsParty() {
   this.initialize.apply(this, arguments);
@@ -654,9 +654,9 @@ Window_GFD_SettingsParty.prototype.drawItem = function(index) {
   this.drawText(this.commandName(index), rect.x, rect.y, rect.width, align);
 };
 
-//=============================================================================
-// Window_GFD_SettingsSwitch
-//=============================================================================
+
+
+
 
 function Window_GFD_SettingsSwitch() {
   this.initialize.apply(this, arguments);
@@ -747,9 +747,9 @@ Window_GFD_SettingsSwitch.prototype.drawItem = function(index) {
   this.drawText(this.commandName(index), rect.x, rect.y, rect.width, align);
 };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
+
+
+
 
 MageStudios.EDP1.Scene_Map_createGFDSettingsWindow =
   Scene_Map.prototype.createGFDSettingsWindow;
@@ -782,7 +782,7 @@ Scene_Map.prototype.createGFDSettingsSubwindows = function() {
   this.createGFDSettingsSwitchWindow();
 };
 
-// Party Window
+
 
 Scene_Map.prototype.createGFDSettingsPartyWindow = function() {
   this._gfdSettingsPartyWindow = new Window_GFD_SettingsParty();
@@ -825,7 +825,7 @@ Scene_Map.prototype.cmdGFDSettPartyNone = function() {
   this._gfdSettingsPartyWindow.refresh();
 };
 
-// Switch Window
+
 
 Scene_Map.prototype.createGFDSettingsSwitchWindow = function() {
   this._gfdSettingsSwitchWindow = new Window_GFD_SettingsSwitch();
@@ -938,7 +938,7 @@ Scene_Map.prototype.cmdGFDSettPartyMiss = function() {
   this._gfdSettingsPartyWindow.refresh();
 };
 
-// Tone Preset Window
+
 
 Scene_Map.prototype.createGFDSettingsTonePresetWindow = function() {
   this._gfdSettingsTonePresetWindow = new Window_GFD_SettingsTonePresets();
@@ -988,7 +988,7 @@ Scene_Map.prototype.cmdGFDSettTonePresetOk = function() {
   this._gfdSettingsWindow.refresh();
 };
 
-// Tone RGB Window
+
 
 Scene_Map.prototype.createGFDSettingsToneRGBWindow = function() {
   this._gfdSettingsToneRGBWindow = new Window_GFD_SettingsToneRGB();
@@ -1067,7 +1067,7 @@ Scene_Map.prototype.cmdGFDSettToneRGBOk = function() {
   this._gfdSettingsWindow.refresh();
 };
 
-// Tone Grey Window
+
 
 Scene_Map.prototype.createGFDSettingsToneGreyWindow = function() {
   this._gfdSettingsToneGreyWindow = new Window_GFD_SettingsToneGrey();
@@ -1107,7 +1107,7 @@ Scene_Map.prototype.cmdGFDSettToneGreyOk = function() {
   this._gfdSettingsWindow.refresh();
 };
 
-// Tone Randomize
+
 
 Scene_Map.prototype.cmdGFDSettToneRandomRed = function() {
   var doodad = this._gfdSettingsWindow._doodad;
@@ -1152,9 +1152,9 @@ Scene_Map.prototype.cmdGFDSettToneRandomAll = function() {
   this._gfdSettingsWindow.refresh();
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+
+
+
 
 MageStudios.Util = MageStudios.Util || {};
 
@@ -1162,16 +1162,16 @@ MageStudios.Util.randomIntBetween = function(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-//=============================================================================
-// End of Play Test Only
-//=============================================================================
 
-}; // Play Test Only
 
-//=============================================================================
-// End of File
-//=============================================================================
-} else { // MageStudios.GFD.version
+
+
+}; 
+
+
+
+
+} else { 
 
 var text = '================================================================\n';
 text += 'MSEP_X_ExtDoodadPack1 requires MSEP_GridFreeDoodads to be at the ';
@@ -1181,5 +1181,5 @@ text += '================================================================\n';
 console.log(text);
 require('nw.gui').Window.get().showDevTools();
 
-} // MageStudios.GFD.version
-}; // MSEP_GridFreeDoodads
+} 
+}; 

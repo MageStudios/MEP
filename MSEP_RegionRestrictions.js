@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Region Restrictions
-// MSEP_RegionRestrictions.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_RegionRestrictions = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RR = MageStudios.RR || {};
-MageStudios.RR.version = 1.00
+MageStudios.RR.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Use regions to block out Events and/or the player from
  * being able to venture into those spots.
  * @author Mage Studios Engine Plugins
@@ -127,63 +121,70 @@ MageStudios.RR.version = 1.00
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
-
-//=============================================================================
-// Parameter Variables
-//=============================================================================
 
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.SetupParameters = function() {
-  var parameters = PluginManager.parameters('MSEP_RegionRestrictions');
-  MageStudios.Param.RRAllAllow = String(parameters['All Allow']);
-  MageStudios.Param.RRAllAllow = MageStudios.Param.RRAllAllow.split(' ');
+MageStudios.SetupParameters = function () {
+  var parameters = PluginManager.parameters("MSEP_RegionRestrictions");
+  MageStudios.Param.RRAllAllow = String(parameters["All Allow"]);
+  MageStudios.Param.RRAllAllow = MageStudios.Param.RRAllAllow.split(" ");
   for (var i = 0; i < MageStudios.Param.RRAllAllow.length; ++i) {
     MageStudios.Param.RRAllAllow[i] = Number(MageStudios.Param.RRAllAllow[i]);
   }
-  MageStudios.Param.RRAllRestrict = String(parameters['All Restrict']);
-  MageStudios.Param.RRAllRestrict = MageStudios.Param.RRAllRestrict.split(' ');
+  MageStudios.Param.RRAllRestrict = String(parameters["All Restrict"]);
+  MageStudios.Param.RRAllRestrict = MageStudios.Param.RRAllRestrict.split(" ");
   for (var i = 0; i < MageStudios.Param.RRAllRestrict.length; ++i) {
-    MageStudios.Param.RRAllRestrict[i] = Number(MageStudios.Param.RRAllRestrict[i]);
+    MageStudios.Param.RRAllRestrict[i] = Number(
+      MageStudios.Param.RRAllRestrict[i]
+    );
   }
-  MageStudios.Param.RREventAllow = String(parameters['Event Allow']);
-  MageStudios.Param.RREventAllow = MageStudios.Param.RREventAllow.split(' ');
+  MageStudios.Param.RREventAllow = String(parameters["Event Allow"]);
+  MageStudios.Param.RREventAllow = MageStudios.Param.RREventAllow.split(" ");
   for (var i = 0; i < MageStudios.Param.RREventAllow.length; ++i) {
-    MageStudios.Param.RREventAllow[i] = Number(MageStudios.Param.RREventAllow[i]);
+    MageStudios.Param.RREventAllow[i] = Number(
+      MageStudios.Param.RREventAllow[i]
+    );
   }
-  MageStudios.Param.RREventRestrict = String(parameters['Event Restrict']);
-  MageStudios.Param.RREventRestrict = MageStudios.Param.RREventRestrict.split(' ');
+  MageStudios.Param.RREventRestrict = String(parameters["Event Restrict"]);
+  MageStudios.Param.RREventRestrict =
+    MageStudios.Param.RREventRestrict.split(" ");
   for (var i = 0; i < MageStudios.Param.RREventRestrict.length; ++i) {
-    MageStudios.Param.RREventRestrict[i] = Number(MageStudios.Param.RREventRestrict[i]);
+    MageStudios.Param.RREventRestrict[i] = Number(
+      MageStudios.Param.RREventRestrict[i]
+    );
   }
-  MageStudios.Param.RRPlayerAllow = String(parameters['Player Allow']);
-  MageStudios.Param.RRPlayerAllow = MageStudios.Param.RRPlayerAllow.split(' ');
+  MageStudios.Param.RRPlayerAllow = String(parameters["Player Allow"]);
+  MageStudios.Param.RRPlayerAllow = MageStudios.Param.RRPlayerAllow.split(" ");
   for (var i = 0; i < MageStudios.Param.RRPlayerAllow.length; ++i) {
-    MageStudios.Param.RRPlayerAllow[i] = Number(MageStudios.Param.RRPlayerAllow[i]);
+    MageStudios.Param.RRPlayerAllow[i] = Number(
+      MageStudios.Param.RRPlayerAllow[i]
+    );
   }
-  MageStudios.Param.RRPlayerRestrict = String(parameters['Player Restrict']);
-  MageStudios.Param.RRPlayerRestrict = MageStudios.Param.RRPlayerRestrict.split(' ');
+  MageStudios.Param.RRPlayerRestrict = String(parameters["Player Restrict"]);
+  MageStudios.Param.RRPlayerRestrict =
+    MageStudios.Param.RRPlayerRestrict.split(" ");
   for (var i = 0; i < MageStudios.Param.RRPlayerRestrict.length; ++i) {
-    MageStudios.Param.RRPlayerRestrict[i] = Number(MageStudios.Param.RRPlayerRestrict[i]);
+    MageStudios.Param.RRPlayerRestrict[i] = Number(
+      MageStudios.Param.RRPlayerRestrict[i]
+    );
   }
 };
 MageStudios.SetupParameters();
 
-//=============================================================================
-// DataManager
-//=============================================================================
-
-DataManager.processRRNotetags = function() {
+DataManager.processRRNotetags = function () {
   if (!$dataMap) return;
   $dataMap.restrictPlayerRegions = MageStudios.Param.RRAllRestrict.concat(
-    MageStudios.Param.RRPlayerRestrict);
+    MageStudios.Param.RRPlayerRestrict
+  );
   $dataMap.restrictEventRegions = MageStudios.Param.RRAllRestrict.concat(
-    MageStudios.Param.RREventRestrict);
+    MageStudios.Param.RREventRestrict
+  );
   $dataMap.allowPlayerRegions = MageStudios.Param.RRAllAllow.concat(
-    MageStudios.Param.RRPlayerAllow);
+    MageStudios.Param.RRPlayerAllow
+  );
   $dataMap.allowEventRegions = MageStudios.Param.RRAllAllow.concat(
-    MageStudios.Param.RREventAllow);
+    MageStudios.Param.RREventAllow
+  );
   if (!$dataMap.note) return;
 
   var note1a = /<(?:PLAYER RESTRICT REGION):[ ]*(\d+(?:\s*,\s*\d+)*)>/i;
@@ -205,165 +206,168 @@ DataManager.processRRNotetags = function() {
   for (var i = 0; i < notedata.length; i++) {
     var line = notedata[i];
     if (line.match(note1a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
       $dataMap.restrictPlayerRegions =
         $dataMap.restrictPlayerRegions.concat(array);
     } else if (line.match(note1b)) {
       var mainArray = $dataMap.restrictPlayerRegions;
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
       $dataMap.restrictPlayerRegions =
         $dataMap.restrictPlayerRegions.concat(range);
     } else if (line.match(note2a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
       $dataMap.restrictEventRegions =
         $dataMap.restrictEventRegions.concat(array);
     } else if (line.match(note2b)) {
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
       $dataMap.restrictEventRegions =
         $dataMap.restrictEventRegions.concat(range);
     } else if (line.match(note3a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
       $dataMap.restrictPlayerRegions =
         $dataMap.restrictPlayerRegions.concat(array);
       $dataMap.restrictEventRegions =
         $dataMap.restrictEventRegions.concat(array);
     } else if (line.match(note3b)) {
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
       $dataMap.restrictPlayerRegions =
         $dataMap.restrictPlayerRegions.concat(array);
       $dataMap.restrictEventRegions =
         $dataMap.restrictEventRegions.concat(array);
     } else if (line.match(note4a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
-      $dataMap.allowPlayerRegions =
-        $dataMap.allowPlayerRegions.concat(array);
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
+      $dataMap.allowPlayerRegions = $dataMap.allowPlayerRegions.concat(array);
     } else if (line.match(note4b)) {
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
-      $dataMap.allowPlayerRegions =$dataMap.allowPlayerRegions.concat(range);
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
+      $dataMap.allowPlayerRegions = $dataMap.allowPlayerRegions.concat(range);
     } else if (line.match(note5a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
       $dataMap.allowEventRegions = $dataMap.allowEventRegions.concat(array);
     } else if (line.match(note5b)) {
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
       $dataMap.allowEventRegions = $dataMap.allowEventRegions.concat(range);
     } else if (line.match(note6a)) {
-      array = JSON.parse('[' + RegExp.$1.match(/\d+/g) + ']');
+      array = JSON.parse("[" + RegExp.$1.match(/\d+/g) + "]");
       $dataMap.allowPlayerRegions = $dataMap.allowPlayerRegions.concat(array);
       $dataMap.allowEventRegions = $dataMap.allowEventRegions.concat(array);
     } else if (line.match(note6b)) {
-      var range = MageStudios.Util.getRange(Number(RegExp.$1), 
-        Number(RegExp.$2));
+      var range = MageStudios.Util.getRange(
+        Number(RegExp.$1),
+        Number(RegExp.$2)
+      );
       $dataMap.allowPlayerRegions = $dataMap.allowPlayerRegions.concat(array);
       $dataMap.allowEventRegions = $dataMap.allowEventRegions.concat(array);
     }
   }
 };
 
-//=============================================================================
-// Game_Map
-//=============================================================================
-
 MageStudios.RR.Game_Map_setup = Game_Map.prototype.setup;
-Game_Map.prototype.setup = function(mapId) {
-    MageStudios.RR.Game_Map_setup.call(this, mapId);
-    if ($dataMap) DataManager.processRRNotetags();
+Game_Map.prototype.setup = function (mapId) {
+  MageStudios.RR.Game_Map_setup.call(this, mapId);
+  if ($dataMap) DataManager.processRRNotetags();
 };
 
-Game_Map.prototype.restrictEventRegions = function() {
-    if ($dataMap.restrictEventRegions === undefined) {
-      DataManager.processRRNotetags();
-    }
-    return $dataMap.restrictEventRegions || [];
+Game_Map.prototype.restrictEventRegions = function () {
+  if ($dataMap.restrictEventRegions === undefined) {
+    DataManager.processRRNotetags();
+  }
+  return $dataMap.restrictEventRegions || [];
 };
 
-Game_Map.prototype.restrictPlayerRegions = function() {
-    if ($dataMap.restrictPlayerRegions === undefined) {
-      DataManager.processRRNotetags();
-    }
-    return $dataMap.restrictPlayerRegions || [];
+Game_Map.prototype.restrictPlayerRegions = function () {
+  if ($dataMap.restrictPlayerRegions === undefined) {
+    DataManager.processRRNotetags();
+  }
+  return $dataMap.restrictPlayerRegions || [];
 };
 
-Game_Map.prototype.allowEventRegions = function() {
-    if ($dataMap.allowEventRegions === undefined) {
-      DataManager.processRRNotetags();
-    }
-    return $dataMap.allowEventRegions || [];
+Game_Map.prototype.allowEventRegions = function () {
+  if ($dataMap.allowEventRegions === undefined) {
+    DataManager.processRRNotetags();
+  }
+  return $dataMap.allowEventRegions || [];
 };
 
-Game_Map.prototype.allowPlayerRegions = function() {
-    if ($dataMap.allowPlayerRegions === undefined) {
-      DataManager.processRRNotetags();
-    }
-    return $dataMap.allowPlayerRegions || [];
+Game_Map.prototype.allowPlayerRegions = function () {
+  if ($dataMap.allowPlayerRegions === undefined) {
+    DataManager.processRRNotetags();
+  }
+  return $dataMap.allowPlayerRegions || [];
 };
-
-//=============================================================================
-// Game_CharacterBase
-//=============================================================================
 
 MageStudios.RR.Game_CharacterBase_isMapPassable =
-    Game_CharacterBase.prototype.isMapPassable;
-Game_CharacterBase.prototype.isMapPassable = function(x, y, d) {
-    if (this.isEventRegionForbid(x, y, d)) return false;
-    if (this.isPlayerRegionForbid(x, y, d)) return false;
-    if (this.isEventRegionAllow(x, y, d)) return true;
-    if (this.isPlayerRegionAllow(x, y, d)) return true;
-    return MageStudios.RR.Game_CharacterBase_isMapPassable.call(this, x, y, d);
+  Game_CharacterBase.prototype.isMapPassable;
+Game_CharacterBase.prototype.isMapPassable = function (x, y, d) {
+  if (this.isEventRegionForbid(x, y, d)) return false;
+  if (this.isPlayerRegionForbid(x, y, d)) return false;
+  if (this.isEventRegionAllow(x, y, d)) return true;
+  if (this.isPlayerRegionAllow(x, y, d)) return true;
+  return MageStudios.RR.Game_CharacterBase_isMapPassable.call(this, x, y, d);
 };
 
-Game_CharacterBase.prototype.isEvent = function() {
-    return false;
+Game_CharacterBase.prototype.isEvent = function () {
+  return false;
 };
 
-Game_CharacterBase.prototype.isPlayer = function() {
-    return false;
+Game_CharacterBase.prototype.isPlayer = function () {
+  return false;
 };
 
-Game_CharacterBase.prototype.processRRNotetags = function() {
-    DataManager.processRRNotetags();
+Game_CharacterBase.prototype.processRRNotetags = function () {
+  DataManager.processRRNotetags();
 };
 
-Game_CharacterBase.prototype.isEventRegionForbid = function(x, y, d) {
-    if (this.isPlayer()) return false;
-    if (this.isThrough()) return false;
-    var regionId = this.getRegionId(x, y, d);
-    if (regionId === 0) return false;
-    if ($gameMap.restrictEventRegions().contains(regionId)) return true;
-    return false;
+Game_CharacterBase.prototype.isEventRegionForbid = function (x, y, d) {
+  if (this.isPlayer()) return false;
+  if (this.isThrough()) return false;
+  var regionId = this.getRegionId(x, y, d);
+  if (regionId === 0) return false;
+  if ($gameMap.restrictEventRegions().contains(regionId)) return true;
+  return false;
 };
 
-Game_CharacterBase.prototype.isPlayerRegionForbid = function(x, y, d) {
-    if (this.isEvent()) return false;
-    if (this.isThrough()) return false;
-    var regionId = this.getRegionId(x, y, d);
-    if (regionId === 0) return false;
-    if ($gameMap.restrictPlayerRegions().contains(regionId)) return true;
-    return false;
+Game_CharacterBase.prototype.isPlayerRegionForbid = function (x, y, d) {
+  if (this.isEvent()) return false;
+  if (this.isThrough()) return false;
+  var regionId = this.getRegionId(x, y, d);
+  if (regionId === 0) return false;
+  if ($gameMap.restrictPlayerRegions().contains(regionId)) return true;
+  return false;
 };
 
-Game_CharacterBase.prototype.isEventRegionAllow = function(x, y, d) {
-    if (this.isPlayer()) return false;
-    var regionId = this.getRegionId(x, y, d);
-    if (regionId === 0) return false;
-    if ($gameMap.allowEventRegions().contains(regionId)) return true;
-    return false;
+Game_CharacterBase.prototype.isEventRegionAllow = function (x, y, d) {
+  if (this.isPlayer()) return false;
+  var regionId = this.getRegionId(x, y, d);
+  if (regionId === 0) return false;
+  if ($gameMap.allowEventRegions().contains(regionId)) return true;
+  return false;
 };
 
-Game_CharacterBase.prototype.isPlayerRegionAllow = function(x, y, d) {
-    if (this.isEvent()) return false;
-    var regionId = this.getRegionId(x, y, d);
-    if (regionId === 0) return false;
-    if ($gameMap.allowPlayerRegions().contains(regionId)) return true;
-    return false
+Game_CharacterBase.prototype.isPlayerRegionAllow = function (x, y, d) {
+  if (this.isEvent()) return false;
+  var regionId = this.getRegionId(x, y, d);
+  if (regionId === 0) return false;
+  if ($gameMap.allowPlayerRegions().contains(regionId)) return true;
+  return false;
 };
 
-Game_CharacterBase.prototype.getRegionId = function(x, y, d) {
-    switch (d) {
+Game_CharacterBase.prototype.getRegionId = function (x, y, d) {
+  switch (d) {
     case 1:
       return $gameMap.regionId(x - 1, y + 1);
       break;
@@ -394,31 +398,19 @@ Game_CharacterBase.prototype.getRegionId = function(x, y, d) {
     default:
       return $gameMap.regionId(x, y);
       break;
-    }
+  }
 };
 
-//=============================================================================
-// Game_Event
-//=============================================================================
-
-Game_Event.prototype.isEvent = function() {
-    return true;
+Game_Event.prototype.isEvent = function () {
+  return true;
 };
 
-//=============================================================================
-// Game_Player
-//=============================================================================
-
-Game_Player.prototype.isPlayer = function() {
-    return true;
+Game_Player.prototype.isPlayer = function () {
+  return true;
 };
-
-//=============================================================================
-// Game_Vehicle
-//=============================================================================
 
 MageStudios.RR.Game_Vehicle_isLandOk = Game_Vehicle.prototype.isLandOk;
-Game_Vehicle.prototype.isLandOk = function(x, y, d) {
+Game_Vehicle.prototype.isLandOk = function (x, y, d) {
   var value = MageStudios.RR.Game_Vehicle_isLandOk.call(this, x, y, d);
   if (!value) return false;
   if (this.isAirship()) {
@@ -436,18 +428,10 @@ Game_Vehicle.prototype.isLandOk = function(x, y, d) {
   return true;
 };
 
-//=============================================================================
-// Utilities
-//=============================================================================
-
 MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util.getRange = function(n, m) {
-    var result = [];
-    for (var i = n; i <= m; ++i) result.push(i);
-    return result;
+MageStudios.Util.getRange = function (n, m) {
+  var result = [];
+  for (var i = n; i <= m; ++i) result.push(i);
+  return result;
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

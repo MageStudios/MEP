@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Save Core Extension - Autosave
-// MSEP_X_Autosave.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_Autosave = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Autosave = MageStudios.Autosave || {};
-MageStudios.Autosave.version = 1.00;
+MageStudios.Autosave.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Req MSEP_SaveCore.js) Adds Autosave functionality to your
  * RPG Maker game.
  * @author Mage Studios Engine Plugins
@@ -114,7 +108,7 @@ MageStudios.Autosave.version = 1.00;
  * ---------
  * Settings:
  * ---------
- * 
+ *
  * Name:
  * \i[231]Autosave
  *
@@ -137,7 +131,7 @@ MageStudios.Autosave.version = 1.00;
  * ----------
  * Functions:
  * ----------
- * 
+ *
  * Make Option Code:
  * this.addCommand(name, symbol, enabled, ext);
  *
@@ -161,7 +155,7 @@ MageStudios.Autosave.version = 1.00;
  * var symbol = this.commandSymbol(index);
  * var value = this.getConfigValue(symbol);
  * this.changeValue(symbol, true);
- * 
+ *
  * Cursor Left Code:
  * var index = this.index();
  * var symbol = this.commandSymbol(index);
@@ -169,13 +163,13 @@ MageStudios.Autosave.version = 1.00;
  * this.changeValue(symbol, false);
  *
  * Default Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Save Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Load Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * ============================================================================
  * Changelog
@@ -313,302 +307,286 @@ MageStudios.Autosave.version = 1.00;
  * @default 16
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_SaveCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_Autosave");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.AutosaveOnMapLoad = eval(
+    String(MageStudios.Parameters["OnMapLoad"])
+  );
+  MageStudios.Param.AutosaveOnMainMenu = eval(
+    String(MageStudios.Parameters["OnMainMenu"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_Autosave');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.AutosaveShowOpt = eval(
+    String(MageStudios.Parameters["Show Option"])
+  );
+  MageStudios.Param.AutosaveOptionCmd = String(
+    MageStudios.Parameters["Option Name"]
+  );
+  MageStudios.Param.AutosaveDefault = eval(
+    String(MageStudios.Parameters["Default"])
+  );
 
-MageStudios.Param.AutosaveOnMapLoad = eval(String(MageStudios.Parameters['OnMapLoad']));
-MageStudios.Param.AutosaveOnMainMenu = eval(String(MageStudios.Parameters['OnMainMenu']));
+  MageStudios.Param.AutosaveShowMsg = eval(
+    String(MageStudios.Parameters["ShowAutosave"])
+  );
+  MageStudios.Param.AutosaveMsgSave = String(
+    MageStudios.Parameters["AutosaveMsgSave"]
+  );
+  MageStudios.Param.AutosaveMsgLoad = String(
+    MageStudios.Parameters["AutosaveMsgLoad"]
+  );
+  MageStudios.Param.AutosaveMsgColor1 = String(
+    MageStudios.Parameters["MsgGradient1"]
+  );
+  MageStudios.Param.AutosaveMsgColor2 = String(
+    MageStudios.Parameters["MsgGradient2"]
+  );
+  MageStudios.Param.AutosaveMsgCode = JSON.parse(
+    MageStudios.Parameters["MsgGradientCode"]
+  );
+  MageStudios.Param.AutosaveMsgX = String(MageStudios.Parameters["MsgX"]);
+  MageStudios.Param.AutosaveMsgY = String(MageStudios.Parameters["MsgY"]);
+  MageStudios.Param.AutosaveMsgDur =
+    Number(MageStudios.Parameters["MsgDuration"]) || 120;
+  MageStudios.Param.AutosaveMsgFade =
+    Number(MageStudios.Parameters["FadeSpeed"]) || 16;
 
-MageStudios.Param.AutosaveShowOpt = eval(String(MageStudios.Parameters['Show Option']));
-MageStudios.Param.AutosaveOptionCmd = String(MageStudios.Parameters['Option Name']);
-MageStudios.Param.AutosaveDefault = eval(String(MageStudios.Parameters['Default']));
+  ConfigManager.autosave = MageStudios.Param.AutosaveDefault;
 
-MageStudios.Param.AutosaveShowMsg = eval(String(MageStudios.Parameters['ShowAutosave']));
-MageStudios.Param.AutosaveMsgSave = String(MageStudios.Parameters['AutosaveMsgSave']);
-MageStudios.Param.AutosaveMsgLoad = String(MageStudios.Parameters['AutosaveMsgLoad']);
-MageStudios.Param.AutosaveMsgColor1 = String(MageStudios.Parameters['MsgGradient1']);
-MageStudios.Param.AutosaveMsgColor2 = String(MageStudios.Parameters['MsgGradient2']);
-MageStudios.Param.AutosaveMsgCode = JSON.parse(MageStudios.Parameters['MsgGradientCode']);
-MageStudios.Param.AutosaveMsgX = String(MageStudios.Parameters['MsgX']);
-MageStudios.Param.AutosaveMsgY = String(MageStudios.Parameters['MsgY']);
-MageStudios.Param.AutosaveMsgDur = Number(MageStudios.Parameters['MsgDuration']) || 120;
-MageStudios.Param.AutosaveMsgFade = Number(MageStudios.Parameters['FadeSpeed']) || 16;
+  MageStudios.Autosave.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
+    var config = MageStudios.Autosave.ConfigManager_makeData.call(this);
+    config.autosave = this.autosave;
+    return config;
+  };
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
+  MageStudios.Autosave.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
+    MageStudios.Autosave.ConfigManager_applyData.call(this, config);
+    this.autosave = config["autosave"] || MageStudios.Param.AutosaveDefault;
+  };
 
-ConfigManager.autosave = MageStudios.Param.AutosaveDefault;
-
-MageStudios.Autosave.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
-  var config = MageStudios.Autosave.ConfigManager_makeData.call(this);
-  config.autosave = this.autosave;
-  return config;
-};
-
-MageStudios.Autosave.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
-  MageStudios.Autosave.ConfigManager_applyData.call(this, config);
-  this.autosave = config['autosave'] || MageStudios.Param.AutosaveDefault;
-};
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.Autosave.DataManager_setupNewGame = DataManager.setupNewGame;
-DataManager.setupNewGame = function() {
-  MageStudios.Autosave.DataManager_setupNewGame.call(this);
-  StorageManager.setCurrentAutosaveSlot(this._lastAccessedId);
-  $gameTemp._autosaveNewGame = true;
-  $gameTemp._autosaveLoading = false;
-};
-
-MageStudios.Autosave.DataManager_saveGame = DataManager.saveGameWithoutRescue;
-DataManager.saveGameWithoutRescue = function(savefileId) {
-  var value = MageStudios.Autosave.DataManager_saveGame.call(this, savefileId);
-  $gameTemp._autosaveNewGame = false;
-  $gameTemp._autosaveLoading = false;
-  StorageManager.setCurrentAutosaveSlot(savefileId);
-  return value;
-};
-
-MageStudios.Autosave.DataManager_loadGame = DataManager.loadGameWithoutRescue;
-DataManager.loadGameWithoutRescue = function(savefileId) {
-  var value = MageStudios.Autosave.DataManager_loadGame.call(this, savefileId);
-  $gameTemp._autosaveNewGame = false;
-  $gameTemp._autosaveLoading = true;
-  StorageManager.setCurrentAutosaveSlot(savefileId);
-  return value;
-};
-
-//=============================================================================
-// StorageManager
-//=============================================================================
-
-StorageManager.getCurrentAutosaveSlot = function() {
-  return this._currentAutosaveSlot;
-};
-
-StorageManager.setCurrentAutosaveSlot = function(savefileId) {
-  this._currentAutosaveSlot = savefileId;
-};
-
-StorageManager.performAutosave = function() {
-  if ($gameMap.mapId() <= 0) return;
-  if ($gameTemp._autosaveNewGame) return;
-  if (!$gameSystem.canAutosave()) return;
-  SceneManager._scene.performAutosave();
-};
-
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.Autosave.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-  MageStudios.Autosave.Game_System_initialize.call(this);
-  this.initAutosave();
-};
-
-Game_System.prototype.initAutosave = function() {
-  this._allowAutosave = true;
-};
-
-Game_System.prototype.canAutosave = function() {
-  if (this._allowAutosave === undefined) this.initAutosave();
-  return this._allowAutosave;
-};
-
-Game_System.prototype.setAutosave = function(value) {
-  if (this._allowAutosave === undefined) this.initAutosave();
-  this._allowAutosave = value;
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.Autosave.Game_Interpreter_pluginCommand =
-  Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.Autosave.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command.match(/EnableAutosave/i)) {
-    $gameSystem.setAutosave(true);
-  } else if (command.match(/DisableAutosave/i)) {
-    $gameSystem.setAutosave(false);
-  } else if (command.match(/Autosave/i)) {
-    StorageManager.performAutosave();
-  }
-};
-
-//=============================================================================
-// Window_Options
-//=============================================================================
-
-MageStudios.Autosave.Window_Options_addGeneralOptions =
-  Window_Options.prototype.addGeneralOptions;
-Window_Options.prototype.addGeneralOptions = function() {
-  MageStudios.Autosave.Window_Options_addGeneralOptions.call(this);
-  if (!Imported.MSEP_OptionsCore && MageStudios.Param.AutosaveShowOpt) {
-    this.addCommand(MageStudios.Param.AutosaveOptionCmd, 'autosave');
-  }
-};
-
-//=============================================================================
-// Window_Autosave
-//=============================================================================
-
-function Window_Autosave() {
-  this.initialize.apply(this, arguments);
-}
-
-Window_Autosave.prototype = Object.create(Window_Base.prototype);
-Window_Autosave.prototype.constructor = Window_Autosave;
-
-Window_Autosave.prototype.initialize = function() {
-  var width = this.windowWidth();
-  var height = this.windowHeight();
-  var x = eval(MageStudios.Param.AutosaveMsgX);
-  var y = eval(MageStudios.Param.AutosaveMsgY);
-  Window_Base.prototype.initialize.call(this, x, y, width, height);
-  this.opacity = 0;
-  this.contentsOpacity = 0;
-  this._showCount = 0;
-  this.refresh();
-  if ($gameTemp._autosaveLoading) {
-    this.reveal();
+  MageStudios.Autosave.DataManager_setupNewGame = DataManager.setupNewGame;
+  DataManager.setupNewGame = function () {
+    MageStudios.Autosave.DataManager_setupNewGame.call(this);
+    StorageManager.setCurrentAutosaveSlot(this._lastAccessedId);
+    $gameTemp._autosaveNewGame = true;
     $gameTemp._autosaveLoading = false;
+  };
+
+  MageStudios.Autosave.DataManager_saveGame = DataManager.saveGameWithoutRescue;
+  DataManager.saveGameWithoutRescue = function (savefileId) {
+    var value = MageStudios.Autosave.DataManager_saveGame.call(
+      this,
+      savefileId
+    );
+    $gameTemp._autosaveNewGame = false;
+    $gameTemp._autosaveLoading = false;
+    StorageManager.setCurrentAutosaveSlot(savefileId);
+    return value;
+  };
+
+  MageStudios.Autosave.DataManager_loadGame = DataManager.loadGameWithoutRescue;
+  DataManager.loadGameWithoutRescue = function (savefileId) {
+    var value = MageStudios.Autosave.DataManager_loadGame.call(
+      this,
+      savefileId
+    );
+    $gameTemp._autosaveNewGame = false;
+    $gameTemp._autosaveLoading = true;
+    StorageManager.setCurrentAutosaveSlot(savefileId);
+    return value;
+  };
+
+  StorageManager.getCurrentAutosaveSlot = function () {
+    return this._currentAutosaveSlot;
+  };
+
+  StorageManager.setCurrentAutosaveSlot = function (savefileId) {
+    this._currentAutosaveSlot = savefileId;
+  };
+
+  StorageManager.performAutosave = function () {
+    if ($gameMap.mapId() <= 0) return;
+    if ($gameTemp._autosaveNewGame) return;
+    if (!$gameSystem.canAutosave()) return;
+    SceneManager._scene.performAutosave();
+  };
+
+  MageStudios.Autosave.Game_System_initialize =
+    Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    MageStudios.Autosave.Game_System_initialize.call(this);
+    this.initAutosave();
+  };
+
+  Game_System.prototype.initAutosave = function () {
+    this._allowAutosave = true;
+  };
+
+  Game_System.prototype.canAutosave = function () {
+    if (this._allowAutosave === undefined) this.initAutosave();
+    return this._allowAutosave;
+  };
+
+  Game_System.prototype.setAutosave = function (value) {
+    if (this._allowAutosave === undefined) this.initAutosave();
+    this._allowAutosave = value;
+  };
+
+  MageStudios.Autosave.Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.Autosave.Game_Interpreter_pluginCommand.call(
+      this,
+      command,
+      args
+    );
+    if (command.match(/EnableAutosave/i)) {
+      $gameSystem.setAutosave(true);
+    } else if (command.match(/DisableAutosave/i)) {
+      $gameSystem.setAutosave(false);
+    } else if (command.match(/Autosave/i)) {
+      StorageManager.performAutosave();
+    }
+  };
+
+  MageStudios.Autosave.Window_Options_addGeneralOptions =
+    Window_Options.prototype.addGeneralOptions;
+  Window_Options.prototype.addGeneralOptions = function () {
+    MageStudios.Autosave.Window_Options_addGeneralOptions.call(this);
+    if (!Imported.MSEP_OptionsCore && MageStudios.Param.AutosaveShowOpt) {
+      this.addCommand(MageStudios.Param.AutosaveOptionCmd, "autosave");
+    }
+  };
+
+  function Window_Autosave() {
+    this.initialize.apply(this, arguments);
   }
-};
 
-Window_Autosave.prototype.standardPadding = function() {
-  return 0;
-};
+  Window_Autosave.prototype = Object.create(Window_Base.prototype);
+  Window_Autosave.prototype.constructor = Window_Autosave;
 
-Window_Autosave.prototype.windowWidth = function() {
-  return Graphics.boxWidth;
-};
+  Window_Autosave.prototype.initialize = function () {
+    var width = this.windowWidth();
+    var height = this.windowHeight();
+    var x = eval(MageStudios.Param.AutosaveMsgX);
+    var y = eval(MageStudios.Param.AutosaveMsgY);
+    Window_Base.prototype.initialize.call(this, x, y, width, height);
+    this.opacity = 0;
+    this.contentsOpacity = 0;
+    this._showCount = 0;
+    this.refresh();
+    if ($gameTemp._autosaveLoading) {
+      this.reveal();
+      $gameTemp._autosaveLoading = false;
+    }
+  };
 
-Window_Autosave.prototype.windowHeight = function() {
-  return this.fittingHeight(1);
-};
+  Window_Autosave.prototype.standardPadding = function () {
+    return 0;
+  };
 
-Window_Autosave.prototype.update = function() {
-  Window_Base.prototype.update.call(this);
-  if (this._showCount > 0) {
-    this.updateFadeIn();
-    this._showCount--;
-  } else {
-    this.updateFadeOut();
-  }
-};
+  Window_Autosave.prototype.windowWidth = function () {
+    return Graphics.boxWidth;
+  };
 
-Window_Autosave.prototype.updateFadeIn = function() {
-  this.contentsOpacity += MageStudios.Param.AutosaveMsgFade;
-};
+  Window_Autosave.prototype.windowHeight = function () {
+    return this.fittingHeight(1);
+  };
 
-Window_Autosave.prototype.updateFadeOut = function() {
-  this.contentsOpacity -= MageStudios.Param.AutosaveMsgFade;
-};
+  Window_Autosave.prototype.update = function () {
+    Window_Base.prototype.update.call(this);
+    if (this._showCount > 0) {
+      this.updateFadeIn();
+      this._showCount--;
+    } else {
+      this.updateFadeOut();
+    }
+  };
 
-Window_Autosave.prototype.reveal = function() {
-  if (!MageStudios.Param.AutosaveShowMsg) return;
-  if (this._showCount > 0) return;
-  this._showCount = MageStudios.Param.AutosaveMsgDur;
-  this.refresh();
-};
+  Window_Autosave.prototype.updateFadeIn = function () {
+    this.contentsOpacity += MageStudios.Param.AutosaveMsgFade;
+  };
 
-Window_Autosave.prototype.message = function() {
-  if ($gameTemp._autosaveLoading) {
-    return MageStudios.Param.AutosaveMsgLoad;
-  } else {
-    return MageStudios.Param.AutosaveMsgSave;
-  }
-};
+  Window_Autosave.prototype.updateFadeOut = function () {
+    this.contentsOpacity -= MageStudios.Param.AutosaveMsgFade;
+  };
 
-Window_Autosave.prototype.refresh = function() {
-  this.contents.clear();
-  this.drawGradient();
-  this.drawTextEx(this.message(), this.textPadding(), 0);
-};
+  Window_Autosave.prototype.reveal = function () {
+    if (!MageStudios.Param.AutosaveShowMsg) return;
+    if (this._showCount > 0) return;
+    this._showCount = MageStudios.Param.AutosaveMsgDur;
+    this.refresh();
+  };
 
-Window_Autosave.prototype.drawGradient = function() {
-  eval(MageStudios.Param.AutosaveMsgCode);
-};
+  Window_Autosave.prototype.message = function () {
+    if ($gameTemp._autosaveLoading) {
+      return MageStudios.Param.AutosaveMsgLoad;
+    } else {
+      return MageStudios.Param.AutosaveMsgSave;
+    }
+  };
 
-Window_Autosave.prototype.textWidthEx = function(text) {
-  return this.drawTextEx(text, 0, this.contents.height);
-};
+  Window_Autosave.prototype.refresh = function () {
+    this.contents.clear();
+    this.drawGradient();
+    this.drawTextEx(this.message(), this.textPadding(), 0);
+  };
 
-//=============================================================================
-// Scene_Base
-//=============================================================================
+  Window_Autosave.prototype.drawGradient = function () {
+    eval(MageStudios.Param.AutosaveMsgCode);
+  };
 
-Scene_Base.prototype.performAutosave = function() {
-};
+  Window_Autosave.prototype.textWidthEx = function (text) {
+    return this.drawTextEx(text, 0, this.contents.height);
+  };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
+  Scene_Base.prototype.performAutosave = function () {};
 
-MageStudios.Autosave.Scene_Map_createAllWindows =
-  Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
-  MageStudios.Autosave.Scene_Map_createAllWindows.call(this);
-  this.createAutosaveMessageWindow();
-};
+  MageStudios.Autosave.Scene_Map_createAllWindows =
+    Scene_Map.prototype.createAllWindows;
+  Scene_Map.prototype.createAllWindows = function () {
+    MageStudios.Autosave.Scene_Map_createAllWindows.call(this);
+    this.createAutosaveMessageWindow();
+  };
 
-Scene_Map.prototype.createAutosaveMessageWindow = function() {
-  this._autosaveMsgWindow = new Window_Autosave();
-  this.addChild(this._autosaveMsgWindow);
-};
+  Scene_Map.prototype.createAutosaveMessageWindow = function () {
+    this._autosaveMsgWindow = new Window_Autosave();
+    this.addChild(this._autosaveMsgWindow);
+  };
 
-MageStudios.Autosave.Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
-Scene_Map.prototype.onMapLoaded = function() {
-  MageStudios.Autosave.Scene_Map_onMapLoaded.call(this);
-  if (MageStudios.Param.AutosaveOnMapLoad) StorageManager.performAutosave();
-};
+  MageStudios.Autosave.Scene_Map_onMapLoaded = Scene_Map.prototype.onMapLoaded;
+  Scene_Map.prototype.onMapLoaded = function () {
+    MageStudios.Autosave.Scene_Map_onMapLoaded.call(this);
+    if (MageStudios.Param.AutosaveOnMapLoad) StorageManager.performAutosave();
+  };
 
-MageStudios.Autosave.Scene_Map_callMenu = Scene_Map.prototype.callMenu;
-Scene_Map.prototype.callMenu = function() {
-  MageStudios.Autosave.Scene_Map_callMenu.call(this);
-  if (MageStudios.Param.AutosaveOnMainMenu) StorageManager.performAutosave();
-};
+  MageStudios.Autosave.Scene_Map_callMenu = Scene_Map.prototype.callMenu;
+  Scene_Map.prototype.callMenu = function () {
+    MageStudios.Autosave.Scene_Map_callMenu.call(this);
+    if (MageStudios.Param.AutosaveOnMainMenu) StorageManager.performAutosave();
+  };
 
-Scene_Map.prototype.performAutosave = function() {
-  if ($gameMap.mapId() <= 0) return;
-  if ($gameTemp._autosaveNewGame) return;
-  if (!$gameSystem.canAutosave()) return;
-  $gameSystem.onBeforeSave();
-  DataManager.saveGameWithoutRescue(StorageManager.getCurrentAutosaveSlot());
-  if (this._autosaveMsgWindow) this._autosaveMsgWindow.reveal();
-};
-
-//=============================================================================
-// Save Core Check
-//=============================================================================
+  Scene_Map.prototype.performAutosave = function () {
+    if ($gameMap.mapId() <= 0) return;
+    if ($gameTemp._autosaveNewGame) return;
+    if (!$gameSystem.canAutosave()) return;
+    $gameSystem.onBeforeSave();
+    DataManager.saveGameWithoutRescue(StorageManager.getCurrentAutosaveSlot());
+    if (this._autosaveMsgWindow) this._autosaveMsgWindow.reveal();
+  };
 } else {
-
-Imported.MSEP_X_Autosave = false;
-var text = '';
-text += 'You are getting this error because you are trying to run ';
-text += 'MSEP_X_Autosave without the required plugins. Please visit ';
-text += 'MageStudios.moe and install the required plugins neede for this plugin ';
-text += 'found in this plugin\'s help file before you can use it.';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
+  Imported.MSEP_X_Autosave = false;
+  var text = "";
+  text += "You are getting this error because you are trying to run ";
+  text += "MSEP_X_Autosave without the required plugins. Please visit ";
+  text +=
+    "MageStudios.moe and install the required plugins neede for this plugin ";
+  text += "found in this plugin's help file before you can use it.";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
 }
-//=============================================================================
-// End of File
-//=============================================================================

@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Enemy Levels Extension - Difficulty Slider
-// MSEP_X_DifficultySlider.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_DifficultySlider = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.DSlider = MageStudios.DSlider || {};
-MageStudios.DSlider.version = 1.00;
+MageStudios.DSlider.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_EnemyLevels.js) Give your players
  * access to an option that allows them to change difficulty.
  * @author Mage Studios Engine Plugins
@@ -146,7 +140,7 @@ MageStudios.DSlider.version = 1.00;
  * the following:
  *
  *   if (ConfigManager.difficultySlider >= 200) {
- *     // Do stuff
+ *
  *   }
  *
  * Have fun!
@@ -161,7 +155,7 @@ MageStudios.DSlider.version = 1.00;
  * ---------
  * Settings:
  * ---------
- * 
+ *
  * Name:
  * \i[87]Enemy Difficulty
  *
@@ -187,7 +181,7 @@ MageStudios.DSlider.version = 1.00;
  * ----------
  * Functions:
  * ----------
- * 
+ *
  * Make Option Code:
  * this.addCommand(name, symbol, enabled, ext);
  *
@@ -221,7 +215,7 @@ MageStudios.DSlider.version = 1.00;
  * value += MageStudios.Param.DSliderChange;
  * value = value.clamp(MageStudios.Param.DSliderMinDif, MageStudios.Param.DSliderMaxDif);
  * this.changeValue(symbol, value);
- * 
+ *
  * Cursor Left Code:
  * var index = this.index();
  * var symbol = this.commandSymbol(index);
@@ -232,13 +226,13 @@ MageStudios.DSlider.version = 1.00;
  * this.changeValue(symbol, value);
  *
  * Default Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Save Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * Load Config Code:
- * // Empty. Provided by this plugin.
+ *
  *
  * ============================================================================
  * Changelog
@@ -261,313 +255,322 @@ MageStudios.DSlider.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
 if (Imported.MSEP_EnemyLevels) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_DifficultySlider");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
+  MageStudios.Param.DSliderOptionsCmd = String(
+    MageStudios.Parameters["Command Text"]
+  );
+  MageStudios.Param.DSliderShow = eval(
+    String(MageStudios.Parameters["Default Show"])
+  );
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_DifficultySlider');
-MageStudios.Param = MageStudios.Param || {};
+  MageStudios.Param.DSliderDefDif = Number(
+    MageStudios.Parameters["Default Difficulty"]
+  );
+  MageStudios.Param.DSliderMinDif = Number(
+    MageStudios.Parameters["Minimum Difficulty"]
+  );
+  MageStudios.Param.DSliderMaxDif = Number(
+    MageStudios.Parameters["Maximum Difficulty"]
+  );
+  MageStudios.Param.DSliderChange = Number(
+    MageStudios.Parameters["Change Increment"]
+  );
 
-MageStudios.Param.DSliderOptionsCmd = String(MageStudios.Parameters['Command Text']);
-MageStudios.Param.DSliderShow = eval(String(MageStudios.Parameters['Default Show']));
+  MageStudios.Param.DSliderBase = String(
+    MageStudios.Parameters["Base Level Formula"]
+  );
+  MageStudios.Param.DSliderMax = String(
+    MageStudios.Parameters["Maximum Level Formula"]
+  );
+  MageStudios.Param.DSliderMin = String(
+    MageStudios.Parameters["Maximum Level Formula"]
+  );
 
-MageStudios.Param.DSliderDefDif = Number(MageStudios.Parameters['Default Difficulty']);
-MageStudios.Param.DSliderMinDif = Number(MageStudios.Parameters['Minimum Difficulty']);
-MageStudios.Param.DSliderMaxDif = Number(MageStudios.Parameters['Maximum Difficulty']);
-MageStudios.Param.DSliderChange = Number(MageStudios.Parameters['Change Increment']);
+  MageStudios.DSlider.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.DSlider.DataManager_isDatabaseLoaded.call(this))
+      return false;
 
-MageStudios.Param.DSliderBase = String(MageStudios.Parameters['Base Level Formula']);
-MageStudios.Param.DSliderMax = String(MageStudios.Parameters['Maximum Level Formula']);
-MageStudios.Param.DSliderMin = String(MageStudios.Parameters['Maximum Level Formula']);
+    if (!MageStudios._loaded_MSEP_DifficultySlider) {
+      this.processDSliderNotetags1($dataEnemies);
+      MageStudios._loaded_MSEP_DifficultySlider = true;
+    }
 
-//=============================================================================
-// DataManager
-//=============================================================================
+    return true;
+  };
 
-MageStudios.DSlider.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.DSlider.DataManager_isDatabaseLoaded.call(this)) return false;
+  DataManager.processDSliderNotetags1 = function (group) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-  if (!MageStudios._loaded_MSEP_DifficultySlider) {
-    this.processDSliderNotetags1($dataEnemies);
-    MageStudios._loaded_MSEP_DifficultySlider = true;
-  }
-  
-  return true;
-};
+      obj.difficultySliderAffected = true;
 
-DataManager.processDSliderNotetags1 = function(group) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    obj.difficultySliderAffected = true;
-
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<UNAFFECTED BY DIFFICULTY SLIDER>/i)) {
-        obj.difficultySliderAffected = false;
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<UNAFFECTED BY DIFFICULTY SLIDER>/i)) {
+          obj.difficultySliderAffected = false;
+        }
       }
     }
-  }
-};
+  };
 
-//=============================================================================
-// ConfigManager
-//=============================================================================
+  ConfigManager.difficultySlider = MageStudios.Param.DSliderDefDif;
 
-ConfigManager.difficultySlider = MageStudios.Param.DSliderDefDif;
+  MageStudios.DSlider.ConfigManager_makeData = ConfigManager.makeData;
+  ConfigManager.makeData = function () {
+    var config = MageStudios.DSlider.ConfigManager_makeData.call(this);
+    config.difficultySlider = this.difficultySlider;
+    return config;
+  };
 
-MageStudios.DSlider.ConfigManager_makeData = ConfigManager.makeData;
-ConfigManager.makeData = function() {
-  var config = MageStudios.DSlider.ConfigManager_makeData.call(this);
-  config.difficultySlider = this.difficultySlider;
-  return config;
-};
+  MageStudios.DSlider.ConfigManager_applyData = ConfigManager.applyData;
+  ConfigManager.applyData = function (config) {
+    MageStudios.DSlider.ConfigManager_applyData.call(this, config);
+    this.difficultySlider = this.readConfigDifficultySlider(
+      config,
+      "difficultySlider"
+    );
+  };
 
-MageStudios.DSlider.ConfigManager_applyData = ConfigManager.applyData;
-ConfigManager.applyData = function(config) {
-  MageStudios.DSlider.ConfigManager_applyData.call(this, config);
-  this.difficultySlider = this.readConfigDifficultySlider(config,
-    'difficultySlider');
-};
+  ConfigManager.readConfigDifficultySlider = function (config, name) {
+    var value = config[name];
+    if (value !== undefined) {
+      return Number(value).clamp(
+        MageStudios.Param.DSliderMinDif,
+        MageStudios.Param.DSliderMaxDif
+      );
+    } else {
+      return MageStudios.Param.DSliderDefDif.clamp(
+        MageStudios.Param.DSliderMinDif,
+        MageStudios.Param.DSliderMaxDif
+      );
+    }
+  };
 
-ConfigManager.readConfigDifficultySlider = function(config, name) {
-  var value = config[name];
-  if (value !== undefined) {
-    return Number(value).clamp(MageStudios.Param.DSliderMinDif,
-      MageStudios.Param.DSliderMaxDif);
-  } else {
-    return MageStudios.Param.DSliderDefDif.clamp(MageStudios.Param.DSliderMinDif,
-      MageStudios.Param.DSliderMaxDif);
-  }
-};
-
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.DSlider.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-  MageStudios.DSlider.Game_System_initialize.call(this);
-  this.initDifficultySliderSettings();
-};
-
-Game_System.prototype.initDifficultySliderSettings = function() {
-  this._showDifficultySlider = MageStudios.Param.DSliderShow;
-};
-
-Game_System.prototype.showDifficultySlider = function() {
-  if (this._showDifficultySlider === undefined) {
+  MageStudios.DSlider.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
+    MageStudios.DSlider.Game_System_initialize.call(this);
     this.initDifficultySliderSettings();
-  }
-  return this._showDifficultySlider;
-};
+  };
 
-Game_System.prototype.setDifficultySlider = function(value) {
-  if (this._showDifficultySlider === undefined) {
-    this.initDifficultySliderSettings();
-  }
-  this._showDifficultySlider = value;
-};
+  Game_System.prototype.initDifficultySliderSettings = function () {
+    this._showDifficultySlider = MageStudios.Param.DSliderShow;
+  };
 
-//=============================================================================
-// Game_Enemy
-//=============================================================================
-
-Game_Enemy.prototype.isDifficultySliderAffected = function() {
-  return this.enemy().difficultySliderAffected && 
-    $gameSystem.showDifficultySlider();
-};
-
-MageStudios.DSlider.Game_Enemy_setupMinimumLevel =
-  Game_Enemy.prototype.setupMinimumLevel;
-Game_Enemy.prototype.setupMinimumLevel = function() {
-  var level = MageStudios.DSlider.Game_Enemy_setupMinimumLevel.call(this);
-  if (this.isDifficultySliderAffected()) {
-    var multiplier = ConfigManager.difficultySlider
-    var code = MageStudios.Param.DSliderMin;
-    try {
-      level = eval(code);
-    } catch (e) {
-      level = level * multiplier / 100;
-      MageStudios.Util.displayError(e, code, 
-        'DIFFICULTY SLIDER MINIMUM LEVEL ERROR');
+  Game_System.prototype.showDifficultySlider = function () {
+    if (this._showDifficultySlider === undefined) {
+      this.initDifficultySliderSettings();
     }
-  }
-  return parseInt(level);
-};
+    return this._showDifficultySlider;
+  };
 
-MageStudios.DSlider.Game_Enemy_setupMaximumLevel =
-  Game_Enemy.prototype.setupMaximumLevel;
-Game_Enemy.prototype.setupMaximumLevel = function() {
-  var level = MageStudios.DSlider.Game_Enemy_setupMaximumLevel.call(this);
-  if (this.isDifficultySliderAffected()) {
-    var multiplier = ConfigManager.difficultySlider
-    var code = MageStudios.Param.DSliderMax;
-    try {
-      level = eval(code);
-    } catch (e) {
-      level = level * multiplier / 100;
-      MageStudios.Util.displayError(e, code, 
-        'DIFFICULTY SLIDER MAXIMUM LEVEL ERROR');
+  Game_System.prototype.setDifficultySlider = function (value) {
+    if (this._showDifficultySlider === undefined) {
+      this.initDifficultySliderSettings();
     }
-  }
-  return parseInt(level);
-};
+    this._showDifficultySlider = value;
+  };
 
-MageStudios.DSlider.Game_Enemy_getSetupLevel = Game_Enemy.prototype.getSetupLevel;
-Game_Enemy.prototype.getSetupLevel = function() {
-  var level = MageStudios.DSlider.Game_Enemy_getSetupLevel.call(this);
-  if (this.isDifficultySliderAffected()) {
-    var multiplier = ConfigManager.difficultySlider
-    var code = MageStudios.Param.DSliderBase;
-    try {
-      level = eval(code);
-    } catch (e) {
-      level = level * multiplier / 100;
-      MageStudios.Util.displayError(e, code, 
-        'DIFFICULTY SLIDER BASE LEVEL ERROR');
+  Game_Enemy.prototype.isDifficultySliderAffected = function () {
+    return (
+      this.enemy().difficultySliderAffected &&
+      $gameSystem.showDifficultySlider()
+    );
+  };
+
+  MageStudios.DSlider.Game_Enemy_setupMinimumLevel =
+    Game_Enemy.prototype.setupMinimumLevel;
+  Game_Enemy.prototype.setupMinimumLevel = function () {
+    var level = MageStudios.DSlider.Game_Enemy_setupMinimumLevel.call(this);
+    if (this.isDifficultySliderAffected()) {
+      var multiplier = ConfigManager.difficultySlider;
+      var code = MageStudios.Param.DSliderMin;
+      try {
+        level = eval(code);
+      } catch (e) {
+        level = (level * multiplier) / 100;
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "DIFFICULTY SLIDER MINIMUM LEVEL ERROR"
+        );
+      }
     }
-  }
-  return parseInt(level);
-};
+    return parseInt(level);
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
+  MageStudios.DSlider.Game_Enemy_setupMaximumLevel =
+    Game_Enemy.prototype.setupMaximumLevel;
+  Game_Enemy.prototype.setupMaximumLevel = function () {
+    var level = MageStudios.DSlider.Game_Enemy_setupMaximumLevel.call(this);
+    if (this.isDifficultySliderAffected()) {
+      var multiplier = ConfigManager.difficultySlider;
+      var code = MageStudios.Param.DSliderMax;
+      try {
+        level = eval(code);
+      } catch (e) {
+        level = (level * multiplier) / 100;
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "DIFFICULTY SLIDER MAXIMUM LEVEL ERROR"
+        );
+      }
+    }
+    return parseInt(level);
+  };
 
-MageStudios.DSlider.Game_Interpreter_pluginCommand =
-  Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.DSlider.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'ShowDifficultySlider') {
-    $gameSystem.setDifficultySlider(true);
-  } else if (command === 'HideDifficultySlider') {
-    $gameSystem.setDifficultySlider(false);
-  }
-};
+  MageStudios.DSlider.Game_Enemy_getSetupLevel =
+    Game_Enemy.prototype.getSetupLevel;
+  Game_Enemy.prototype.getSetupLevel = function () {
+    var level = MageStudios.DSlider.Game_Enemy_getSetupLevel.call(this);
+    if (this.isDifficultySliderAffected()) {
+      var multiplier = ConfigManager.difficultySlider;
+      var code = MageStudios.Param.DSliderBase;
+      try {
+        level = eval(code);
+      } catch (e) {
+        level = (level * multiplier) / 100;
+        MageStudios.Util.displayError(
+          e,
+          code,
+          "DIFFICULTY SLIDER BASE LEVEL ERROR"
+        );
+      }
+    }
+    return parseInt(level);
+  };
 
-//=============================================================================
-// Window_Options
-//=============================================================================
+  MageStudios.DSlider.Game_Interpreter_pluginCommand =
+    Game_Interpreter.prototype.pluginCommand;
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.DSlider.Game_Interpreter_pluginCommand.call(
+      this,
+      command,
+      args
+    );
+    if (command === "ShowDifficultySlider") {
+      $gameSystem.setDifficultySlider(true);
+    } else if (command === "HideDifficultySlider") {
+      $gameSystem.setDifficultySlider(false);
+    }
+  };
 
-MageStudios.DSlider.Window_Options_addGeneralOptions =
-  Window_Options.prototype.addGeneralOptions;
-Window_Options.prototype.addGeneralOptions = function() {
-  MageStudios.DSlider.Window_Options_addGeneralOptions.call(this);
-  if (Imported.MSEP_OptionsCore) return;
-  if ($gameSystem.showDifficultySlider()) this.addDifficultySliderOptions();
-};
+  MageStudios.DSlider.Window_Options_addGeneralOptions =
+    Window_Options.prototype.addGeneralOptions;
+  Window_Options.prototype.addGeneralOptions = function () {
+    MageStudios.DSlider.Window_Options_addGeneralOptions.call(this);
+    if (Imported.MSEP_OptionsCore) return;
+    if ($gameSystem.showDifficultySlider()) this.addDifficultySliderOptions();
+  };
 
-Window_Options.prototype.addDifficultySliderOptions = function() {
-  this.addCommand(MageStudios.Param.DSliderOptionsCmd, 'difficultySlider');
-};
+  Window_Options.prototype.addDifficultySliderOptions = function () {
+    this.addCommand(MageStudios.Param.DSliderOptionsCmd, "difficultySlider");
+  };
 
-MageStudios.DSlider.Window_Options_statusText = Window_Options.prototype.statusText;
-Window_Options.prototype.statusText = function(index) {
-  var symbol = this.commandSymbol(index);
-  var value = this.getConfigValue(symbol);
-  if (symbol === 'difficultySlider') {
-    return MageStudios.Util.toGroup(value) + '%';
-  } else {
-    return MageStudios.DSlider.Window_Options_statusText.call(this, index);
-  }
-};
-
-if (!Imported.MSEP_OptionsCore) {
-
-MageStudios.DSlider.Window_Options_processOk = Window_Options.prototype.processOk;
-Window_Options.prototype.processOk = function() {
-  var index = this.index();
-  var symbol = this.commandSymbol(index);
-  if (symbol === 'difficultySlider') {
+  MageStudios.DSlider.Window_Options_statusText =
+    Window_Options.prototype.statusText;
+  Window_Options.prototype.statusText = function (index) {
+    var symbol = this.commandSymbol(index);
     var value = this.getConfigValue(symbol);
-    value += MageStudios.Param.DSliderChange;
-    if (value > MageStudios.Param.DSliderMaxDif) value = MageStudios.Param.DSliderMinDif;
-    value = value.clamp(MageStudios.Param.DSliderMinDif,
-      MageStudios.Param.DSliderMaxDif);
-    this.changeValue(symbol, value);
-  } else {
-    MageStudios.DSlider.Window_Options_processOk.call(this);
-  }
-};
-
-MageStudios.DSlider.Window_Options_cursorRight = 
-  Window_Options.prototype.cursorRight;
-Window_Options.prototype.cursorRight = function(wrap) {
-  var index = this.index();
-  var symbol = this.commandSymbol(index);
-  if (symbol === 'difficultySlider') {
-    var value = this.getConfigValue(symbol);
-    value += MageStudios.Param.DSliderChange;
-    value = value.clamp(MageStudios.Param.DSliderMinDif,
-      MageStudios.Param.DSliderMaxDif);
-    this.changeValue(symbol, value);
-  } else {
-    MageStudios.DSlider.Window_Options_cursorRight.call(this, wrap);
-  }
-};
-
-MageStudios.DSlider.Window_Options_cursorLeft = Window_Options.prototype.cursorLeft;
-Window_Options.prototype.cursorLeft = function(wrap) {
-  var index = this.index();
-  var symbol = this.commandSymbol(index);
-  if (symbol === 'difficultySlider') {
-    var value = this.getConfigValue(symbol);
-    value -= MageStudios.Param.DSliderChange;
-    value = value.clamp(MageStudios.Param.DSliderMinDif,
-      MageStudios.Param.DSliderMaxDif);
-    this.changeValue(symbol, value);
-  } else {
-    MageStudios.DSlider.Window_Options_cursorLeft.call(this, wrap);
-  }
-};
-
-}; // Imported.MSEP_OptionsCore
-
-
-//=============================================================================
-// Utilities
-//=============================================================================
-
-MageStudios.Util = MageStudios.Util || {};
-
-if (!MageStudios.Util.toGroup) {
-
-MageStudios.Util.toGroup = function(inVal) {
-  return inVal;
-}
-
-}; // MageStudios.Util.toGroup
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+    if (symbol === "difficultySlider") {
+      return MageStudios.Util.toGroup(value) + "%";
+    } else {
+      return MageStudios.DSlider.Window_Options_statusText.call(this, index);
     }
-  }
-};
+  };
 
-//=============================================================================
-// End of File
-//=============================================================================
+  if (!Imported.MSEP_OptionsCore) {
+    MageStudios.DSlider.Window_Options_processOk =
+      Window_Options.prototype.processOk;
+    Window_Options.prototype.processOk = function () {
+      var index = this.index();
+      var symbol = this.commandSymbol(index);
+      if (symbol === "difficultySlider") {
+        var value = this.getConfigValue(symbol);
+        value += MageStudios.Param.DSliderChange;
+        if (value > MageStudios.Param.DSliderMaxDif)
+          value = MageStudios.Param.DSliderMinDif;
+        value = value.clamp(
+          MageStudios.Param.DSliderMinDif,
+          MageStudios.Param.DSliderMaxDif
+        );
+        this.changeValue(symbol, value);
+      } else {
+        MageStudios.DSlider.Window_Options_processOk.call(this);
+      }
+    };
+
+    MageStudios.DSlider.Window_Options_cursorRight =
+      Window_Options.prototype.cursorRight;
+    Window_Options.prototype.cursorRight = function (wrap) {
+      var index = this.index();
+      var symbol = this.commandSymbol(index);
+      if (symbol === "difficultySlider") {
+        var value = this.getConfigValue(symbol);
+        value += MageStudios.Param.DSliderChange;
+        value = value.clamp(
+          MageStudios.Param.DSliderMinDif,
+          MageStudios.Param.DSliderMaxDif
+        );
+        this.changeValue(symbol, value);
+      } else {
+        MageStudios.DSlider.Window_Options_cursorRight.call(this, wrap);
+      }
+    };
+
+    MageStudios.DSlider.Window_Options_cursorLeft =
+      Window_Options.prototype.cursorLeft;
+    Window_Options.prototype.cursorLeft = function (wrap) {
+      var index = this.index();
+      var symbol = this.commandSymbol(index);
+      if (symbol === "difficultySlider") {
+        var value = this.getConfigValue(symbol);
+        value -= MageStudios.Param.DSliderChange;
+        value = value.clamp(
+          MageStudios.Param.DSliderMinDif,
+          MageStudios.Param.DSliderMaxDif
+        );
+        this.changeValue(symbol, value);
+      } else {
+        MageStudios.DSlider.Window_Options_cursorLeft.call(this, wrap);
+      }
+    };
+  }
+
+  MageStudios.Util = MageStudios.Util || {};
+
+  if (!MageStudios.Util.toGroup) {
+    MageStudios.Util.toGroup = function (inVal) {
+      return inVal;
+    };
+  }
+
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
+    }
+  };
 } else {
-
-var text = '================================================================\n';
-text += 'MSEP_X_DifficultySlider requires MSEP_EnemyLevels to be at the ';
-text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
-text += 'update to the latest version for the MSEP_EnemyLevels plugin.\n';
-text += '================================================================\n';
-console.log(text);
-require('nw.gui').Window.get().showDevTools();
-
-}; // Imported.MSEP_EnemyLevels
+  var text =
+    "================================================================\n";
+  text += "MSEP_X_DifficultySlider requires MSEP_EnemyLevels to be at the ";
+  text +=
+    "latest version to run properly.\n\nPlease go to www.MageStudios.moe and ";
+  text += "update to the latest version for the MSEP_EnemyLevels plugin.\n";
+  text += "================================================================\n";
+  console.log(text);
+  require("nw.gui").Window.get().showDevTools();
+}

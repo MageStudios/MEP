@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Main Menu Manager
-// MSEP_MainMenuManager.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MainMenuManager = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MMM = MageStudios.MMM || {};
-MageStudios.MMM.version = 1.00
+MageStudios.MMM.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc This plugin allows you to manage the various aspects
  * of your main menu.
  * @author Mage Studios Engine Plugins
@@ -77,7 +71,7 @@ MageStudios.MMM.version = 1.00
  * @param Command Rows
  * @parent ---Command---
  * @desc The number of visible rows for the command window.
- * This is a formula. 
+ * This is a formula.
  * @default Math.min(10, Math.ceil(this.maxItems() / this.maxCols()))
  *
  * @param Command Width
@@ -4547,23 +4541,30 @@ MageStudios.MMM.version = 1.00
  * Version 1.00:
  * - Finished plugin!
  */
-//=============================================================================
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_MainMenuManager');
+MageStudios.Parameters = PluginManager.parameters("MSEP_MainMenuManager");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.MMMCmdAlign = String(MageStudios.Parameters['Command Alignment']);
-MageStudios.Param.MMMCmdPosition = String(MageStudios.Parameters['Command Position']);
-MageStudios.Param.MMMCmdCols = String(MageStudios.Parameters['Command Columns']);
-MageStudios.Param.MMMCmdRows = String(MageStudios.Parameters['Command Rows']);
-MageStudios.Param.MMMCmdWidth = String(MageStudios.Parameters['Command Width']);
-MageStudios.Param.MMMHideActorWin = String(MageStudios.Parameters['Hide Actor Window']);
-MageStudios.Param.MMMHideGoldWin = String(MageStudios.Parameters['Hide Gold Window']);
-MageStudios.Param.MMMBlurryBG = String(MageStudios.Parameters['Blurry Background']);
+MageStudios.Param.MMMCmdAlign = String(
+  MageStudios.Parameters["Command Alignment"]
+);
+MageStudios.Param.MMMCmdPosition = String(
+  MageStudios.Parameters["Command Position"]
+);
+MageStudios.Param.MMMCmdCols = String(
+  MageStudios.Parameters["Command Columns"]
+);
+MageStudios.Param.MMMCmdRows = String(MageStudios.Parameters["Command Rows"]);
+MageStudios.Param.MMMCmdWidth = String(MageStudios.Parameters["Command Width"]);
+MageStudios.Param.MMMHideActorWin = String(
+  MageStudios.Parameters["Hide Actor Window"]
+);
+MageStudios.Param.MMMHideGoldWin = String(
+  MageStudios.Parameters["Hide Gold Window"]
+);
+MageStudios.Param.MMMBlurryBG = String(
+  MageStudios.Parameters["Blurry Background"]
+);
 MageStudios.MMM.Name = {};
 MageStudios.MMM.Symbol = {};
 MageStudios.MMM.Show = {};
@@ -4572,212 +4573,195 @@ MageStudios.MMM.Ext = {};
 MageStudios.MMM.MainBind = {};
 MageStudios.MMM.ActorBind = {};
 for (MageStudios.i = 1; MageStudios.i <= 100; ++MageStudios.i) {
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Name'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Name'])";
   MageStudios.MMM.Name[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Symbol'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Symbol'])";
   MageStudios.MMM.Symbol[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Show'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Show'])";
   MageStudios.MMM.Show[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Enabled'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Enabled'])";
   MageStudios.MMM.Enabled[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Ext'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Ext'])";
   MageStudios.MMM.Ext[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Main Bind'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Main Bind'])";
   MageStudios.MMM.MainBind[MageStudios.i] = eval(MageStudios.line);
-  MageStudios.line = "String(MageStudios.Parameters['Menu " + MageStudios.i + " Actor Bind'])";
+  MageStudios.line =
+    "String(MageStudios.Parameters['Menu " + MageStudios.i + " Actor Bind'])";
   MageStudios.MMM.ActorBind[MageStudios.i] = eval(MageStudios.line);
-};
-
-//=============================================================================
-// SceneManager
-//=============================================================================
+}
 
 MageStudios.MMM.SceneManager_snapForBackground = SceneManager.snapForBackground;
-SceneManager.snapForBackground = function() {
-    if (eval(MageStudios.Param.MMMBlurryBG)) {
-      MageStudios.MMM.SceneManager_snapForBackground.call(this);
-    } else {
-      this._backgroundBitmap = this.snap();
-    }
+SceneManager.snapForBackground = function () {
+  if (eval(MageStudios.Param.MMMBlurryBG)) {
+    MageStudios.MMM.SceneManager_snapForBackground.call(this);
+  } else {
+    this._backgroundBitmap = this.snap();
+  }
 };
 
-//=============================================================================
-// Window_MenuCommand
-//=============================================================================
-
-Window_MenuCommand.prototype.makeCommandList = function() {
-    for (var i = 1; i <= 100; ++i) {
-      this.createCommand(i);
-    }
+Window_MenuCommand.prototype.makeCommandList = function () {
+  for (var i = 1; i <= 100; ++i) {
+    this.createCommand(i);
+  }
 };
 
-Window_MenuCommand.prototype.addMainCommands = function() {
+Window_MenuCommand.prototype.addMainCommands = function () {};
+
+Window_MenuCommand.prototype.addFormationCommand = function () {};
+
+Window_MenuCommand.prototype.addOriginalCommands = function () {};
+
+Window_MenuCommand.prototype.addOptionsCommand = function () {};
+
+Window_MenuCommand.prototype.addSaveCommand = function () {};
+
+Window_MenuCommand.prototype.addGameEndCommand = function () {};
+
+Window_MenuCommand.prototype.createCommand = function (i) {
+  var show = MageStudios.MMM.Show[i];
+  if (show === "") return;
+  if (!eval(show)) return;
+  var name = MageStudios.MMM.Name[i];
+  if (name === "") return;
+  name = eval(name);
+  var symbol = MageStudios.MMM.Symbol[i];
+  if (symbol === "") return;
+  var enabled = eval(MageStudios.MMM.Enabled[i]);
+  if (enabled === "") enabled = true;
+  var ext = eval(MageStudios.MMM.Ext[i]);
+  this.addCommand(name, symbol, enabled, ext);
+  this.addSymbolBridge(symbol);
 };
 
-Window_MenuCommand.prototype.addFormationCommand = function() {
+Window_MenuCommand.prototype.addSymbolBridge = function (symbol) {
+  if (symbol === "item") this.addMainCommands();
+  if (symbol === "formation") this.addFormationCommand();
+  if (symbol === "formation") this.addOriginalCommands();
+  if (symbol === "options") this.addOptionsCommand();
+  if (symbol === "save") this.addSaveCommand();
+  if (symbol === "gameEnd") this.addGameEndCommand();
 };
 
-Window_MenuCommand.prototype.addOriginalCommands = function() {
+Window_MenuCommand.prototype.itemTextAlign = function () {
+  return MageStudios.Param.MMMCmdAlign;
 };
 
-Window_MenuCommand.prototype.addOptionsCommand = function() {
+Window_MenuCommand.prototype.windowWidth = function () {
+  return eval(MageStudios.Param.MMMCmdWidth);
 };
 
-Window_MenuCommand.prototype.addSaveCommand = function() {
+Window_MenuCommand.prototype.maxCols = function () {
+  return eval(MageStudios.Param.MMMCmdCols);
 };
 
-Window_MenuCommand.prototype.addGameEndCommand = function() {
+Window_MenuCommand.prototype.numVisibleRows = function () {
+  return eval(MageStudios.Param.MMMCmdRows);
 };
-
-Window_MenuCommand.prototype.createCommand = function(i) {
-    var show = MageStudios.MMM.Show[i];
-    if (show === '') return;
-    if (!eval(show)) return;
-    var name = MageStudios.MMM.Name[i];
-    if (name === '') return;
-    name = eval(name);
-    var symbol = MageStudios.MMM.Symbol[i];
-    if (symbol === '') return;
-    var enabled = eval(MageStudios.MMM.Enabled[i]);
-    if (enabled === '') enabled = true;
-    var ext = eval(MageStudios.MMM.Ext[i]);
-    this.addCommand(name, symbol, enabled, ext);
-    this.addSymbolBridge(symbol);
-};
-
-Window_MenuCommand.prototype.addSymbolBridge = function(symbol) {
-    if (symbol === 'item') this.addMainCommands();
-    if (symbol === 'formation') this.addFormationCommand();
-    if (symbol === 'formation') this.addOriginalCommands();
-    if (symbol === 'options') this.addOptionsCommand();
-    if (symbol === 'save') this.addSaveCommand();
-    if (symbol === 'gameEnd') this.addGameEndCommand();
-};
-
-Window_MenuCommand.prototype.itemTextAlign = function() {
-    return MageStudios.Param.MMMCmdAlign;
-};
-
-Window_MenuCommand.prototype.windowWidth = function() {
-    return eval(MageStudios.Param.MMMCmdWidth);
-};
-
-Window_MenuCommand.prototype.maxCols = function() {
-    return eval(MageStudios.Param.MMMCmdCols);
-};
-
-Window_MenuCommand.prototype.numVisibleRows = function() {
-    return eval(MageStudios.Param.MMMCmdRows);
-};
-
-//=============================================================================
-// Window_MenuStatus
-//=============================================================================
 
 MageStudios.MMM.Window_MenuStatus_initialize =
-    Window_MenuStatus.prototype.initialize;
-Window_MenuStatus.prototype.initialize = function(wx, wy) {
-    this._initX = wx;
-    MageStudios.MMM.Window_MenuStatus_initialize.call(this, wx, wy);
+  Window_MenuStatus.prototype.initialize;
+Window_MenuStatus.prototype.initialize = function (wx, wy) {
+  this._initX = wx;
+  MageStudios.MMM.Window_MenuStatus_initialize.call(this, wx, wy);
 };
 
-Window_MenuStatus.prototype.windowWidth = function() {
-    return Graphics.boxWidth - this._initX;
+Window_MenuStatus.prototype.windowWidth = function () {
+  return Graphics.boxWidth - this._initX;
 };
-
-//=============================================================================
-// Scene_Menu
-//=============================================================================
 
 MageStudios.MMM.Scene_Menu_create = Scene_Menu.prototype.create;
-Scene_Menu.prototype.create = function() {
-    MageStudios.MMM.Scene_Menu_create.call(this);
-    this.repositionWindows();
+Scene_Menu.prototype.create = function () {
+  MageStudios.MMM.Scene_Menu_create.call(this);
+  this.repositionWindows();
 };
 
-Scene_Menu.prototype.createCommandWindow = function() {
-    this._commandWindow = new Window_MenuCommand(0, 0);
-    this.createCommandWindowBinds();
-    this._commandWindow.setHandler('cancel',    this.popScene.bind(this));
-    this.addWindow(this._commandWindow);
+Scene_Menu.prototype.createCommandWindow = function () {
+  this._commandWindow = new Window_MenuCommand(0, 0);
+  this.createCommandWindowBinds();
+  this._commandWindow.setHandler("cancel", this.popScene.bind(this));
+  this.addWindow(this._commandWindow);
 };
 
 MageStudios.MMM.Scene_Menu_createGoldWindow =
-    Scene_Menu.prototype.createGoldWindow;
-Scene_Menu.prototype.createGoldWindow = function() {
-    MageStudios.MMM.Scene_Menu_createGoldWindow.call(this);
-    if (eval(MageStudios.Param.MMMHideGoldWin)) this._goldWindow.hide();
+  Scene_Menu.prototype.createGoldWindow;
+Scene_Menu.prototype.createGoldWindow = function () {
+  MageStudios.MMM.Scene_Menu_createGoldWindow.call(this);
+  if (eval(MageStudios.Param.MMMHideGoldWin)) this._goldWindow.hide();
 };
 
 MageStudios.MMM.Scene_Menu_createStatusWindow =
-    Scene_Menu.prototype.createStatusWindow;
-Scene_Menu.prototype.createStatusWindow = function() {
-    MageStudios.MMM.Scene_Menu_createStatusWindow.call(this);
-    if (eval(MageStudios.Param.MMMHideActorWin)) this._statusWindow.hide();
+  Scene_Menu.prototype.createStatusWindow;
+Scene_Menu.prototype.createStatusWindow = function () {
+  MageStudios.MMM.Scene_Menu_createStatusWindow.call(this);
+  if (eval(MageStudios.Param.MMMHideActorWin)) this._statusWindow.hide();
 };
 
-Scene_Menu.prototype.createCommandWindowBinds = function() {
+Scene_Menu.prototype.createCommandWindowBinds = function () {
   this._actorBinds = {};
   for (var i = 1; i <= 100; ++i) {
     var symbol = MageStudios.MMM.Symbol[i];
-    if (symbol === '') continue;
+    if (symbol === "") continue;
     var bind = MageStudios.MMM.MainBind[i];
-    if (bind === '') continue;
+    if (bind === "") continue;
     eval("this._commandWindow.setHandler('" + symbol + "', " + bind + ")");
     var actorBind = MageStudios.MMM.ActorBind[i];
-    if (actorBind === '') continue;
+    if (actorBind === "") continue;
     this._actorBinds[symbol] = actorBind;
   }
 };
 
-Scene_Menu.prototype.resizeGoldWindow = function() {
-    this._goldWindow.width = this._commandWindow.width;
-    this._goldWindow.createContents();
-    this._goldWindow.refresh();
+Scene_Menu.prototype.resizeGoldWindow = function () {
+  this._goldWindow.width = this._commandWindow.width;
+  this._goldWindow.createContents();
+  this._goldWindow.refresh();
 };
 
-Scene_Menu.prototype.repositionWindows = function() {
-    this.resizeGoldWindow();
-    if (MageStudios.Param.MMMCmdPosition === 'right') {
-      this._commandWindow.x = Graphics.boxWidth - this._commandWindow.width;
-      this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
-      this._statusWindow.x = 0;
-    } else if (MageStudios.Param.MMMCmdPosition === 'left') {
-      this._commandWindow.x = 0;
-      this._goldWindow.x = 0;
-      this._statusWindow.x = this._commandWindow.width;
-    }
+Scene_Menu.prototype.repositionWindows = function () {
+  this.resizeGoldWindow();
+  if (MageStudios.Param.MMMCmdPosition === "right") {
+    this._commandWindow.x = Graphics.boxWidth - this._commandWindow.width;
+    this._goldWindow.x = Graphics.boxWidth - this._goldWindow.width;
+    this._statusWindow.x = 0;
+  } else if (MageStudios.Param.MMMCmdPosition === "left") {
+    this._commandWindow.x = 0;
+    this._goldWindow.x = 0;
+    this._statusWindow.x = this._commandWindow.width;
+  }
 };
 
-MageStudios.MMM.Scene_Menu_commandPersonal = Scene_Menu.prototype.commandPersonal;
-Scene_Menu.prototype.commandPersonal = function() {
-    MageStudios.MMM.Scene_Menu_commandPersonal.call(this);
-    this._statusWindow.show();
+MageStudios.MMM.Scene_Menu_commandPersonal =
+  Scene_Menu.prototype.commandPersonal;
+Scene_Menu.prototype.commandPersonal = function () {
+  MageStudios.MMM.Scene_Menu_commandPersonal.call(this);
+  this._statusWindow.show();
 };
 
-Scene_Menu.prototype.onPersonalOk = function() {
-    var symbol = this._commandWindow.currentSymbol();
-    var actorBind = this._actorBinds[symbol];
-    if (!actorBind) return;
-    eval(actorBind);
+Scene_Menu.prototype.onPersonalOk = function () {
+  var symbol = this._commandWindow.currentSymbol();
+  var actorBind = this._actorBinds[symbol];
+  if (!actorBind) return;
+  eval(actorBind);
 };
 
-MageStudios.MMM.Scene_Menu_onPersonalCancel = Scene_Menu.prototype.onPersonalCancel;
-Scene_Menu.prototype.onPersonalCancel = function() {
-    MageStudios.MMM.Scene_Menu_onPersonalCancel.call(this);
-    if (eval(MageStudios.Param.MMMHideActorWin)) this._statusWindow.hide();
+MageStudios.MMM.Scene_Menu_onPersonalCancel =
+  Scene_Menu.prototype.onPersonalCancel;
+Scene_Menu.prototype.onPersonalCancel = function () {
+  MageStudios.MMM.Scene_Menu_onPersonalCancel.call(this);
+  if (eval(MageStudios.Param.MMMHideActorWin)) this._statusWindow.hide();
 };
 
-Scene_Menu.prototype.callCommonEvent = function() {
-    var ext = this._commandWindow.currentExt();
-    $gameTemp.reserveCommonEvent(parseInt(ext));
-    this.popScene();
+Scene_Menu.prototype.callCommonEvent = function () {
+  var ext = this._commandWindow.currentExt();
+  $gameTemp.reserveCommonEvent(parseInt(ext));
+  this.popScene();
 };
 
-Scene_Menu.prototype.commandDebug = function() {
-    SceneManager.push(Scene_Debug);
+Scene_Menu.prototype.commandDebug = function () {
+  SceneManager.push(Scene_Debug);
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

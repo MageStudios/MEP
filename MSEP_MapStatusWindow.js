@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Map Status Window
-// MSEP_MapStatusWindow.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MapStatusWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MapStatus = MageStudios.MapStatus || {};
-MageStudios.MapStatus.version = 1.00;
+MageStudios.MapStatus.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Gain access to open up a window displaying
  * your party's status while on the map screen!
  * @author Mage Studios Engine Plugins
@@ -46,7 +40,7 @@ MageStudios.MapStatus.version = 1.00;
  * is currently doing.
  *
  * The status Menu will automatically refresh while on the map screen whenever
- * an actor receives HP, MP, TP, state, or buff changes. This is to ensure the 
+ * an actor receives HP, MP, TP, state, or buff changes. This is to ensure the
  * data displayed on the menu stays updated.
  *
  * The player can, however, move around and interact with other events while
@@ -94,57 +88,45 @@ MageStudios.MapStatus.version = 1.00;
  * Version 1.01:
  * - Updated for RPG Maker MV version 1.5.0.
  */
-//=============================================================================
 
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_MapStatusWindow');
+MageStudios.Parameters = PluginManager.parameters("MSEP_MapStatusWindow");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.MapStatusWinX = String(MageStudios.Parameters['Window X']);
-MageStudios.Param.MapStatusWinY = String(MageStudios.Parameters['Window Y']);
-
-//=============================================================================
-// Game_System
-//=============================================================================
+MageStudios.Param.MapStatusWinX = String(MageStudios.Parameters["Window X"]);
+MageStudios.Param.MapStatusWinY = String(MageStudios.Parameters["Window Y"]);
 
 MageStudios.MapStatus.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+Game_System.prototype.initialize = function () {
   MageStudios.MapStatus.Game_System_initialize.call(this);
   this.initMapStatusWindowSettings();
 };
 
-Game_System.prototype.initMapStatusWindowSettings = function() {
+Game_System.prototype.initMapStatusWindowSettings = function () {
   this._mapStatusWindowX = MageStudios.Param.MapStatusWinX;
   this._mapStatusWindowY = MageStudios.Param.MapStatusWinY;
 };
 
-Game_System.prototype.getMapStatusWindowX = function() {
+Game_System.prototype.getMapStatusWindowX = function () {
   if (this._mapStatusWindowX === undefined) this.initMapStatusWindowSettings();
   return this._mapStatusWindowX;
 };
 
-Game_System.prototype.getMapStatusWindowY = function() {
+Game_System.prototype.getMapStatusWindowY = function () {
   if (this._mapStatusWindowY === undefined) this.initMapStatusWindowSettings();
   return this._mapStatusWindowY;
 };
 
-Game_System.prototype.setMapStatusWindowX = function(str) {
+Game_System.prototype.setMapStatusWindowX = function (str) {
   if (this._mapStatusWindowX === undefined) this.initMapStatusWindowSettings();
   this._mapStatusWindowX = str;
 };
 
-Game_System.prototype.setMapStatusWindowY = function(str) {
+Game_System.prototype.setMapStatusWindowY = function (str) {
   if (this._mapStatusWindowY === undefined) this.initMapStatusWindowSettings();
   this._mapStatusWindowY = str;
 };
 
-//=============================================================================
-// Game_BattlerBase
-//=============================================================================
-
-Game_BattlerBase.prototype.isUpdateMapStatus = function() {
+Game_BattlerBase.prototype.isUpdateMapStatus = function () {
   if (!this.isActor()) return false;
   if (SceneManager._scene instanceof Scene_Map) {
     var scene = SceneManager._scene;
@@ -154,88 +136,86 @@ Game_BattlerBase.prototype.isUpdateMapStatus = function() {
 };
 
 MageStudios.MapStatus.Game_BattlerBase_setHp = Game_BattlerBase.prototype.setHp;
-Game_BattlerBase.prototype.setHp = function(hp) {
+Game_BattlerBase.prototype.setHp = function (hp) {
   MageStudios.MapStatus.Game_BattlerBase_setHp.call(this, hp);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
 MageStudios.MapStatus.Game_BattlerBase_setMp = Game_BattlerBase.prototype.setMp;
-Game_BattlerBase.prototype.setMp = function(mp) {
+Game_BattlerBase.prototype.setMp = function (mp) {
   MageStudios.MapStatus.Game_BattlerBase_setMp.call(this, mp);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
 MageStudios.MapStatus.Game_BattlerBase_setTp = Game_BattlerBase.prototype.setTp;
-Game_BattlerBase.prototype.setTp = function(tp) {
+Game_BattlerBase.prototype.setTp = function (tp) {
   MageStudios.MapStatus.Game_BattlerBase_setTp.call(this, tp);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
-//=============================================================================
-// Game_Battler
-//=============================================================================
-
 MageStudios.MapStatus.Game_Battler_addState = Game_Battler.prototype.addState;
-Game_Battler.prototype.addState = function(stateId) {
+Game_Battler.prototype.addState = function (stateId) {
   MageStudios.MapStatus.Game_Battler_addState.call(this, stateId);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
-MageStudios.MapStatus.Game_Battler_removeState = Game_Battler.prototype.removeState;
-Game_Battler.prototype.removeState = function(stateId) {
+MageStudios.MapStatus.Game_Battler_removeState =
+  Game_Battler.prototype.removeState;
+Game_Battler.prototype.removeState = function (stateId) {
   MageStudios.MapStatus.Game_Battler_removeState.call(this, stateId);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
 MageStudios.MapStatus.Game_Battler_addBuff = Game_Battler.prototype.addBuff;
-Game_Battler.prototype.addBuff = function(paramId, turns) {
+Game_Battler.prototype.addBuff = function (paramId, turns) {
   MageStudios.MapStatus.Game_Battler_addBuff.call(this, paramId, turns);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
 MageStudios.MapStatus.Game_Battler_addDebuff = Game_Battler.prototype.addDebuff;
-Game_Battler.prototype.addDebuff = function(paramId, turns) {
+Game_Battler.prototype.addDebuff = function (paramId, turns) {
   MageStudios.MapStatus.Game_Battler_addDebuff.call(this, paramId, turns);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
-MageStudios.MapStatus.Game_Battler_removeBuff = Game_Battler.prototype.removeBuff;
-Game_Battler.prototype.removeBuff = function(paramId) {
+MageStudios.MapStatus.Game_Battler_removeBuff =
+  Game_Battler.prototype.removeBuff;
+Game_Battler.prototype.removeBuff = function (paramId) {
   MageStudios.MapStatus.Game_Battler_removeBuff.call(this, paramId);
   if (this.isUpdateMapStatus()) SceneManager._scene.refreshMapStatusWindow();
 };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
 MageStudios.MapStatus.Game_Interpreter_pluginCommand =
   Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.MapStatus.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'OpenMapStatusWindow') {
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
+  MageStudios.MapStatus.Game_Interpreter_pluginCommand.call(
+    this,
+    command,
+    args
+  );
+  if (command === "OpenMapStatusWindow") {
     if (SceneManager._scene instanceof Scene_Map) {
       SceneManager._scene.openMapStatusWindow();
     }
-  } else if (command === 'CloseMapStatusWindow') {
+  } else if (command === "CloseMapStatusWindow") {
     if (SceneManager._scene instanceof Scene_Map) {
       SceneManager._scene.closeMapStatusWindow();
     }
-  } else if (command === 'ToggleMapStatusWindow') {
+  } else if (command === "ToggleMapStatusWindow") {
     if (SceneManager._scene instanceof Scene_Map) {
       SceneManager._scene.toggleMapStatusWindow();
     }
-  } else if (command === 'RefreshMapStatusWindow') {
+  } else if (command === "RefreshMapStatusWindow") {
     if (SceneManager._scene instanceof Scene_Map) {
       SceneManager._scene.refreshMapStatusWindow();
     }
-  } else if (command === 'SetMapStatusWindowX') {
+  } else if (command === "SetMapStatusWindowX") {
     if (SceneManager._scene instanceof Scene_Map) {
       var code = this.argsToString(args);
       $gameSystem.setMapStatusWindowX(code);
       SceneManager._scene._statusWindow.x = eval(code);
     }
-  } else if (command === 'SetMapStatusWindowY') {
+  } else if (command === "SetMapStatusWindowY") {
     if (SceneManager._scene instanceof Scene_Map) {
       var code = this.argsToString(args);
       $gameSystem.setMapStatusWindowY(code);
@@ -244,27 +224,23 @@ Game_Interpreter.prototype.pluginCommand = function(command, args) {
   }
 };
 
-Game_Interpreter.prototype.argsToString = function(args) {
-  var str = '';
+Game_Interpreter.prototype.argsToString = function (args) {
+  var str = "";
   var length = args.length;
   for (var i = 0; i < length; ++i) {
-    str += args[i] + ' ';
+    str += args[i] + " ";
   }
   return str.trim();
 };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.MapStatus.Scene_Map_createAllWindows = 
+MageStudios.MapStatus.Scene_Map_createAllWindows =
   Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
+Scene_Map.prototype.createAllWindows = function () {
   MageStudios.MapStatus.Scene_Map_createAllWindows.call(this);
   this.createMapStatusWindow();
 };
 
-Scene_Map.prototype.createMapStatusWindow = function() {
+Scene_Map.prototype.createMapStatusWindow = function () {
   this._statusWindow = new Window_BattleStatus();
   var statusWindow = this._statusWindow;
   this._needStatusWindowRefresh = false;
@@ -273,18 +249,18 @@ Scene_Map.prototype.createMapStatusWindow = function() {
   this.addWindow(this._statusWindow);
 };
 
-Scene_Map.prototype.openMapStatusWindow = function() {
+Scene_Map.prototype.openMapStatusWindow = function () {
   if (!this._statusWindow) this.createMapStatusWindow();
   this._statusWindow.refresh();
   this._statusWindow.open();
 };
 
-Scene_Map.prototype.closeMapStatusWindow = function() {
+Scene_Map.prototype.closeMapStatusWindow = function () {
   if (!this._statusWindow) this.createMapStatusWindow();
   this._statusWindow.close();
 };
 
-Scene_Map.prototype.toggleMapStatusWindow = function() {
+Scene_Map.prototype.toggleMapStatusWindow = function () {
   if (!this._statusWindow) this.createMapStatusWindow();
   if (this._statusWindow.isOpen()) {
     this.closeMapStatusWindow();
@@ -293,13 +269,13 @@ Scene_Map.prototype.toggleMapStatusWindow = function() {
   }
 };
 
-Scene_Map.prototype.refreshMapStatusWindow = function() {
+Scene_Map.prototype.refreshMapStatusWindow = function () {
   if (!this._statusWindow) this.createMapStatusWindow();
   this._needStatusWindowRefresh = true;
 };
 
 MageStudios.MapStatus.Scene_Map_update = Scene_Map.prototype.update;
-Scene_Map.prototype.update = function() {
+Scene_Map.prototype.update = function () {
   MageStudios.MapStatus.Scene_Map_update.call(this);
   if (this._needStatusWindowRefresh && this._statusWindow) {
     this._statusWindow.refresh();
@@ -307,18 +283,14 @@ Scene_Map.prototype.update = function() {
 };
 
 MageStudios.MapStatus.Scene_Map_terminate = Scene_Map.prototype.terminate;
-Scene_Map.prototype.terminate = function() {
+Scene_Map.prototype.terminate = function () {
   this._statusWindow.visible = false;
   MageStudios.MapStatus.Scene_Map_terminate.call(this);
 };
 
-//=============================================================================
-// Window_Message
-//=============================================================================
-
 MageStudios.MapStatus.Window_Message_startMessage =
   Window_Message.prototype.startMessage;
-Window_Message.prototype.startMessage = function() {
+Window_Message.prototype.startMessage = function () {
   MageStudios.MapStatus.Window_Message_startMessage.call(this);
   if (SceneManager._scene instanceof Scene_Map) {
     SceneManager._scene.closeMapStatusWindow();
@@ -326,14 +298,10 @@ Window_Message.prototype.startMessage = function() {
 };
 
 MageStudios.MapStatus.Window_Message_terminateMessage =
-    Window_Message.prototype.terminateMessage;
-Window_Message.prototype.terminateMessage = function() {
+  Window_Message.prototype.terminateMessage;
+Window_Message.prototype.terminateMessage = function () {
   MageStudios.MapStatus.Window_Message_terminateMessage.call(this);
   if (SceneManager._scene instanceof Scene_Map) {
     SceneManager._scene.closeMapStatusWindow();
   }
 };
-
-//=============================================================================
-// End of File
-//=============================================================================

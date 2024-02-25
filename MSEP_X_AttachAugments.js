@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Item Core Extension - Attachable Augments
-// MSEP_X_AttachAugments.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_X_AttachAugments = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Augment = MageStudios.Augment || {};
-MageStudios.Augment.version = 1.00;
+MageStudios.Augment.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc (Requires MSEP_ItemCore.js) Players can attach and
  * detach augments to independent equipment.
  * @author Mage Studios Engine Plugins
@@ -430,243 +424,247 @@ MageStudios.Augment.version = 1.00;
  *   item details.
  *
  */
-//=============================================================================
 
 if (Imported.MSEP_ItemCore) {
+  MageStudios.Parameters = PluginManager.parameters("MSEP_X_AttachAugments");
+  MageStudios.Param = MageStudios.Param || {};
 
-//=============================================================================
-// Parameter Variables
-//=============================================================================
-
-MageStudios.Parameters = PluginManager.parameters('MSEP_X_AttachAugments');
-MageStudios.Param = MageStudios.Param || {};
-
-MageStudios.makeAttachableAugmentParameterSettings = function() {
-  var array = String(MageStudios.Parameters['Weapon Slots']).split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    array[i] = array[i].trim();
-  }
-  MageStudios.Param.AugmentWeapons = array;
-  var array = String(MageStudios.Parameters['Armor Slots']).split(',');
-  var length = array.length;
-  for (var i = 0; i < length; ++i) {
-    array[i] = array[i].trim();
-  }
-  MageStudios.Param.AugmentArmors = array;
-};
-MageStudios.makeAttachableAugmentParameterSettings();
-
-MageStudios.Param.AugmentEnable = eval(String(MageStudios.Parameters['Enable Augments']));
-MageStudios.Param.AugmentShow = eval(String(MageStudios.Parameters['Show Augments']));
-
-MageStudios.Param.AugmentSlotFmt = String(MageStudios.Parameters['Augment Slot Format']);
-MageStudios.Param.AugmentNoneText = String(MageStudios.Parameters['No Augment Text']);
-MageStudios.Param.AugmentRemoveText = String(MageStudios.Parameters['Remove Augment']);
-
-MageStudios.Param.AugmentShow = eval(String(MageStudios.Parameters['Show Augment Info']));
-MageStudios.Param.AugmentInfoTitle = String(MageStudios.Parameters['Info Title']);
-MageStudios.Param.AugmentInfoAlign = String(MageStudios.Parameters['Title Alignment']);
-
-//=============================================================================
-// DataManager
-//=============================================================================
-
-MageStudios.Augment.DataManager_isDatabaseLoaded = DataManager.isDatabaseLoaded;
-DataManager.isDatabaseLoaded = function() {
-  if (!MageStudios.Augment.DataManager_isDatabaseLoaded.call(this)) return false;
-
-  if (!MageStudios.MSEP_X_AttachAugments) {
-    this.processAugmentNotetagsS($dataSkills);
-    this.processAugmentNotetagsT($dataStates);
-    this.processAugmentNotetagsSys($dataSystem);
-    this.processAugmentNotetags1($dataWeapons, true);
-    this.processAugmentNotetags1($dataArmors, false);
-    this.processAugmentNotetags2($dataItems);
-    this.processAugmentNotetags2($dataWeapons);
-    this.processAugmentNotetags2($dataArmors);
-    MageStudios.MSEP_X_AttachAugments = true;
-  }
-  
-  return true;
-};
-
-DataManager.processAugmentNotetagsS = function(group) {
-  if (MageStudios.SkillIdRef) return;
-  MageStudios.SkillIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processAugmentNotetagsT = function(group) {
-  if (MageStudios.StateIdRef) return;
-  MageStudios.StateIdRef = {};
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    if (obj.name.length <= 0) continue;
-    MageStudios.StateIdRef[obj.name.toUpperCase()] = n;
-  }
-};
-
-DataManager.processAugmentNotetagsSys = function(group) {
-  MageStudios.STypeIdRef = {};
-  for (var i = 1; i < group.skillTypes.length; ++i) {
-    var name = group.skillTypes[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
-    MageStudios.STypeIdRef[name] = i;
-  }
-  MageStudios.ElementIdRef = {};
-  for (var i = 1; i < group.elements.length; ++i) {
-    var name = group.elements[i].toUpperCase();
-    name = name.replace(/\\I\[(\d+)\]/gi, '');
-    MageStudios.ElementIdRef[name] = i;
-  }
-};
-
-DataManager.processAugmentNotetags1 = function(group, isWeapon) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
-
-    if (isWeapon) {
-      obj.augmentSlots = JsonEx.makeDeepCopy(MageStudios.Param.AugmentWeapons);
-    } else {
-      obj.augmentSlots = JsonEx.makeDeepCopy(MageStudios.Param.AugmentArmors);
+  MageStudios.makeAttachableAugmentParameterSettings = function () {
+    var array = String(MageStudios.Parameters["Weapon Slots"]).split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      array[i] = array[i].trim();
     }
-    
-    var evalMode = 'none';
+    MageStudios.Param.AugmentWeapons = array;
+    var array = String(MageStudios.Parameters["Armor Slots"]).split(",");
+    var length = array.length;
+    for (var i = 0; i < length; ++i) {
+      array[i] = array[i].trim();
+    }
+    MageStudios.Param.AugmentArmors = array;
+  };
+  MageStudios.makeAttachableAugmentParameterSettings();
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<(?:AUGMENT SLOT|AUGMENT SLOTS)>/i)) {
-        var evalMode = 'augment slots';
-        obj.augmentSlots = [];
-      } else if (line.match(/<\/(?:AUGMENT SLOT|AUGMENT SLOTS)>/i)) {
-        var evalMode = 'none';
-      } else if (evalMode === 'augment slots') {
-        obj.augmentSlots.push(line.trim());
-      } else if (line.match(/<(?:NO AUGMENTS|NO AUGMENT SLOTS)>/i)) {
-        obj.augmentSlots = [];
+  MageStudios.Param.AugmentEnable = eval(
+    String(MageStudios.Parameters["Enable Augments"])
+  );
+  MageStudios.Param.AugmentShow = eval(
+    String(MageStudios.Parameters["Show Augments"])
+  );
+
+  MageStudios.Param.AugmentSlotFmt = String(
+    MageStudios.Parameters["Augment Slot Format"]
+  );
+  MageStudios.Param.AugmentNoneText = String(
+    MageStudios.Parameters["No Augment Text"]
+  );
+  MageStudios.Param.AugmentRemoveText = String(
+    MageStudios.Parameters["Remove Augment"]
+  );
+
+  MageStudios.Param.AugmentShow = eval(
+    String(MageStudios.Parameters["Show Augment Info"])
+  );
+  MageStudios.Param.AugmentInfoTitle = String(
+    MageStudios.Parameters["Info Title"]
+  );
+  MageStudios.Param.AugmentInfoAlign = String(
+    MageStudios.Parameters["Title Alignment"]
+  );
+
+  MageStudios.Augment.DataManager_isDatabaseLoaded =
+    DataManager.isDatabaseLoaded;
+  DataManager.isDatabaseLoaded = function () {
+    if (!MageStudios.Augment.DataManager_isDatabaseLoaded.call(this))
+      return false;
+
+    if (!MageStudios.MSEP_X_AttachAugments) {
+      this.processAugmentNotetagsS($dataSkills);
+      this.processAugmentNotetagsT($dataStates);
+      this.processAugmentNotetagsSys($dataSystem);
+      this.processAugmentNotetags1($dataWeapons, true);
+      this.processAugmentNotetags1($dataArmors, false);
+      this.processAugmentNotetags2($dataItems);
+      this.processAugmentNotetags2($dataWeapons);
+      this.processAugmentNotetags2($dataArmors);
+      MageStudios.MSEP_X_AttachAugments = true;
+    }
+
+    return true;
+  };
+
+  DataManager.processAugmentNotetagsS = function (group) {
+    if (MageStudios.SkillIdRef) return;
+    MageStudios.SkillIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.SkillIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
+
+  DataManager.processAugmentNotetagsT = function (group) {
+    if (MageStudios.StateIdRef) return;
+    MageStudios.StateIdRef = {};
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      if (obj.name.length <= 0) continue;
+      MageStudios.StateIdRef[obj.name.toUpperCase()] = n;
+    }
+  };
+
+  DataManager.processAugmentNotetagsSys = function (group) {
+    MageStudios.STypeIdRef = {};
+    for (var i = 1; i < group.skillTypes.length; ++i) {
+      var name = group.skillTypes[i].toUpperCase();
+      name = name.replace(/\\I\[(\d+)\]/gi, "");
+      MageStudios.STypeIdRef[name] = i;
+    }
+    MageStudios.ElementIdRef = {};
+    for (var i = 1; i < group.elements.length; ++i) {
+      var name = group.elements[i].toUpperCase();
+      name = name.replace(/\\I\[(\d+)\]/gi, "");
+      MageStudios.ElementIdRef[name] = i;
+    }
+  };
+
+  DataManager.processAugmentNotetags1 = function (group, isWeapon) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
+
+      if (isWeapon) {
+        obj.augmentSlots = JsonEx.makeDeepCopy(
+          MageStudios.Param.AugmentWeapons
+        );
+      } else {
+        obj.augmentSlots = JsonEx.makeDeepCopy(MageStudios.Param.AugmentArmors);
+      }
+
+      var evalMode = "none";
+
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<(?:AUGMENT SLOT|AUGMENT SLOTS)>/i)) {
+          var evalMode = "augment slots";
+          obj.augmentSlots = [];
+        } else if (line.match(/<\/(?:AUGMENT SLOT|AUGMENT SLOTS)>/i)) {
+          var evalMode = "none";
+        } else if (evalMode === "augment slots") {
+          obj.augmentSlots.push(line.trim());
+        } else if (line.match(/<(?:NO AUGMENTS|NO AUGMENT SLOTS)>/i)) {
+          obj.augmentSlots = [];
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.processAugmentNotetags2 = function(group, isWeapon) {
-  for (var n = 1; n < group.length; n++) {
-    var obj = group[n];
-    var notedata = obj.note.split(/[\r\n]+/);
+  DataManager.processAugmentNotetags2 = function (group, isWeapon) {
+    for (var n = 1; n < group.length; n++) {
+      var obj = group[n];
+      var notedata = obj.note.split(/[\r\n]+/);
 
-    obj.augmentTypes = [];
-    obj.augmentDataAttach = {};
-    obj.augmentDataDetach = {};
-    var evalMode = 'none';
-    var evalType = 'none';
-    obj.augmentEvalAttach = {};
-    obj.augmentEvalDetach = {};
+      obj.augmentTypes = [];
+      obj.augmentDataAttach = {};
+      obj.augmentDataDetach = {};
+      var evalMode = "none";
+      var evalType = "none";
+      obj.augmentEvalAttach = {};
+      obj.augmentEvalDetach = {};
 
-    for (var i = 0; i < notedata.length; i++) {
-      var line = notedata[i];
-      if (line.match(/<AUGMENT:[ ](.*)>/i)) {
-        var evalMode = 'augment auto';
-        var evalType = String(RegExp.$1).toUpperCase().trim();
-        this.makeAugmentEvalType(obj, evalType);
-      } else if (line.match(/<\/AUGMENT:[ ](.*)>/i)) {
-        var evalMode = 'none';
-        var evalType = 'none';
-      } else if (evalMode === 'augment auto') {
-        obj.augmentDataAttach[evalType].push(line);
-        obj.augmentDataDetach[evalType].push(this.reverseAugmentAutoLine(line));
-      } else if (line.match(/<AUGMENT ATTACH:[ ](.*)>/i)) {
-        var evalMode = 'augment attach';
-        var evalType = String(RegExp.$1).toUpperCase().trim();
-        this.makeAugmentEvalType(obj, evalType);
-      } else if (line.match(/<\/AUGMENT ATTACH:[ ](.*)>/i)) {
-        var evalMode = 'none';
-        var evalType = 'none';
-      } else if (evalMode === 'augment attach') {
-        obj.augmentDataAttach[evalType].push(line);
-      } else if (line.match(/<AUGMENT DETACH:[ ](.*)>/i)) {
-        var evalMode = 'augment detach';
-        var evalType = String(RegExp.$1).toUpperCase().trim();
-        this.makeAugmentEvalType(obj, evalType);
-      } else if (line.match(/<\/AUGMENT DETACH:[ ](.*)>/i)) {
-        var evalMode = 'none';
-        var evalType = 'none';
-      } else if (evalMode === 'augment detach') {
-        obj.augmentDataDetach[evalType].push(line);
-      } else if (line.match(/<AUGMENT ATTACH EVAL:[ ](.*)>/i)) {
-        var evalMode = 'augment eval attach';
-        var evalType = String(RegExp.$1).toUpperCase().trim();
-        this.makeAugmentEvalType(obj, evalType);
-      } else if (line.match(/<\/AUGMENT ATTACH EVAL:[ ](.*)>/i)) {
-        var evalMode = 'none';
-        var evalType = 'none';
-      } else if (evalMode === 'augment eval attach') {
-        obj.augmentEvalAttach[evalType] += line + '\n';
-      } else if (line.match(/<AUGMENT DETACH EVAL:[ ](.*)>/i)) {
-        var evalMode = 'augment eval detach';
-        var evalType = String(RegExp.$1).toUpperCase().trim();
-        this.makeAugmentEvalType(obj, evalType);
-      } else if (line.match(/<\/AUGMENT DETACH EVAL:[ ](.*)>/i)) {
-        var evalMode = 'none';
-        var evalType = 'none';
-      } else if (evalMode === 'augment eval detach') {
-        obj.augmentEvalDetach[evalType] += line + '\n';
+      for (var i = 0; i < notedata.length; i++) {
+        var line = notedata[i];
+        if (line.match(/<AUGMENT:[ ](.*)>/i)) {
+          var evalMode = "augment auto";
+          var evalType = String(RegExp.$1).toUpperCase().trim();
+          this.makeAugmentEvalType(obj, evalType);
+        } else if (line.match(/<\/AUGMENT:[ ](.*)>/i)) {
+          var evalMode = "none";
+          var evalType = "none";
+        } else if (evalMode === "augment auto") {
+          obj.augmentDataAttach[evalType].push(line);
+          obj.augmentDataDetach[evalType].push(
+            this.reverseAugmentAutoLine(line)
+          );
+        } else if (line.match(/<AUGMENT ATTACH:[ ](.*)>/i)) {
+          var evalMode = "augment attach";
+          var evalType = String(RegExp.$1).toUpperCase().trim();
+          this.makeAugmentEvalType(obj, evalType);
+        } else if (line.match(/<\/AUGMENT ATTACH:[ ](.*)>/i)) {
+          var evalMode = "none";
+          var evalType = "none";
+        } else if (evalMode === "augment attach") {
+          obj.augmentDataAttach[evalType].push(line);
+        } else if (line.match(/<AUGMENT DETACH:[ ](.*)>/i)) {
+          var evalMode = "augment detach";
+          var evalType = String(RegExp.$1).toUpperCase().trim();
+          this.makeAugmentEvalType(obj, evalType);
+        } else if (line.match(/<\/AUGMENT DETACH:[ ](.*)>/i)) {
+          var evalMode = "none";
+          var evalType = "none";
+        } else if (evalMode === "augment detach") {
+          obj.augmentDataDetach[evalType].push(line);
+        } else if (line.match(/<AUGMENT ATTACH EVAL:[ ](.*)>/i)) {
+          var evalMode = "augment eval attach";
+          var evalType = String(RegExp.$1).toUpperCase().trim();
+          this.makeAugmentEvalType(obj, evalType);
+        } else if (line.match(/<\/AUGMENT ATTACH EVAL:[ ](.*)>/i)) {
+          var evalMode = "none";
+          var evalType = "none";
+        } else if (evalMode === "augment eval attach") {
+          obj.augmentEvalAttach[evalType] += line + "\n";
+        } else if (line.match(/<AUGMENT DETACH EVAL:[ ](.*)>/i)) {
+          var evalMode = "augment eval detach";
+          var evalType = String(RegExp.$1).toUpperCase().trim();
+          this.makeAugmentEvalType(obj, evalType);
+        } else if (line.match(/<\/AUGMENT DETACH EVAL:[ ](.*)>/i)) {
+          var evalMode = "none";
+          var evalType = "none";
+        } else if (evalMode === "augment eval detach") {
+          obj.augmentEvalDetach[evalType] += line + "\n";
+        }
       }
     }
-  }
-};
+  };
 
-DataManager.reverseAugmentAutoLine = function(line) {
+  DataManager.reverseAugmentAutoLine = function (line) {
     if (line.match(/ADD[ ](.*):(.*)/i)) {
       var str1 = String(RegExp.$1);
       var str2 = String(RegExp.$2);
-      return 'REMOVE ' + str1 + ':' + str2;
+      return "REMOVE " + str1 + ":" + str2;
     } else if (line.match(/REMOVE[ ](.*):(.*)/i)) {
       var str1 = String(RegExp.$1);
       var str2 = String(RegExp.$2);
-      return 'ADD ' + str1 + ':' + str2;
+      return "ADD " + str1 + ":" + str2;
     } else if (line.match(/CHANGE[ ](.*):(.*)/i)) {
       var str1 = String(RegExp.$1);
       var str2 = String(RegExp.$2);
-      return 'CANCEL ' + str1 + ':' + str2;
+      return "CANCEL " + str1 + ":" + str2;
     } else if (line.match(/CANCEL[ ](.*):(.*)/i)) {
       var str1 = String(RegExp.$1);
       var str2 = String(RegExp.$2);
-      return 'CHANGE ' + str1 + ':' + str2;
+      return "CHANGE " + str1 + ":" + str2;
     } else if (line.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
-    //  var str = String(RegExp.$1);
-    //  var value = parseInt(RegExp.$2) * -1;
-    //  if (value > 0) value = '+' + value;
-    //  return str + ': ' + value + '%';
       return line;
     } else if (line.match(/(.*):[ ]([\+\-]\d+)/i)) {
       var str = String(RegExp.$1);
       var value = parseInt(RegExp.$2) * -1;
-      if (value > 0) value = '+' + value;
-      return str + ': ' + value;
+      if (value > 0) value = "+" + value;
+      return str + ": " + value;
     }
     return line;
-};
+  };
 
-DataManager.makeAugmentEvalType = function(obj, evalType) {
+  DataManager.makeAugmentEvalType = function (obj, evalType) {
     obj.nonIndependent = true;
     obj.augmentDataAttach[evalType] = obj.augmentDataAttach[evalType] || [];
     obj.augmentDataDetach[evalType] = obj.augmentDataDetach[evalType] || [];
-    obj.augmentEvalAttach[evalType] = obj.augmentEvalAttach[evalType] || '';
-    obj.augmentEvalDetach[evalType] = obj.augmentEvalDetach[evalType] || '';
+    obj.augmentEvalAttach[evalType] = obj.augmentEvalAttach[evalType] || "";
+    obj.augmentEvalDetach[evalType] = obj.augmentEvalDetach[evalType] || "";
     obj.augmentTypes.push(evalType);
-};
+  };
 
-//=============================================================================
-// ItemManager
-//=============================================================================
-
-ItemManager.checkAugmentSlots = function(item) {
+  ItemManager.checkAugmentSlots = function (item) {
     if (DataManager.isItem(item)) return;
     if (item.augmentSlots === undefined) {
       var baseItem = DataManager.getBaseItem(item);
@@ -680,26 +678,26 @@ ItemManager.checkAugmentSlots = function(item) {
         item.augmentSlotEnable[i] = true;
       }
       if (item.augmentSlotItems[i] === undefined) {
-        item.augmentSlotItems[i] = 'none';
+        item.augmentSlotItems[i] = "none";
       }
     }
-};
+  };
 
-ItemManager.applyAugmentEffects = function(item, effectItem, slotId, gain) {
+  ItemManager.applyAugmentEffects = function (item, effectItem, slotId, gain) {
     if (!item) return;
     gain = gain || 0;
     this.checkAugmentSlots(item);
-    if (item.augmentSlotItems[slotId] !== 'none') {
+    if (item.augmentSlotItems[slotId] !== "none") {
       var augment = this.removeAugmentFromSlot(item, slotId);
       if (augment) $gameParty.gainItem(augment, gain);
     }
     this.installAugmentToSlot(item, effectItem, slotId);
     $gameParty.loseItem(effectItem, gain);
     this.augmentRefreshParty(item);
-};
+  };
 
-ItemManager.removeAugmentFromSlot = function(item, slotId) {
-    $gameTemp._augmentSetting = 'detach';
+  ItemManager.removeAugmentFromSlot = function (item, slotId) {
+    $gameTemp._augmentSetting = "detach";
     var type = item.augmentSlots[slotId].toUpperCase().trim();
     var augment = this.augmentInSlot(item, slotId);
     if (!augment) {
@@ -707,16 +705,16 @@ ItemManager.removeAugmentFromSlot = function(item, slotId) {
       return augment;
     }
     var list = augment.augmentDataDetach[type];
-    if (list && list.length > 0)  {
+    if (list && list.length > 0) {
       this.processAugmentList(item, augment, slotId, list);
     }
     var code = augment.augmentEvalDetach[type];
     this.processAugmentEval(code, item, augment, slotId);
     $gameTemp._augmentSetting = undefined;
     return augment;
-};
+  };
 
-ItemManager.removeAllAugments = function(item) {
+  ItemManager.removeAllAugments = function (item) {
     var augments = [];
     this.checkAugmentSlots(item);
     var length = item.augmentSlotItems.length;
@@ -725,19 +723,19 @@ ItemManager.removeAllAugments = function(item) {
       augments.push(augment);
     }
     return augments;
-};
+  };
 
-ItemManager.installAugmentToSlot = function(item, effectItem, slotId) {
-    $gameTemp._augmentSetting = 'attach';
+  ItemManager.installAugmentToSlot = function (item, effectItem, slotId) {
+    $gameTemp._augmentSetting = "attach";
     var type = item.augmentSlots[slotId].toUpperCase().trim();
     if (DataManager.isItem(effectItem)) {
-      item.augmentSlotItems[slotId] = 'item ' + effectItem.id;
+      item.augmentSlotItems[slotId] = "item " + effectItem.id;
     } else if (DataManager.isWeapon(effectItem)) {
-      item.augmentSlotItems[slotId] = 'weapon ' + effectItem.id;
+      item.augmentSlotItems[slotId] = "weapon " + effectItem.id;
     } else if (DataManager.isArmor(effectItem)) {
-      item.augmentSlotItems[slotId] = 'armor ' + effectItem.id;
+      item.augmentSlotItems[slotId] = "armor " + effectItem.id;
     } else if (effectItem === null) {
-      item.augmentSlotItems[slotId] = 'none';
+      item.augmentSlotItems[slotId] = "none";
       $gameTemp._augmentSetting = undefined;
       return;
     }
@@ -752,256 +750,259 @@ ItemManager.installAugmentToSlot = function(item, effectItem, slotId) {
     var code = effectItem.augmentEvalAttach[type];
     this.processAugmentEval(code, item, effectItem, slotId);
     $gameTemp._augmentSetting = undefined;
-};
+  };
 
-ItemManager.installAugments = function(item, augments) {
+  ItemManager.installAugments = function (item, augments) {
     this.checkAugmentSlots(item);
     var length = augments.length;
     for (var i = 0; i < length; ++i) {
       var augment = augments[i];
       this.installAugmentToSlot(item, augment, i);
     }
-};
+  };
 
-ItemManager.augmentInSlot = function(item, slotId) {
-  var augment = item.augmentSlotItems[slotId];
-  if (augment.match(/ITEM[ ](\d+)/i)) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataItems[id];
-    return item || null;
-  } else if (augment.match(/WEAPON[ ](\d+)/i)) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataWeapons[id];
-    return item || null;
-  } else if (augment.match(/ARMOR[ ](\d+)/i)) {
-    var id = parseInt(RegExp.$1);
-    var item = $dataArmors[id];
-    return item || null;
-  }
-  return null;
-};
+  ItemManager.augmentInSlot = function (item, slotId) {
+    var augment = item.augmentSlotItems[slotId];
+    if (augment.match(/ITEM[ ](\d+)/i)) {
+      var id = parseInt(RegExp.$1);
+      var item = $dataItems[id];
+      return item || null;
+    } else if (augment.match(/WEAPON[ ](\d+)/i)) {
+      var id = parseInt(RegExp.$1);
+      var item = $dataWeapons[id];
+      return item || null;
+    } else if (augment.match(/ARMOR[ ](\d+)/i)) {
+      var id = parseInt(RegExp.$1);
+      var item = $dataArmors[id];
+      return item || null;
+    }
+    return null;
+  };
 
-ItemManager.augmentRefreshParty = function(item) {
+  ItemManager.augmentRefreshParty = function (item) {
     var length = $gameParty.allMembers().length;
     for (var i = 0; i < length; ++i) {
       var member = $gameParty.allMembers()[i];
       if (member && member.equips().contains(item)) member.refresh();
     }
-};
+  };
 
-ItemManager.processAugmentList = function(item, effectItem, slotId, list) {
-  var length = list.length;
-  for (var i = 0; i < length; ++i) {
-    var line = list[i];
-    this.processAugmentEffect(line, item, effectItem, slotId);
-  }
-};
+  ItemManager.processAugmentList = function (item, effectItem, slotId, list) {
+    var length = list.length;
+    for (var i = 0; i < length; ++i) {
+      var line = list[i];
+      this.processAugmentEffect(line, item, effectItem, slotId);
+    }
+  };
 
-ItemManager.processAugmentEffect = function(line, mainItem, effectItem, slot) {
-  // CANNOT DETACH
-  if (line.match(/CANNOT DETACH/i)) {
-    return this.applyAugmentCanotDetach(mainItem, slot);
-  }
-  // ADD ATTACK ELEMENT: x
-  if (line.match(/ADD ATTACK ELEMENT:[ ](.*)/i)) {
-    var element = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentAttackElement(mainItem, element, true);
-  } else if (line.match(/REMOVE ATTACK ELEMENT:[ ](.*)/i)) {
-    var element = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentAttackElement(mainItem, element, false);
-  }
-  // ADD ATTACK STATE: x
-  if (line.match(/ADD ATTACK STATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentAttackState(mainItem, text, true);
-  } else if (line.match(/REMOVE ATTACK STATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentAttackState(mainItem, text, false);
-  }
-  // ADD DEBUFF RATE: x
-  if (line.match(/ADD DEBUFF:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentDebuff(mainItem, text, true);
-  } else if (line.match(/REMOVE DEBUFF:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentDebuff(mainItem, text, false);
-  }
-  // ADD ELEMENT RATE: x
-  if (line.match(/ADD ELEMENT RATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentElement(mainItem, text, true);
-  } else if (line.match(/REMOVE ELEMENT RATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentElement(mainItem, text, false);
-  }
-  // ADD PASSIVE STATE: x
-  if (Imported.MSEP_AutoPassiveStates) {
-    if (line.match(/ADD PASSIVE STATE:[ ](.*)/i)) {
+  ItemManager.processAugmentEffect = function (
+    line,
+    mainItem,
+    effectItem,
+    slot
+  ) {
+    if (line.match(/CANNOT DETACH/i)) {
+      return this.applyAugmentCanotDetach(mainItem, slot);
+    }
+
+    if (line.match(/ADD ATTACK ELEMENT:[ ](.*)/i)) {
+      var element = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentAttackElement(mainItem, element, true);
+    } else if (line.match(/REMOVE ATTACK ELEMENT:[ ](.*)/i)) {
+      var element = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentAttackElement(mainItem, element, false);
+    }
+
+    if (line.match(/ADD ATTACK STATE:[ ](.*)/i)) {
       var text = String(RegExp.$1).toUpperCase().trim();
-      return this.applyAugmentPassiveState(mainItem, text, true);
-    } else if (line.match(/REMOVE PASSIVE STATE:[ ](.*)/i)) {
+      return this.applyAugmentAttackState(mainItem, text, true);
+    } else if (line.match(/REMOVE ATTACK STATE:[ ](.*)/i)) {
       var text = String(RegExp.$1).toUpperCase().trim();
-      return this.applyAugmentPassiveState(mainItem, text, false);
+      return this.applyAugmentAttackState(mainItem, text, false);
     }
-  }
-  // ADD SKILL: x
-  if (line.match(/ADD SKILL:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkill(mainItem, text, true);
-  } else if (line.match(/REMOVE SKILL:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkill(mainItem, text, false);
-  }
-  // ADD SKILL TYPE: x
-  if (line.match(/ADD SKILL TYPE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkillType(mainItem, text, true);
-  } else if (line.match(/ADD STYPE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkillType(mainItem, text, true);
-  } else if (line.match(/REMOVE SKILL TYPE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkillType(mainItem, text, false);
-  } else if (line.match(/REMOVE STYPE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentSkillType(mainItem, text, false);
-  }
-  // ADD STATE RATE: x
-  if (line.match(/ADD STATE RATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentStateRate(mainItem, text, true);
-  } else if (line.match(/REMOVE STATE RATE:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentStateRate(mainItem, text, false);
-  }
-  // ADD STATE RESIST: x
-  if (line.match(/ADD STATE RESIST:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentStateResist(mainItem, text, true);
-  } else if (line.match(/REMOVE STATE RESIST:[ ](.*)/i)) {
-    var text = String(RegExp.$1).toUpperCase().trim();
-    return this.applyAugmentStateResist(mainItem, text, false);
-  }
-  // CHANGE BASE NAME: x
-  if (line.match(/CHANGE BASE NAME:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetBaseName(mainItem, text, slot, true);
-  } else if (line.match(/CANCEL BASE NAME:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetBaseName(mainItem, text, slot, false);
-  }
-  // CHANGE PREFIX: x
-  if (line.match(/CHANGE PREFIX:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetPrefix(mainItem, text, slot, true);
-  } else if (line.match(/CANCEL PREFIX:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetPrefix(mainItem, text, slot, false);
-  }
-  // CHANGE SUFFIX: x
-  if (line.match(/CHANGE SUFFIX:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetSuffix(mainItem, text, slot, true);
-  } else if (line.match(/CANCEL SUFFIX:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetSuffix(mainItem, text, slot, false);
-  }
-  // CHANGE PRIORITY NAME: x
-  if (line.match(/CHANGE PRIORITY NAME:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetPriorityName(mainItem, text, slot, true);
-  } else if (line.match(/CANCEL PRIORITY NAME:[ ](.*)/i)) {
-    var text = String(RegExp.$1).trim();
-    return this.applyAugmentSetPriorityName(mainItem, text, slot, false);
-  }
-  // CHANGE ICON: x
-  if (line.match(/CHANGE ICON:[ ](\d+)/i)) {
-    var icon = parseInt(RegExp.$1);
-    return this.applyAugmentSetIcon(mainItem, icon, slot, true);
-  } else if (line.match(/CANCEL ICON:[ ](\d+)/i)) {
-    var icon = parseInt(RegExp.$1);
-    return this.applyAugmentSetIcon(mainItem, icon, slot, false);
-  }
-  // Imported.MSEP_X_ItemPictureImg
-  if (Imported.MSEP_X_ItemPictureImg) {
-    // CHANGE PICTURE IMAGE: x
-    if (line.match(/CHANGE PICTURE IMAGE:[ ](.*)/i)) {
-      var text = String(RegExp.$1).trim();
-      return this.applyAugmentSetPictureImg(mainItem, text, slot, true);
-    } else if (line.match(/CANCEL PICTURE IMAGE:[ ](.*)/i)) {
-      var text = String(RegExp.$1).trim();
-      return this.applyAugmentSetPictureImg(mainItem, text, slot, false);
-    }
-    // CHANGE ICON: x
-    if (line.match(/CHANGE PICTURE HUE:[ ](\d+)/i)) {
-      var icon = parseInt(RegExp.$1).clamp(0, 360);
-      return this.applyAugmentSetPictureHue(mainItem, icon, slot, true);
-    } else if (line.match(/CANCEL PICTURE HUE:[ ](\d+)/i)) {
-      var icon = parseInt(RegExp.$1).clamp(0, 360);
-      return this.applyAugmentSetPictureHue(mainItem, icon, slot, false);
-    }
-  } // Imported.MSEP_X_ItemPictureImg
-  // CHANGE TEXT COLOR: x
-  if (line.match(/CHANGE TEXT COLOR:[ ](\d+)/i)) {
-    var color = parseInt(RegExp.$1);
-    return this.applyAugmentSetTextColor(mainItem, color, slot, true);
-  } else if (line.match(/CANCEL TEXT COLOR:[ ](\d+)/i)) {
-    var color = parseInt(RegExp.$1);
-    return this.applyAugmentSetTextColor(mainItem, color, slot, false);
-  }
-  // PARAM: +/-X%
-  if (line.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
-    var param = String(RegExp.$1).toUpperCase().trim();
-    var value = parseFloat(RegExp.$2);
-    return this.applyAugmentParamRate(mainItem, param, value);
-  }
-  // PARAM: +/-X
-  if (line.match(/(.*):[ ]([\+\-]\d+)/i)) {
-    var param = String(RegExp.$1).toUpperCase().trim();
-    var value = parseInt(RegExp.$2);
-    return this.applyAugmentParamPlus(mainItem, param, value);
-  }
-};
 
-ItemManager.adjustItemTrait = function(mainItem, code, dataId, value, add) {
+    if (line.match(/ADD DEBUFF:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentDebuff(mainItem, text, true);
+    } else if (line.match(/REMOVE DEBUFF:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentDebuff(mainItem, text, false);
+    }
+
+    if (line.match(/ADD ELEMENT RATE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentElement(mainItem, text, true);
+    } else if (line.match(/REMOVE ELEMENT RATE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentElement(mainItem, text, false);
+    }
+
+    if (Imported.MSEP_AutoPassiveStates) {
+      if (line.match(/ADD PASSIVE STATE:[ ](.*)/i)) {
+        var text = String(RegExp.$1).toUpperCase().trim();
+        return this.applyAugmentPassiveState(mainItem, text, true);
+      } else if (line.match(/REMOVE PASSIVE STATE:[ ](.*)/i)) {
+        var text = String(RegExp.$1).toUpperCase().trim();
+        return this.applyAugmentPassiveState(mainItem, text, false);
+      }
+    }
+
+    if (line.match(/ADD SKILL:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkill(mainItem, text, true);
+    } else if (line.match(/REMOVE SKILL:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkill(mainItem, text, false);
+    }
+
+    if (line.match(/ADD SKILL TYPE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkillType(mainItem, text, true);
+    } else if (line.match(/ADD STYPE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkillType(mainItem, text, true);
+    } else if (line.match(/REMOVE SKILL TYPE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkillType(mainItem, text, false);
+    } else if (line.match(/REMOVE STYPE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentSkillType(mainItem, text, false);
+    }
+
+    if (line.match(/ADD STATE RATE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentStateRate(mainItem, text, true);
+    } else if (line.match(/REMOVE STATE RATE:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentStateRate(mainItem, text, false);
+    }
+
+    if (line.match(/ADD STATE RESIST:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentStateResist(mainItem, text, true);
+    } else if (line.match(/REMOVE STATE RESIST:[ ](.*)/i)) {
+      var text = String(RegExp.$1).toUpperCase().trim();
+      return this.applyAugmentStateResist(mainItem, text, false);
+    }
+
+    if (line.match(/CHANGE BASE NAME:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetBaseName(mainItem, text, slot, true);
+    } else if (line.match(/CANCEL BASE NAME:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetBaseName(mainItem, text, slot, false);
+    }
+
+    if (line.match(/CHANGE PREFIX:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetPrefix(mainItem, text, slot, true);
+    } else if (line.match(/CANCEL PREFIX:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetPrefix(mainItem, text, slot, false);
+    }
+
+    if (line.match(/CHANGE SUFFIX:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetSuffix(mainItem, text, slot, true);
+    } else if (line.match(/CANCEL SUFFIX:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetSuffix(mainItem, text, slot, false);
+    }
+
+    if (line.match(/CHANGE PRIORITY NAME:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetPriorityName(mainItem, text, slot, true);
+    } else if (line.match(/CANCEL PRIORITY NAME:[ ](.*)/i)) {
+      var text = String(RegExp.$1).trim();
+      return this.applyAugmentSetPriorityName(mainItem, text, slot, false);
+    }
+
+    if (line.match(/CHANGE ICON:[ ](\d+)/i)) {
+      var icon = parseInt(RegExp.$1);
+      return this.applyAugmentSetIcon(mainItem, icon, slot, true);
+    } else if (line.match(/CANCEL ICON:[ ](\d+)/i)) {
+      var icon = parseInt(RegExp.$1);
+      return this.applyAugmentSetIcon(mainItem, icon, slot, false);
+    }
+
+    if (Imported.MSEP_X_ItemPictureImg) {
+      if (line.match(/CHANGE PICTURE IMAGE:[ ](.*)/i)) {
+        var text = String(RegExp.$1).trim();
+        return this.applyAugmentSetPictureImg(mainItem, text, slot, true);
+      } else if (line.match(/CANCEL PICTURE IMAGE:[ ](.*)/i)) {
+        var text = String(RegExp.$1).trim();
+        return this.applyAugmentSetPictureImg(mainItem, text, slot, false);
+      }
+
+      if (line.match(/CHANGE PICTURE HUE:[ ](\d+)/i)) {
+        var icon = parseInt(RegExp.$1).clamp(0, 360);
+        return this.applyAugmentSetPictureHue(mainItem, icon, slot, true);
+      } else if (line.match(/CANCEL PICTURE HUE:[ ](\d+)/i)) {
+        var icon = parseInt(RegExp.$1).clamp(0, 360);
+        return this.applyAugmentSetPictureHue(mainItem, icon, slot, false);
+      }
+    }
+
+    if (line.match(/CHANGE TEXT COLOR:[ ](\d+)/i)) {
+      var color = parseInt(RegExp.$1);
+      return this.applyAugmentSetTextColor(mainItem, color, slot, true);
+    } else if (line.match(/CANCEL TEXT COLOR:[ ](\d+)/i)) {
+      var color = parseInt(RegExp.$1);
+      return this.applyAugmentSetTextColor(mainItem, color, slot, false);
+    }
+
+    if (line.match(/(.*):[ ]([\+\-]\d+)([%％])/i)) {
+      var param = String(RegExp.$1).toUpperCase().trim();
+      var value = parseFloat(RegExp.$2);
+      return this.applyAugmentParamRate(mainItem, param, value);
+    }
+
+    if (line.match(/(.*):[ ]([\+\-]\d+)/i)) {
+      var param = String(RegExp.$1).toUpperCase().trim();
+      var value = parseInt(RegExp.$2);
+      return this.applyAugmentParamPlus(mainItem, param, value);
+    }
+  };
+
+  ItemManager.adjustItemTrait = function (mainItem, code, dataId, value, add) {
     if (add) {
       this.addTraitToItem(mainItem, code, dataId, value);
     } else {
       this.deleteTraitFromItem(mainItem, code, dataId, value);
     }
-};
+  };
 
-ItemManager.addTraitToItem = function(mainItem, code, dataId, value) {
+  ItemManager.addTraitToItem = function (mainItem, code, dataId, value) {
     var trait = {
       code: code,
       dataId: dataId,
-      value: value
-    }
+      value: value,
+    };
     mainItem.traits.push(trait);
-};
+  };
 
-ItemManager.deleteTraitFromItem = function(mainItem, code, dataId, value) {
+  ItemManager.deleteTraitFromItem = function (mainItem, code, dataId, value) {
     var index = this.getMatchingTraitIndex(mainItem, code, dataId, value);
     if (index >= 0) mainItem.traits.splice(index, 1);
-};
+  };
 
-ItemManager.getMatchingTraitIndex = function(mainItem, code, dataId, value) {
-  var i = mainItem.traits.length;
-  while (i--) {
-    var trait = mainItem.traits[i];
-    if (trait.code !== code) continue;
-    if (trait.dataId !== dataId) continue;
-    if (trait.value !== value) continue;
+  ItemManager.getMatchingTraitIndex = function (mainItem, code, dataId, value) {
+    var i = mainItem.traits.length;
+    while (i--) {
+      var trait = mainItem.traits[i];
+      if (trait.code !== code) continue;
+      if (trait.dataId !== dataId) continue;
+      if (trait.value !== value) continue;
+      return i;
+    }
     return i;
-  }
-  return i;
-}
+  };
 
-ItemManager.applyAugmentCanotDetach = function(mainItem, slotId) {
+  ItemManager.applyAugmentCanotDetach = function (mainItem, slotId) {
     mainItem.augmentSlotEnable[slotId] = false;
-};
+  };
 
-ItemManager.applyAugmentAttackElement = function(mainItem, element, add) {
+  ItemManager.applyAugmentAttackElement = function (mainItem, element, add) {
     if (element.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else {
@@ -1010,9 +1011,9 @@ ItemManager.applyAugmentAttackElement = function(mainItem, element, add) {
     }
     var code = Game_BattlerBase.TRAIT_ATTACK_ELEMENT;
     this.adjustItemTrait(mainItem, code, id, 0, add);
-};
+  };
 
-ItemManager.applyAugmentAttackState = function(mainItem, text, add) {
+  ItemManager.applyAugmentAttackState = function (mainItem, text, add) {
     if (text.match(/(\d+),[ ](\d+)([%％])/i)) {
       var id = parseInt(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
@@ -1031,45 +1032,45 @@ ItemManager.applyAugmentAttackState = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_ATTACK_STATE;
     this.adjustItemTrait(mainItem, code, id, rate, add);
-};
+  };
 
-ItemManager.applyAugmentDebuff = function(mainItem, element, add) {
+  ItemManager.applyAugmentDebuff = function (mainItem, element, add) {
     if (text.match(/(.*),[ ](\d+)([%％])/i)) {
       var param = String(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
       if (!id) return;
     } else if (text.match(/(.*),[ ]([\+\-]\d+)([%％])/i)) {
-      var add = $gameTemp._augmentSetting === 'attach';
+      var add = $gameTemp._augmentSetting === "attach";
       var name = String(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
       rate += 1;
     } else {
       return;
     }
-    if (['MAXHP', 'MHP', 'MAX HP', 'HP'].contains(param)) {
+    if (["MAXHP", "MHP", "MAX HP", "HP"].contains(param)) {
       var paramId = 0;
-    } else if (['MAXMP', 'MMP', 'MAX MP', 'MP'].contains(param)) {
+    } else if (["MAXMP", "MMP", "MAX MP", "MP"].contains(param)) {
       var paramId = 1;
-    } else if (['ATK', 'STR'].contains(param)) {
+    } else if (["ATK", "STR"].contains(param)) {
       var paramId = 2;
-    } else if (['DEF'].contains(param)) {
+    } else if (["DEF"].contains(param)) {
       var paramId = 3;
-    } else if (['MAT', 'INT', 'SPI'].contains(param)) {
+    } else if (["MAT", "INT", "SPI"].contains(param)) {
       var paramId = 4;
-    } else if (['MDF', 'RES'].contains(param)) {
+    } else if (["MDF", "RES"].contains(param)) {
       var paramId = 5;
-    } else if (['AGI', 'SPD'].contains(param)) {
+    } else if (["AGI", "SPD"].contains(param)) {
       var paramId = 6;
-    } else if (['LUK'].contains(param)) {
+    } else if (["LUK"].contains(param)) {
       var paramId = 7;
     } else {
       return;
     }
     var code = Game_BattlerBase.TRAIT_DEBUFF_RATE;
     this.adjustItemTrait(mainItem, code, paramId, rate, add);
-};
+  };
 
-ItemManager.applyAugmentElement = function(mainItem, text, add) {
+  ItemManager.applyAugmentElement = function (mainItem, text, add) {
     if (text.match(/(\d+),[ ](\d+)([%％])/i)) {
       var id = parseInt(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
@@ -1079,12 +1080,12 @@ ItemManager.applyAugmentElement = function(mainItem, text, add) {
       var id = MageStudios.ElementIdRef[name];
       if (!id) return;
     } else if (text.match(/(\d+),[ ]([\+\-]\d+)([%％])/i)) {
-      var add = $gameTemp._augmentSetting === 'attach';
+      var add = $gameTemp._augmentSetting === "attach";
       var id = parseInt(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
       rate += 1;
     } else if (text.match(/(.*),[ ]([\+\-]\d+)([%％])/i)) {
-      var add = $gameTemp._augmentSetting === 'attach';
+      var add = $gameTemp._augmentSetting === "attach";
       var name = String(RegExp.$1);
       var id = MageStudios.ElementIdRef[name];
       var rate = parseFloat(RegExp.$2) * 0.01;
@@ -1094,9 +1095,9 @@ ItemManager.applyAugmentElement = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_ELEMENT_RATE;
     this.adjustItemTrait(mainItem, code, id, rate, add);
-};
+  };
 
-ItemManager.applyAugmentPassiveState = function(mainItem, text, add) {
+  ItemManager.applyAugmentPassiveState = function (mainItem, text, add) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else {
@@ -1110,9 +1111,9 @@ ItemManager.applyAugmentPassiveState = function(mainItem, text, add) {
       var index = mainItem.passiveStates.indexOf(id);
       if (index >= 0) mainItem.passiveStates.splice(index, 1);
     }
-};
+  };
 
-ItemManager.applyAugmentSkill = function(mainItem, text, add) {
+  ItemManager.applyAugmentSkill = function (mainItem, text, add) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else {
@@ -1121,9 +1122,9 @@ ItemManager.applyAugmentSkill = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_SKILL_ADD;
     this.adjustItemTrait(mainItem, code, id, 1, add);
-};
+  };
 
-ItemManager.applyAugmentSkillType = function(mainItem, text, add) {
+  ItemManager.applyAugmentSkillType = function (mainItem, text, add) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else {
@@ -1132,9 +1133,9 @@ ItemManager.applyAugmentSkillType = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_STYPE_ADD;
     this.adjustItemTrait(mainItem, code, id, 1, add);
-};
+  };
 
-ItemManager.applyAugmentStateRate = function(mainItem, text, add) {
+  ItemManager.applyAugmentStateRate = function (mainItem, text, add) {
     if (text.match(/(\d+),[ ](\d+)([%％])/i)) {
       var id = parseInt(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
@@ -1144,12 +1145,12 @@ ItemManager.applyAugmentStateRate = function(mainItem, text, add) {
       var id = MageStudios.StateIdRef[name];
       if (!id) return;
     } else if (text.match(/(\d+),[ ]([\+\-]\d+)([%％])/i)) {
-      var add = $gameTemp._augmentSetting === 'attach';
+      var add = $gameTemp._augmentSetting === "attach";
       var id = parseInt(RegExp.$1);
       var rate = parseFloat(RegExp.$2) * 0.01;
       rate += 1;
     } else if (text.match(/(.*),[ ]([\+\-]\d+)([%％])/i)) {
-      var add = $gameTemp._augmentSetting === 'attach';
+      var add = $gameTemp._augmentSetting === "attach";
       var name = String(RegExp.$1);
       var id = MageStudios.StateIdRef[name];
       var rate = parseFloat(RegExp.$2) * 0.01;
@@ -1159,9 +1160,9 @@ ItemManager.applyAugmentStateRate = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_STATE_RATE;
     this.adjustItemTrait(mainItem, code, id, rate, add);
-};
+  };
 
-ItemManager.getAugmentFirstValue = function(array, def) {
+  ItemManager.getAugmentFirstValue = function (array, def) {
     var length = array.length;
     for (var i = 0; i < length; ++i) {
       var item = array[i];
@@ -1169,9 +1170,9 @@ ItemManager.getAugmentFirstValue = function(array, def) {
       if (item !== undefined) return item;
     }
     return def;
-};
+  };
 
-ItemManager.applyAugmentStateResist = function(mainItem, text, add) {
+  ItemManager.applyAugmentStateResist = function (mainItem, text, add) {
     if (text.match(/(\d+)/i)) {
       var id = parseInt(RegExp.$1);
     } else {
@@ -1180,9 +1181,9 @@ ItemManager.applyAugmentStateResist = function(mainItem, text, add) {
     }
     var code = Game_BattlerBase.TRAIT_STATE_RESIST;
     this.adjustItemTrait(mainItem, code, id, 1, add);
-};
+  };
 
-ItemManager.applyAugmentSetBaseName = function(mainItem, text, slot, add) {
+  ItemManager.applyAugmentSetBaseName = function (mainItem, text, slot, add) {
     mainItem.augmentBaseNames = mainItem.augmentBaseNames || [];
     if (add) {
       mainItem.augmentBaseNames[slot] = text;
@@ -1193,45 +1194,50 @@ ItemManager.applyAugmentSetBaseName = function(mainItem, text, slot, add) {
     var name = this.getAugmentFirstValue(mainItem.augmentBaseNames, baseName);
     this.setBaseName(mainItem, name);
     this.updateItemName(mainItem);
-};
+  };
 
-ItemManager.applyAugmentSetPrefix = function(mainItem, text, slot, add) {
+  ItemManager.applyAugmentSetPrefix = function (mainItem, text, slot, add) {
     mainItem.augmentPrefixes = mainItem.augmentPrefixes || [];
     if (add) {
       mainItem.augmentPrefixes[slot] = text;
     } else {
       mainItem.augmentPrefixes[slot] = undefined;
     }
-    var name = this.getAugmentFirstValue(mainItem.augmentPrefixes, '');
+    var name = this.getAugmentFirstValue(mainItem.augmentPrefixes, "");
     this.setNamePrefix(mainItem, name);
     this.updateItemName(mainItem);
-};
+  };
 
-ItemManager.applyAugmentSetSuffix = function(mainItem, text, slot, add) {
+  ItemManager.applyAugmentSetSuffix = function (mainItem, text, slot, add) {
     mainItem.augmentSuffixes = mainItem.augmentSuffixes || [];
     if (add) {
       mainItem.augmentSuffixes[slot] = text;
     } else {
       mainItem.augmentSuffixes[slot] = undefined;
     }
-    var name = this.getAugmentFirstValue(mainItem.augmentSuffixes, '');
+    var name = this.getAugmentFirstValue(mainItem.augmentSuffixes, "");
     this.setNameSuffix(mainItem, name);
     this.updateItemName(mainItem);
-};
+  };
 
-ItemManager.applyAugmentSetPriorityName = function(mainItem, text, slot, add) {
+  ItemManager.applyAugmentSetPriorityName = function (
+    mainItem,
+    text,
+    slot,
+    add
+  ) {
     mainItem.augmentPriorityNames = mainItem.augmentPriorityNames || [];
     if (add) {
       mainItem.augmentPriorityNames[slot] = text;
     } else {
       mainItem.augmentPriorityNames[slot] = undefined;
     }
-    var name = this.getAugmentFirstValue(mainItem.augmentPriorityNames, '');
+    var name = this.getAugmentFirstValue(mainItem.augmentPriorityNames, "");
     this.setPriorityName(mainItem, name);
     this.updateItemName(mainItem);
-};
+  };
 
-ItemManager.applyAugmentSetIcon = function(mainItem, icon, slot, add) {
+  ItemManager.applyAugmentSetIcon = function (mainItem, icon, slot, add) {
     mainItem.augmentIcons = mainItem.augmentIcons || [];
     if (add) {
       mainItem.augmentIcons[slot] = icon;
@@ -1241,9 +1247,9 @@ ItemManager.applyAugmentSetIcon = function(mainItem, icon, slot, add) {
     var baseIcon = DataManager.getBaseItem(mainItem).iconIndex;
     var id = this.getAugmentFirstValue(mainItem.augmentIcons, baseIcon);
     mainItem.iconIndex = id;
-};
+  };
 
-ItemManager.applyAugmentSetTextColor = function(mainItem, color, slot, add) {
+  ItemManager.applyAugmentSetTextColor = function (mainItem, color, slot, add) {
     mainItem.augmentTextColor = mainItem.augmentTextColor || [];
     if (add) {
       mainItem.augmentTextColor[slot] = color;
@@ -1252,86 +1258,106 @@ ItemManager.applyAugmentSetTextColor = function(mainItem, color, slot, add) {
     }
     var id = this.getAugmentFirstValue(mainItem.augmentTextColor, 0);
     mainItem.textColor = id;
-};
+  };
 
-MageStudios.Param.AugmentXParams = 
-  ['HIT', 'EVA', 'CRI', 'CEV', 'MEV', 'MRF', 'CNT', 'HRG', 'MRG', 'TRG'];
-MageStudios.Param.AugmentSParams = 
-  ['TGR', 'GRD', 'REC', 'PHA', 'MCR', 'TCR', 'PDR', 'MDR', 'FDR', 'EXR'];
+  MageStudios.Param.AugmentXParams = [
+    "HIT",
+    "EVA",
+    "CRI",
+    "CEV",
+    "MEV",
+    "MRF",
+    "CNT",
+    "HRG",
+    "MRG",
+    "TRG",
+  ];
+  MageStudios.Param.AugmentSParams = [
+    "TGR",
+    "GRD",
+    "REC",
+    "PHA",
+    "MCR",
+    "TCR",
+    "PDR",
+    "MDR",
+    "FDR",
+    "EXR",
+  ];
 
-ItemManager.applyAugmentParamRate = function(mainItem, param, value) {
-  var add = $gameTemp._augmentSetting === 'attach';
-  value = parseFloat(value * 0.01);
-  var rate = value + 1;
-  if (['MAXHP', 'MHP', 'MAX HP', 'HP'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 0;
-  } else if (['MAXMP', 'MMP', 'MAX MP', 'MP'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 1;
-  } else if (['ATK', 'STR'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 2;
-  } else if (['DEF'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 3;
-  } else if (['MAT', 'INT', 'SPI'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 4;
-  } else if (['MDF', 'RES'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 5;
-  } else if (['AGI', 'SPD'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 6;
-  } else if (['LUK'].contains(param)) {
-    var code = Game_BattlerBase.TRAIT_PARAM;
-    var id = 7;
-  } else if (MageStudios.Param.AugmentXParams.contains(param)) {
-    var code = Game_BattlerBase.TRAIT_XPARAM;
-    var id = MageStudios.Param.AugmentXParams.indexOf(param);
-    rate -= 1;
-  } else if (MageStudios.Param.AugmentSParams.contains(param)) {
-    var code = Game_BattlerBase.TRAIT_SPARAM;
-    var id = MageStudios.Param.AugmentSParams.indexOf(param);
-  } else {
-    return;
-  }
-  this.adjustItemTrait(mainItem, code, id, rate, add);
-};
+  ItemManager.applyAugmentParamRate = function (mainItem, param, value) {
+    var add = $gameTemp._augmentSetting === "attach";
+    value = parseFloat(value * 0.01);
+    var rate = value + 1;
+    if (["MAXHP", "MHP", "MAX HP", "HP"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 0;
+    } else if (["MAXMP", "MMP", "MAX MP", "MP"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 1;
+    } else if (["ATK", "STR"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 2;
+    } else if (["DEF"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 3;
+    } else if (["MAT", "INT", "SPI"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 4;
+    } else if (["MDF", "RES"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 5;
+    } else if (["AGI", "SPD"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 6;
+    } else if (["LUK"].contains(param)) {
+      var code = Game_BattlerBase.TRAIT_PARAM;
+      var id = 7;
+    } else if (MageStudios.Param.AugmentXParams.contains(param)) {
+      var code = Game_BattlerBase.TRAIT_XPARAM;
+      var id = MageStudios.Param.AugmentXParams.indexOf(param);
+      rate -= 1;
+    } else if (MageStudios.Param.AugmentSParams.contains(param)) {
+      var code = Game_BattlerBase.TRAIT_SPARAM;
+      var id = MageStudios.Param.AugmentSParams.indexOf(param);
+    } else {
+      return;
+    }
+    this.adjustItemTrait(mainItem, code, id, rate, add);
+  };
 
-ItemManager.applyAugmentParamPlus = function(mainItem, param, value) {
-  if (['MAXHP', 'MHP', 'MAX HP', 'HP'].contains(param)) {
-    var paramId = 0;
-  } else if (['MAXMP', 'MMP', 'MAX MP', 'MP'].contains(param)) {
-    var paramId = 1;
-  } else if (['ATK', 'STR'].contains(param)) {
-    var paramId = 2;
-  } else if (['DEF'].contains(param)) {
-    var paramId = 3;
-  } else if (['MAT', 'INT', 'SPI'].contains(param)) {
-    var paramId = 4;
-  } else if (['MDF', 'RES'].contains(param)) {
-    var paramId = 5;
-  } else if (['AGI', 'SPD'].contains(param)) {
-    var paramId = 6;
-  } else if (['LUK'].contains(param)) {
-    var paramId = 7;
-  } else if (['PRICE', 'COST'].contains(param)) {
-    mainItem.price += value;
-    return;
-  } else if (['BOOST'].contains(param)) {
-    mainItem.boostCount += value;
-    this.updateItemName(mainItem);
-    return;
-  } else {
-    return;
-  }
-  mainItem.params[paramId] += value;
-};
+  ItemManager.applyAugmentParamPlus = function (mainItem, param, value) {
+    if (["MAXHP", "MHP", "MAX HP", "HP"].contains(param)) {
+      var paramId = 0;
+    } else if (["MAXMP", "MMP", "MAX MP", "MP"].contains(param)) {
+      var paramId = 1;
+    } else if (["ATK", "STR"].contains(param)) {
+      var paramId = 2;
+    } else if (["DEF"].contains(param)) {
+      var paramId = 3;
+    } else if (["MAT", "INT", "SPI"].contains(param)) {
+      var paramId = 4;
+    } else if (["MDF", "RES"].contains(param)) {
+      var paramId = 5;
+    } else if (["AGI", "SPD"].contains(param)) {
+      var paramId = 6;
+    } else if (["LUK"].contains(param)) {
+      var paramId = 7;
+    } else if (["PRICE", "COST"].contains(param)) {
+      mainItem.price += value;
+      return;
+    } else if (["BOOST"].contains(param)) {
+      mainItem.boostCount += value;
+      this.updateItemName(mainItem);
+      return;
+    } else {
+      return;
+    }
+    mainItem.params[paramId] += value;
+  };
 
-ItemManager.processAugmentEval = function(code, item, effectItem, slotId) {
-    if (code === '') return;
+  ItemManager.processAugmentEval = function (code, item, effectItem, slotId) {
+    if (code === "") return;
     var mainItem = item;
     var weapon = item;
     var armor = item;
@@ -1343,150 +1369,145 @@ ItemManager.processAugmentEval = function(code, item, effectItem, slotId) {
     try {
       eval(code);
     } catch (e) {
-      MageStudios.Util.displayError(e, code, 'ATTACH AUGMENT CUSTOM EFFECT ERROR');
+      MageStudios.Util.displayError(
+        e,
+        code,
+        "ATTACH AUGMENT CUSTOM EFFECT ERROR"
+      );
     }
-};
+  };
 
-//=============================================================================
-// Game_System
-//=============================================================================
-
-MageStudios.Augment.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
+  MageStudios.Augment.Game_System_initialize = Game_System.prototype.initialize;
+  Game_System.prototype.initialize = function () {
     MageStudios.Augment.Game_System_initialize.call(this);
     this.initAugments();
-};
+  };
 
-Game_System.prototype.initAugments = function() {
+  Game_System.prototype.initAugments = function () {
     this._augmentsEnabled = MageStudios.Param.AugmentEnable;
     this._augmentsShow = MageStudios.Param.AugmentShow;
-};
+  };
 
-Game_System.prototype.isAugmentEnabled = function() {
+  Game_System.prototype.isAugmentEnabled = function () {
     if (this._augmentsEnabled === undefined) this.initAugments();
     return this._augmentsEnabled;
-};
+  };
 
-Game_System.prototype.setAugmentEnable = function(value) {
+  Game_System.prototype.setAugmentEnable = function (value) {
     if (this._augmentsEnabled === undefined) this.initAugments();
     this._augmentsEnabled = value;
-};
+  };
 
-Game_System.prototype.isAugmentShown = function() {
+  Game_System.prototype.isAugmentShown = function () {
     if (this._augmentsShow === undefined) this.initAugments();
     return this._augmentsShow;
-};
+  };
 
-Game_System.prototype.setAugmentShow = function(value) {
+  Game_System.prototype.setAugmentShow = function (value) {
     if (this._augmentsShow === undefined) this.initAugments();
     this._augmentsShow = value;
-};
+  };
 
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
-
-MageStudios.Augment.Game_Interpreter_pluginCommand =
+  MageStudios.Augment.Game_Interpreter_pluginCommand =
     Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
-  MageStudios.Augment.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'EnableAugments') $gameSystem.setAugmentEnable(true);
-  if (command === 'DisableAugments') $gameSystem.setAugmentEnable(false);
-  if (command === 'ShowAugments') $gameSystem.setAugmentShow(true);
-  if (command === 'HideAugments') $gameSystem.setAugmentShow(false);
-};
+  Game_Interpreter.prototype.pluginCommand = function (command, args) {
+    MageStudios.Augment.Game_Interpreter_pluginCommand.call(
+      this,
+      command,
+      args
+    );
+    if (command === "EnableAugments") $gameSystem.setAugmentEnable(true);
+    if (command === "DisableAugments") $gameSystem.setAugmentEnable(false);
+    if (command === "ShowAugments") $gameSystem.setAugmentShow(true);
+    if (command === "HideAugments") $gameSystem.setAugmentShow(false);
+  };
 
-//=============================================================================
-// Window_ItemInfo
-//=============================================================================
+  if (MageStudios.Param.AugmentShow) {
+    MageStudios.Augment.Window_ItemInfo_drawItemInfoF =
+      Window_ItemInfo.prototype.drawItemInfoF;
+    Window_ItemInfo.prototype.drawItemInfoF = function (dy) {
+      dy = MageStudios.Augment.Window_ItemInfo_drawItemInfoF.call(this, dy);
+      dy = this.drawAugmentInfo(dy);
+      return dy;
+    };
 
-if (MageStudios.Param.AugmentShow) {
+    Window_ItemInfo.prototype.drawAugmentInfo = function (dy) {
+      if (!$gameSystem.isAugmentShown()) return dy;
+      var item = this._item;
+      var baseItem = DataManager.getBaseItem(item);
+      if (!DataManager.isIndependent(item)) return dy;
+      if (DataManager.isItem(item)) return dy;
+      if (MageStudios.Param.AugmentInfoTitle !== "") {
+        this.resetFontSettings();
+        this.changePaintOpacity(true);
+        this.changeTextColor(this.systemColor());
+        var align = MageStudios.Param.AugmentInfoAlign;
+        this.drawText(
+          MageStudios.Param.AugmentInfoTitle,
+          this.textPadding(),
+          dy,
+          this.contentsWidth() - this.textPadding() * 2,
+          align
+        );
+        this.resetFontSettings();
+        dy += this.lineHeight();
+      }
+      ItemManager.checkAugmentSlots(item);
+      var length = item.augmentSlotItems.length;
+      for (var i = 0; i < length; ++i) {
+        this.drawAugmentData(i, dy);
+        dy += this.lineHeight();
+      }
+      return dy;
+    };
 
-MageStudios.Augment.Window_ItemInfo_drawItemInfoF =
-    Window_ItemInfo.prototype.drawItemInfoF;
-Window_ItemInfo.prototype.drawItemInfoF = function(dy) {
-    dy = MageStudios.Augment.Window_ItemInfo_drawItemInfoF.call(this, dy);
-    dy = this.drawAugmentInfo(dy);
-    return dy;
-};
-
-Window_ItemInfo.prototype.drawAugmentInfo = function(dy) {
-  if (!$gameSystem.isAugmentShown()) return dy;
-  var item = this._item;
-  var baseItem = DataManager.getBaseItem(item);
-  if (!DataManager.isIndependent(item)) return dy;
-  if (DataManager.isItem(item)) return dy;
-  if (MageStudios.Param.AugmentInfoTitle !== '') {
-    this.resetFontSettings();
-    this.changePaintOpacity(true);
-    this.changeTextColor(this.systemColor());
-    var align = MageStudios.Param.AugmentInfoAlign;
-    this.drawText(MageStudios.Param.AugmentInfoTitle, this.textPadding(), dy,
-      this.contentsWidth() - this.textPadding() * 2, align);
-    this.resetFontSettings();
-    dy += this.lineHeight();
+    Window_ItemInfo.prototype.drawAugmentData = function (slot, dy) {
+      var text = this._item.augmentSlotItems[slot];
+      if (text.match(/NONE/i)) {
+        text = MageStudios.Param.AugmentNoneText;
+      } else if (text.match(/ITEM[ ](\d+)/i)) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataItems[id];
+        if (item) {
+          text = "\\i[" + item.iconIndex + "]" + item.name;
+        } else {
+          text = MageStudios.Param.AugmentNoneText;
+        }
+      } else if (text.match(/WEAPON[ ](\d+)/i)) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataWeapons[id];
+        if (item) {
+          text = "\\i[" + item.iconIndex + "]" + item.name;
+        } else {
+          text = MageStudios.Param.AugmentNoneText;
+        }
+      } else if (text.match(/ARMOR[ ](\d+)/i)) {
+        var id = parseInt(RegExp.$1);
+        var item = $dataArmors[id];
+        if (item) {
+          text = "\\i[" + item.iconIndex + "]" + item.name;
+        } else {
+          text = MageStudios.Param.AugmentNoneText;
+        }
+      }
+      this.drawTextEx(text, this.textPadding(), dy);
+    };
   }
-  ItemManager.checkAugmentSlots(item);
-  var length = item.augmentSlotItems.length;
-  for (var i = 0; i < length; ++i) {
-    this.drawAugmentData(i, dy);
-    dy += this.lineHeight();
-  }
-  return dy;
-};
 
-Window_ItemInfo.prototype.drawAugmentData = function(slot, dy) {
-    var text = this._item.augmentSlotItems[slot];
-    if (text.match(/NONE/i)) {
-      text = MageStudios.Param.AugmentNoneText;
-    } else if (text.match(/ITEM[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      var item = $dataItems[id];
-      if (item) {
-        text = '\\i[' + item.iconIndex + ']' + item.name;
-      } else {
-        text = MageStudios.Param.AugmentNoneText;
-      }
-    } else if (text.match(/WEAPON[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      var item = $dataWeapons[id];
-      if (item) {
-        text = '\\i[' + item.iconIndex + ']' + item.name;
-      } else {
-        text = MageStudios.Param.AugmentNoneText;
-      }
-    } else if (text.match(/ARMOR[ ](\d+)/i)) {
-      var id = parseInt(RegExp.$1);
-      var item = $dataArmors[id];
-      if (item) {
-        text = '\\i[' + item.iconIndex + ']' + item.name;
-      } else {
-        text = MageStudios.Param.AugmentNoneText;
-      }
-    }
-    this.drawTextEx(text, this.textPadding(), dy);
-};
-
-}; // MageStudios.Param.AugmentShow
-
-//=============================================================================
-// Window_ItemActionCommand
-//=============================================================================
-
-MageStudios.Augment.Window_ItemActionCommand_addCustomCommandsF =
+  MageStudios.Augment.Window_ItemActionCommand_addCustomCommandsF =
     Window_ItemActionCommand.prototype.addCustomCommandsF;
-Window_ItemActionCommand.prototype.addCustomCommandsF = function() {
-  MageStudios.Augment.Window_ItemActionCommand_addCustomCommandsF.call(this);
-  if (this.isAugmentable()) this.addAugmentSlots();
-};
+  Window_ItemActionCommand.prototype.addCustomCommandsF = function () {
+    MageStudios.Augment.Window_ItemActionCommand_addCustomCommandsF.call(this);
+    if (this.isAugmentable()) this.addAugmentSlots();
+  };
 
-Window_ItemActionCommand.prototype.isAugmentable = function() {
+  Window_ItemActionCommand.prototype.isAugmentable = function () {
     if (!$gameSystem.isAugmentEnabled()) return false;
     if (DataManager.isItem(this._item)) return false;
     return DataManager.isIndependent(this._item);
-};
+  };
 
-Window_ItemActionCommand.prototype.addAugmentSlots = function() {
+  Window_ItemActionCommand.prototype.addAugmentSlots = function () {
     ItemManager.checkAugmentSlots(this._item);
     var length = this._item.augmentSlots.length;
     for (var i = 0; i < length; ++i) {
@@ -1495,12 +1516,12 @@ Window_ItemActionCommand.prototype.addAugmentSlots = function() {
       var slot = this._item.augmentSlots[i];
       var name = this.getAugmentSlotItemName(i);
       var text = fmt.format(slot, name);
-      this.addCommand(text, 'augment', enabled, i);
+      this.addCommand(text, "augment", enabled, i);
     }
     this.changePaintOpacity(true);
-};
+  };
 
-Window_ItemActionCommand.prototype.getAugmentSlotItemName = function(slot) {
+  Window_ItemActionCommand.prototype.getAugmentSlotItemName = function (slot) {
     var str = this._item.augmentSlotItems[slot];
     if (str.match(/NONE/i)) {
       return MageStudios.Param.AugmentNoneText;
@@ -1508,147 +1529,143 @@ Window_ItemActionCommand.prototype.getAugmentSlotItemName = function(slot) {
       var id = parseInt(RegExp.$1);
       var item = $dataItems[id];
       if (item) {
-        return '\\i[' + item.iconIndex + ']' + item.name;
+        return "\\i[" + item.iconIndex + "]" + item.name;
       } else {
-        this._item.augmentSlotItems[slot] = 'none';
+        this._item.augmentSlotItems[slot] = "none";
         return MageStudios.Param.AugmentNoneText;
       }
     } else if (str.match(/WEAPON[ ](\d+)/i)) {
       var id = parseInt(RegExp.$1);
       var item = $dataWeapons[id];
       if (item) {
-        return '\\i[' + item.iconIndex + ']' + item.name;
+        return "\\i[" + item.iconIndex + "]" + item.name;
       } else {
-        this._item.augmentSlotItems[slot] = 'none';
+        this._item.augmentSlotItems[slot] = "none";
         return MageStudios.Param.AugmentNoneText;
       }
     } else if (str.match(/ARMOR[ ](\d+)/i)) {
       var id = parseInt(RegExp.$1);
       var item = $dataArmors[id];
       if (item) {
-        return '\\i[' + item.iconIndex + ']' + item.name;
+        return "\\i[" + item.iconIndex + "]" + item.name;
       } else {
-        this._item.augmentSlotItems[slot] = 'none';
+        this._item.augmentSlotItems[slot] = "none";
         return MageStudios.Param.AugmentNoneText;
       }
     }
-};
+  };
 
-//=============================================================================
-// Window_AugmentItemList
-//=============================================================================
-
-function Window_AugmentItemList() {
+  function Window_AugmentItemList() {
     this.initialize.apply(this, arguments);
-}
+  }
 
-Window_AugmentItemList.prototype = Object.create(Window_ItemList.prototype);
-Window_AugmentItemList.prototype.constructor = Window_AugmentItemList;
+  Window_AugmentItemList.prototype = Object.create(Window_ItemList.prototype);
+  Window_AugmentItemList.prototype.constructor = Window_AugmentItemList;
 
-Window_AugmentItemList.prototype.initialize = function(x, y, width, height) {
+  Window_AugmentItemList.prototype.initialize = function (x, y, width, height) {
     Window_ItemList.prototype.initialize.call(this, x, y, width, height);
     this._item = null;
     this._slotId = -1;
     this.hide();
     this.deactivate();
-};
+  };
 
-Window_AugmentItemList.prototype.setItem = function(item, slotId) {
+  Window_AugmentItemList.prototype.setItem = function (item, slotId) {
     if (this._item === item && this._slotId === slotId) return;
     ItemManager.checkAugmentSlots(item);
     this._item = item;
     this._slotId = slotId;
     this.refresh();
     this.select(0);
-};
+  };
 
-Window_AugmentItemList.prototype.includes = function(item) {
+  Window_AugmentItemList.prototype.includes = function (item) {
     if (!item) return false;
     if (DataManager.isIndependent(item)) return false;
     if (!this.containsType(item)) return false;
     return true;
-};
+  };
 
-Window_AugmentItemList.prototype.containsType = function(item) {
+  Window_AugmentItemList.prototype.containsType = function (item) {
     if (!this._item) return false;
     var type = this._item.augmentSlots[this._slotId].toUpperCase().trim();
     return item.augmentTypes.contains(type);
-};
+  };
 
-Window_AugmentItemList.prototype.isEnabled = function(item) {
+  Window_AugmentItemList.prototype.isEnabled = function (item) {
     if (item === null) return true;
     return true;
-};
+  };
 
-Window_AugmentItemList.prototype.selectLast = function() {
-};
+  Window_AugmentItemList.prototype.selectLast = function () {};
 
-Window_AugmentItemList.prototype.playOkSound = function() {
+  Window_AugmentItemList.prototype.playOkSound = function () {
     SoundManager.playEquip();
-};
+  };
 
-Window_AugmentItemList.prototype.makeItemList = function() {
-    this._data = $gameParty.allItems().filter(function(item) {
+  Window_AugmentItemList.prototype.makeItemList = function () {
+    this._data = $gameParty.allItems().filter(function (item) {
       return this.includes(item);
     }, this);
-    if (this._item && this._item.augmentSlotItems[this._slotId] !== 'none') {
+    if (this._item && this._item.augmentSlotItems[this._slotId] !== "none") {
       this._data.unshift(null);
     }
-};
+  };
 
-Window_AugmentItemList.prototype.drawItem = function(index) {
+  Window_AugmentItemList.prototype.drawItem = function (index) {
     if (this._data[index] === null) this.drawEmptyIcon(index);
     Window_ItemList.prototype.drawItem.call(this, index);
-};
+  };
 
-Window_AugmentItemList.prototype.drawEmptyIcon = function(index) {
+  Window_AugmentItemList.prototype.drawEmptyIcon = function (index) {
     var rect = this.itemRect(index);
     rect.width -= this.textPadding();
     this.changePaintOpacity(true);
     var text = MageStudios.Param.AugmentRemoveText;
     this.drawTextEx(text, rect.x, rect.y);
-};
+  };
 
-//=============================================================================
-// Scene_Item
-//=============================================================================
+  MageStudios.Augment.Scene_Item_createItemWindow =
+    Scene_Item.prototype.createItemWindow;
+  Scene_Item.prototype.createItemWindow = function () {
+    MageStudios.Augment.Scene_Item_createItemWindow.call(this);
+    this.createAugmentListWindow();
+  };
 
-MageStudios.Augment.Scene_Item_createItemWindow = 
-  Scene_Item.prototype.createItemWindow;
-Scene_Item.prototype.createItemWindow = function() {
-  MageStudios.Augment.Scene_Item_createItemWindow.call(this);
-  this.createAugmentListWindow();
-};
-
-MageStudios.Augment.Scene_Item_createActionWindow =
+  MageStudios.Augment.Scene_Item_createActionWindow =
     Scene_Item.prototype.createActionWindow;
-Scene_Item.prototype.createActionWindow = function() {
-  MageStudios.Augment.Scene_Item_createActionWindow.call(this);
-  this._itemActionWindow.setHandler('augment', this.onActionAugment.bind(this));
-};
+  Scene_Item.prototype.createActionWindow = function () {
+    MageStudios.Augment.Scene_Item_createActionWindow.call(this);
+    this._itemActionWindow.setHandler(
+      "augment",
+      this.onActionAugment.bind(this)
+    );
+  };
 
-Scene_Item.prototype.createAugmentListWindow = function() {
+  Scene_Item.prototype.createAugmentListWindow = function () {
     var wy = this._itemWindow.y;
     var ww = this._itemWindow.width;
     var wh = this._itemWindow.height;
     this._augmentListWindow = new Window_AugmentItemList(0, wy, ww, wh);
     this._augmentListWindow.setHelpWindow(this._helpWindow);
-    this._augmentListWindow.setHandler('ok', this.onAugmentListOk.bind(this));
-    this._augmentListWindow.setHandler('cancel',
-      this.onAugmentListCancel.bind(this));
+    this._augmentListWindow.setHandler("ok", this.onAugmentListOk.bind(this));
+    this._augmentListWindow.setHandler(
+      "cancel",
+      this.onAugmentListCancel.bind(this)
+    );
     this.addWindow(this._augmentListWindow);
-};
+  };
 
-Scene_Item.prototype.onActionAugment = function() {
+  Scene_Item.prototype.onActionAugment = function () {
     this._itemActionWindow.hide();
     this._itemActionWindow.deactivate();
     this._augmentListWindow.show();
     this._augmentListWindow.activate();
     var slotId = this._itemActionWindow.currentExt();
     this._augmentListWindow.setItem(this.item(), slotId);
-};
+  };
 
-Scene_Item.prototype.onAugmentListOk = function() {
+  Scene_Item.prototype.onAugmentListOk = function () {
     var effectItem = this._augmentListWindow.item();
     var slotId = this._itemActionWindow.currentExt();
     ItemManager.applyAugmentEffects(this.item(), effectItem, slotId, 1);
@@ -1660,36 +1677,28 @@ Scene_Item.prototype.onAugmentListOk = function() {
     this._itemActionWindow.refresh();
     var index = this._augmentListWindow.index();
     this.onAugmentListCancel();
-};
+  };
 
-Scene_Item.prototype.onAugmentListCancel = function() {
+  Scene_Item.prototype.onAugmentListCancel = function () {
     this._augmentListWindow.hide();
     this._augmentListWindow.deactivate();
     this._itemActionWindow.show();
     this._itemActionWindow.activate();
     this._helpWindow.setItem(this.item());
     this._augmentListWindow.select(0);
-};
+  };
 
-//=============================================================================
-// Utilities
-//=============================================================================
+  MageStudios.Util = MageStudios.Util || {};
 
-MageStudios.Util = MageStudios.Util || {};
-
-MageStudios.Util.displayError = function(e, code, message) {
-  console.log(message);
-  console.log(code || 'NON-EXISTENT');
-  console.error(e);
-  if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
-  if (Utils.isNwjs() && Utils.isOptionValid('test')) {
-    if (!require('nw.gui').Window.get().isDevToolsOpen()) {
-      require('nw.gui').Window.get().showDevTools();
+  MageStudios.Util.displayError = function (e, code, message) {
+    console.log(message);
+    console.log(code || "NON-EXISTENT");
+    console.error(e);
+    if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.6.0") return;
+    if (Utils.isNwjs() && Utils.isOptionValid("test")) {
+      if (!require("nw.gui").Window.get().isDevToolsOpen()) {
+        require("nw.gui").Window.get().showDevTools();
+      }
     }
-  }
-};
-
-//=============================================================================
-// End of File
-//=============================================================================
-};
+  };
+}

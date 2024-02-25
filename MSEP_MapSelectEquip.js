@@ -1,17 +1,11 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Map Select Equip
-// MSEP_MapSelectEquip.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_MapSelectEquip = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MSE = MageStudios.MSE || {};
-MageStudios.MSE.version = 1.00;
+MageStudios.MSE.version = 1.0;
 
-//=============================================================================
- /*:
+/*:
  * @plugindesc Open up a window similar to the Select Item Window,
  * but instead, returns weapon/armor ID's to a variable.
  * @author Mage Studios Engine Plugins
@@ -131,336 +125,328 @@ MageStudios.MSE.version = 1.00;
  * Version 1.00:
  * - Finished Plugin!
  */
-//=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MSEP_MapSelectEquip');
+MageStudios.Parameters = PluginManager.parameters("MSEP_MapSelectEquip");
 MageStudios.Param = MageStudios.Param || {};
 
-MageStudios.Param.MSECol = Number(MageStudios.Parameters['Default Columns']);
-MageStudios.Param.MSERow = Number(MageStudios.Parameters['Default Rows']);
-MageStudios.Param.MSEPosX = String(MageStudios.Parameters['Default X Position']);
-MageStudios.Param.MSEPosY = String(MageStudios.Parameters['Default Y Position']);
-MageStudios.Param.MSEWidth = Number(MageStudios.Parameters['Default Width']);
-MageStudios.Param.MSEEnable = eval(String(MageStudios.Parameters['Default Enable']));
-MageStudios.Param.MSEQuantity = eval(String(MageStudios.Parameters['Default Quantity']));
-
-//=============================================================================
-// Game_System
-//=============================================================================
+MageStudios.Param.MSECol = Number(MageStudios.Parameters["Default Columns"]);
+MageStudios.Param.MSERow = Number(MageStudios.Parameters["Default Rows"]);
+MageStudios.Param.MSEPosX = String(
+  MageStudios.Parameters["Default X Position"]
+);
+MageStudios.Param.MSEPosY = String(
+  MageStudios.Parameters["Default Y Position"]
+);
+MageStudios.Param.MSEWidth = Number(MageStudios.Parameters["Default Width"]);
+MageStudios.Param.MSEEnable = eval(
+  String(MageStudios.Parameters["Default Enable"])
+);
+MageStudios.Param.MSEQuantity = eval(
+  String(MageStudios.Parameters["Default Quantity"])
+);
 
 MageStudios.MSE.Game_System_initialize = Game_System.prototype.initialize;
-Game_System.prototype.initialize = function() {
-    MageStudios.MSE.Game_System_initialize.call(this);
+Game_System.prototype.initialize = function () {
+  MageStudios.MSE.Game_System_initialize.call(this);
+  this.initMapSelectEquip();
+};
+
+Game_System.prototype.initMapSelectEquip = function () {
+  this._MapSelectEquipWindowColumns = MageStudios.Param.MSECol;
+  this._MapSelectEquipWindowRows = MageStudios.Param.MSERow;
+  this._MapSelectEquipWindowPosX = MageStudios.Param.MSEPosX;
+  this._MapSelectEquipWindowPosY = MageStudios.Param.MSEPosY;
+  this._MapSelectEquipWindowWidth = MageStudios.Param.MSEWidth;
+  this._MapSelectEquipWindowEnable = MageStudios.Param.MSEEnable;
+  this._MapSelectEquipWindowQuantity = MageStudios.Param.MSEQuantity;
+};
+
+Game_System.prototype.getMapSelectEquipColumns = function () {
+  if (this._MapSelectEquipWindowColumns === undefined) {
     this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowColumns;
 };
 
-Game_System.prototype.initMapSelectEquip = function() {
-    this._MapSelectEquipWindowColumns = MageStudios.Param.MSECol;
-    this._MapSelectEquipWindowRows = MageStudios.Param.MSERow;
-    this._MapSelectEquipWindowPosX = MageStudios.Param.MSEPosX;
-    this._MapSelectEquipWindowPosY = MageStudios.Param.MSEPosY;
-    this._MapSelectEquipWindowWidth = MageStudios.Param.MSEWidth;
-    this._MapSelectEquipWindowEnable = MageStudios.Param.MSEEnable;
-    this._MapSelectEquipWindowQuantity = MageStudios.Param.MSEQuantity;
+Game_System.prototype.setMapSelectEquipColumns = function (value) {
+  if (this._MapSelectEquipWindowColumns === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowColumns = value;
 };
 
-Game_System.prototype.getMapSelectEquipColumns = function() {
-    if (this._MapSelectEquipWindowColumns === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowColumns;
+Game_System.prototype.getMapSelectEquipRows = function () {
+  if (this._MapSelectEquipWindowRows === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowRows;
 };
 
-Game_System.prototype.setMapSelectEquipColumns = function(value) {
-    if (this._MapSelectEquipWindowColumns === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowColumns = value;
+Game_System.prototype.setMapSelectEquipRows = function (value) {
+  if (this._MapSelectEquipWindowRows === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowRows = value;
 };
 
-Game_System.prototype.getMapSelectEquipRows = function() {
-    if (this._MapSelectEquipWindowRows === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowRows;
+Game_System.prototype.getMapSelectEquipPosX = function () {
+  if (this._MapSelectEquipWindowPosX === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowPosX;
 };
 
-Game_System.prototype.setMapSelectEquipRows = function(value) {
-    if (this._MapSelectEquipWindowRows === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowRows = value;
+Game_System.prototype.setMapSelectEquipPosX = function (value) {
+  if (this._MapSelectEquipWindowPosX === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowPosX = value;
 };
 
-Game_System.prototype.getMapSelectEquipPosX = function() {
-    if (this._MapSelectEquipWindowPosX === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowPosX;
+Game_System.prototype.getMapSelectEquipPosY = function () {
+  if (this._MapSelectEquipWindowPosY === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowPosY;
 };
 
-Game_System.prototype.setMapSelectEquipPosX = function(value) {
-    if (this._MapSelectEquipWindowPosX === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowPosX = value;
+Game_System.prototype.setMapSelectEquipPosY = function (value) {
+  if (this._MapSelectEquipWindowPosY === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowPosY = value;
 };
 
-Game_System.prototype.getMapSelectEquipPosY = function() {
-    if (this._MapSelectEquipWindowPosY === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowPosY;
+Game_System.prototype.getMapSelectEquipWidth = function () {
+  if (this._MapSelectEquipWindowWidth === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowWidth;
 };
 
-Game_System.prototype.setMapSelectEquipPosY = function(value) {
-    if (this._MapSelectEquipWindowPosY === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowPosY = value;
+Game_System.prototype.setMapSelectEquipWidth = function (value) {
+  if (this._MapSelectEquipWindowWidth === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowWidth = value;
 };
 
-Game_System.prototype.getMapSelectEquipWidth = function() {
-    if (this._MapSelectEquipWindowWidth === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowWidth;
+Game_System.prototype.getMapSelectEquipEnable = function () {
+  if (this._MapSelectEquipWindowEnable === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowEnable;
 };
 
-Game_System.prototype.setMapSelectEquipWidth = function(value) {
-    if (this._MapSelectEquipWindowWidth === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowWidth = value;
+Game_System.prototype.setMapSelectEquipEnable = function (value) {
+  if (this._MapSelectEquipWindowEnable === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowEnable = value;
 };
 
-Game_System.prototype.getMapSelectEquipEnable = function() {
-    if (this._MapSelectEquipWindowEnable === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowEnable;
+Game_System.prototype.getMapSelectEquipQuantity = function () {
+  if (this._MapSelectEquipWindowQuantity === undefined) {
+    this.initMapSelectEquip();
+  }
+  return this._MapSelectEquipWindowQuantity;
 };
 
-Game_System.prototype.setMapSelectEquipEnable = function(value) {
-    if (this._MapSelectEquipWindowEnable === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowEnable = value;
+Game_System.prototype.setMapSelectEquipQuantity = function (value) {
+  if (this._MapSelectEquipWindowQuantity === undefined) {
+    this.initMapSelectEquip();
+  }
+  this._MapSelectEquipWindowQuantity = value;
 };
-
-Game_System.prototype.getMapSelectEquipQuantity = function() {
-    if (this._MapSelectEquipWindowQuantity === undefined) {
-      this.initMapSelectEquip();
-    }
-    return this._MapSelectEquipWindowQuantity;
-};
-
-Game_System.prototype.setMapSelectEquipQuantity = function(value) {
-    if (this._MapSelectEquipWindowQuantity === undefined) {
-      this.initMapSelectEquip();
-    }
-    this._MapSelectEquipWindowQuantity = value;
-};
-
-//=============================================================================
-// Game_Interpreter
-//=============================================================================
 
 MageStudios.MSE.Game_Interpreter_pluginCommand =
-    Game_Interpreter.prototype.pluginCommand;
-Game_Interpreter.prototype.pluginCommand = function(command, args) {
+  Game_Interpreter.prototype.pluginCommand;
+Game_Interpreter.prototype.pluginCommand = function (command, args) {
   MageStudios.MSE.Game_Interpreter_pluginCommand.call(this, command, args);
-  if (command === 'MapSelectEquip') {
+  if (command === "MapSelectEquip") {
     if (SceneManager._scene instanceof Scene_Map) {
       var varId = parseInt(args[0]);
       var line = String(args[1]);
       if (line.match(/WEAPON/i)) {
-        var type = 'WEAPONS';
+        var type = "WEAPONS";
       } else if (line.match(/ARMOR/i)) {
-        var type = 'ARMORS';
+        var type = "ARMORS";
       } else if (line.match(/BOTH/i)) {
-        var type = 'BOTH';
+        var type = "BOTH";
       } else {
         return;
       }
       SceneManager._scene.setupMapSelectEquip(varId, type, false);
       this.wait(10);
     }
-  } else if (command === 'MapSelectEquipBase') {
+  } else if (command === "MapSelectEquipBase") {
     if (SceneManager._scene instanceof Scene_Map) {
       var varId = parseInt(args[0]);
       var line = String(args[1]);
       if (line.match(/WEAPON/i)) {
-        var type = 'WEAPONS';
+        var type = "WEAPONS";
       } else if (line.match(/ARMOR/i)) {
-        var type = 'ARMORS';
+        var type = "ARMORS";
       } else if (line.match(/BOTH/i)) {
-        var type = 'BOTH';
+        var type = "BOTH";
       } else {
         return;
       }
       SceneManager._scene.setupMapSelectEquip(varId, type, true);
       this.wait(10);
     }
-  } else if (command === 'MapSelectEquipColumns') {
+  } else if (command === "MapSelectEquipColumns") {
     var value = parseInt(args[0]);
     $gameSystem.setMapSelectEquipColumns(value);
-  } else if (command === 'MapSelectEquipRows') {
+  } else if (command === "MapSelectEquipRows") {
     var value = parseInt(args[0]);
     $gameSystem.setMapSelectEquipRows(value);
-  } else if (command === 'MapSelectEquipWidth') {
+  } else if (command === "MapSelectEquipWidth") {
     var value = parseInt(args[0]);
     $gameSystem.setMapSelectEquipWidth(value);
-  } else if (command === 'MapSelectEquipX') {
+  } else if (command === "MapSelectEquipX") {
     var value = String(args[0]).toLowerCase();
     $gameSystem.setMapSelectEquipPosX(value);
-  } else if (command === 'MapSelectEquipY') {
+  } else if (command === "MapSelectEquipY") {
     var value = String(args[0]).toLowerCase();
     $gameSystem.setMapSelectEquipPosY(value);
-  } else if (command === 'ShowMapSelectEquipQuantity') {
+  } else if (command === "ShowMapSelectEquipQuantity") {
     $gameSystem.setMapSelectEquipQuantity(true);
-  } else if (command === 'HideMapSelectEquipQuantity') {
+  } else if (command === "HideMapSelectEquipQuantity") {
     $gameSystem.setMapSelectEquipQuantity(false);
   }
 };
 
-//=============================================================================
-// Window_MapSelectEquip
-//=============================================================================
-
 function Window_MapSelectEquip() {
-    this.initialize.apply(this, arguments);
+  this.initialize.apply(this, arguments);
 }
 
 Window_MapSelectEquip.prototype = Object.create(Window_ItemList.prototype);
 Window_MapSelectEquip.prototype.constructor = Window_MapSelectEquip;
 
-Window_MapSelectEquip.prototype.initialize = function() {
-    var width = this.windowWidth();
-    var height = this.windowHeight();
-    Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
-    this.openness = 0;
+Window_MapSelectEquip.prototype.initialize = function () {
+  var width = this.windowWidth();
+  var height = this.windowHeight();
+  Window_Selectable.prototype.initialize.call(this, 0, 0, width, height);
+  this.openness = 0;
 };
 
-Window_MapSelectEquip.prototype.windowWidth = function() {
-    return this._windowWidth || Graphics.boxWidth;
+Window_MapSelectEquip.prototype.windowWidth = function () {
+  return this._windowWidth || Graphics.boxWidth;
 };
 
-Window_MapSelectEquip.prototype.windowHeight = function() {
-    return this._windowHeight || this.fittingHeight(4);
+Window_MapSelectEquip.prototype.windowHeight = function () {
+  return this._windowHeight || this.fittingHeight(4);
 };
 
-Window_MapSelectEquip.prototype.setup = function(varId, type, base) {
-    if (!varId) return;
-    if (!type) return;
-    this.updateWindowSettings();
-    this._varId = varId;
-    this._base = base;
-    this.setType(type)
-    this.refresh();
-    this.activate();
-    this.open();
-    this.select(0);
+Window_MapSelectEquip.prototype.setup = function (varId, type, base) {
+  if (!varId) return;
+  if (!type) return;
+  this.updateWindowSettings();
+  this._varId = varId;
+  this._base = base;
+  this.setType(type);
+  this.refresh();
+  this.activate();
+  this.open();
+  this.select(0);
 };
 
-Window_MapSelectEquip.prototype.setType = function(type) {
-    this._type = type.toUpperCase();
+Window_MapSelectEquip.prototype.setType = function (type) {
+  this._type = type.toUpperCase();
 };
 
-Window_MapSelectEquip.prototype.includes = function(item) {
-    if (DataManager.isWeapon(item)) {
-      return ['WEAPONS', 'BOTH'].contains(this._type);
-    }
-    if (DataManager.isArmor(item)) {
-      return ['ARMORS', 'BOTH'].contains(this._type);
-    }
-    return false;
+Window_MapSelectEquip.prototype.includes = function (item) {
+  if (DataManager.isWeapon(item)) {
+    return ["WEAPONS", "BOTH"].contains(this._type);
+  }
+  if (DataManager.isArmor(item)) {
+    return ["ARMORS", "BOTH"].contains(this._type);
+  }
+  return false;
 };
 
-Window_MapSelectEquip.prototype.maxCols = function() {
-    return $gameSystem.getMapSelectEquipColumns() || 1;
+Window_MapSelectEquip.prototype.maxCols = function () {
+  return $gameSystem.getMapSelectEquipColumns() || 1;
 };
 
-Window_MapSelectEquip.prototype.updateWindowSettings = function() {
-    this.width = $gameSystem.getMapSelectEquipWidth() || Graphics.boxWidth;
-    var col = $gameSystem.getMapSelectEquipRows() || 4;
-    this.height = this.fittingHeight(col);
-    if ($gameSystem.getMapSelectEquipPosX() === 'left') {
-      this.x = 0;
-    } else if ($gameSystem.getMapSelectEquipPosX() === 'center') {
-      this.x = Math.floor((Graphics.boxWidth - this.width) / 2);
-    } else {
-      this.x = Graphics.boxWidth - this.width;
-    }
-    if ($gameSystem.getMapSelectEquipPosY() === 'top') {
-      this.y = 0;
-    } else if ($gameSystem.getMapSelectEquipPosY() === 'middle') {
-      this.y = Math.floor((Graphics.boxHeight - this.height) / 2);
-    } else {
-      this.y = Graphics.boxHeight - this.height;
-    }
+Window_MapSelectEquip.prototype.updateWindowSettings = function () {
+  this.width = $gameSystem.getMapSelectEquipWidth() || Graphics.boxWidth;
+  var col = $gameSystem.getMapSelectEquipRows() || 4;
+  this.height = this.fittingHeight(col);
+  if ($gameSystem.getMapSelectEquipPosX() === "left") {
+    this.x = 0;
+  } else if ($gameSystem.getMapSelectEquipPosX() === "center") {
+    this.x = Math.floor((Graphics.boxWidth - this.width) / 2);
+  } else {
+    this.x = Graphics.boxWidth - this.width;
+  }
+  if ($gameSystem.getMapSelectEquipPosY() === "top") {
+    this.y = 0;
+  } else if ($gameSystem.getMapSelectEquipPosY() === "middle") {
+    this.y = Math.floor((Graphics.boxHeight - this.height) / 2);
+  } else {
+    this.y = Graphics.boxHeight - this.height;
+  }
 };
 
-Window_MapSelectEquip.prototype.isEnabled = function(item) {
-    if ($gameSystem.getMapSelectEquipEnable()) return true;
-    return Window_ItemList.prototype.isEnabled.call(this, item);
+Window_MapSelectEquip.prototype.isEnabled = function (item) {
+  if ($gameSystem.getMapSelectEquipEnable()) return true;
+  return Window_ItemList.prototype.isEnabled.call(this, item);
 };
 
-Window_MapSelectEquip.prototype.drawItemNumber = function(item, x, y, width) {
+Window_MapSelectEquip.prototype.drawItemNumber = function (item, x, y, width) {
   if ($gameSystem.getMapSelectEquipQuantity()) {
     Window_ItemList.prototype.drawItemNumber.call(this, item, x, y, width);
   }
 };
 
-//=============================================================================
-// Scene_Map
-//=============================================================================
-
-MageStudios.MSE.Scene_Map_createAllWindows = Scene_Map.prototype.createAllWindows;
-Scene_Map.prototype.createAllWindows = function() {
-    MageStudios.MSE.Scene_Map_createAllWindows.call(this);
-    this.createMapSelectEquipWindow();
+MageStudios.MSE.Scene_Map_createAllWindows =
+  Scene_Map.prototype.createAllWindows;
+Scene_Map.prototype.createAllWindows = function () {
+  MageStudios.MSE.Scene_Map_createAllWindows.call(this);
+  this.createMapSelectEquipWindow();
 };
 
-Scene_Map.prototype.createMapSelectEquipWindow = function() {
-    this._MapSelectEquipWindow = new Window_MapSelectEquip();
-    this._MapSelectEquipWindow.setHandler('ok', 
-      this.onMapSelectEquipOk.bind(this));
-    this._MapSelectEquipWindow.setHandler('cancel', 
-      this.onMapSelectEquipCancel.bind(this));
-    this.addChild(this._MapSelectEquipWindow);
+Scene_Map.prototype.createMapSelectEquipWindow = function () {
+  this._MapSelectEquipWindow = new Window_MapSelectEquip();
+  this._MapSelectEquipWindow.setHandler(
+    "ok",
+    this.onMapSelectEquipOk.bind(this)
+  );
+  this._MapSelectEquipWindow.setHandler(
+    "cancel",
+    this.onMapSelectEquipCancel.bind(this)
+  );
+  this.addChild(this._MapSelectEquipWindow);
 };
 
-Scene_Map.prototype.setupMapSelectEquip = function(varId, type, base) {
-    this._MapSelectEquipWindow.setup(varId, type, base);
-    this._active = false;
+Scene_Map.prototype.setupMapSelectEquip = function (varId, type, base) {
+  this._MapSelectEquipWindow.setup(varId, type, base);
+  this._active = false;
 };
 
-Scene_Map.prototype.onMapSelectEquipOk = function() {
-    this._MapSelectEquipWindow.close();
-    var item = this._MapSelectEquipWindow.item();
-    var varId = this._MapSelectEquipWindow._varId;
-    if (Imported.MSEP_SelfSwVar) $gameTemp.clearSelfSwVarEvBridge();
-    if (!item) {
-      $gameVariables.setValue(varId, 0);
-    } else {
-      if (this._MapSelectEquipWindow._base && item.baseItemId) {
-        $gameVariables.setValue(varId, item.baseItemId);
-      } else {
-        $gameVariables.setValue(varId, item.id);
-      }
-    }
-    if (Imported.MSEP_SelfSwVar) $gameTemp.clearSelfSwVarEvent();
-    this._active = true;
-};
-
-Scene_Map.prototype.onMapSelectEquipCancel = function() {
-    this._MapSelectEquipWindow.close();
-    var varId = this._MapSelectEquipWindow._varId;
+Scene_Map.prototype.onMapSelectEquipOk = function () {
+  this._MapSelectEquipWindow.close();
+  var item = this._MapSelectEquipWindow.item();
+  var varId = this._MapSelectEquipWindow._varId;
+  if (Imported.MSEP_SelfSwVar) $gameTemp.clearSelfSwVarEvBridge();
+  if (!item) {
     $gameVariables.setValue(varId, 0);
-    this._active = true;
+  } else {
+    if (this._MapSelectEquipWindow._base && item.baseItemId) {
+      $gameVariables.setValue(varId, item.baseItemId);
+    } else {
+      $gameVariables.setValue(varId, item.id);
+    }
+  }
+  if (Imported.MSEP_SelfSwVar) $gameTemp.clearSelfSwVarEvent();
+  this._active = true;
 };
 
-//=============================================================================
-// End of File
-//=============================================================================
+Scene_Map.prototype.onMapSelectEquipCancel = function () {
+  this._MapSelectEquipWindow.close();
+  var varId = this._MapSelectEquipWindow._varId;
+  $gameVariables.setValue(varId, 0);
+  this._active = true;
+};
