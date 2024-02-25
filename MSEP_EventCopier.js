@@ -8,13 +8,93 @@ Imported.MSEP_EventCopier = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EventCopier = MageStudios.EventCopier || {};
-MageStudios.EventCopier.version = 1.01;
+MageStudios.EventCopier.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Copy premade events from a template including all of the
+ * @plugindesc Copy premade events from a template including all of the
  * possible data stored from a different map!
  * @author Mage Studios Engine Plugins
+ * @param ---General---
+ * @default
+ *
+ * @param TemplateMaps
+ * @text Template Maps
+ * @parent ---General---
+ * @type number[]
+ * @min 1
+ * @max 999
+ * @desc A list of all the ID's of the maps that will be preloaded to
+ * serve as template maps for this plugin.
+ * @default ["1"]
+ *
+ * @param TemplateNames
+ * @text Template Names
+ * @parent ---General---
+ * @type struct<Template>[]
+ * @desc A list of templates made by name so you can use names
+ * instead of mapID and eventID combinations with notetags.
+ * @default []
+ *
+ * @param ---Lunatic Mode---
+ * @default
+ *
+ * @param PreCopyCode
+ * @text PreCopy Code
+ * @parent ---Lunatic Mode---
+ * @type note
+ * @desc The code used before copying over an event.
+ * This is global for all Copied Events.
+ * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
+ *
+ * @param PostCopyCode
+ * @text PostCopy Code
+ * @parent ---Lunatic Mode---
+ * @type note
+ * @desc The code used after copying over an event.
+ * This is global for all Copied Events.
+ * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
+ *
+ */
+/* ----------------------------------------------------------------------------
+ * Template Parameter Structure
+ * ---------------------------------------------------------------------------
+ */
+/*~struct~Template:
+ *
+ * @param Name
+ * @desc Name of the template. The notetag used will be
+ * <Copy Event: name>     Replace 'name' with this value.
+ * @default Untitled
+ *
+ * @param MapID
+ * @text Map ID
+ * @min 1
+ * @max 999
+ * @desc The ID of the map to be loaded when using this template.
+ * Note: Will automatically add this ID to preloaded maps list.
+ * @default 1
+ *
+ * @param EventID
+ * @text Event ID
+ * @min 1
+ * @max 999
+ * @desc The ID of the event to be copied when using this template.
+ * @default 1
+ *
+ * @param PreCopyCode
+ * @text PreCopy Code
+ * @type note
+ * @desc The code used before copying over an event.
+ * This is local for only this template.
+ * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
+ *
+ * @param PostCopyCode
+ * @text PostCopy Code
+ * @type note
+ * @desc The code used after copying over an event.
+ * This is local for only this template.
+ * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
  *
  * @help
  * ============================================================================
@@ -145,101 +225,6 @@ MageStudios.EventCopier.version = 1.01;
  * changed and make an impact. You can, however, use them as a conditional
  * check to determine what to do with the target event or player.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param ---General---
- * @default
- *
- * @param TemplateMaps
- * @text Template Maps
- * @parent ---General---
- * @type number[]
- * @min 1
- * @max 999
- * @desc A list of all the ID's of the maps that will be preloaded to
- * serve as template maps for this plugin.
- * @default ["1"]
- *
- * @param TemplateNames
- * @text Template Names
- * @parent ---General---
- * @type struct<Template>[]
- * @desc A list of templates made by name so you can use names
- * instead of mapID and eventID combinations with notetags.
- * @default []
- *
- * @param ---Lunatic Mode---
- * @default
- *
- * @param PreCopyCode
- * @text PreCopy Code
- * @parent ---Lunatic Mode---
- * @type note
- * @desc The code used before copying over an event.
- * This is global for all Copied Events.
- * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
- *
- * @param PostCopyCode
- * @text PostCopy Code
- * @parent ---Lunatic Mode---
- * @type note
- * @desc The code used after copying over an event.
- * This is global for all Copied Events.
- * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
- *
- */
-/* ----------------------------------------------------------------------------
- * Template Parameter Structure
- * ---------------------------------------------------------------------------
- */
-/*~struct~Template:
- *
- * @param Name
- * @desc Name of the template. The notetag used will be
- * <Copy Event: name>     Replace 'name' with this value.
- * @default Untitled
- *
- * @param MapID
- * @text Map ID
- * @min 1
- * @max 999
- * @desc The ID of the map to be loaded when using this template.
- * Note: Will automatically add this ID to preloaded maps list.
- * @default 1
- *
- * @param EventID
- * @text Event ID
- * @min 1
- * @max 999
- * @desc The ID of the event to be copied when using this template.
- * @default 1
- *
- * @param PreCopyCode
- * @text PreCopy Code
- * @type note
- * @desc The code used before copying over an event.
- * This is local for only this template.
- * @default "// Variables      Description\n//\n//     mapId      ID of the map to be loaded.\n//   eventId      ID of the event to be loaded.\n//    target      The event before it's copied over.\n//    player      The player character."
- *
- * @param PostCopyCode
- * @text PostCopy Code
- * @type note
- * @desc The code used after copying over an event.
- * This is local for only this template.
- * @default "// Variables      Description\n//\n//    target      The loaded event after copied over.\n//    player      The player character."
  * 
  */
 //=============================================================================
@@ -248,7 +233,7 @@ MageStudios.EventCopier.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventCopier');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventCopier');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EventCopierData = eval(MageStudios.Parameters['TemplateMaps']);

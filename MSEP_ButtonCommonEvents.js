@@ -8,11 +8,11 @@ Imported.MSEP_ButtonCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BCE = MageStudios.BCE || {};
-MageStudios.BCE.version = 1.02
+MageStudios.BCE.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 On the field map, call common events when certain
+ * @plugindesc On the field map, call common events when certain
  * buttons are pressed on the keyboard.
  * @author Mage Studios Engine Plugins
  *
@@ -679,19 +679,6 @@ MageStudios.BCE.version = 1.02
  *   one of those original functions even if there is a common event bound to
  *   all of the keys of that original function.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.01:
- * - Changed buttons from triggering to repeating so that common events can
- * continuously run while being held down.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -699,7 +686,7 @@ MageStudios.BCE.version = 1.02
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ButtonCommonEvents');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ButtonCommonEvents');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BCEList = {

@@ -8,11 +8,11 @@ Imported.MSEP_StaticTilesOption = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AniTile = MageStudios.AniTile || {};
-MageStudios.AniTile.version = 1.03;
+MageStudios.AniTile.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Because some computers and devices lag with animated
+ * @plugindesc Because some computers and devices lag with animated
  * tiles on the map, an option is added to disable them.
  * @author Mage Studios Engine Plugins
  *
@@ -118,29 +118,13 @@ MageStudios.AniTile.version = 1.03;
  * Load Config Code:
  * // Empty. Provided by this plugin.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.03:
- * - Compatibility update with MSEP_OptionsCore.js.
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.3.0.
- *
- * Version 1.00:
- * - Finished Plugin!
- */
 //=============================================================================
 
 //=============================================================================
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_AnimateTilesOption');
+MageStudios.Parameters = PluginManager.parameters('MSEP_AnimateTilesOption');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.STOCommandName = String(MageStudios.Parameters['Command Name']);

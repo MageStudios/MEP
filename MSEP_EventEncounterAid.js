@@ -8,11 +8,11 @@ Imported.MSEP_EventEncounter = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EEA = MageStudios.EEA || {};
-MageStudios.EEA.version = 1.01;
+MageStudios.EEA.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 This plugin helps make eventable encounters easier
+ * @plugindesc This plugin helps make eventable encounters easier
  * and determine player position relative to the event.
  * @author Mage Studios Engine Plugins
  *
@@ -77,16 +77,6 @@ MageStudios.EEA.version = 1.01;
  * Make sure these are spelled correctly. They are also case-sensitive. This
  * means that even if you were to misspell or put a single letter in the wrong
  * case, the effect will cease to work as this is code we're dealing with.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

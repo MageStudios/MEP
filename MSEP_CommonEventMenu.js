@@ -8,11 +8,11 @@ Imported.MSEP_CommonEventMenu = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CEM = MageStudios.CEM || {};
-MageStudios.CEM.version = 1.04;
+MageStudios.CEM.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 This plugin allows the creation of windows to call
+ * @plugindesc This plugin allows the creation of windows to call
  * common events with.
  * @author Mage Studios Engine Plugins
  *
@@ -457,28 +457,6 @@ MageStudios.CEM.version = 1.04;
  *   to the default setup provided by the plugin parameters or a basic setup
  *   made of just the main list and a help window.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.04:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.03:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.02a:
- * - Added 'EnableCommonEventMenuCancel' and 'EnableCommonEventMenuConfirm' for
- * users who don't wish to clear out their whole common event menu.
- * - Documentation fix.
- *
- * Version 1.01:
- * - Added 'DisableCommonEventMenuConfirm' plugin command for those who wish to
- * use the Common Event Menu as a list rather than a menu.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -486,7 +464,7 @@ MageStudios.CEM.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_CommonEventMenu');
+MageStudios.Parameters = PluginManager.parameters('MSEP_CommonEventMenu');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CEMIcon = Number(MageStudios.Parameters['Default Icon']);

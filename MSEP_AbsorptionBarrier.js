@@ -8,11 +8,11 @@ Imported.MSEP_AbsorptionBarrier = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ABR = MageStudios.ABR || {};
-MageStudios.ABR.version = 1.08;
+MageStudios.ABR.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.08 Battlers can be surrounded by an absorption barrier
+ * @plugindesc Battlers can be surrounded by an absorption barrier
  * that would mitigate damage dealt to HP.
  * @author Mage Studios Engine Plugins
  *
@@ -423,47 +423,6 @@ MageStudios.ABR.version = 1.08;
  *   battler.updateBarrierTurns()
  *   - Makes the battler's Barrier Points update their turns.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.08:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.06:
- * - Fixed a bug that caused shields to regenerate outside of battle.
- *
- * Version 1.05:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.04:
- * - <User Barrier: -x>, <Target Barrier: -x>, <User Barrier x Turns: -y>, and
- * <Target Barrier x Turns: -y> notetags have been revamped. They will also
- * show popups now. If <Target Barrier x Turns: -y> is used, it will remove y
- * barrier points up to x turns.
- *
- * Version 1.03:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.02:
- * - Fixed a bug where if Barrier Penetration was at 100%, it would be treated
- * as 0%.
- * - Added 'Barrier State' parameter. This parameter will passively apply a
- * certain state to the battler if the battler has barrier points. This can be
- * turned off by leaving this plugin parameter value at 0.
- *
- * Version 1.01:
- * - Fixed a bug that prevented Barrier Points to be gained at the start of
- * battle properly.
- * - When a user grants an Absorption Barrier to itself, the user will gain 1
- * additional turn for the Barrier to stay up so it won't dissolve immediately.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -471,7 +430,7 @@ MageStudios.ABR.version = 1.08;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_AbsorptionBarrier');
+MageStudios.Parameters = PluginManager.parameters('MSEP_AbsorptionBarrier');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ABRState = Number(MageStudios.Parameters['Barrier State']);

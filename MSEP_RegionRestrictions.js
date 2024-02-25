@@ -8,11 +8,11 @@ Imported.MSEP_RegionRestrictions = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RR = MageStudios.RR || {};
-MageStudios.RR.version = 1.04
+MageStudios.RR.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Use regions to block out Events and/or the player from
+ * @plugindesc Use regions to block out Events and/or the player from
  * being able to venture into those spots.
  * @author Mage Studios Engine Plugins
  *
@@ -136,7 +136,7 @@ MageStudios.RR.version = 1.04
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.SetupParameters = function() {
-  var parameters = PluginManager.parameters('MEP_RegionRestrictions');
+  var parameters = PluginManager.parameters('MSEP_RegionRestrictions');
   MageStudios.Param.RRAllAllow = String(parameters['All Allow']);
   MageStudios.Param.RRAllAllow = MageStudios.Param.RRAllAllow.split(' ');
   for (var i = 0; i < MageStudios.Param.RRAllAllow.length; ++i) {

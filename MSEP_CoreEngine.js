@@ -8,11 +8,11 @@ Imported.MSEP_CoreEngine = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Core = MageStudios.Core || {};
-MageStudios.Core.version = 1.31;
+MageStudios.Core.version = 1.00;
 
 //=============================================================================
 /*:
- * @plugindesc v1.31 Needed for the majority of Mage Engine Scripts. Also
+ * @plugindesc Needed for the majority of Mage Engine Scripts. Also
  * contains bug fixes found inherently in RPG Maker.
  * @author Mage Studios Engine Plugins
  *
@@ -716,171 +716,6 @@ MageStudios.Core.version = 1.31;
  * the error being shown. If the game is being played in a browser, opening up
  * the console window will still display the error.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.31:
- * - Added Fallen Angel Olivia's full error message display to the Core Engine
- * (with her permission of course).
- * - Bug fixed regarding blend modes and bush depth making sprites not blend
- * properly in-game.
- * - Tab key no longer requires you to press it twice before triggering Tab-key
- * related inputs.
- *
- * Version 1.30:
- * - Bug fixed for audio Sound Effect stacking.
- * - Optimization update.
- *
- * Version 1.29:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.28:
- * - Upon pressing F5 to reload your game, this will close the DevTools Debug
- * Console if it is opened before reloading. This is because reloading with it
- * closed ends up reloading the game faster.
- * - New plugin parameters added: Refresh Update HP, MP, and TP
- *   - Option to choose to do a full actor refresh upon changing HP, MP, or TP
- *   - This is to reduce overall map lagging.
- *
- * Version 1.27:
- * - Updated for RPG Maker MV version 1.6.0:
- *   - Fixing script call checks made with switches and self switches under
- *   conditional branches due to how ES6 handles === differently.
- *
- * Version 1.26:
- * - Updated for RPG Maker MV version 1.6.0:
- *   - Removal of the destructive code in Scene_Item.update function.
- *   - Open Console parameter now occurs after the map's been loaded or after
- *   the battle has started. This is because after the 1.6.0 changes, loading
- *   the console before anything else will lock up other aspects of RPG Maker
- *   from loading properly.
- *
- * Version 1.25:
- * - Updated for RPG Maker MV version 1.5.0.
- * - Updated Scale Title and Scale GameOver to work with 1.5.0.
- *
- * Version 1.24:
- * - Screen jittering prevention is now prevented for RPG Maker MV 1.3.4 and
- * above since Pixi4 handles that now.
- *
- * Version 1.23:
- * - For RPG Maker MV version 1.3.2 and above, the 'Scale Battlebacks' plugin
- * parameter will now recreate the battleback sprites in a different format.
- * This is because battleback scaling with Tiling Sprites is just too volatile.
- * Battleback sprites are now just regular sprites instead of tiling sprites.
- * This may or may not cause plugin incompatibilities with other plugins that
- * alter battlebacks.
- * - For RPG Maker MV version 1.3.4, Game_Actor.meetsUsableItemConditions is
- * now updated to return a check back to the original Game_BattlerBase version
- * to maintain compatibility with other plugins.
- *
- * Version 1.22:
- * - Added 'Show Events Transition' plugin parameter. Enabling this will make
- * events on the map no longer hide themselves while entering battle during the
- * transition.
- * - Added 'Show Events Snapshot' plugin parameter. Enabling this will keep
- * events shown as a part of the battle snapshot when entering battle.
- * - Irregular code in damage formulas, script calls, conditional branches, and
- * variable events will no longer crash the game. Instead, it will force open
- * the console window to display the error only during Test Play.
- *
- * Version 1.21:
- * - Fixed a bug with scaling battlebacks not working properly for Front View.
- * - Optimization update to keep garbage collection across all scenes.
- *
- * Version 1.20:
- * - Altered increasing resolution function.
- * - Added 'Update Real Scale' plugin parameter. This is best left alone for
- * now and to be used if a later update meshes with rendered scaling.
- * - Added memory clear functionality for versions under 1.3.2 to free up more
- * memory upon leaving the map scene.
- * - Added 'Collection Clear' plugin parameter. This option, if left on, will
- * clear the attached children to Scene_Map and Scene_Battle upon switching to
- * a different scene. This will potentially free up memory from various objects
- * added to those scenes from other plugins (depending on how they're added)
- * and serve as a means of reducing memory bloat.
- *
- * Version 1.19:
- * - Updated for RPG Maker MV version 1.3.2.
- * - Fixed 'LearnSkill' function for actors to not be bypassed if a piece of
- * equipment has temporarily added a skill.
- *
- * Version 1.18:
- * - Fixed a bug with scaling battlebacks not working properly for Front View.
- *
- * Version 1.17:
- * - Updated for RPG Maker MV version 1.3.0.
- *
- * Version 1.16:
- * - Fixed a bug with RPG Maker MV's inherent 'drawTextEx' function. By default
- * it calculates the text height and then resets the font settings before
- * drawing the text, which makes the text height inconsistent if it were to
- * match the calculated height settings.
- *
- * Version 1.15:
- * - Window's are now set to have only widths and heights of whole numbers. No
- * longer is it possible for them to have decimal values. This is to reduce any
- * and all clipping issues caused by non-whole numbers.
- *
- * Version 1.14:
- * - Optimization update for RPG Maker MV itself by replacing more memory
- * intensive loops in commonly used functions with more efficient loops.
- *
- * Version 1.13:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.12:
- * - Fixed a bug with a notetag: <Learn at Level: x>. Now, the notetag works
- * with both <Learn at Level: x> and <Learn Level: x>
- *
- * Version 1.11:
- * - Made fixes to the MV Source Code where FaceWidth was using a hard-coded
- * 144 value regardless of what was changed for the Face Width parameter.
- * - Fixed a notetag that wasn't working with the enemy EXP values.
- * - Updated battler repositioning to no longer clash when entering-exiting the
- * scene with Row Formation.
- *
- * Version 1.10:
- * - Removed an MV bugfix that was applied through MV's newes tupdate.
- *
- * Version 1.09:
- * - Changed minimum display width for status drawing to accomodate Party
- * Formation defaults.
- *
- * Version 1.08:
- * - Fixed a bug within the MV Source with changing classes and maintaining
- * levels, even though the feature to maintain the levels has been removed.
- *
- * Version 1.07:
- * - Fixed an issue with the gauges drawing outlines thicker than normal at odd
- * intervals when windows are scaled irregularly.
- *
- * Version 1.06:
- * - Removed event frequency bug fix since it's now included in the source.
- *
- * Version 1.05:
- * - Added 'Scale Game Over' parameter to plugin settings.
- *
- * Version 1.04:
- * - Reworked math for calculating scaled battleback locations.
- * - Fixed a bug where if the party failed to escape from battle, states that
- * would be removed by battle still get removed. *Fixed by Emjenoeg*
- *
- * Version 1.03:
- * - Fixed a strange bug that made scaled battlebacks shift after one battle.
- *
- * Version 1.02:
- * - Fixed a bug that made screen fading on mobile devices work incorrectly.
- * - Added 'Scale Battlebacks' and 'Scale Title' parameters.
- *
- * Version 1.01:
- * - Fixed a bug that where if button sprites had different anchors, they would
- * not be properly clickable. *Fixed by Zalerinian*
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -888,7 +723,7 @@ MageStudios.Core.version = 1.31;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_CoreEngine');
+MageStudios.Parameters = PluginManager.parameters('MSEP_CoreEngine');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

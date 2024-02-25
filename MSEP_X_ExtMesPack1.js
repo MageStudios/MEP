@@ -8,11 +8,11 @@ Imported.MSEP_X_ExtMesPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EMP1 = MageStudios.EMP1 || {};
-MageStudios.EMP1.version = 1.11;
+MageStudios.EMP1.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.12 (Requires MSEP_MessageCore.js) Letter Sounds, NameBox
+ * @plugindesc (Requires MSEP_MessageCore.js) Letter Sounds, NameBox
  * Background Types, Choice Control, and more!
  * @author Mage Studios Engine Plugins
  *
@@ -746,7 +746,7 @@ MageStudios.EMP1.version = 1.11;
  *
  * Version 1.04a:
  * - Updated the Autosizing feature to work with \{ and \} text codes. Requires
- * v1.10 of Message Core.
+ *  of Message Core.
  * - Fixed a bug that caused \msgRows[auto] to crash.
  *
  * Version 1.03:
@@ -774,7 +774,7 @@ if (Imported.MSEP_MessageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ExtMesPack1');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ExtMesPack1');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EMP1LetterSound = eval(String(MageStudios.Parameters['Enable Sound']));

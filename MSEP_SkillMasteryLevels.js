@@ -12,7 +12,7 @@ MageStudios.SkillMastery.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Using skills improves skill mastery. As skill mastery
+ * @plugindesc Using skills improves skill mastery. As skill mastery
  * improves, skill costs drop and/or skill damage rises!
  * @author Mage Studios Engine Plugins
  *
@@ -554,7 +554,7 @@ MageStudios.SkillMastery.version = 1.00;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SkillMasteryLevels');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SkillMasteryLevels');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SMLDefaultMaxLv = Number(MageStudios.Parameters['Default Max Mastery']);

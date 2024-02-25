@@ -8,13 +8,43 @@ Imported.MSEP_X_ActorAutoBattleAI = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AABAI = MageStudios.AABAI || {};
-MageStudios.AABAI.version = 1.01;
+MageStudios.AABAI.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Req MSEP_BattleAICore) Give auto battle actors the same
+ * @plugindesc (Req MSEP_BattleAICore) Give auto battle actors the same
  * type of A.I. that you can assign using the Battle AI Core's notetags.
  * @author Mage Studios Engine Plugins
+ *
+ * @param Default AI Level
+ * @type number
+ * @min 0
+ * @max 100
+ * @desc This is the default AI level of all actors.
+ * Level 0: Very Random     Level 100: Very Strict
+ * @default 100
+ *
+ * @param Bypass Requirement
+ * @type skill[]
+ * @desc This is a list of the skills that bypass that requirement to
+ * have learned the skill in order to use it.
+ * @default ["1","2","3","4","5","6","7"]
+ *
+ * @param Curate Skill List
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc Skills used for Auto Battle can only be skills accessible
+ * through available skill types. YES - true   NO - false
+ * @default true
+ *
+ * @param Undecided AI
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc If no skill is determined, use the default Auto Battle AI?
+ * Otherwise, perform only a basic attack.
+ * @default false
  *
  * @help
  * ============================================================================
@@ -30,10 +60,7 @@ MageStudios.AABAI.version = 1.01;
  * setup may work for some auto-battlers but not all of them. What this plugin
  * does is it incorporates the A.I. Priority system from the YEP Library's
  * Battle A.I. Core for actor auto-battlers.
- *
- * If you don't have MSEP_BattleAICore yet, please download it from here:
- * http://MageStudios.moe/2015/10/19/yep-16-battle-a-i-core/
- *
+
  * ============================================================================
  * Plugin Parameters
  * ============================================================================
@@ -118,51 +145,6 @@ MageStudios.AABAI.version = 1.01;
  * The conditions to be used for the <AI Priority> notetag are the same as the
  * ones from the MSEP_BattleAICore plugin. Please refer to the MSEP_BattleAICore
  * help file for which conditions can be used with the A.I. setups.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Fixed a bug that made curated skill types not work.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param Default AI Level
- * @type number
- * @min 0
- * @max 100
- * @desc This is the default AI level of all actors.
- * Level 0: Very Random     Level 100: Very Strict
- * @default 100
- *
- * @param Bypass Requirement
- * @type skill[]
- * @desc This is a list of the skills that bypass that requirement to
- * have learned the skill in order to use it.
- * @default ["1","2","3","4","5","6","7"]
- *
- * @param Curate Skill List
- * @type boolean
- * @on YES
- * @off NO
- * @desc Skills used for Auto Battle can only be skills accessible
- * through available skill types. YES - true   NO - false
- * @default true
- *
- * @param Undecided AI
- * @type boolean
- * @on YES
- * @off NO
- * @desc If no skill is determined, use the default Auto Battle AI?
- * Otherwise, perform only a basic attack.
- * @default false
- *
  */
 //=============================================================================
 
@@ -172,7 +154,7 @@ if (Imported.MSEP_BattleAICore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActorAutoBattleAI');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActorAutoBattleAI');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AABAIDefaultLevel = Number(MageStudios.Parameters['Default AI Level']);
@@ -306,7 +288,7 @@ Game_Actor.prototype.aiLevel = function() {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_ActorAutoBattleAI without MSEP_BattleAICore. Please visit ';
+text += 'MSEP_X_ActorAutoBattleAI without MSEP_BattleAICore. Please visit ';
 text += 'MageStudios.moe and install MSEP_BattleAICore in your game project before ';
 text += 'you can use this plugin.';
 console.log(text);

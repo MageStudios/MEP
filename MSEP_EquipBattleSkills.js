@@ -8,11 +8,11 @@ Imported.MSEP_EquipBattleSkills = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EBS = MageStudios.EBS || {};
-MageStudios.EBS.version = 1.13;
+MageStudios.EBS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.13 Adds a new system where players can only bring
+ * @plugindesc Adds a new system where players can only bring
  * equipped skills to battle.
  * @author Mage Studios Engine Plugins
  *
@@ -218,62 +218,6 @@ MageStudios.EBS.version = 1.13;
  *
  *   HideEquipBattleSkills
  *   - This will hide the 'Equip Skills' command in the skill menu.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.13:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.12:
- * - Fixed a bug that made the help window not update after changing a skill.
- *
- * Version 1.11:
- * - Fixed a bug caused by Plugin Command 'DecreaseActorBattleSlots 5 by 2'
- * that would increase instead of decrease.
- *
- * Version 1.10:
- * - Added a new check to remove equipped battle skills from skills that were
- * manually forgotten, unequipping items, or removing states.
- *
- * Version 1.09:
- * - Fixed a bug that caused equipped skills to not list their applied states.
- *
- * Version 1.08:
- * - Optimization update.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.3.2.
- *
- * Version 1.06b:
- * - Users with Skill Core and using the <Hide in Battle> notetag will now have
- * those skills hidden while in the battle if equipped.
- * - Fixed a crash that occurs when no skills are equipped.
- * - Optimization update for future plugins.
- *
- * Version 1.05a:
- * - Compatibility update with Skill Core's <Hide if Learned Skill: x> notetag.
- * - Updated to remove skills that are already equipped and to become hidden if
- * learning a new skill through the <Hide if Learned Skill: x> notetag.
- *
- * Version 1.04:
- * - Fixed an error stacking state.
- * - Fixed drawing errors when actors have 0 MaxMP.
- *
- * Version 1.03:
- * - Added four new plugin commands to enable, disable, show, and hide the
- * 'Equip Skills' command from the skill menu.
- *
- * Version 1.02:
- * - Fixed a bug that caused certain passive states to not appear correctly.
- *
- * Version 1.01:
- * - Fixed a bug that prevented increasing or decreasing battle skill slots
- * from working properly.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -281,7 +225,7 @@ MageStudios.EBS.version = 1.13;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EquipBattleSkills');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EquipBattleSkills');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

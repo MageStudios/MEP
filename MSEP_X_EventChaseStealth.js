@@ -8,11 +8,11 @@ Imported.MSEP_X_EventChaseStealth = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ECS = MageStudios.ECS || {};
-MageStudios.ECS.version = 1.03;
+MageStudios.ECS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 (Requires MSEP_EventChasePlayer.js) Enables a stealth
+ * @plugindesc (Requires MSEP_EventChasePlayer.js) Enables a stealth
  * mechanic for the Event Chase Player plugin.
  * @author Mage Studios Engine Plugins
  *
@@ -266,7 +266,7 @@ if (Imported.MSEP_EventChasePlayer) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_EventChaseStealth');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_EventChaseStealth');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ECSPlayerTrans = Number(MageStudios.Parameters['Player Transparency']);

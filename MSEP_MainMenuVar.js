@@ -8,11 +8,11 @@ Imported.MSEP_MainMenuVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MMVar = MageStudios.MMVar || {};
-MageStudios.MMVar.version = 1.02;
+MageStudios.MMVar.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Adds a new variable window to your main menu.
+ * @plugindesc Adds a new variable window to your main menu.
  * You can use it to display up to 10 different variables!
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *
@@ -310,7 +310,7 @@ MageStudios.MMVar.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MainMenuVar');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MainMenuVar');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MMVarWinX = String(MageStudios.Parameters['Window X']);

@@ -12,7 +12,7 @@ MageStudios.CEMSP1.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Requires MSEP_CommonEventMenu.js) Adds more setups
+ * @plugindesc (Requires MSEP_CommonEventMenu.js) Adds more setups
  * to use with the Common Event Menu.
  * @author Mage Studios Engine Plugins
  *

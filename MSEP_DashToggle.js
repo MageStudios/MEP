@@ -8,11 +8,11 @@ Imported.MSEP_DashToggle = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Dash = MageStudios.Dash || {};
-MageStudios.Dash.version = 1.03
+MageStudios.Dash.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 RPG Maker MV lacks the ability to toggle dashing
+ * @plugindesc RPG Maker MV lacks the ability to toggle dashing
  * on and off. This plugin will let you do so~
  * @author Mage Studios Engine Plugins
  *
@@ -59,21 +59,6 @@ MageStudios.Dash.version = 1.03
  *   - This will enable/disable dashing. This will not take priority in maps
  *   that disable dashing altogether.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.03:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.02:
- * - Added a failsafe to prevent crashes if there are no members in the party.
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

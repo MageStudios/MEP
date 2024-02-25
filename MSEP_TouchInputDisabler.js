@@ -12,7 +12,7 @@ MageStudios.TID.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Sometimes, we just want to disable mouse and touch input
+ * @plugindesc Sometimes, we just want to disable mouse and touch input
  * for our games.
  * @author Mage Studios Engine Plugins
  *
@@ -118,7 +118,7 @@ MageStudios.TID.version = 1.00;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_TouchInputDisabler');
+MageStudios.Parameters = PluginManager.parameters('MSEP_TouchInputDisabler');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.InputDisabler = {

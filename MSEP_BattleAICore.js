@@ -8,11 +8,11 @@ Imported.MSEP_BattleAICore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CoreAI = MageStudios.CoreAI || {};
-MageStudios.CoreAI.version = 1.15;
+MageStudios.CoreAI.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.15 This plugin allows you to structure battle A.I.
+ * @plugindesc This plugin allows you to structure battle A.I.
  * patterns with more control.
  * @author Mage Studios Engine Plugins
  *
@@ -439,68 +439,6 @@ MageStudios.CoreAI.version = 1.15;
  * decision while thinking of the taunted enemies, too. You can use this for
  * smarter enemies while keep this notetag disabled for less intelligent foes.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.15:
- * - Fixed a bug that caused some TP conditions to not work properly.
- *
- * Version 1.14:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.13:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.12:
- * - Added 'Dynamic Turn Count' plugin parameter for those who wish to push the
- * turn count further by 1 turn in order to adjust for Dynamic Actions. Code
- * provided by Talonos.
- *
- * Version 1.11:
- * - Adding the ability to support multiple conditions. Please Read the
- * 'Multiple Conditions' section in the help file for more details.
- *
- * Version 1.10:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.09:
- * - Added 'user' to the list of valid skill targets.
- * - Added 'USER stat PARAM eval' to valid conditions.
- *
- * Version 1.08:
- * - Neutral elemental resistance is now considered to be above 90% and under
- * 110% for a better range of activation.
- * - Optimization update.
- *
- * Version 1.07:
- * - Fixed a compatibility bug that caused certain conditions to bypass taunts.
- *
- * Version 1.06:
- * - Fixed a bug that caused 'Highest TP' and 'Lowest TP' target searches to
- * crash the game.
- *
- * Version 1.05:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.04a:
- * - Fixed a bug that would cause a crash with the None scope for skills.
- * - Switched over a function to operate in another for better optimization.
- *
- * Version 1.03:
- * - Fixed a bug that returned the wrong MP% rate.
- *
- * Version 1.02:
- * - Fixed a bug that targeted the highest parameter enemy instead of lowest.
- *
- * Version 1.01:
- * - Added 'MaxTP' and 'TP' to targets.
- * - Compatibility update with Battle Engine Core v1.19+. Turn settings are now
- * based 'AI Self Turns' if the enabled.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -508,7 +446,7 @@ MageStudios.CoreAI.version = 1.15;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BattleAICore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BattleAICore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CoreAIDynamic = String(MageStudios.Parameters['Dynamic Actions']);

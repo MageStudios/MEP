@@ -8,11 +8,11 @@ Imported.GamepadConfig = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.GamepadConfig = MageStudios.GamepadConfig || {};
-MageStudios.GamepadConfig.version = 1.01;
+MageStudios.GamepadConfig.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Allows players to adjust their button configuration
+ * @plugindesc Allows players to adjust their button configuration
  * for gamepads.
  * @author Mage Studios Engine Plugins
  *
@@ -130,49 +130,6 @@ MageStudios.GamepadConfig.version = 1.01;
  * Ext:
  * ext = 0;
  *
- * ----------
- * Functions:
- * ----------
- * 
- * Make Option Code:
- * this.addCommand(name, symbol, enabled, ext);
- *
- * Draw Option Code:
- * var rect = this.itemRectForText(index);
- * var statusWidth = this.statusWidth();
- * var titleWidth = rect.width - statusWidth;
- * this.resetTextColor();
- * this.changePaintOpacity(this.isCommandEnabled(index));
- * this.drawOptionsName(index);
- *
- * Process OK Code:
- * this.playOkSound();
- * SceneManager.push(Scene_GamepadConfig);
- *
- * Cursor Right Code:
- * // Empty. Provided by this plugin.
- * 
- * Cursor Left Code:
- * // Empty. Provided by this plugin.
- *
- * Default Config Code:
- * // Empty. Provided by this plugin.
- *
- * Save Config Code:
- * // Empty. Provided by this plugin.
- *
- * Load Config Code:
- * // Empty. Provided by this plugin.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Compatibility update with MSEP_OptionsCore.js!
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

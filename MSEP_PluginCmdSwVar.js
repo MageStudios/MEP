@@ -12,7 +12,7 @@ MageStudios.PCSV.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Make it easier to use Switch and Variable values for
+ * @plugindesc Make it easier to use Switch and Variable values for
  * plugin commands across the board!
  * @author Mage Studios Engine Plugins
  *

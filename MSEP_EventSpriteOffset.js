@@ -1,8 +1,3 @@
-//=============================================================================
-// Mage Studios Engine Plugins - Event Sprite Offset
-// MSEP_EventSpriteOffset.js
-//=============================================================================
-
 var Imported = Imported || {};
 Imported.MSEP_EventSpriteOffset = true;
 
@@ -12,7 +7,7 @@ MageStudios.EvSpOf.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Offset event sprites using notetags and comment tags!
+ * @plugindesc Offset event sprites using notetags and comment tags!
  * @author Mage Studios Engine Plugins
  *
  * @help
@@ -112,17 +107,6 @@ MageStudios.EvSpOf.version = 1.00;
  *   - Decreases the sprite's offset X or Y by 'n'. The same rules apply as the
  *   comment tags. A positive X goes right, a negative X goes left. A positive
  *   Y goes down, a negative Y goes up.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
  */
 //=============================================================================
 

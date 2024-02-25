@@ -8,11 +8,11 @@ Imported.MSEP_MoveRouteCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MoveRoute = MageStudios.MoveRoute || {};
-MageStudios.MoveRoute.version = 1.03;
+MageStudios.MoveRoute.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Expand the number of movement options for the move
+ * @plugindesc Expand the number of movement options for the move
  * route events using this plugin.
  * @author Mage Studios Engine Plugins
  *

@@ -8,11 +8,11 @@ Imported.MSEP_ImprovedBattlebacks = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IBB = MageStudios.IBB || {};
-MageStudios.IBB.version = 1.02;
+MageStudios.IBB.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Changes how RPG Maker MV handles battlebacks.
+ * @plugindesc Changes how RPG Maker MV handles battlebacks.
  * Battlebacks are now more flexible with what they can do.
  * @author Mage Studios Engine Plugins
  *
@@ -241,7 +241,7 @@ MageStudios.IBB.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ImprovedBattlebacks');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ImprovedBattlebacks');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IBBScale = eval(String(MageStudios.Parameters['Scale Battlebacks']));

@@ -8,11 +8,11 @@ Imported.MSEP_X_ActorVariables = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AVar = MageStudios.AVar || {};
-MageStudios.AVar.version = 1.05;
+MageStudios.AVar.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_StatusMenuCore.js) Allows you to
+ * @plugindesc (Requires MSEP_StatusMenuCore.js) Allows you to
  * display variables for each actor.
  * @author Mage Studios Engine Plugins
  *
@@ -163,30 +163,6 @@ MageStudios.AVar.version = 1.05;
  *
  * ShowActorVariable 2
  * Disables any hidden properties for variable 2 in the actor status menu.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.05:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.04:
- * - Plugin fixed to be standalone if you wish to use the x to y notetags.
- *
- * Version 1.03:
- * - Fixed a bug that prevented custom positioning with the Status Menu Core's
- * command order parameter.
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.01a:
- * - Added 'Hidden Variables' plugin parameter.
- * - Added 'HideActorVariable' and 'ShowActorVariable' plugin command.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -196,7 +172,7 @@ if (Imported.MSEP_StatusMenuCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActorVariables');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActorVariables');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AVarCmdName = String(MageStudios.Parameters['Command Name']);

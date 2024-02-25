@@ -8,11 +8,11 @@ Imported.MSEP_SelfSwVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SSV = MageStudios.SSV || {};
-MageStudios.SSV.version = 1.04;
+MageStudios.SSV.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Self Switches and Self Variables functionality
+ * @plugindesc Self Switches and Self Variables functionality
  * without the need for plugin commands or script calls.
  * @author Mage Studios Engine Plugins
  *

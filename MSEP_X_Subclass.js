@@ -8,11 +8,11 @@ Imported.MSEP_X_Subclass = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Subclass = MageStudios.Subclass || {};
-MageStudios.Subclass.version = 1.11
+MageStudios.Subclass.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.11 (Requires MSEP_ClassChangeCore.js) Allow your actors
+ * @plugindesc (Requires MSEP_ClassChangeCore.js) Allow your actors
  * to subclass into a secondary class!
  * @author Mage Studios Engine Plugins
  *
@@ -412,7 +412,7 @@ if (Imported.MSEP_ClassChangeCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_Subclass');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_Subclass');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SubclassCmd = String(MageStudios.Parameters['Subclass Command']);

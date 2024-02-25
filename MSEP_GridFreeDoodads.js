@@ -8,11 +8,11 @@ Imported.MSEP_GridFreeDoodads = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.GFD = MageStudios.GFD || {};
-MageStudios.GFD.version = 1.10;
+MageStudios.GFD.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.10 Place Grid-Free Doodads into your game using an
+ * @plugindesc Place Grid-Free Doodads into your game using an
  * in-game editor. Static and animated doodads can be used!
  * @author Mage Studios Engine Plugins
  *
@@ -368,7 +368,7 @@ if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.3.0") {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_GridFreeDoodads');
+MageStudios.Parameters = PluginManager.parameters('MSEP_GridFreeDoodads');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.GFDFolder = String(MageStudios.Parameters['Doodads Folder']);

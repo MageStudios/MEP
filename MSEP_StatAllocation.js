@@ -8,11 +8,11 @@ Imported.MSEP_StatAllocation = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.StatAlc = MageStudios.StatAlc || {};
-MageStudios.StatAlc.version = 1.01;
+MageStudios.StatAlc.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Add a menu to your game to allocate stats for party
+ * @plugindesc Add a menu to your game to allocate stats for party
  * members. Stats can be allocated through AP, JP, or items!
  * @author Mage Studios Engine Plugins
  *
@@ -652,7 +652,7 @@ MageStudios.StatAlc.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_StatAllocation');
+MageStudios.Parameters = PluginManager.parameters('MSEP_StatAllocation');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.StatAlcCmdName = String(MageStudios.Parameters['Command Text']);

@@ -8,11 +8,11 @@ Imported.MSEP_EventProxActivate = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EvPrAc = MageStudios.EvPrAc || {};
-MageStudios.EvPrAc.version = 1.01;
+MageStudios.EvPrAc.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Allows events to activate by being in range of them
+ * @plugindesc Allows events to activate by being in range of them
  * instead of needing to be exactly next to or on top of them.
  * @author Mage Studios Engine Plugins
  *
@@ -94,20 +94,6 @@ MageStudios.EvPrAc.version = 1.01;
  *   - If the player moves within the event's proximity range or vice versa,
  *   the event will automatically activate. The player is granted a few frames
  *   of movement each time the parallel process loops.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Fixed a bug where parallel events don't loop.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
  */
 //=============================================================================
 

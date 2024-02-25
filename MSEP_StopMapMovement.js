@@ -8,11 +8,11 @@ Imported.MSEP_StopMapMovement = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Stop = MageStudios.Stop || {};
-MageStudios.Stop.version = 1.02
+MageStudios.Stop.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 A utility plugin to stop events from automatically
+ * @plugindesc A utility plugin to stop events from automatically
  * moving by themselves all across your map.
  * @author Mage Studios Engine Plugins
  *
@@ -88,7 +88,7 @@ MageStudios.Stop.version = 1.02
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_StopMapMovement');
+MageStudios.Parameters = PluginManager.parameters('MSEP_StopMapMovement');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.StopEvent = eval(String(MageStudios.Parameters['Stop During Events']));

@@ -10,11 +10,11 @@ Imported.MSEP_X_ExtDoT = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EDoT = MageStudios.EDoT || {};
-MageStudios.EDoT.version = 1.04;
+MageStudios.EDoT.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore)
+ * @plugindesc (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore)
  * Create custom DoT formulas and effects with ease.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *
@@ -208,7 +208,7 @@ MageStudios.EDoT.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ExtDoT');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ExtDoT');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EDoTRegenAni = Number(MageStudios.Parameters['Regen Animation']);
@@ -393,8 +393,8 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ExtDoT requires MSEP_BattleEngineCore and ';
-text += 'MEP_BuffsStatesCoreto be at the latest version to run properly. '
+text += 'MSEP_X_ExtDoT requires MSEP_BattleEngineCore and ';
+text += 'MSEP_BuffsStatesCoreto be at the latest version to run properly. '
 text += '\n\nPlease go to www.MageStudios.moe and update to the latest version for ';
 text += 'the MSEP_BattleEngineCore and MSEP_BuffsStatesCore plugins.\n';
 text += '================================================================\n';

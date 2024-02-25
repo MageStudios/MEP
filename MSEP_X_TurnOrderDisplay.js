@@ -8,11 +8,11 @@ Imported.MSEP_X_TurnOrderDisplay = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.TOD = MageStudios.TOD || {};
-MageStudios.TOD.version = 1.03;
+MageStudios.TOD.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Displays the turn order for turn-based battle systems
+ * @plugindesc Displays the turn order for turn-based battle systems
  * and allows for various display options.
  * @author Mage Studios Engine Plugins
  *
@@ -236,7 +236,7 @@ if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_TurnOrderDisplay');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_TurnOrderDisplay');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.TODShowDefault = String(MageStudios.Parameters['Show Turn Order']);
@@ -1229,7 +1229,7 @@ MageStudios.Util.getUnique = function(array) {
 } else { // MageStudios.BEC.version
 
 var text = '================================================================\n';
-text += 'MEP_X_TurnOrderDisplay requires MSEP_BattleEngineCore to be at the ';
+text += 'MSEP_X_TurnOrderDisplay requires MSEP_BattleEngineCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
 text += '================================================================\n';

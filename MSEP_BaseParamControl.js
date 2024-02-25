@@ -8,11 +8,11 @@ Imported.MSEP_BaseParamControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BPC = MageStudios.BPC || {};
-MageStudios.BPC.version = 1.04;
+MageStudios.BPC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Gain control over the method of calculation for base
+ * @plugindesc Gain control over the method of calculation for base
  * parameters: MaxHP, MaxMP, ATK, DEF, MAT, MDF, AGI, LUK.
  * @author Mage Studios Engine Plugins
  *
@@ -504,31 +504,13 @@ MageStudios.BPC.version = 1.04;
  *   battler may have. If there are multiple min values, the larges value is
  *   used as the parameter minimum.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.04:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.03:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.02:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.01:
- * - Fixed an issue with the battler.setParam functions that made them take the
- * wrong value due caching issues.
- */
 //=============================================================================
 
 //=============================================================================
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BaseParamControl');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BaseParamControl');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BPCFormula = []

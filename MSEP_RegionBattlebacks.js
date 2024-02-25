@@ -8,11 +8,11 @@ Imported.MSEP_RegionBattlebacks = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RBB = MageStudios.RBB || {};
-MageStudios.RBB.version = 1.01
+MageStudios.RBB.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 This lets you assign certain battlebacks to specific
+ * @plugindesc This lets you assign certain battlebacks to specific
  * region ID's when entering battle in that region.
  * @author Mage Studios Engine Plugins
  *
@@ -326,7 +326,7 @@ MageStudios.RBB.version = 1.01
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_RegionBattlebacks');
+MageStudios.Parameters = PluginManager.parameters('MSEP_RegionBattlebacks');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.RBBDefault1 = String(MageStudios.Parameters['Default 1']);

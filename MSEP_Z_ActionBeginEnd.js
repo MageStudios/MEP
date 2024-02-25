@@ -8,11 +8,11 @@ Imported.MSEP_Z_ActionBeginEnd = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunActBegEnd = MageStudios.LunActBegEnd || {};
-MageStudios.LunActBegEnd.version = 1.01;
+MageStudios.LunActBegEnd.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Lunatic Pack) Add additional effects that occur at the
+ * @plugindesc (Lunatic Pack) Add additional effects that occur at the
  * beginning or end of an action.
  * @author Mage Studios Engine Plugins
  *
@@ -289,7 +289,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_Z_ActionBeginEnd');
+MageStudios.Parameters = PluginManager.parameters('MSEP_Z_ActionBeginEnd');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LunActBegEndEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
@@ -681,7 +681,7 @@ if (data.match(/ANIMATION[ ](\d+)/i)) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_Z_ActionBeginEnd without the required plugins. Please visit ';
+text += 'MSEP_Z_ActionBeginEnd without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

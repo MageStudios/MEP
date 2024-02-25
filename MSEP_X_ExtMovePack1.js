@@ -10,11 +10,11 @@ Imported.MSEP_X_ExtMovePack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EMvP1 = MageStudios.EMvP1 || {};
-MageStudios.EMvP1.version = 1.01;
+MageStudios.EMvP1.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_MoveRouteCore.js) Adds extra movement
+ * @plugindesc (Requires MSEP_MoveRouteCore.js) Adds extra movement
  * options to create specific behaviors in movement patterns.
  * @author Mage Studios Engine Plugins
  *
@@ -359,7 +359,7 @@ Game_Character.prototype.processIndexAdjust = function(value) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ExtMovePack1 requires MSEP_MoveRouteCore to be at the ';
+text += 'MSEP_X_ExtMovePack1 requires MSEP_MoveRouteCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_MoveRouteCore plugin.\n';
 text += '================================================================\n';

@@ -8,11 +8,11 @@ Imported.MSEP_ElementCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Ele = MageStudios.Ele || {};
-MageStudios.Ele.version = 1.03;
+MageStudios.Ele.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Manage the way elements work in this game from
+ * @plugindesc Manage the way elements work in this game from
  * absorbing elements, reflecting elements, and more!
  * @author Mage Studios Engine Plugins
  *
@@ -191,25 +191,6 @@ MageStudios.Ele.version = 1.03;
  * Usage Example: null element
  *=============================================================================
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.03:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.02:
- * - Added <Element x Magnify: +y%>, <Element x Magnify: -y%> notetags. These
- * notetags different from the Amplify counterparts in a way where the Amplify
- * notetags will shift the element rate additively. These will alter the rate
- * multiplicatively.
- *
- * Version 1.01:
- * - Optimized element rate calculation where if no elements are present, then
- * damage rate will default to 100%.
- *
-  * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -217,7 +198,7 @@ MageStudios.Ele.version = 1.03;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ElementCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ElementCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EleMultiRule = Number(MageStudios.Parameters['Multi-Element Rulings']);

@@ -8,11 +8,11 @@ Imported.MSEP_DamageCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.DMG = MageStudios.DMG || {};
-MageStudios.DMG.version = 1.08;
+MageStudios.DMG.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.08 Expand the control you have over the game's damage
+ * @plugindesc Expand the control you have over the game's damage
  * calculation with more features and effects.
  * @author Mage Studios Engine Plugins
  *
@@ -803,54 +803,6 @@ MageStudios.DMG.version = 1.08;
  *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Usage Example: reset damage modifiers
  *=============================================================================
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.08:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.06:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.05:
- * - Added failsafe for damage cap check in case Lunatic Mode effects of other
- * plugins would push the damage past the capped amount.
- *
- * Version 1.04:
- * - Rewored Damage Steps 1 through 8. If you're updating from an old version,
- * please update the these manually:
- *   Step 1: baseDamage = this.modifyBaseDamage(value, baseDamage, target);
- *   Step 2: baseDamage *= this.calcElementRate(target);
- *   Steps 3 through 5: (empty)
- *   Step 6: critical = this.modifyCritical(critical, baseDamage, target);
- *   Step 7: target.result().critical = critical;
- *   Step 8: value = baseDamage;
- * - This change was made to Element Absorb and Disperse Damage better. This
- * damage step change is also more efficient in calculating damage effects that
- * alters the baseDaMageStudios.
- *
- * Version 1.03:
- * - Changed default parameter in Damage Step 4 from
- *   'baseDamage = this.modifyBaseDamage(value, baseDamage, target);' to
- *   'value = this.modifyBaseDamage(value, baseDamage, target);'
- * Be sure to manually change this yourself if you want to get things like the
- * Selection Control's Disperse Damage mechanic to work.
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.1.0.
- * - <Damage Formula> notetag now supports comments.
- *
- * Version 1.01:
- * - Fixed a bug with <Damage Formula> not recording custom formulas correctly.
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -858,7 +810,7 @@ MageStudios.DMG.version = 1.08;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_DamageCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_DamageCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.DMGEnableCap = eval(String(MageStudios.Parameters['Enable Cap']));

@@ -8,11 +8,11 @@ Imported.MSEP_MapSelectEquip = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MSE = MageStudios.MSE || {};
-MageStudios.MSE.version = 1.01;
+MageStudios.MSE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Open up a window similar to the Select Item Window,
+ * @plugindesc Open up a window similar to the Select Item Window,
  * but instead, returns weapon/armor ID's to a variable.
  * @author Mage Studios Engine Plugins
  *
@@ -133,7 +133,7 @@ MageStudios.MSE.version = 1.01;
  */
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MapSelectEquip');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MapSelectEquip');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MSECol = Number(MageStudios.Parameters['Default Columns']);

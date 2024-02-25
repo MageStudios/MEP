@@ -8,11 +8,11 @@ Imported.MSEP_MapSelectSkill = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MSS = MageStudios.MSS || {};
-MageStudios.MSS.version = 1.03;
+MageStudios.MSS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Open up a window similar to the Select Item Window,
+ * @plugindesc Open up a window similar to the Select Item Window,
  * but instead, returns Skill ID's to a variable.
  * @author Mage Studios Engine Plugins
  *
@@ -141,14 +141,14 @@ MageStudios.MSS.version = 1.03;
  * - Optimization update.
  *
  * Version 1.01:
- * - Compatibility update with Self Switches & Variables v1.01.
+ * - Compatibility update with Self Switches & Variables .
  *
  * Version 1.00:
  * - Finished Plugin!
  */
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MapSelectSkill');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MapSelectSkill');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MSSCol = Number(MageStudios.Parameters['Default Columns']);

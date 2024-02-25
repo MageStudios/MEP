@@ -8,11 +8,11 @@ Imported.MSEP_CallEvent = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CallEvent = MageStudios.CallEvent || {};
-MageStudios.CallEvent.version = 1.01;
+MageStudios.CallEvent.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 A lost utility command from RPG Maker 2000 and
+ * @plugindesc A lost utility command from RPG Maker 2000 and
  * RPG Maker 2003 has been remade for RPG Maker MV!
  * @author Mage Studios Engine Plugins
  *
@@ -63,15 +63,6 @@ MageStudios.CallEvent.version = 1.01;
  * events will be called and the plugin will skip forward as if nothing has
  * happened. Be cautious about how you call these call events.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

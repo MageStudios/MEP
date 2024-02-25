@@ -8,11 +8,11 @@ Imported.MSEP_X_BattleSysSTB = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.STB = MageStudios.STB || {};
-MageStudios.STB.version = 1.05;
+MageStudios.STB.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_BattleEngineCore.js) Add STB (Standard
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Add STB (Standard
  * Turn Battle) into your game using this plugin!
  * @author Mage Studios Engine Plugins
  *
@@ -199,7 +199,7 @@ if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_BattleSysSTB');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_BattleSysSTB');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.STBActionSpeed = String(MageStudios.Parameters['Action Speed']);
@@ -717,7 +717,7 @@ MageStudios.Util.onlyUnique = function(value, index, self) {
 } else { // MageStudios.BEC.version
 
 var text = '================================================================\n';
-text += 'MEP_X_BattleSysSTB requires MSEP_BattleEngineCore to be at the ';
+text += 'MSEP_X_BattleSysSTB requires MSEP_BattleEngineCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
 text += '================================================================\n';

@@ -8,11 +8,11 @@ Imported.MSEP_RepelEncounters = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RepelLure = MageStudios.RepelLure || {};
-MageStudios.RepelLure.version = 1.02;
+MageStudios.RepelLure.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Tie in the variables that modify the encounter rate
+ * @plugindesc Tie in the variables that modify the encounter rate
  * by either making them repel or lure battles.
  * @author Mage Studios Engine Plugins
  *
@@ -162,7 +162,7 @@ MageStudios.RepelLure.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_RepelLureEncounters');
+MageStudios.Parameters = PluginManager.parameters('MSEP_RepelLureEncounters');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.RepelExpireEvent = Number(MageStudios.Parameters['Repel Expire Event']);

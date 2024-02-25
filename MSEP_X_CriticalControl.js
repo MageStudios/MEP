@@ -8,11 +8,11 @@ Imported.MSEP_X_CriticalControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Crit = MageStudios.Crit || {};
-MageStudios.Crit.version = 1.06;
+MageStudios.Crit.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 (Requires MSEP_DamageCore.js) Control over critical
+ * @plugindesc (Requires MSEP_DamageCore.js) Control over critical
  * hits have been added.
  * @author Mage Studios Engine Plugins
  *
@@ -228,7 +228,7 @@ if (Imported.MSEP_DamageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_CriticalControl');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_CriticalControl');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.critRate = String(MageStudios.Parameters['Critical Rate Formula']);

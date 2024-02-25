@@ -8,11 +8,11 @@ Imported.MSEP_X_MessageBacklog = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MsgBacklog = MageStudios.MsgBacklog || {};
-MageStudios.MsgBacklog.version = 1.01;
+MageStudios.MsgBacklog.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_MessageCore.js) Add a message backlog
+ * @plugindesc (Requires MSEP_MessageCore.js) Add a message backlog
  * function to your game's message system!
  * @author Mage Studios Engine Plugins
  *
@@ -316,7 +316,7 @@ if (Imported.MSEP_MessageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MessageBacklog');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageBacklog');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MsgBacklogKeyButton = String(MageStudios.Parameters['LogKeyButton']);
@@ -1159,7 +1159,7 @@ MageStudios.Util.toGroup = function(inVal) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_MessageBacklog without the required plugins. Please visit ';
+text += 'MSEP_X_MessageBacklog without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

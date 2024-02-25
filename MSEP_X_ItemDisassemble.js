@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemDisassemble = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IDA = MageStudios.IDA || {};
-MageStudios.IDA.version = 1.06;
+MageStudios.IDA.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 (Requires MSEP_ItemCore.js) Grants the option to
+ * @plugindesc (Requires MSEP_ItemCore.js) Grants the option to
  * break down items in the item menu into other items.
  * @author Mage Studios Engine Plugins
  *
@@ -348,7 +348,7 @@ if (Imported.MSEP_ItemCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemDisassemble');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemDisassemble');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IDACmdNameFmt = String(MageStudios.Parameters['Disassemble Command']);

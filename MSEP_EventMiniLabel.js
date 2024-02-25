@@ -8,11 +8,11 @@ Imported.MSEP_EventMiniLabel = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EML = MageStudios.EML || {};
-MageStudios.EML.version = 1.12
+MageStudios.EML.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.12 Creates miniature-sized labels over events to allow
+ * @plugindesc Creates miniature-sized labels over events to allow
  * you to insert whatever text you'd like in them.
  * @author Mage Studios Engine Plugins
  *
@@ -121,57 +121,6 @@ MageStudios.EML.version = 1.12
  *
  *   RefreshMiniLabel
  *   Refreshes all Event Mini Labels on the map.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.12:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.11:
- * - Added 'Battle Transition' plugin parameter. Enabling this will allow you
- * to show the Event Mini Labels during the battle transition. Keeping it
- * disabled will hide them during the transition.
- *
- * Version 1.10:
- * - Mini Windows will now readjust their size to show at normal scale if the
- * map is zoomed in.
- *
- * Version 1.09:
- * - Fixed a bug that caused Mini Labels that started off as hidden to remain
- * hidden even after turning the Mini Labels on.
- *
- * Version 1.08:
- * - Added <Mini Label Require Facing> comment tag.
- * - Moved the priority of the Mini Labels to be later added to the spriteset
- * so they can stay on top of more effects.
- *
- * Version 1.07:
- * - Added more padding space so text doesn't get cut off.
- *
- * Version 1.06:
- * - Fixed a bug that caused some mini labels to show if the event was loaded
- * onto the map without any currently active pages.
- *
- * Version 1.05:
- * - Added 'X Buffer' plugin parameter and the <Mini Label X Buffer: +x> and
- * <Mini Label X Buffer: -x> comment tags to alter the X position of the event
- * mini label.
- *
- * Version 1.04:
- * - Added 'RefreshMiniLabel' plugin command to allow you to manually refresh
- * all mini labels on the map.
- *
- * Version 1.03:
- * - Optimized updating performance to reduce lag on maps with many events.
- *
- * Version 1.01:
- * - Fixed a bug that didn't update event labels under certain page conditions.
- * - Added <Mini Label Range: x> notetag.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -179,7 +128,7 @@ MageStudios.EML.version = 1.12
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventMiniLabel');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventMiniLabel');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EMWDefaultShow = eval(String(MageStudios.Parameters['Default Show']));

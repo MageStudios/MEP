@@ -8,11 +8,11 @@ Imported.MSEP_SegmentedGauges = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SegGauge = MageStudios.SegGauge || {};
-MageStudios.SegGauge.version = 1.01;
+MageStudios.SegGauge.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Segment up your gauges to make them easier to read.
+ * @plugindesc Segment up your gauges to make them easier to read.
  * @author Mage Studios Engine Plugins + Tigress + Collaboration
  *
  * @param ---Segments---
@@ -110,7 +110,7 @@ require('nw.gui').Window.get().showDevTools();
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SegmentedGauges');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SegmentedGauges');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SegmentGaugesHp = Number(MageStudios.Parameters['HP Gauge Segments']);

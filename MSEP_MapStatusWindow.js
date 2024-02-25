@@ -8,11 +8,11 @@ Imported.MSEP_MapStatusWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MapStatus = MageStudios.MapStatus || {};
-MageStudios.MapStatus.version = 1.01;
+MageStudios.MapStatus.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Gain access to open up a window displaying
+ * @plugindesc Gain access to open up a window displaying
  * your party's status while on the map screen!
  * @author Mage Studios Engine Plugins
  *
@@ -99,7 +99,7 @@ MageStudios.MapStatus.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MapStatusWindow');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MapStatusWindow');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MapStatusWinX = String(MageStudios.Parameters['Window X']);

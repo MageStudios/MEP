@@ -8,11 +8,11 @@ Imported.MSEP_X_EquipSkillTiers = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ESTier = MageStudios.ESTier || {};
-MageStudios.ESTier.version = 1.03
+MageStudios.ESTier.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 (Requires MSEP_EquipBattleSkills.js) Places equippable
+ * @plugindesc (Requires MSEP_EquipBattleSkills.js) Places equippable
  * skills in tiers to limit what players can equip.
  * @author Mage Studios Engine Plugins
  *
@@ -268,7 +268,7 @@ if (Imported.MSEP_EquipBattleSkills) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_EquipSkillTiers');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_EquipSkillTiers');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

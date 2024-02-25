@@ -8,11 +8,11 @@ Imported.MSEP_X_EBSAllowedTypes = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EBSAT = MageStudios.EBSAT || {};
-MageStudios.EBSAT.version = 1.01;
+MageStudios.EBSAT.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_EquipBattleSkills.js) For those who
+ * @plugindesc (Requires MSEP_EquipBattleSkills.js) For those who
  * wish to use Equip Battle Skills and still have skill types.
  * @author Mage Studios Engine Plugins
  *
@@ -63,7 +63,7 @@ if (Imported.MSEP_EquipBattleSkills) {
 
 MageStudios.setupParameters = function() {
   MageStudios.Param = MageStudios.Param || {};
-  var parameters = PluginManager.parameters('MEP_X_EBSAllowedTypes');
+  var parameters = PluginManager.parameters('MSEP_X_EBSAllowedTypes');
   MageStudios.Param.EBSATTypes = String(parameters['Allowed Skill Types']);
   MageStudios.Param.EBSATTypes = MageStudios.Param.EBSATTypes.split(',');
   var length = MageStudios.Param.EBSATTypes.length;

@@ -31,13 +31,14 @@ MageStudios.BTE.version = 1.00;
  * custom event pages, you can now save yourself some time by drawing all the
  * event pages from a base troop event to occur in every fight. All of the
  * events will be present in every single battle.
+ */
 //=============================================================================
 
 //=============================================================================
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BaseTroopEvents');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BaseTroopEvents');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BaseTroopID = Number(MageStudios.Parameters['Base Troop ID']);

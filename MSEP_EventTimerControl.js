@@ -8,14 +8,53 @@ Imported.MSEP_EventTimerControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Timer = MageStudios.Timer || {};
-MageStudios.Timer.version = 1.01;
+MageStudios.Timer.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Gain more control over the event timer function
+ * @plugindesc Gain more control over the event timer function
  * for your game.
  * @author Mage Studios Engine Plugins
+ * 
+ * @param ---Mechanical---
  *
+ * @param SpritesetSplit
+ * @text Separate from Spriteset
+ * @parent ---Mechanical---
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc Separates the game timer from the spriteset.
+ * YES - true     NO - false     DEFAULT: true
+ * @default true
+ *
+ * @param TextAlign
+ * @text Timer Text Alignment
+ * @parent ---Mechanical---
+ * @type combo
+ * @option left
+ * @option center
+ * @option right
+ * @desc How do you want the text to be aligned?
+ * Default: center
+ * @default right
+ *
+ * @param ---Lunatic Mode---
+ *
+ * @param Effect Code
+ * @parent ---Lunatic Mode---
+ * @type note
+ * @desc LUNATIC MODE: This is the code used for each of the 
+ * plugin commands.
+ * @default "// ------------\n// Pause/Resume\n// ------------\nif (data.match(/PAUSE/i)) {\n  $gameTimer.pause();\n\n} else if (data.match(/RESUME/i)) {\n  $gameTimer.resume();\n\n// -------------\n// Count Down/Up\n// -------------\n} else if (data.match(/(?:COUNTDOWN|COUNT DOWN)/i)) {\n  $gameTimer.changeDirection(-1);\n\n} else if (data.match(/(?:COUNTUP|COUNT UP)/i)) {\n  $gameTimer.changeDirection(1);\n\n} else if (data.match(/(?:COUNTOGGLE|COUNT TOGGLE)/i)) {\n  $gameTimer.changeDirection(-1 * $gameTimer._direction);\n\n// -----------------\n// Increase/Decrease\n// -----------------\n} else if (data.match(/(?:INCREASE|DECREASE)/i)) {\n  if (data.match(/DECREASE/i)) {\n    var direction = -1;\n  } else {\n    var direction = 1;\n  }\n  var frames = 0;\n  if (data.match(/(\\d+)[ ]FRAME/i)) {\n    frames += parseInt(RegExp.$1);\n  }\n  if (data.match(/(\\d+)[ ]SEC/i)) {\n    frames += parseInt(RegExp.$1) * 60;\n  }\n  if (data.match(/(\\d+)[ ]MIN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ](?:HR|HOUR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ]DAY/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24;\n  }\n  if (data.match(/(\\d+)[ ]WEEK/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 7;\n  }\n  if (data.match(/(\\d+)[ ]MONTH/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 30;\n  }\n  if (data.match(/(\\d+)[ ](?:YR|YEAR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365;\n  }\n  if (data.match(/(\\d+)[ ]DECADE/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 10;\n  }\n  if (data.match(/(\\d+)[ ]CENTUR/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 100;\n  }\n  if (data.match(/(\\d+)[ ]MILLEN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 1000;\n  }\n  frames *= direction;\n  $gameTimer.gainFrames(frames);\n\n// --------------------------------\n// Add new commands above this data\n// --------------------------------\n} else {\n  // Do nothing\n}"
+ *
+ * @param Expire Code
+ * @parent ---Lunatic Mode---
+ * @type note
+ * @desc LUNATIC MODE: Unique code that can be run when the
+ * countdown timer expires.
+ * @default "BattleManager.abort();"
+ * *
  * @help
  * ============================================================================
  * Introduction
@@ -139,61 +178,6 @@ MageStudios.Timer.version = 1.01;
  * If you need to revert the Effect Code back to its original state, delete the
  * plugin from your plugin manager list and then add it again. The code will be
  * back to default.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param ---Mechanical---
- *
- * @param SpritesetSplit
- * @text Separate from Spriteset
- * @parent ---Mechanical---
- * @type boolean
- * @on YES
- * @off NO
- * @desc Separates the game timer from the spriteset.
- * YES - true     NO - false     DEFAULT: true
- * @default true
- *
- * @param TextAlign
- * @text Timer Text Alignment
- * @parent ---Mechanical---
- * @type combo
- * @option left
- * @option center
- * @option right
- * @desc How do you want the text to be aligned?
- * Default: center
- * @default right
- *
- * @param ---Lunatic Mode---
- *
- * @param Effect Code
- * @parent ---Lunatic Mode---
- * @type note
- * @desc LUNATIC MODE: This is the code used for each of the 
- * plugin commands.
- * @default "// ------------\n// Pause/Resume\n// ------------\nif (data.match(/PAUSE/i)) {\n  $gameTimer.pause();\n\n} else if (data.match(/RESUME/i)) {\n  $gameTimer.resume();\n\n// -------------\n// Count Down/Up\n// -------------\n} else if (data.match(/(?:COUNTDOWN|COUNT DOWN)/i)) {\n  $gameTimer.changeDirection(-1);\n\n} else if (data.match(/(?:COUNTUP|COUNT UP)/i)) {\n  $gameTimer.changeDirection(1);\n\n} else if (data.match(/(?:COUNTOGGLE|COUNT TOGGLE)/i)) {\n  $gameTimer.changeDirection(-1 * $gameTimer._direction);\n\n// -----------------\n// Increase/Decrease\n// -----------------\n} else if (data.match(/(?:INCREASE|DECREASE)/i)) {\n  if (data.match(/DECREASE/i)) {\n    var direction = -1;\n  } else {\n    var direction = 1;\n  }\n  var frames = 0;\n  if (data.match(/(\\d+)[ ]FRAME/i)) {\n    frames += parseInt(RegExp.$1);\n  }\n  if (data.match(/(\\d+)[ ]SEC/i)) {\n    frames += parseInt(RegExp.$1) * 60;\n  }\n  if (data.match(/(\\d+)[ ]MIN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ](?:HR|HOUR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60;\n  }\n  if (data.match(/(\\d+)[ ]DAY/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24;\n  }\n  if (data.match(/(\\d+)[ ]WEEK/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 7;\n  }\n  if (data.match(/(\\d+)[ ]MONTH/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 30;\n  }\n  if (data.match(/(\\d+)[ ](?:YR|YEAR)/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365;\n  }\n  if (data.match(/(\\d+)[ ]DECADE/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 10;\n  }\n  if (data.match(/(\\d+)[ ]CENTUR/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 100;\n  }\n  if (data.match(/(\\d+)[ ]MILLEN/i)) {\n    frames += parseInt(RegExp.$1) * 60 * 60 * 60 * 24 * 365 * 1000;\n  }\n  frames *= direction;\n  $gameTimer.gainFrames(frames);\n\n// --------------------------------\n// Add new commands above this data\n// --------------------------------\n} else {\n  // Do nothing\n}"
- *
- * @param Expire Code
- * @parent ---Lunatic Mode---
- * @type note
- * @desc LUNATIC MODE: Unique code that can be run when the
- * countdown timer expires.
- * @default "BattleManager.abort();"
- *
  */
 //=============================================================================
 
@@ -201,7 +185,7 @@ MageStudios.Timer.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventTimerControl');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventTimerControl');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.TimerSeparate = String(MageStudios.Parameters['SpritesetSplit']);

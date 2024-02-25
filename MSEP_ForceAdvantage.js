@@ -8,11 +8,11 @@ Imported.MSEP_ForceAdvantage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FAdv = MageStudios.FAdv || {};
-MageStudios.FAdv.version = 1.01
+MageStudios.FAdv.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 This plugin allows you to force pre-emptive,
+ * @plugindesc This plugin allows you to force pre-emptive,
  * surprise, or normal initiatives for battles.
  * @author Mage Studios Engine Plugins
  *
@@ -92,7 +92,7 @@ MageStudios.FAdv.version = 1.01
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ForceAdvantage');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ForceAdvantage');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.FAdvNeutral = Number(MageStudios.Parameters['Neutral Event']);

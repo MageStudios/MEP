@@ -12,10 +12,19 @@ MageStudios.DTI.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Change title images depending on how far along your game
+ * @plugindesc Change title images depending on how far along your game
  * the player has progressed.
  * @author Mage Studios Engine Plugins
  *
+ * @param RequireSaveGame
+ * @text Require Save Game?
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc Require a save game to be present to show a custom title
+ * image? If one isn't present, the default images are used.
+ * @default false
+ * 
  * @help
  * ============================================================================
  * Introduction
@@ -53,26 +62,6 @@ MageStudios.DTI.version = 1.00;
  * - This will revert the Title1 or Title2 images back to default respectively.
  * The player will see the default Title1/Title2 image that's been applied in
  * the game's database settings.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param RequireSaveGame
- * @text Require Save Game?
- * @type boolean
- * @on YES
- * @off NO
- * @desc Require a save game to be present to show a custom title
- * image? If one isn't present, the default images are used.
- * @default false
  */
 //=============================================================================
 
@@ -80,7 +69,7 @@ MageStudios.DTI.version = 1.00;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_DynamicTitleImages');
+MageStudios.Parameters = PluginManager.parameters('MSEP_DynamicTitleImages');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.DTIRequireSaveGame = String(MageStudios.Parameters['RequireSaveGame']);

@@ -12,7 +12,7 @@ MageStudios.Autosave.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Req MSEP_SaveCore.js) Adds Autosave functionality to your
+ * @plugindesc (Req MSEP_SaveCore.js) Adds Autosave functionality to your
  * RPG Maker game.
  * @author Mage Studios Engine Plugins
  *
@@ -321,7 +321,7 @@ if (Imported.MSEP_SaveCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_Autosave');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_Autosave');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AutosaveOnMapLoad = eval(String(MageStudios.Parameters['OnMapLoad']));
@@ -602,7 +602,7 @@ Scene_Map.prototype.performAutosave = function() {
 Imported.MSEP_X_Autosave = false;
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_Autosave without the required plugins. Please visit ';
+text += 'MSEP_X_Autosave without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

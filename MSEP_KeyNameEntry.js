@@ -41,7 +41,7 @@ MageStudios.KNE = MageStudios.KNE || {};
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_KeyNameEntry');
+MageStudios.Parameters = PluginManager.parameters('MSEP_KeyNameEntry');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.KNEQwertyLayout = String(MageStudios.Parameters['QWERTY Layout']);

@@ -12,7 +12,7 @@ MageStudios.Help.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Set the F1 key to open up an HTML help file when
+ * @plugindesc Set the F1 key to open up an HTML help file when
  * pressued during your game.
  * @author Mage Studios Engine Plugins
  *
@@ -126,7 +126,7 @@ MageStudios.Help.version = 1.00;
  */
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_HelpFileAccess');
+MageStudios.Parameters = PluginManager.parameters('MSEP_HelpFileAccess');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.HelpFilePath = String(MageStudios.Parameters['Help File Path']);

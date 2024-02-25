@@ -8,11 +8,11 @@ Imported.MSEP_SmartJump = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Jump = MageStudios.Jump || {};
-MageStudios.Jump.version = 1.03
+MageStudios.Jump.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Adds a plugin command that enables smart jumping
+ * @plugindesc Adds a plugin command that enables smart jumping
  * where the player cannot jump into illegal areas.
  * @author Mage Studios Engine Plugins
  *
@@ -128,7 +128,7 @@ MageStudios.Jump.version = 1.03
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SmartJump');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SmartJump');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.JumpIllegalRegion = String(MageStudios.Parameters['Illegal Regions']);

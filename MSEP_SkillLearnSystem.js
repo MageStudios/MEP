@@ -8,11 +8,11 @@ Imported.MSEP_SkillLearnSystem = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SLS = MageStudios.SLS || {};
-MageStudios.SLS.version = 1.17;
+MageStudios.SLS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.17 Allows actors to learn skills from the skill menu
+ * @plugindesc Allows actors to learn skills from the skill menu
  * through crafting them via items or otherwise.
  * @author Mage Studios Engine Plugins
  *
@@ -354,7 +354,7 @@ MageStudios.SLS.version = 1.17;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SkillLearnSystem');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SkillLearnSystem');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SLSCommand = String(MageStudios.Parameters['Learn Command']);

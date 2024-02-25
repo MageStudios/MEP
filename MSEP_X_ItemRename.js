@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemRename = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemRename = MageStudios.ItemRename || {};
-MageStudios.ItemRename.version = 1.01;
+MageStudios.ItemRename.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_ItemCore.js) Allows the player to
+ * @plugindesc (Requires MSEP_ItemCore.js) Allows the player to
  * rename independent items in their inventory.
  * @author Mage Studios Engine Plugins + Sylvester Collaboration
  *
@@ -102,7 +102,7 @@ if (Imported.MSEP_ItemCore &&
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemRename');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemRename');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ItemRenameCmd = String(MageStudios.Parameters['Rename Command']);
@@ -410,7 +410,7 @@ Scene_ItemRename.prototype.onInputOk = function() {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ItemRename requires MSEP_ItemCore and to be at the latest '
+text += 'MSEP_X_ItemRename requires MSEP_ItemCore and to be at the latest '
 text += 'version to run properly. '
 text += '\n\nPlease go to www.MageStudios.moe and update to the latest version for ';
 text += 'the MSEP_ItemCore plugin.\n';

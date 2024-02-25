@@ -8,11 +8,11 @@ Imported.MSEP_X_VisualStateFX = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.VSFX = MageStudios.VSFX || {};
-MageStudios.VSFX.version = 1.03;
+MageStudios.VSFX.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore) Adds
+ * @plugindesc (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore) Adds
  * visual effects to your states.
  * @author Mage Studios Engine Plugins
  *
@@ -196,7 +196,7 @@ if (Imported.MSEP_BattleEngineCore && Imported.MSEP_BuffsStatesCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_VisualStateFX');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_VisualStateFX');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.VSFXActorOver = String(MageStudios.Parameters['Actor State Overlay']);

@@ -8,11 +8,11 @@ Imported.MSEP_BattleBgmControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BattleBgm = MageStudios.BattleBgm || {};
-MageStudios.BattleBgm.version = 1.01;
+MageStudios.BattleBgm.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Assign BGM's to certain troops. Make BGM's change
+ * @plugindesc Assign BGM's to certain troops. Make BGM's change
  * during battle when certain enemies reach different HP values.
  * @author Mage Studios Engine Plugins
  *
@@ -103,15 +103,6 @@ MageStudios.BattleBgm.version = 1.01;
  *   the songs to play as the key enemy's HP drops progressively, place them in
  *   such order.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

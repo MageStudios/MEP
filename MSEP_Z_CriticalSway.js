@@ -8,11 +8,11 @@ Imported.MSEP_Z_CriticalSway = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunCriSway = MageStudios.LunCriSway || {};
-MageStudios.LunCriSway.version = 1.01;
+MageStudios.LunCriSway.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Lunatic Pack) Add new effects to adjust the critical hit
+ * @plugindesc (Lunatic Pack) Add new effects to adjust the critical hit
  * rates of your skills, items, and states!
  * @author Mage Studios Engine Plugins
  *
@@ -337,7 +337,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_Z_CriticalSway');
+MageStudios.Parameters = PluginManager.parameters('MSEP_Z_CriticalSway');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LunCriSwayEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
@@ -738,7 +738,7 @@ if (data.match(/(.*)[ ]PRIDE[ ](\d+)([%％])/i)) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_Z_CriticalSway without the required plugins. Please visit ';
+text += 'MSEP_Z_CriticalSway without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

@@ -8,11 +8,11 @@ Imported.MSEP_X_PartyLimitGauge = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PLG = MageStudios.PLG || {};
-MageStudios.PLG.version = 1.11;
+MageStudios.PLG.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.11 (Requires MSEP_SkillCore.js) A party-wide skill
+ * @plugindesc (Requires MSEP_SkillCore.js) A party-wide skill
  * resource is accessible across all members of a unit.
  * @author Mage Studios Engine Plugins
  *
@@ -635,7 +635,7 @@ if (Imported.MSEP_SkillCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_PartyLimitGauge');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_PartyLimitGauge');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.PLGIncrements = Number(MageStudios.Parameters['Gauge Increments']);

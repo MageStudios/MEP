@@ -12,7 +12,7 @@ MageStudios.EMP2.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Requires MSEP_MessageCore.js) Adds text codes to display
+ * @plugindesc (Requires MSEP_MessageCore.js) Adds text codes to display
  * various game data information for messages.
  * @author Mage Studios Engine Plugins
  *
@@ -973,7 +973,7 @@ if (Imported.MSEP_MessageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ExtMesPack2');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ExtMesPack2');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Lunatic = MageStudios.Lunatic || {};
 
@@ -1864,7 +1864,7 @@ MageStudios.Util.forceNumber = function(str) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_ExtMesPack2 without MSEP_MessageCore. Please visit MageStudios.moe ';
+text += 'MSEP_X_ExtMesPack2 without MSEP_MessageCore. Please visit MageStudios.moe ';
 text += 'and install MSEP_MessageCore in your game project before you can use ';
 text += 'this plugin.';
 console.log(text);

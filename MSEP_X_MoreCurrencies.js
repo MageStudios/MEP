@@ -8,11 +8,11 @@ Imported.MSEP_X_MoreCurrencies = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MC = MageStudios.MC || {};
-MageStudios.MC.version = 1.05;
+MageStudios.MC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_ShopMenuCore.js) This plugin adds
+ * @plugindesc (Requires MSEP_ShopMenuCore.js) This plugin adds
  * functionality for your shops to have multiple currencies.
  * @author Mage Studios Engine Plugins
  *
@@ -285,7 +285,7 @@ if (Imported.MSEP_ShopMenuCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MoreCurrencies');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreCurrencies');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MCCurrencyPadding = Number(MageStudios.Parameters['Currency Padding']);

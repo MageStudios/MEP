@@ -8,11 +8,11 @@ Imported.MSEP_CreditsPage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Credits = MageStudios.Credits || {};
-MageStudios.Credits.version = 1.02;
+MageStudios.Credits.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Adds a 'Credits' command to the title screen that
+ * @plugindesc Adds a 'Credits' command to the title screen that
  * will take the player to a credits scene.
  * @author Mage Studios Engine Plugins
  *
@@ -3067,18 +3067,6 @@ MageStudios.Credits.version = 1.02;
  *   - Opens the credit window from in-game during the map scene. This will
  *   cause the player and events to be unable to move.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Added new plugin command 'OpenCreditsWindow'.
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -3086,7 +3074,7 @@ MageStudios.Credits.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_CreditsPage');
+MageStudios.Parameters = PluginManager.parameters('MSEP_CreditsPage');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CreditsCmdName = String(MageStudios.Parameters['Command Name']);

@@ -8,11 +8,11 @@ Imported.MSEP_X_PassiveAuras = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Aura = MageStudios.Aura || {};
-MageStudios.Aura.version = 1.08;
+MageStudios.Aura.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.08 (Requires MSEP_AutoPassiveStates.js) Add aura effects
+ * @plugindesc (Requires MSEP_AutoPassiveStates.js) Add aura effects
  * to various database objects.
  * @author Mage Studios Engine Plugins
  *

@@ -8,11 +8,11 @@ Imported.MSEP_X_CounterControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Counter = MageStudios.Counter || {};
-MageStudios.Counter.version = 1.10;
+MageStudios.Counter.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.10 (Requires MSEP_BattleEngineCore.js) Gives you more
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Gives you more
  * control over how counters work in RPG Maker MV!
  * @author Mage Studios Engine Plugins
  *
@@ -749,7 +749,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_CounterControl');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_CounterControl');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CounterMaxQueue = Number(MageStudios.Parameters['Queue Max']);

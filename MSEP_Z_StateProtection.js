@@ -8,11 +8,11 @@ Imported.MSEP_Z_StateProtection = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunStPro = MageStudios.LunStPro || {};
-MageStudios.LunStPro.version = 1.01;
+MageStudios.LunStPro.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Lunatic Pack) Give states a variety of ways to protect
+ * @plugindesc (Lunatic Pack) Give states a variety of ways to protect
  * your battlers.
  * @author Mage Studios Engine Plugins
  *
@@ -325,7 +325,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_Z_StateProtection');
+MageStudios.Parameters = PluginManager.parameters('MSEP_Z_StateProtection');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LunStProEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
@@ -758,7 +758,7 @@ if (data.match(/DAMAGE CUT[ ](\d+)([%％])/i)) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_Z_StateProtection without the required plugins. Please visit ';
+text += 'MSEP_Z_StateProtection without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

@@ -8,11 +8,11 @@ Imported.MSEP_X_ProfileStatusPage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PSP = MageStudios.PSP || {};
-MageStudios.PSP.version = 1.03
+MageStudios.PSP.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 (Requires MSEP_StatusMenuCore.js) Places a Profile
+ * @plugindesc (Requires MSEP_StatusMenuCore.js) Places a Profile
  * Status Page in the status menu for your actors.
  * @author Mage Studios Engine Plugins
  *
@@ -137,7 +137,7 @@ if (Imported.MSEP_StatusMenuCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ProfileStatusPage');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ProfileStatusPage');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.PSPCmdName = String(MageStudios.Parameters['Command Name']);

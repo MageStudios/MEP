@@ -8,11 +8,11 @@ Imported.MSEP_PartySystem = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Party = MageStudios.Party || {};
-MageStudios.Party.version = 1.13;
+MageStudios.Party.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.13 Replaces the default 'Formation' command with a new
+ * @plugindesc Replaces the default 'Formation' command with a new
  * menu for players to easily change party formations.
  * @author Mage Studios Engine Plugins
  *
@@ -358,7 +358,7 @@ MageStudios.Party.version = 1.13;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_PartySystem');
+MageStudios.Parameters = PluginManager.parameters('MSEP_PartySystem');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

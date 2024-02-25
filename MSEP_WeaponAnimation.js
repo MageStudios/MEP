@@ -8,11 +8,11 @@ Imported.MSEP_WeaponAnimation = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WA = MageStudios.WA || {};
-MageStudios.WA.version = 1.05;
+MageStudios.WA.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 This plugin allows you to go past the standard
+ * @plugindesc This plugin allows you to go past the standard
  * weapon images and even using custom images.
  * @author Mage Studios Engine Plugins
  *
@@ -183,7 +183,7 @@ MageStudios.WA.version = 1.05;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_WeaponAnimation');
+MageStudios.Parameters = PluginManager.parameters('MSEP_WeaponAnimation');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.WAFilepath = String(MageStudios.Parameters['Image Filepath']);

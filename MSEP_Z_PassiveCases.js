@@ -8,11 +8,11 @@ Imported.MSEP_Z_PassiveCases = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunPasCas = MageStudios.LunPasCas || {};
-MageStudios.LunPasCas.version = 1.01;
+MageStudios.LunPasCas.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Lunatic Pack) Create conditional cases for your passive
+ * @plugindesc (Lunatic Pack) Create conditional cases for your passive
  * states through an easy and elaborate method!
  * @author Mage Studios Engine Plugins
  *
@@ -319,7 +319,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_Z_PassiveCases');
+MageStudios.Parameters = PluginManager.parameters('MSEP_Z_PassiveCases');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LunPasCasEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
@@ -723,7 +723,7 @@ if (data.match(/SWITCH[ ](\d+)[ ]ON/i)) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_Z_PassiveCases without the required plugins. Please visit ';
+text += 'MSEP_Z_PassiveCases without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

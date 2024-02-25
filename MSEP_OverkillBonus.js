@@ -8,11 +8,11 @@ Imported.MSEP_OverkillBonus = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.OKB = MageStudios.OKB || {};
-MageStudios.OKB.version = 1.02;
+MageStudios.OKB.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Extra rewards (EXP, Gold, Items) for overkilling
+ * @plugindesc Extra rewards (EXP, Gold, Items) for overkilling
  * enemies in battle.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *
@@ -201,7 +201,7 @@ MageStudios.OKB.version = 1.02;
 //=============================================================================
 
 MageStudios.setupParameters = function() {
-  var parameters = PluginManager.parameters('MEP_OverkillBonus');
+  var parameters = PluginManager.parameters('MSEP_OverkillBonus');
   this.Param = this.Param || {};
   this.Param.OverkillFormula = String(parameters['Overkill Formula']);
   this.Param.OverkillAniId = Number(parameters['Overkill Animation']);

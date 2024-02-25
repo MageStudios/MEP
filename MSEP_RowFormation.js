@@ -8,11 +8,11 @@ Imported.MSEP_RowFormation = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Row = MageStudios.Row || {};
-MageStudios.Row.version = 1.16;
+MageStudios.Row.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.16 Places party members into row formations to give
+ * @plugindesc Places party members into row formations to give
  * them distinct advantages based on row location.
  * @author Mage Studios Engine Plugins
  *
@@ -983,7 +983,7 @@ MageStudios.Row.version = 1.16;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_RowFormation');
+MageStudios.Parameters = PluginManager.parameters('MSEP_RowFormation');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.RowMaximum = Number(MageStudios.Parameters['Maximum Rows']);

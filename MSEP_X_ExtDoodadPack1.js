@@ -8,11 +8,11 @@ Imported.MSEP_X_ExtDoodadPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EDP1 = MageStudios.EDP1 || {};
-MageStudios.EDP1.version = 1.01;
+MageStudios.EDP1.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_GridFreeDoodads.js) Adds extra options
+ * @plugindesc (Requires MSEP_GridFreeDoodads.js) Adds extra options
  * to the Grid-Free Doodads plugin's doodad settings.
  * @author Mage Studios Engine Plugins
  *
@@ -1174,7 +1174,7 @@ MageStudios.Util.randomIntBetween = function(min, max) {
 } else { // MageStudios.GFD.version
 
 var text = '================================================================\n';
-text += 'MEP_X_ExtDoodadPack1 requires MSEP_GridFreeDoodads to be at the ';
+text += 'MSEP_X_ExtDoodadPack1 requires MSEP_GridFreeDoodads to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_GridFreeDoodads plugin.\n';
 text += '================================================================\n';

@@ -8,11 +8,11 @@ Imported.MSEP_LifeSteal = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LS = MageStudios.LS || {};
-MageStudios.LS.version = 1.04;
+MageStudios.LS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Enables passive life steal traits without them being
+ * @plugindesc Enables passive life steal traits without them being
  * active abilities but instead as passive traits.
  * @author Mage Studios Engine Plugins
  *
@@ -266,7 +266,7 @@ MageStudios.LS.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_LifeSteal');
+MageStudios.Parameters = PluginManager.parameters('MSEP_LifeSteal');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LSHPOver = eval(String(MageStudios.Parameters['Enable HP Overheal']));

@@ -8,11 +8,11 @@ Imported.MSEP_UtilityCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.UCE = MageStudios.UCE || {};
-MageStudios.UCE.version = 1.01;
+MageStudios.UCE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Make common events occur at specific gameplay points
+ * @plugindesc Make common events occur at specific gameplay points
  * such as on loading, after battles, etc.
  * @author Mage Studios Engine Plugins
  *
@@ -152,7 +152,7 @@ MageStudios.UCE.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_UtilityCommonEvents');
+MageStudios.Parameters = PluginManager.parameters('MSEP_UtilityCommonEvents');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.UtilCommonEvents = {

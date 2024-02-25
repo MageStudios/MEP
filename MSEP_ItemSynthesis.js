@@ -8,11 +8,11 @@ Imported.MSEP_ItemSynthesis = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IS = MageStudios.IS || {};
-MageStudios.IS.version = 1.11;
+MageStudios.IS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.11 Players can now craft their own items in-game
+ * @plugindesc Players can now craft their own items in-game
  * through an item synthesis system.
  * @author Mage Studios Engine Plugins
  *
@@ -395,7 +395,7 @@ MageStudios.IS.version = 1.11;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ItemSynthesis');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ItemSynthesis');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ISSynthCmd = String(MageStudios.Parameters['Synthesis Command']);

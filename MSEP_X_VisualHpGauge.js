@@ -8,11 +8,11 @@ Imported.MSEP_X_VisualHpGauge = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.VHG = MageStudios.VHG || {};
-MageStudios.VHG.version = 1.07
+MageStudios.VHG.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.07 (Requires MSEP_BattleEngineCore.js) Reveal HP Gauges
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Reveal HP Gauges
  * when a battler is selected or takes damage in battle.
  * @author Mage Studios Engine Plugins
  *
@@ -239,7 +239,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_VisualHpGauge');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_VisualHpGauge');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.VHGDisplayActor = String(MageStudios.Parameters['Display Actor']);

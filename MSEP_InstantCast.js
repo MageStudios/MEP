@@ -8,11 +8,11 @@ Imported.MSEP_InstantCast = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Instant = MageStudios.Instant || {};
-MageStudios.Instant.version = 1.12;
+MageStudios.Instant.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.12 Allows skills/items to be instantly cast after being
+ * @plugindesc Allows skills/items to be instantly cast after being
  * selected in the battle menu.
  * @author Mage Studios Engine Plugins
  *
@@ -209,7 +209,7 @@ MageStudios.Instant.version = 1.12;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_InstantCast');
+MageStudios.Parameters = PluginManager.parameters('MSEP_InstantCast');
 MageStudios.Icon = MageStudios.Icon || {};
 
 MageStudios.Icon.Instant = Number(MageStudios.Parameters['Instant Icon']);

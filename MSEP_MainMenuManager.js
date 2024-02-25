@@ -8,11 +8,11 @@ Imported.MSEP_MainMenuManager = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MMM = MageStudios.MMM || {};
-MageStudios.MMM.version = 1.03
+MageStudios.MMM.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 This plugin allows you to manage the various aspects
+ * @plugindesc This plugin allows you to manage the various aspects
  * of your main menu.
  * @author Mage Studios Engine Plugins
  *
@@ -4553,7 +4553,7 @@ MageStudios.MMM.version = 1.03
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MainMenuManager');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MainMenuManager');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MMMCmdAlign = String(MageStudios.Parameters['Command Alignment']);

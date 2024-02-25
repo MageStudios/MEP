@@ -8,11 +8,11 @@ Imported.MSEP_ClassChangeCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CCC = MageStudios.CCC || {};
-MageStudios.CCC.version = 1.13;
+MageStudios.CCC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.13 This plugin creates a system where your player
+ * @plugindesc This plugin creates a system where your player
  * can change classes through the main menu.
  * @author Mage Studios Engine Plugins
  *
@@ -298,68 +298,6 @@ MageStudios.CCC.version = 1.13;
  *
  * Remember to turn off 'Auto Add Menu' from the plugin parameters.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.13:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.12:
- * - Optimization update.
- *
- * Version 1.11:
- * - Added <Use Nickname> notetag for classes. This will cause the class to use
- * the actor's nickname instead when listed in the class list.
- *
- * Version 1.10:
- * - Added <Cannot Change Class> notetag for actors and two plugin commands:
- * EnablePrimaryClassChange and DisablePrimaryClassChange for actors.
- * - Added 'Auto Add Menu' to plugin parameters. This way, users don't have to
- * make conflict with it if manually positioning the command with the Main Menu
- * Manager plugin.
- *
- * Version 1.09a:
- * - Optimization update.
- * - When switching classes to a globally unlocked class, actors won't unlock
- * those classes anymore. This is to keep the RemoveClassAll working without
- * having to manually use RemoveClass for all classes individually.
- *
- * Version 1.08:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.07:
- * - Fixed a bug that carried over a previously changed actor's stats into the
- * stat comparison window.
- *
- * Version 1.06:
- * - Made an update to the 'Change Actor Images' to give changes to actor
- * images priority over class images. Setting the 'Change Actor Images' to
- * (None) will return it back to using class images.
- *
- * Version 1.05:
- * - If using the Skill Learn System and Skill Menu Integration, the
- * "Learn Skill" command now carries over to the Skill menu itself to utilize
- * the integrated system.
- *
- * Version 1.04:
- * - Fixed a bug that would revive dead party members by changing their class.
- *
- * Version 1.03:
- * - Fixed a bug that would duplicate non-independent items.
- * - Fixed a bug that prevented visual appearances from updating until entering
- * a new map.
- *
- * Version 1.02a:
- * - Added a failsafe for users to prevent them from attempting to learn skills
- * from classes that don't exist.
- *
- * Version 1.01:
- * - Fixed an asynch issue with changing class images when moving to another
- * face graphic that isn't on the same iMageStudios.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -367,7 +305,7 @@ MageStudios.CCC.version = 1.13;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ClassChangeCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ClassChangeCore');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

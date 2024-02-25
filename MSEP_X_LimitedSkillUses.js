@@ -8,11 +8,11 @@ Imported.MSEP_X_LimitedSkillUses = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LSU = MageStudios.LSU || {};
-MageStudios.LSU.version = 1.06;
+MageStudios.LSU.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 (Requires MSEP_SkillCore.js) Make certain skills have
+ * @plugindesc (Requires MSEP_SkillCore.js) Make certain skills have
  * a limited amount of times they can be used in battle.
  * @author Mage Studios Engine Plugins
  *
@@ -353,7 +353,7 @@ if (Imported.MSEP_SkillCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_LimitedSkillUses');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_LimitedSkillUses');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

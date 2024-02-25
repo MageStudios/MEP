@@ -8,596 +8,13 @@ Imported.MSEP_X_CoreUpdatesOpt = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Updates = MageStudios.Updates || {};
-MageStudios.Updates.version = 1.61;
+MageStudios.Updates.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.61 (Req MSEP_CoreEngine.js) Update your game without needing
+ * @plugindesc (Req MSEP_CoreEngine.js) Update your game without needing
  * to change your base rpg_x.js files and optimize it for desktop.
  * @author Mage Studios Engine Plugins
- *
- * @help
- * ============================================================================
- * Introduction
- * ============================================================================
- *
- * This plugin requires the following:
- * - MSEP_CoreEngine plugin installed
- * - Installing this plugin under MSEP_CoreEngine
- * - RPG Maker MV version base code 1.4.0 or above
- * - Follow the instructions listed in the Help File's "Instructions" section
- *
- * Does your game project have at least base code (rpg_x.js) 1.4.0 or above?
- * And has RPG Maker MV updated past that, but you don't feel like updating the
- * base code manually, probably because you've made some edits to the code
- * itself? Yet, you still want to take advantage of the changes from the
- * version ups? This plugin will take care of that for you while keeping your
- * base code intact, while 'patching' the changes made from higher version ups.
- *
- * This plugin also adds in the updates and new functions from the versions
- * leading up to 1.5.2 to ensure that your project has the most up to date
- * functions even if it is running 1.4.0. This way, you do not have to tamper
- * with the game project's base code files yourself.
- *
- * Note: you will still have to download the newest Pixi libraries and to get
- * things working properly with this plugin. More will be explained in this
- * plugin's instructions section under the help file.
- *
- * ============================================================================
- * Instructions
- * ============================================================================
- *
- * If you have an old project that needs updating, do the following:
- *
- * 1. Make a backup of your project.
- * 2. Create a new project or go to the "NewData" folder in your RPG Maker MV
- *    root folder (where RPG Maker MV is installed).
- * 3. Copy the "libs" folder under "js" and replace the one in your old project.
- * 4. Copy the new index.html file to your current project.
- * 5. Update gamefont.css just in case.
- * 6. Make sure you have the latest version of MSEP_CoreEngine.js installed.
- * 7. Install MSEP_X_CoreUpdatesOpt.js (this plugin) under MSEP_CoreEngine in the
- *    game project's Plugin Manager list.
- * 8. Run your game!
- *
- * ============================================================================
- * Desktop Optimization Option
- * ============================================================================
- *
- * This plugin also includes Mage's Desktop Optimization base code changes
- * for those who wish to optimize their projects as primarily desktop-only
- * games. The reason behind such an option is that since the 1.5.0 update, RPG
- * Maker MV has added a lot of wonderful new features to the editor as a whole.
- * However, the base code has been updated such a way that RPG Maker MV games
- * favor mobile game optimization over desktop games. Because of this, RPG
- * Maker MV games running off 1.5.0 and up have strange issues when images are
- * loading unlike versions 1.4.0 and below.
- *
- * This feature serves as a hybrid between the latest versions of RPG Maker MV
- * by utilizing the 1.4.0 source code that was better suited for desktop
- * optimization. This way, for developers who aim primarily at the development
- * of games for desktop, your games will be running as they did with the 1.4.0
- * base code while being able to make full use of the most recent updated RPG
- * Maker MV version's features!
- *
- * ============================================================================
- * RPG Maker MV 1.1.0 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Sprite.prototype.updateTransform – no longer needs rounding down.
- * Tilemap.prototype.update – animation frame removed
- * Tilemap.prototype.refresh – repaint flag removed
- * Tilemap.prototype.updateTransform – removed a lot of animation checks
- * Tilemap.prototype._paintTiles – animation frame check moved to here
- * Tilemap.prototype._drawAutotile – fixed error with variable names
- *
- * rpg_managers.js
- * 
- * DataManager.saveGame – no longer corrupts save file while saving during a 
- * parallel process
- * StorageManager.backup – new function added
- * StorageManager.backupExists – new function added
- * StorageManager.cleanBackup – new function added
- * StorageManager.restoreBackup – new function added
- * StorageManager.loadFromLocalBackupFile – new function added
- * StorageManager.loadFromWebStorageBackup – new function added
- * StorageManager.webStorageBackupExists – new function added
- * SceneManager – added FPS synch
- * SceneManager.updateMain – added in FPS synch
- * BattleManager.processEscape – removed battle state removal process from
- * wrong spot
- * BattleManager.processAbort – inserted battle state removal process to
- * correct timing
- * 
- * rpg_objects.js
- * Game_Action.prototype.decideRandomTarget – random target index bug fixed
- * Game_Action.prototype.evaluate – target index bug fixed
- * Game_Action.prototype.evalDamageFormula – if formulas are used that return
- * NaN, return 0 instead
- * Game_Actor.prototype.changeClass – exp bug fixed
- * Game_Event.prototype.updateSelfMovement – added extra check to see if the
- * event is not locked
- * Game_Interpreter.prototype.command321 – class change command now has the
- * option to keep exp across changing classes
- * 
- * rpg_scenes.js
- * Scene_Save.prototype.onSaveSuccess – backup process functionality added
- *
- * rpg_sprites.js
- * Sprite_Actor.prototype.refreshMotion – added a fix for guard motion
- * Spriteset_Map.prototype._canvasReAddParallax – new function added
- * Spriteset_Map.prototype.updateParallax – implemented fix for parallax bug
- *
- * rpg_windows.js
- * Window_MenuStatus.prototype.drawItemImage – fixed bug involving variable
- * face dimensions
- * Window_ActorCommand.prototype.selectLast – fixed bug with saved last
- * selected command
- *
- * ============================================================================
- * RPG Maker MV 1.2.0 Changelog
- * ============================================================================
- * 
- * rpg_core.js
- * TilingSprite.prototype.generateTilingTexture added.
- * 
- * rpg_objects.js
- * Game_Picture.prototype.updateRotation updated. This is to accomodate for the 
- * set rotation value.
- * 
- * rpg_sprites.js
- * Sprite_Animation.prototype.updateCellSprite updated. The sprite will always
- * be visible if the pattern exists.
- *
- * ============================================================================
- * RPG Maker MV 1.3.0 Changelog
- * ============================================================================
- * 
- * rpg_core.js
- * Arrays get a new function: equals
- * CacheEntry new class
- * Bitmap gets many lines updated from Pixi2 to Pixi4
- * Bitmap.initialize
- * Bitmap.load
- * Bitmap.snap
- * Bitmap.onLoad
- * Bitmap._setDirty
- * Bitmap.touch, Bitmap.bltImage new functions
- * Graphics gets line updated from Pixi2 to Pixi4
- * Graphics.isWebGL
- * Graphics gets new function: callGC
- * Sprite gets many lines updated from Pixi2 to Pixi4
- * Sprite.constructor
- * Sprite._refresh
- * Sprite._renderCanvas
- * Sprite._renderWebGL
- * Sprite gets a new function: _speedUpCustomBlendModes
- * Tilemap gets many lines updated from Pixi2 to Pixi4
- * Tilemap.initialize
- * Tilemap.update
- * Tilemap.refresh
- * Tilemap.updateTransform
- * Tilemap._paintTiles
- * Tilemap._drawNormalTile
- * Tilemap._drawAutotile
- * Tilemap.isWallSideTile
- * ShaderTilemap new class
- * TilingSprite gets many lines updated from Pixi2 to Pixi4
- * TilingSprite.initialize
- * TilingSprite.updateTransform
- * TilingSprite._refresh
- * TilingSprite._renderCanvas, TilingSprite._renderWebGL new functions
- * ScreenSprite gets many lines updated from Pixi2 to Pixi4
- * ScreenSprite.initialize
- * ScreenSprite._renderCanvas
- * Window gets many lines updated from Pixi2 to Pixi4
- * Window.initialize
- * Window.updateTransform
- * Window._createAllParts
- * WindowLayer gets many lines updated from Pixi2 to Pixi4
- * WindowLayer.initialize
- * WindowLayer._renderCanvas
- * WindowLayer._renderWebGL
- * WindowLayer._webglMaskWindow
- * Weather gets line updated from Pixi2 to Pixi4
- * Weather.initialize
- * ToneFilter gets many lines updated from Pixi2 to Pixi4
- * ToneFilter.initialize removed
- * ToneFilter.reset removed
- * ToneFilter.adjustHue
- * ToneFilter.adjustSaturation
- * ToneFilter.adjustTone
- * ToneSprite gets many lines updated from Pixi2 to Pixi4
- * ToneSprite.initialize
- * ToneSprite._renderCanvas
- * ToneSprite._renderWebGL
- * Stage gets line updated from Pixi2 to Pixi4
- * Stage.initialize
- * WebAudio gets functions updated to work with the new Decrypter
- * WebAudio._load
- * WebAudio._onXhrLoad
- * Html5Audio gets function updated to work with the new Decrypter
- * Html5Audio.setup
- * Decrypter new class
- * 
- * rpg_managers.js
- * DataManager.onLoad gets update check for Decrypter added
- * ImageManager._cache no longer exists. ImageManager.cache now takes its place
- * as a new CacheMap
- * ImageManager.loadEmptyBitmap, ImageManager.loadNormalBitmap,
- * ImageManager.clear, ImageManager.isReady are now all updated from _cache to
- * cache
- * AudioManager gains AudioManager._blobUrl
- * AudioManager.playBgm gets update check for Decrypter
- * AudioManager.playEncryptedBgm, AudioManager.createDecryptBuffer new functions
- * AudioManager.createBuffer updated to utilize _blobUrl
- * AudioManager.shouldUseHtml5Audio updated for Decrypter
- * SceneManager.update gets updated for a MobileSafari check
- * SceneManager.updateMain gets updated to function differently if using
- * MobileSafari
- * SceneManager.updateManagers new function
- *
- * rpg_objects.js
- * Game_Picture.updateRotation now accepts negative speed
- * Game_BattlerBase.tpRate now utilizes Game_BattlerBase.maxTp function
- *
- * rpg_scenes.js
- * Scene_Boot.create now loads the window image separately
- * Scene_Boot.loadSystemWindowImage new function
- * Scene_Boot.loadSystemImages no longer loads the window image
- *
- * rpg_sprites.js
- * Sprite_Animation.initialize gets new _reduceArtifacts variable
- * Sprite_Animation.updateCellSprite gets an update where the pattern sprite is
- * now always visible if the pattern is at least 0
- * Sprite_Picture.initialize gets new _isPicture variable
- * Spriteset_Map.createTilemap is updated to check if WebGL is being used. If it
- * is, the tilemap will be a ShaderTilemap instead of a regular Tilemap
- * Spriteset_Map.loadTileset is updated to refresh tilemap flags when loading a
- * new one
- *
- * ============================================================================
- * RPG Maker MV 1.3.1 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * CacheEntry.free function fixed
- * Tilemap’s TileRenderer mode will automatically default to Nearest Neighbor
- * ScreenSprite updates
- * New properties added: anchor and blendMode
- * ScreenSprite.initialize
- * ScreenSprite.setColor
- * WebAudio.onXhrLoad function fixed
- *
- * ============================================================================
- * RPG Maker MV 1.3.2 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Added waitForLoading and register variables.
- * Graphics.playVideo function updated to add a Mobile Safari check for video
- * playing.
- * Graphics.isVideoPlaying function updated to add a Mobile Safari check for 
- * video playing.
- * Graphics._onVideoLoad function updated to add a Mobile Safari check for 
- * video playing.
- * Graphics._onVideoEnd function updated to add a Mobile Safari check for video 
- * playing.
- * Input._updateGamepadState function updated to provide Direct Input 
- * Controller support.
- * Sprite.prototype.initialize function updated to no longer have an offset 
- * variable. It is now replaced by the pivot.
- * Sprite.prototype._refresh updated offset variable to work with pivot and 
- * texture update ID.
- * Sprite.prototype.updateTransform function removed.
- * TilingSprite is now a different object type (PictureTilingSprite).
- * TilingSprite.prototype.initialize function updated to call 
- * PictureTilingSprite instead.
- * TilingSprite.prototype._renderCanvas_PIXI and TilingSprite._renderWebGL_PIXI 
- * updated to work with PictureTilingSprite instead.
- * TilingSprite.prototype._refresh function updated to work with 
- * PictureTilingSprite and texture update ID.
- * TilingSprite.prototype._speedUpCustomBlendModes new.
- * TilingSprite.prototype._renderWebGL new function.
- * WindowLayer.prototype.initialize function updated to fix memory leak.
- * WindowLayer.prototype.onRemoveAsAChild new function.
- * WindowLayer.prototype.renderWebGL updated to work with PIXI.Point shift.
- * WindowLayer.prototype._maskWindow function updated to require shift.
- * 
- * rpg_managers.js
- * SceneManager.onKeyDown function updated to have a warning message for 
- * Japanese game systems: Reloading the game with a gamepad connected will 
- * cause a disconnect.
- * BattleManager.invokeCounterAttack function updated to display the target as 
- * the counter target instead of the subject.
- * BattleManager.invokeMagicReflection function updated to register the 
- * reflection target and display the target as the reflect target instead of the
- * subject.
- * 
- * rpg_objects.js
- * Game_Action.prototype.gainDrainedHp function updated to work with reflected 
- * targets.
- * Game_Action.prototype.gainDrainedMp function updated to work with reflected 
- * targets.
- * Game_Actor.prototype.isLearnedSkill function updated to now include skills 
- * added through traits.
- * Game_Interpreter.prototype.command337 (Show Battle Animation) now updated to 
- * work with new Editor update.
- * 
- * rpg_scenes.js
- * Scene_Map.prototype.terminate updated to fix memory leak bug.
- *
- * ============================================================================
- * RPG Maker MV 1.3.3 Changelog
- * ============================================================================
- *
- * Strictly an editor update.
- *
- * ============================================================================
- * RPG Maker MV 1.3.4 Changelog
- * ============================================================================
- * 
- * rpg_core.js
- * Bitmap.snap now destroys the previously saved snapshot
- * TilingSprite.prototype.updateTransform gets comments removed
- * WindowLayer.prototype.renderWebG now rounds up the shifted window coordinates
- * 
- * rpg_managers.js
- * SceneManager.onKeyDown gets that terrible popup removed when pressing F5
- * BattleManager.updateEvent now uses BattleManager.checkAbort2 function
- * BattleManager.checkAbort2 is a new function used to play an extra sound
- * effect, mark the battle as escaped
- * BattleManager.updateBattleEnd now checks if the battle is aborted if the
- * party is all dead and not escaped
- * 
- * rpg_objects.js
- * Game_Actor.prototype.isLearnedSkill reverted back to its 1.0.0 to 1.3.1
- * version
- * Game_Actor.prototype.hasSkill now checks if the skill exists, whether it is
- * inherently or gained through a temporary trait
- * Game_Actor.prototype.testEscape new function that checks if an action (item
- * or skill) has the escape effect
- * Game_Actor.prototype.meetsUsableItemConditions now checks specifically for
- * actor usage and to check if the item has an escape effect
- * Game_Interpreter.prototype.command111 (Conditional Branch) updated to make
- * use of the new Game_Actor.hasSkill function
- *
- * ============================================================================
- * RPG Maker MV 1.4.0 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * TouchInput.isMousePressed function removed
- * 
- * rpg_objects.js
- * Game_Temp.prototype.initialize function removes map touch boolean
- * Game_Temp.prototype.isMapTouched function removed
- * Game_Temp.prototype.setIsMapTouched function removed
- * Game_Actor.prototype.meetsUsableItemConditions altered to return a reference
- * to Game_BattlerBase.prototype.meetsUsableItemConditions for checking
- * Game_Player.prototype.updateDashing now checks if the dash button is pressed
- * instead of if the game map is being touched
- * 
- * rpg_scenes.js
- * Scene_Map.prototype.processMapTouch updated to reflect the removal of the
- * map touch functions
- *
- * ============================================================================
- * RPG Maker MV 1.5.0 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Utils.isSupportPassiveEvent new function added
- * ImageCache added and respective functions
- * iOS memory function updates for reusing images
- * Bitmap.prototype.initialize split into new functions for iOS memory function
- * update
- * Bitmap.load split into new functions for iOS memory function update
- * Bitmap.prototype.isReady and Bitmap.prototype.isError now has extra checks
- * Bitmap properties updated for Pixi4.4
- * Bitmap.prototype.addLoadListener updated as per updated ready functions
- * Bitmap.prototype.addLoadListener updated as per updated listener functions
- * Bitmap.request new function added
- * Graphics.initialize updated with new variables added
- * Graphics._setupCssFontLoading new function added
- * Graphics.render updated
- * Graphics.printLoadingError new function added
- * Graphics.isFontLoaded updated
- * Graphics.playVideo updated
- * Graphics._createVideo updated
- * Graphics._createRenderer updated
- * Graphics._onVideoLoad updated
- * Graphics._onVideoError updated
- * Graphics._setupEventHandlers updated with new listener functions
- * Input._onKeyDown updated
- * TouchInput._setupEventHandlers updated
- * Sprite.prototype.setFrame updated
- * Sprite.prototype._onBitmapLoad updated
- * Sprite.prototype._renderCanvas updated
- * Sprite.prototype._renderWebGL updated
- * ShaderTilemap.prototype._hackRenderer updated
- * WindowLayer.prototype.renderWebGL updated
- * WindowLayer.prototype._maskWindow updated
- * WebAudio._standAlone new function added
- * WebAudio._createMasterGainNode updated
- * WebAudio._fadeIn updated
- * WebAudio._fadeOut updated
- * WebAudio.prototype.fadeOut updated
- * WebAudio.prototype._load updated
- * WebAudio.prototype._createNodes updated
- * JsonEx.stringify updated
- * JsonEx.parse updated
- * JsonEx._encode updated
- * JsonEx._decode updated
- * Decrypter.decryptImg updated
- * ResourceHandler new class
- * 
- * rpg_managers.js
- * DataManager.loadDataFile updated
- * DataManager.loadMapData updated
- * DataManager.loadSavefileImage updated with function rename
- * ImageManager._imageCache, ImageManager._requestQueue, 
- * ImageManager._systemReservationId, ImageManager._generateCacheKey newly added
- * ImageManager.loadEmptyBitmap updated with function rename
- * ImageManager.loadNormalBitmap updated with function rename
- * ImageManager.clear updated with new ImageCache
- * ImageManager.isReady updated with new ImageCache
- * New functions (renamed):
- * ImageManager.reserveAnimation
- * ImageManager.reserveBattleback1
- * ImageManager.reserveBattleback2
- * ImageManager.reserveEnemy
- * ImageManager.reserveCharacter
- * ImageManager.reserveFace
- * ImageManager.reserveParallax
- * ImageManager.reservePicture
- * ImageManager.reserveSvActor
- * ImageManager.reserveSvEnemy
- * ImageManager.reserveSystem
- * ImageManager.reserveTileset
- * ImageManager.reserveTitle1
- * ImageManager.reserveTitle2
- * ImageManager.reserveBitmap
- * ImageManager.reserveNormalBitmap
- * ImageManager.releaseReservation
- * ImageManager.setDefaultReservationId
- * ImageManager.requestAnimation
- * ImageManager.requestBattleback1
- * ImageManager.requestBattleback2
- * ImageManager.requestEnemy
- * ImageManager.requestCharacter
- * ImageManager.requestFace
- * ImageManager.requestParallax
- * ImageManager.requestPicture
- * ImageManager.requestSvActor
- * ImageManager.requestSvEnemy
- * ImageManager.requestSystem
- * ImageManager.requestTileset
- * ImageManager.requestTitle1
- * ImageManager.requestTitle2
- * ImageManager.requestBitmap
- * ImageManager.requestNormalBitmap new function
- * ImageManager.update new function
- * ImageManager.clearRequest new function
- * AudioManager._masterVolume added
- * SceneManager._getTimeInMs renamed to
- * SceneManager._getTimeInMsWithoutMobileSafari
- * SceneManager.preferableRendererType updated per new graphics updates
- * SceneManager.update added new updatemanagers
- * SceneManager.updateMain updated for the new
- * SceneManager._getTimeInMsWithoutMobileSafari
- * SceneManager.updateManagers updated to utilize ImageManager.update() function
- * SceneManager.changeScene updated with new reservation system
- * SceneManager.resume new function added
- * 
- * rpg_objects.js
- * Game_System.prototype.saveWalkingBgm2 new function added
- * Game_Message.prototype.allText updated
- * Game_Map.prototype.autoplay updated for vehicle bgm to take into
- * consideration the new Game_System.prototype.saveWalkingBgm2 function
- * Game_Character.prototype.findDirectionTo updated
- * Game_Interpreter.prototype.setup updated to now request images at the start
- * Game_Interpreter.prototype.command282 (change tileset) updated per the new
- * image reservation system
- * Game_Interpreter.requestImages new function added to preload images that will
- * be used by the event
- * 
- * rpg_scenes.js
- * Scene_Base.prototype.initialize updated with new reservation system
- * Scene_Base.prototype.attachReservation new function added
- * Scene_Base.prototype.detachReservation new function added
- * Scene_Base.prototype.update no longer checks audio errors
- * Scene_Boot.prototype.loadSystemWindowImage updated now to reserve images
- * instead of loading them
- * Scene_Boot.loadSystemImages updated now to reserve images instead of loading
- * them
- * Scene_Boot.prototype.isGameFontLoaded updated now with CSS and elapsed
- * loading time increased from 20 seconds to 60 seconds
- * Scene_Map.prototype.terminate updated now to clear requests
- * Scene_Menu.prototype.createStatusWindow updated now to reserve face images
- * Scene_Skill.prototype.start new function added
- * Scene_Skill.prototype.createStatusWindow updated now to reserve face images
- * Scene_Status.prototype.create updated now to reserve face images
- * Scene_Status.prototype.start new function added
- * Scene_Battle.prototype.terminate now clears images used
- * 
- * rpg_sprites.js
- * Sprite_Animation.prototype.isReady uses new image ready system
- * Sprite_Animation.prototype.updateCellSprite updated
- * 
- * rpg_windows.js
- * Window_Base.prototype.reserveFaceImages new function added
- * Window_MenuStatus.prototype.initialize no longer loads images
- * Window_MenuStatus.prototype.loadImages now uses reserve image functions
- * Window_Status.prototype.initialize updated to have an initial null actor
- * Window_NameEdit.prototype.initialize now uses reserve image functions
- * Window_Message.prototype.initMembers updated with Utils.generateRuntimeId()
- * function added
- * Window_Message.prototype.updateLoading now uses image ready system
- * Window_Message.prototype.loadMessageFace now uses reserve image functions
- * Window_Message.prototype.drawMessageFace updated with reserve image functions
- *
- * ============================================================================
- * RPG Maker MV 1.5.1 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Sprite.prototype._renderWebGL updated to be picky when detecting usage for a
- * heavy renderer
- * PIXI.GC_MODES.DEFAULT = PIXI.GC_MODES.AUTO; changed to PIXI.settings.GC_MODE
- * = PIXI.GC_MODES.AUTO;
- * 
- * rpg_managers.js
- * BattleManager.initMembers added new this._turnForced variable
- * BattleManager.endTurn updated to check if a turn has been forced
- * BattleManager.isForcedTurn new function
- * BattleManager.processForcedAction updated for new forced turn variable
- * 
- * rpg_objects.js
- * Game_Battler.prototype.onTurnEnd updated to have a check for a forced turn
- * Game_Interpreter.prototype.command122 (control variables) updated to have a
- * proper range calculation change
- *
- * ============================================================================
- * RPG Maker MV 1.5.2 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Graphics.initialize starts with _videoUnlocked with a false boolean.
- * Graphics._setupEventHandlers added keydown and mousedown Event Listeners
- * WebAudio._setupEventHandlers function updated to have keydown, mousedown,
- * touchend listeners resume function.
- * 
- * rpg_managers.js
- * BattleManager.updateEvent now returns checkAbort instead of checkAbort2
- * BattleManager.checkAbort2 removed and became BattleManager.checkAbort
- * 
- * rpg_objects.js
- * Game_Interpreter.prototype.command113 (break loop) event fixed
- * 
- * rpg_scenes.js
- * No changes (good, since it doesn’t have the Scene_Item active window breaker)
- * 
- * rpg_sprites.js
- * Spriteset_Battle.prototype.overworldBattleback1Name and
- * Spriteset_Battle.prototype.overworldBattleback2Name functions updated to
- * return no backdrop if an empty string is determined
- *
- * ============================================================================
- * RPG Maker MV 1.6.1 Changelog
- * ============================================================================
- *
- * rpg_core.js
- * Utils.isOptionValid function updated with fail saves
- * WebAudio.prototype._startPlaying function updated for loopLength variable
- * 
- * rpg_objects.js
- * Game_Interpreter.prototype.command113 (break loop) function updated
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
  *
  * @param ---Official Updates---
  * @default
@@ -733,6 +150,51 @@ MageStudios.Updates.version = 1.61;
  * @off NO
  * @desc Add Mage's Desktop Optimization Updates?
  * @default true
+ * 
+ * @help
+ * ============================================================================
+ * Introduction
+ * ============================================================================
+ *
+ * This plugin requires the following:
+ * - MSEP_CoreEngine plugin installed
+ * - Installing this plugin under MSEP_CoreEngine
+ * - RPG Maker MV version base code 1.4.0 or above
+ * - Follow the instructions listed in the Help File's "Instructions" section
+ *
+ * Does your game project have at least base code (rpg_x.js) 1.4.0 or above?
+ * And has RPG Maker MV updated past that, but you don't feel like updating the
+ * base code manually, probably because you've made some edits to the code
+ * itself? Yet, you still want to take advantage of the changes from the
+ * version ups? This plugin will take care of that for you while keeping your
+ * base code intact, while 'patching' the changes made from higher version ups.
+ *
+ * This plugin also adds in the updates and new functions from the versions
+ * leading up to 1.5.2 to ensure that your project has the most up to date
+ * functions even if it is running 1.4.0. This way, you do not have to tamper
+ * with the game project's base code files yourself.
+ *
+ * Note: you will still have to download the newest Pixi libraries and to get
+ * things working properly with this plugin. More will be explained in this
+ * plugin's instructions section under the help file.
+ *
+ * ============================================================================
+ * Instructions
+ * ============================================================================
+ *
+ * If you have an old project that needs updating, do the following:
+ *
+ * 1. Make a backup of your project.
+ * 2. Create a new project or go to the "NewData" folder in your RPG Maker MV
+ *    root folder (where RPG Maker MV is installed).
+ * 3. Copy the "libs" folder under "js" and replace the one in your old project.
+ * 4. Copy the new index.html file to your current project.
+ * 5. Update gamefont.css just in case.
+ * 6. Make sure you have the latest version of MSEP_CoreEngine.js installed.
+ * 7. Install MSEP_X_CoreUpdatesOpt.js (this plugin) under MSEP_CoreEngine in the
+ *    game project's Plugin Manager list.
+ * 8. Run your game!
+ *
  */
 //=============================================================================
 
@@ -748,7 +210,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_CoreUpdatesOpt');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_CoreUpdatesOpt');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.ParameterVersionCheck = function(version, key, parameter) {
@@ -8200,7 +7662,7 @@ require('nw.gui').Window.get().showDevTools();
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_CoreUpdatesOpt without the required plugins. Please visit ';
+text += 'MSEP_X_CoreUpdatesOpt without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

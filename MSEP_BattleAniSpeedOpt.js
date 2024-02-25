@@ -8,14 +8,66 @@ Imported.MSEP_BattleAniSpeedOpt = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BASO = MageStudios.BASO || {};
-MageStudios.BASO.version = 1.01;
+MageStudios.BASO.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Add battle animation speed options for your game so your
+ * @plugindesc Add battle animation speed options for your game so your
  * players can choose the speed setting they want.
  * @author Mage Studios Engine Plugins
+ * @param ---General---
+ * @default
  *
+ * @param Option Name
+ * @parent ---General---
+ * @desc The option command text used in-game.
+ * @default Battle Animation
+ *
+ * @param Default Speed
+ * @parent ---General---
+ * @type number
+ * @min 0
+ * @desc The default speed used for battle animations.
+ * @default 4
+ *
+ * @param Affect Movement?
+ * @parent ---General---
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc Do you want this to affect the battler movement speed, too?
+ * @default true
+ *
+ * @param Affect Waiting?
+ * @parent ---General---
+ * @type boolean
+ * @on YES
+ * @off NO
+ * @desc Do you want this to affect battler animation waits and events, too?
+ * @default true
+ *
+ * @param ---Vocabulary---
+ * @default
+ *
+ * @param Speed 1
+ * @parent ---Vocabulary---
+ * @desc The text used for this speed.
+ * @default Fastest
+ *
+ * @param Speed 2
+ * @parent ---Vocabulary---
+ * @desc The text used for this speed.
+ * @default Faster
+ *
+ * @param Speed 3
+ * @parent ---Vocabulary---
+ * @desc The text used for this speed.
+ * @default Fast
+ *
+ * @param Speed 4
+ * @parent ---Vocabulary---
+ * @desc The text used for this speed.
+ * @default Full
  * @help
  * ============================================================================
  * Introduction
@@ -140,75 +192,6 @@ MageStudios.BASO.version = 1.01;
  *
  * Load Config Code:
  * // Empty. Provided by this plugin.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Compatibility update with MSEP_OptionsCore.js.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param ---General---
- * @default
- *
- * @param Option Name
- * @parent ---General---
- * @desc The option command text used in-game.
- * @default Battle Animation
- *
- * @param Default Speed
- * @parent ---General---
- * @type number
- * @min 0
- * @desc The default speed used for battle animations.
- * @default 4
- *
- * @param Affect Movement?
- * @parent ---General---
- * @type boolean
- * @on YES
- * @off NO
- * @desc Do you want this to affect the battler movement speed, too?
- * @default true
- *
- * @param Affect Waiting?
- * @parent ---General---
- * @type boolean
- * @on YES
- * @off NO
- * @desc Do you want this to affect battler animation waits and events, too?
- * @default true
- *
- * @param ---Vocabulary---
- * @default
- *
- * @param Speed 1
- * @parent ---Vocabulary---
- * @desc The text used for this speed.
- * @default Fastest
- *
- * @param Speed 2
- * @parent ---Vocabulary---
- * @desc The text used for this speed.
- * @default Faster
- *
- * @param Speed 3
- * @parent ---Vocabulary---
- * @desc The text used for this speed.
- * @default Fast
- *
- * @param Speed 4
- * @parent ---Vocabulary---
- * @desc The text used for this speed.
- * @default Full
- *
  */
 //=============================================================================
 
@@ -216,7 +199,7 @@ MageStudios.BASO.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BattleAniSpeedOpt');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BattleAniSpeedOpt');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BattleAniOptName = String(MageStudios.Parameters['Option Name']);

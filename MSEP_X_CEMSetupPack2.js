@@ -8,11 +8,11 @@ Imported.MSEP_X_CEMSetupPack2 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CEMSP2 = MageStudios.CEMSP2 || {};
-MageStudios.CEMSP2.version = 1.01;
+MageStudios.CEMSP2.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_CommonEventMenu.js) Adds more setups
+ * @plugindesc (Requires MSEP_CommonEventMenu.js) Adds more setups
  * to use with the Common Event Menu.
  * @author Mage Studios Engine Plugins
  *

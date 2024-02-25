@@ -8,11 +8,11 @@ Imported.MSEP_MultiTypeSkills = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MTS = MageStudios.MTS || {};
-MageStudios.MTS.version = 1.01;
+MageStudios.MTS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Allow skills to have multiple types to make them 
+ * @plugindesc Allow skills to have multiple types to make them 
  * appear in different skill type schools instead of just one.
  * @author Mage Studios Engine Plugins + Tigress Collaboration
  *

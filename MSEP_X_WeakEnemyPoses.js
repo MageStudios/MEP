@@ -8,11 +8,11 @@ Imported.MSEP_X_WeakEnemyPoses = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WEPose = MageStudios.WEPose || {};
-MageStudios.WEPose.version = 1.03;
+MageStudios.WEPose.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 (Requires MSEP_BattleEngineCore.js) Allow enemies to
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Allow enemies to
  * have different battler images when they're weakened.
  * @author Mage Studios Engine Plugins
  *

@@ -8,11 +8,11 @@ Imported.MSEP_X_AnimatedSVEnemies = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SVE = MageStudios.SVE || {};
-MageStudios.SVE.version = 1.19;
+MageStudios.SVE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.19 (Requires MSEP_BattleEngineCore.js) This plugin lets
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) This plugin lets
  * you use Animated Sideview Actors for enemies!
  * @author Mage Studios Engine Plugins
  *
@@ -1644,89 +1644,6 @@ MageStudios.SVE.version = 1.19;
  *   motion set for the enemy and the attack animation will be the enemy's
  *   default attack animation.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.19:
- * - Bugfix provided by SwiftIllusion regarding the animation positioning on
- * animated sideview enemies.
- *
- * Version 1.18:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Verison 1.17:
- * - Visual graphic update to sync attack animations properly with how actor
- * animations are now handled in the more updated RPG Maker MV versions.
- *
- * Version 1.16:
- * - Added 'Floating Death' plugin parameter.
- * - Optimization update.
- *
- * Version 1.15:
- * - Updated for RPG Maker MV version 1.3.2.
- *
- * Version 1.14:
- * - Pixi4 update to fix bug that caused state icons to fly off the screen.
- * - Fixed a compatibility issue with MSEP_X_VisualStateFX regarding state
- * sprites being disabled and causing crashes.
- *
- * Version 1.13:
- * - Compatibility update with MSEP_X_VisualStateFX to disable State Overlays on
- * enemies properly.
- *
- * Version 1.12:
- * - Fixed a bug that caused the <Sideview Show State Overlay> and 
- * <Sideview Hide State Overlay> notetags to not work.
- * - Fixed a bug that caused scaled enemies to have their state icons and
- * overlays appear in odd places.
- *
- * Version 1.11:
- * - Fixed a bug that caused hidden enemies to appear early on.
- *
- * Version 1.10:
- * - Optimized plugin to use less resources. Animated enemies will no longer
- * have a static graphic once the game is loaded.
- *
- * Version 1.09:
- * - Added a fix for state icons appearing behind battlers for the users who
- * aren't using the Action Sequence Packs.
- *
- * Version 1.08:
- * - State Icon and State Overlays will now synch together for floating and
- * jumping battlers.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.06a:
- * - Fixed a bug that prevented animated sideview enemies from not mirroring.
- * - Added <Sideview Show State Overlay> and <Sideview Hide State Overlay>
- * notetags to make certain enemies show/hide state overlays.
- * - Fixed a bug that was caused by motion notetags not retrieved properly.
- *
- * Version 1.05:
- * - Made adjustments to the <Sprite Height: x> notetag to also affect the
- * location of the state icons and effects.
- *
- * Version 1.04:
- * - Fixed a bug with Sprite Smoothing disabled on Shadows.
- * - Fixed a bug with the anchor Y positions being overwritten.
- *
- * Version 1.03:
- * - Fixed a bug that would cause <Sideview Width: x> & <Sideview Height: x>
- * notetags to crash the game.
- *
- * Version 1.02:
- * - Synchronized state icons and overlays with floating enemies.
- *
- * Version 1.01:
- * - Added 'HP Link Breathing' plugin parameter. If enabled, the lower the HP,
- * the slower the enemy breathes.
- * - Added <Enable HP Link Breathing> and <Disable HP Link Breathing> notetags.
- *
- * Version 1.00:
- * - Finished plugin! Hooray!
  */
 //=============================================================================
 
@@ -1738,7 +1655,7 @@ if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_AnimatedSVEnemies');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_AnimatedSVEnemies');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SVEAnchorX = Number(MageStudios.Parameters['Anchor X']);
@@ -2798,7 +2715,7 @@ MageStudios.Util.getRandomElement = function(array) {
 } else { // MageStudios.BEC.version
 
 var text = '================================================================\n';
-text += 'MEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
+text += 'MSEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
 text += '================================================================\n';

@@ -8,11 +8,11 @@ Imported.MSEP_StatusMenuCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Status = MageStudios.Status || {};
-MageStudios.Status.version = 1.04;
+MageStudios.Status.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Changes the Status menu for your characters into
+ * @plugindesc Changes the Status menu for your characters into
  * a hub that displays more character information.
  * @author Mage Studios Engine Plugins
  *
@@ -544,7 +544,7 @@ MageStudios.Status.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_StatusMenuCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_StatusMenuCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.StatusCmdOrder = String(MageStudios.Parameters['Command Order']);

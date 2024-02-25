@@ -12,19 +12,35 @@ MageStudios.EventMorph.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Allows events to completely morph into another, copying
+ * @plugindesc Allows events to completely morph into another, copying
  * over all pages, conditions, and event commands.
  * @author Mage Studios Engine Plugins
+ * 
+ * @param ---General---
+ * @default
+ *
+ * @param TemplateMaps
+ * @text Template Maps
+ * @parent ---General---
+ * @type number[]
+ * @min 1
+ * @max 999
+ * @desc A list of all the ID's of the maps that will be preloaded to
+ * serve as template maps for this plugin.
+ * @default ["1"]
+ *
+ * @param TemplateNames
+ * @text Template Names
+ * @parent ---General---
+ * @type struct<Template>[]
+ * @desc A list of templates made by name so you can use names
+ * instead of mapID and eventID combinations with script calls.
+ * @default []
  *
  * @help
  * ============================================================================
  * Introduction
  * ============================================================================
- *
- * WARNING: This plugin is best used with RPG Maker MV 1.5.0 or above! This is
- * because the MV 1.5.0 editor allows for this plugin to be made in an orderly
- * and efficient manner. Please make sure your RPG Maker MV software is up to
- * date before using this plugin to make the most out of it.
  *
  * Those familiar with RPG Maker will know that you can change the way events
  * operate through different pages. However, what if you wanted one event to
@@ -133,38 +149,6 @@ MageStudios.EventMorph.version = 1.00;
  *   - Map 10's event 20 will have its morphed effects removed.
  *   - All preserved morphing effects for this event will be removed.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param ---General---
- * @default
- *
- * @param TemplateMaps
- * @text Template Maps
- * @parent ---General---
- * @type number[]
- * @min 1
- * @max 999
- * @desc A list of all the ID's of the maps that will be preloaded to
- * serve as template maps for this plugin.
- * @default ["1"]
- *
- * @param TemplateNames
- * @text Template Names
- * @parent ---General---
- * @type struct<Template>[]
- * @desc A list of templates made by name so you can use names
- * instead of mapID and eventID combinations with script calls.
- * @default []
- *
  */
 /* ----------------------------------------------------------------------------
  * Template Parameter Structure
@@ -199,7 +183,7 @@ MageStudios.EventMorph.version = 1.00;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventMorpher');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventMorpher');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EventMorpherData = eval(MageStudios.Parameters['TemplateMaps']);

@@ -8,11 +8,11 @@ Imported.MSEP_FloorDamage = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FloorDmg = MageStudios.FloorDmg || {};
-MageStudios.FloorDmg.version = 1.02;
+MageStudios.FloorDmg.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Allows you to modify floor damage based on terrain tags.
+ * @plugindesc Allows you to modify floor damage based on terrain tags.
  * You can also change the color of the flash when damaged, too.
  * @author Mage Studios Engine Plugins
  *
@@ -100,7 +100,7 @@ MageStudios.FloorDmg.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_FloorDamage');
+MageStudios.Parameters = PluginManager.parameters('MSEP_FloorDamage');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.FloorDmgDefault = Number(MageStudios.Parameters['Default Damage']);

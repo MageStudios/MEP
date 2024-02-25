@@ -8,11 +8,11 @@ Imported.MSEP_X_SkillCostItems = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SCI = MageStudios.SCI || {};
-MageStudios.SCI.version = 1.05;
+MageStudios.SCI.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_SkillCore.js) Skills can now have an
+ * @plugindesc (Requires MSEP_SkillCore.js) Skills can now have an
  * item cost attached to them.
  * @author Mage Studios Engine Plugins
  *
@@ -273,7 +273,7 @@ if (Imported.MSEP_SkillCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_SkillCostItems');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_SkillCostItems');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SCICostStyle = Number(MageStudios.Parameters['Cost Style']);

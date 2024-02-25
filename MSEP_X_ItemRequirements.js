@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemRequirements = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemReq = MageStudios.ItemReq || {};
-MageStudios.ItemReq.version = 1.02;
+MageStudios.ItemReq.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_ItemCore.js) Place requirements on
+ * @plugindesc (Requires MSEP_ItemCore.js) Place requirements on
  * items before they can be used.
  * @author Mage Studios Engine Plugins
  *
@@ -684,7 +684,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ItemRequirements requires MSEP_ItemCore to be at the ';
+text += 'MSEP_X_ItemRequirements requires MSEP_ItemCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_ItemCore plugin.\n';
 text += '================================================================\n';

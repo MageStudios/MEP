@@ -8,11 +8,11 @@ Imported.MSEP_X_ActSeqPack3 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP3 = MageStudios.ASP3 || {};
-MageStudios.ASP3.version = 1.05;
+MageStudios.ASP3.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_BattleEngineCore.js) Camera control is
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Camera control is
  * added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
  *
@@ -384,31 +384,6 @@ MageStudios.ASP3.version = 1.05;
  * Load Config Code:
  * // Empty. Provided by this plugin.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.05:
- * - Compatibility update with MSEP_OptionsCore.js.
- *
- * Version 1.04:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.03:
- * - Restriction on Camera and Zoom action sequences lifted from being Sideview
- * only. Use them at your own caution.
- *
- * Version 1.02a:
- * - Updated the Game_Screen.startZoom() function from beta to newest version.
- * - Decided to separate the methods as it breaks panning.
- * - Changed priority of IF action sequences to higher to no longer interfere
- * other action sequences.
- *
- * Version 1.01:
- * - Updated help file to include Character X for target typing.
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -418,7 +393,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActSeqPack3');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack3');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ASP3CameraOption = String(MageStudios.Parameters['Camera Option']);

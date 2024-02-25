@@ -8,11 +8,11 @@ Imported.MSEP_SynchFpsOption = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.FpsSynch = MageStudios.FpsSynch || {};
-MageStudios.FpsSynch.version = 1.03;
+MageStudios.FpsSynch.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Adds a new command to Options menu for synching
+ * @plugindesc Adds a new command to Options menu for synching
  * the FPS of moniters with higher FPS rates.
  * @author Mage Studios Engine Plugins
  *
@@ -156,7 +156,7 @@ if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= '1.1.0') {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_FpsSynchOption');
+MageStudios.Parameters = PluginManager.parameters('MSEP_FpsSynchOption');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.FpsSynchCmd = String(MageStudios.Parameters['Command Name']);

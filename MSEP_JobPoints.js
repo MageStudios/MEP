@@ -8,11 +8,11 @@ Imported.MSEP_JobPoints = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.JP = MageStudios.JP || {};
-MageStudios.JP.version = 1.10;
+MageStudios.JP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.10 This plugin by itself doesn't do much, but it enables
+ * @plugindesc This plugin by itself doesn't do much, but it enables
  * actors to acquire JP (job points) used for other plugins.
  * @author Mage Studios Engine Plugins
  *
@@ -267,7 +267,7 @@ MageStudios.JP.version = 1.10;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_JobPoints');
+MageStudios.Parameters = PluginManager.parameters('MSEP_JobPoints');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

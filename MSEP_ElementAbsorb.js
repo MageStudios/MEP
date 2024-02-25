@@ -11,7 +11,7 @@ MageStudios.EleAbs = MageStudios.EleAbs || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Adds the ability to absorb elemental damage!
+ * @plugindesc Adds the ability to absorb elemental damage!
  * @author Mage Studios Engine Plugins
  *
  * @param Multiple Priority
@@ -47,7 +47,7 @@ MageStudios.EleAbs = MageStudios.EleAbs || {};
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ElementAbsorb');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ElementAbsorb');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EleAbsMultiPri = String(MageStudios.Parameters['Multiple Priority']);

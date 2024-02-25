@@ -8,11 +8,11 @@ Imported.MSEP_X_TickBasedRegen = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.TBR = MageStudios.TBR || {};
-MageStudios.TBR.version = 1.04;
+MageStudios.TBR.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore)
+ * @plugindesc (Req MSEP_BattleEngineCore & MSEP_BuffsStatesCore)
  * Tick-Based Battle system regeneration.
  * @author Mage Studios Engine Plugins
  *

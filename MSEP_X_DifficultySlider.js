@@ -8,11 +8,11 @@ Imported.MSEP_X_DifficultySlider = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.DSlider = MageStudios.DSlider || {};
-MageStudios.DSlider.version = 1.04;
+MageStudios.DSlider.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 (Requires MSEP_EnemyLevels.js) Give your players
+ * @plugindesc (Requires MSEP_EnemyLevels.js) Give your players
  * access to an option that allows them to change difficulty.
  * @author Mage Studios Engine Plugins
  *
@@ -269,7 +269,7 @@ if (Imported.MSEP_EnemyLevels) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_DifficultySlider');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_DifficultySlider');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.DSliderOptionsCmd = String(MageStudios.Parameters['Command Text']);
@@ -563,7 +563,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_DifficultySlider requires MSEP_EnemyLevels to be at the ';
+text += 'MSEP_X_DifficultySlider requires MSEP_EnemyLevels to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_EnemyLevels plugin.\n';
 text += '================================================================\n';

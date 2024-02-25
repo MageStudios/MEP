@@ -12,7 +12,7 @@ MageStudios.ScrRes = MageStudios.ScrRes || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Change your game's screen resolution to your liking!
+ * @plugindesc Change your game's screen resolution to your liking!
  * @author Mage Studios Engine Plugins
  *
  * @param Screen Width

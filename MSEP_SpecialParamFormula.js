@@ -8,11 +8,11 @@ Imported.MSEP_SpecialParamFormula = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SParam = MageStudios.SParam || {};
-MageStudios.SParam.version = 1.06;
+MageStudios.SParam.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 Control the formulas of special parameters for
+ * @plugindesc Control the formulas of special parameters for
  * TGR, GRD, REC, PHA, MCR, TCR, PDR, MDR, FDR, EXR.
  * @author Mage Studios Engine Plugins
  *
@@ -425,7 +425,7 @@ MageStudios.SParam.version = 1.06;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SpecialParamFormula');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SpecialParamFormula');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SParamFormula = [];

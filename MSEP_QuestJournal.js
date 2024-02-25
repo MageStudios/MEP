@@ -8,11 +8,11 @@ Imported.MSEP_QuestJournal = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Quest = MageStudios.Quest || {};
-MageStudios.Quest.version = 1.01;
+MageStudios.Quest.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Insert a quest journal system into your game!
+ * @plugindesc Insert a quest journal system into your game!
  * @author Mage Studios Engine Plugins
  *
  * @help
@@ -2673,7 +2673,7 @@ if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.3.5") {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_QuestJournal');
+MageStudios.Parameters = PluginManager.parameters('MSEP_QuestJournal');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.QuestCmdName = String(MageStudios.Parameters['Quest Command']);
@@ -4994,7 +4994,7 @@ MageStudios.Util.getRange = function(n, m) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_QuestJournal while your project files are lower than version ';
+text += 'MSEP_QuestJournal while your project files are lower than version ';
 text += '1.5.0.\n\nPlease visit this thread for instructions on how to update ';
 text += 'your project files to 1.5.0 or higher: \n\n';
 text += 'https://forums.rpgmakerweb.com/index.php?threads/';

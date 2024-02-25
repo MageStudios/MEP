@@ -8,11 +8,11 @@ Imported.MSEP_RegionEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.RCE = MageStudios.RCE || {};
-MageStudios.RCE.version = 1.03;
+MageStudios.RCE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 Make it so that whenever players step on certain
+ * @plugindesc Make it so that whenever players step on certain
  * Region ID's, the game will play certain common events.
  * @author Mage Studios Engine Plugins
  *
@@ -1892,7 +1892,7 @@ MageStudios.RCE.version = 1.03;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_RegionEvents');
+MageStudios.Parameters = PluginManager.parameters('MSEP_RegionEvents');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.RCE.RegionEvents = {};

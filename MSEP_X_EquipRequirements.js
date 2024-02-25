@@ -8,11 +8,11 @@ Imported.MSEP_X_EquipRequirements = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EqReq = MageStudios.EqReq || {};
-MageStudios.EqReq.version = 1.09;
+MageStudios.EqReq.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 (Requires MSEP_EquipCore.js) Place requirements on
+ * @plugindesc (Requires MSEP_EquipCore.js) Place requirements on
  * pieces of equipment before actors can use them!
  * @author Mage Studios Engine Plugins
  *
@@ -298,7 +298,7 @@ if (Imported.MSEP_EquipCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_EquipRequirements');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_EquipRequirements');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EqReqWindow = String(MageStudios.Parameters['Requirement Window']);

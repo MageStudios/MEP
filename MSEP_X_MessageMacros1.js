@@ -8,11 +8,11 @@ Imported.MSEP_X_MessageMacros1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MsgMacro = MageStudios.MsgMacro || {};
-MageStudios.MsgMacro.version = 1.01;
+MageStudios.MsgMacro.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_MessageCore.js) Adds macros 1 to 100
+ * @plugindesc (Requires MSEP_MessageCore.js) Adds macros 1 to 100
  * for your game's message system.
  * @author Mage Studios Engine Plugins
  *
@@ -1538,7 +1538,7 @@ if (Imported.MSEP_MessageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MessageMacros1');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageMacros1');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.QuickMacro = String(MageStudios.Parameters['Enable Quick Macro']);

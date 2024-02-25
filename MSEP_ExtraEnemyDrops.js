@@ -8,11 +8,11 @@ Imported.MSEP_ExtraEnemyDrops = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EED = MageStudios.EED || {};
-MageStudios.EED.version = 1.09;
+MageStudios.EED.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 Allows your enemies to drop more than just three
+ * @plugindesc Allows your enemies to drop more than just three
  * items as per the editor's limit.
  * @author Mage Studios Engine Plugins
  *
@@ -401,7 +401,7 @@ MageStudios.EED.version = 1.09;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ExtraEnemyDrops');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ExtraEnemyDrops');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.Variables = String(MageStudios.Parameters['Variables']);

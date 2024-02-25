@@ -8,11 +8,11 @@ Imported.MSEP_SaveCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Save = MageStudios.Save || {};
-MageStudios.Save.version = 1.06;
+MageStudios.Save.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 Alter the save menu for a more aesthetic layout
+ * @plugindesc Alter the save menu for a more aesthetic layout
  * and take control over the file system's rules.
  * @author Mage Studios Engine Plugins
  *
@@ -478,34 +478,6 @@ MageStudios.Save.version = 1.06;
  * have its own individual identity, use its own configuration, global, and
  * save files without clashing with any other RPG Maker MV games players may
  * have played.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.06:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.05:
- * - Added anti-crash measure for nonexistent $dataMapInfos entries.
- *
- * Version 1.04:
- * - Added 'Map Display Name' plugin parameter. Enabling this option will now
- * display the display name for the map instead of the editor name.
- *
- * Version 1.03:
- * - Fixed a bug that caused web saving to not work properly.
- *
- * Version 1.02:
- * - Fixed a bug that caused the actor's default name to appear in the save
- * screen instead of the actor's current name (if it was changed.)
- *
- * Version 1.01:
- * - Added a wait time update for save info data to load when moving across the
- * various save files.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -513,7 +485,7 @@ MageStudios.Save.version = 1.06;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SaveCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SaveCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SaveMaxFiles = Number(MageStudios.Parameters['Max Files']);

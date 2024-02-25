@@ -8,11 +8,11 @@ Imported.MSEP_MusicMenu = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MusicMenu = MageStudios.MusicMenu || {};
-MageStudios.MusicMenu.version = 1.01;
+MageStudios.MusicMenu.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Access and play music from a menu! Players can unlock
+ * @plugindesc Access and play music from a menu! Players can unlock
  * songs from in the game as they play.
  * @author Mage Studios Engine Plugins + Chickie Collaboration
  *
@@ -760,7 +760,7 @@ MageStudios.MusicMenu.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MusicMenu');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MusicMenu');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MusicMenuIcon = Number(MageStudios.Parameters['Music Icon']);

@@ -8,11 +8,11 @@ Imported.MSEP_X_InBattleStatus = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IBS = MageStudios.IBS || {};
-MageStudios.IBS.version = 1.01;
+MageStudios.IBS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_BattleEngineCore.js) Adds a 'Status'
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Adds a 'Status'
  * option in the Party Window in battle.
  * @author Mage Studios Engine Plugins
  *
@@ -357,7 +357,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_InBattleStatus');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_InBattleStatus');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IBSCmdName = String(MageStudios.Parameters['Command Text']);

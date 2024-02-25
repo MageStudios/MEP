@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemUpgrades = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IUS = MageStudios.IUS || {};
-MageStudios.IUS.version = 1.09;
+MageStudios.IUS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 (Requires MSEP_ItemCore.js) Allows independent items to
+ * @plugindesc (Requires MSEP_ItemCore.js) Allows independent items to
  * be upgradeable and gain better stats.
  * @author Mage Studios Engine Plugins
  *
@@ -251,7 +251,7 @@ if (Imported.MSEP_ItemCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemUpgradeSlots');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemUpgradeSlots');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IUSDefaultSlots = Number(MageStudios.Parameters['Default Slots']);

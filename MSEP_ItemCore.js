@@ -8,11 +8,11 @@ Imported.MSEP_ItemCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Item = MageStudios.Item || {};
-MageStudios.Item.version = 1.30;
+MageStudios.Item.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.30 Changes the way Items are handled for your game
+ * @plugindesc Changes the way Items are handled for your game
  * and the Item Scene, too.
  * @author Mage Studios Engine Plugins
  *
@@ -514,7 +514,7 @@ MageStudios.Item.version = 1.30;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ItemCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ItemCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ItemMaxItems = Number(MageStudios.Parameters['Max Items']);

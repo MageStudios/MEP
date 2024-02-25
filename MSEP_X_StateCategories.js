@@ -8,11 +8,11 @@ Imported.MSEP_X_StateCategories = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.StC = MageStudios.StC || {};
-MageStudios.StC.version = 1.07;
+MageStudios.StC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.07 (Requires MSEP_BuffsStatesCore.js) Sets up categories
+ * @plugindesc (Requires MSEP_BuffsStatesCore.js) Sets up categories
  * for your states to make control over them easier.
  * @author Mage Studios Engine Plugins
  *

@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemDurability = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IDur = MageStudios.IDur || {};
-MageStudios.IDur.version = 1.04;
+MageStudios.IDur.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 (Requires MSEP_ItemCore.js) Independent equipment
+ * @plugindesc (Requires MSEP_ItemCore.js) Independent equipment
  * now have durability, which when runs out, will break.
  * @author Mage Studios Engine Plugins
  *
@@ -612,7 +612,7 @@ if (Imported.MSEP_ItemCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemDurability');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemDurability');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IDurDefaultDur = Number(MageStudios.Parameters['Default Durability']);

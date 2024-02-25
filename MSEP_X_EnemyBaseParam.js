@@ -8,11 +8,11 @@ Imported.MSEP_X_EnemyBaseParam = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EBP = MageStudios.EBP || {};
-MageStudios.EBP.version = 1.02;
+MageStudios.EBP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_EnemyLevels.js) Use formulas to calculate
+ * @plugindesc (Requires MSEP_EnemyLevels.js) Use formulas to calculate
  * the base parameter values of enemies.
  * @author Mage Studios Engine Plugins
  *
@@ -382,7 +382,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_EnemyBaseParam requires MSEP_EnemyLevels to be at the ';
+text += 'MSEP_X_EnemyBaseParam requires MSEP_EnemyLevels to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_EnemyLevels plugin.\n';
 text += '================================================================\n';

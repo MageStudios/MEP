@@ -8,11 +8,11 @@ Imported.MSEP_BuffsStatesCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BSC = MageStudios.BSC || {};
-MageStudios.BSC.version = 1.16;
+MageStudios.BSC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.16 Alter the basic mechanics behind buffs and states
+ * @plugindesc Alter the basic mechanics behind buffs and states
  * that aren't adjustable within the RPG Maker editor.
  * @author Mage Studios Engine Plugins
  *
@@ -634,81 +634,6 @@ MageStudios.BSC.version = 1.16;
  *
  *   battler.getStateCounter(stateId)
  *   - This will return the current state counter value.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.16:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.15:
- * - Updated for RPG Maker MV version 1.6.1.
- *
- * Version 1.14:
- * - Updated for RPG Maker MV version 1.5.0.
- * - Fixed documentation error.
- *
- * Version 1.13:
- * - Custom Turn End effects will no longer occur outside of battle.
- *
- * Version 1.12a:
- * - Lunatic Mode fail safes added.
- * - Optimization update.
- *
- * Version 1.11:
- * - Fixed a bug involving Lunatic state effects not occuring in the right
- * order when a state is removed.
- *
- * Version 1.10b:
- * - Added new plugin parameter: Show Buff Rate. This will display the current
- * buff or debuff rate on the buff icon.
- * - Optimization Update.
- * - Documentation fix for battler.clampStateCounter(stateId, min, max).
- *
- * Version 1.09b:
- * - Added new plugin parameters: Show Enemy Icons, Enemy Buff Turn, Enemy
- * State Turn, and Enemy State Counter to optionally display the enemy state
- * icons, states, buffs, their turns, and their counters.
- * - Added 'Lunatic Mode - State Counters'. Read more on it in the help file!
- * - Added anti-crash method for newly added effect in case non-YEP plugins
- * have non-battlers attached to battler sprites.
- * - Fixed a bug that prevented screen flashes when walking around on the map
- * when an actor is poisoned.
- *
- * Version 1.08:
- * - Fixed an issue that caused adding states midway through Lunatic Mode to
- * shift the order of states around causing some effects to be skipped.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.06:
- * - Added new notetags for <Custom Battle Effect>, <Custom Victory Effect>,
- * <Custom Escape Effect>, and <Custom Defeat Effect> for Lunatic Mode.
- *
- * Version 1.05a:
- * - Fixed a bug with the 'Show Turns' parameter not working properly.
- * - Fixed a bug with math issues for timed states.
- *
- * Version 1.04:
- * - Changed timing of when Add/Remove/Leave Lunatic Effects occur to add more
- * flexibility in custom effects.
- * - Added a fail safe for when there are no targets to modify.
- * - Fixed a bug with reapply ignore states.
- *
- * Version 1.03a:
- * - Fixed a bug that would cause NaN to show up in state turns.
- *
- * Version 1.02:
- * - Synched up <Custom Turn End Effect> with tick-based battle systems.
- *
- * Version 1.01:
- * - Fixed a bug that didn't reset the font settings with the battle status.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -716,7 +641,7 @@ MageStudios.BSC.version = 1.16;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BuffsStatesCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BuffsStatesCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BSCShowTurns = eval(String(MageStudios.Parameters['Show Turns']));

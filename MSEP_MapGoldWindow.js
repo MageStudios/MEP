@@ -8,11 +8,11 @@ Imported.MSEP_MapGoldWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MGW = MageStudios.MGW || {};
-MageStudios.MGW.version = 1.02
+MageStudios.MGW.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Allows you to display the gold window on your map.
+ * @plugindesc Allows you to display the gold window on your map.
  * @author Mage Studios Engine Plugins
  *
  * @param Automatic Open
@@ -93,7 +93,7 @@ MageStudios.MGW.version = 1.02
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MapGoldWindow');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MapGoldWindow');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MGWAutomatic = eval(String(MageStudios.Parameters['Automatic Open']));

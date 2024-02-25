@@ -8,11 +8,11 @@ Imported.MSEP_X_BattleSysATB = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ATB = MageStudios.ATB || {};
-MageStudios.ATB.version = 1.28;
+MageStudios.ATB.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.28 (Requires MSEP_BattleEngineCore.js) Add ATB (Active
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Add ATB (Active
  * Turn Battle) into your game using this plugin!
  * @author Mage Studios Engine Plugins
  *
@@ -755,7 +755,7 @@ if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_BattleSysATB');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_BattleSysATB');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ATBPerTick = String(MageStudios.Parameters['Per Tick']);
@@ -2551,7 +2551,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else { // MageStudios.BEC.version
 
 var text = '================================================================\n';
-text += 'MEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
+text += 'MSEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
 text += '================================================================\n';

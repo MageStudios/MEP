@@ -11,7 +11,7 @@ MageStudios.EleRef = MageStudios.EleRef || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 Adds rates at which elemental skills/items can be
+ * @plugindesc Adds rates at which elemental skills/items can be
  * reflected at.
  * @author Mage Studios Engine Plugins
  *

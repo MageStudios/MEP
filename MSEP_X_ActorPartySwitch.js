@@ -8,11 +8,11 @@ Imported.MSEP_X_ActorPartySwitch = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PartySwitch = MageStudios.PartySwitch || {};
-MageStudios.PartySwitch.version = 1.05;
+MageStudios.PartySwitch.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Req MSEP_PartySystem.js and MSEP_BattleEngineCore.js)
+ * @plugindesc (Req MSEP_PartySystem.js and MSEP_BattleEngineCore.js)
  * Allow actors to switch with other party members mid-battle.
  * @author Mage Studios Engine Plugins
  *
@@ -143,31 +143,6 @@ MageStudios.PartySwitch.version = 1.05;
  *   ResetActorPartySwitchCooldowns
  *   - Resets all cooldowns for actor party switching.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.05:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.04:
- * - Fixed a bug that caused the on-map party layout to not update if switching
- * has been used in battle.
- *
- * Version 1.03:
- * - Fixed a bug that prevented 'HideActorPartySwitch' from working properly.
- *
- * Version 1.02:
- * - Fixed a bug that caused subsequent battles to have actors appear in the
- * wrong positions.
- *
- * Version 1.01:
- * - Added compatibility check for people who weren't using Row Formations.
- * - Turning of 'Display TP in Battle' from the Database > System tab will now
- * turn off TP from displaying in the party list, too.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -177,7 +152,7 @@ if (Imported.MSEP_PartySystem && Imported.MSEP_BattleEngineCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActorPartySwitch');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActorPartySwitch');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.PartySwitchCmd = String(MageStudios.Parameters['Switch Command']);

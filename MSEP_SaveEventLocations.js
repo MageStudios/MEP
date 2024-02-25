@@ -8,11 +8,11 @@ Imported.MSEP_SaveEventLocations = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SEL = MageStudios.SEL || {};
-MageStudios.SEL.version = 1.06;
+MageStudios.SEL.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 Enable specified maps to memorize the locations of
+ * @plugindesc Enable specified maps to memorize the locations of
  * events when leaving and loading them upon reentering map.
  * @author Mage Studios Engine Plugins
  *

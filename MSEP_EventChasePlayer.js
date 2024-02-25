@@ -8,11 +8,11 @@ Imported.MSEP_EventChasePlayer = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ECP = MageStudios.ECP || {};
-MageStudios.ECP.version = 1.07;
+MageStudios.ECP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.07 When a player is in the proximity of a certain event,
+ * @plugindesc When a player is in the proximity of a certain event,
  * the event will start chasing or fleeing from the player.
  * @author Mage Studios Engine Plugins
  *
@@ -113,46 +113,6 @@ MageStudios.ECP.version = 1.07;
  * is made and ran, which means upon loading a map, if the event with a low
  * frequency hasn't loaded up 'this._chaseRange = x' in its movement queue yet,
  * the event will not chase the player just yet.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.07:
- * - Added a background mechanic to stagger an event if they're chasing the
- * player and get caught behind an object. This will prevent the event from
- * continuously chasing the player and dropping the FPS rate.
- *
- * Version 1.06:
- * - Updated for RPG Maker MV version 1.5.0.
- * 
- * Version 1.05:
- * - Optimization update.
- *
- * Version 1.04:
- * - Fixed a bug with this._seePlayer causing them to see stealthed players.
- *
- * Version 1.03:
- * - Improved pathfinding for chasing events. They will get stuck less by walls
- * and/or events that may be blocking the event.
- * - Added random factor for fleeing events. Fleeing events won't simply just
- * run away 180 degrees away from the player. They will sometimes move in a
- * random direction.
- *
- * Version 1.02:
- * - Added 'Return After' parameter where events will return to their original
- * spot after chasing/fleeing from a player.
- * - Added 'Return Wait' parameter to determine how long an event will wait in
- * place before returning after a finished chase/flee.
- * - Added 'this._returnAfter' and 'this._returnWait' to the list of available
- * movement route script calls.
- *
- * Version 1.01:
- * - Added 'this._alertSoundPitch' 'this._alertSoundVol' 'this._alertSoundPan'
- * to the settings you can alter to adjust the alert sound.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -160,7 +120,7 @@ MageStudios.ECP.version = 1.07;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventChasePlayer');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventChasePlayer');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ECPSightLock = Number(MageStudios.Parameters['Sight Lock']);

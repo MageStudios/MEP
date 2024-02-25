@@ -8,11 +8,11 @@ Imported.MSEP_WeaponUnleash = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.WUL = MageStudios.WUL || {};
-MageStudios.WUL.version = 1.05;
+MageStudios.WUL.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 Replace the Attack command or give it the option of
+ * @plugindesc Replace the Attack command or give it the option of
  * have a skill randomly occur when using it!
  * @author Mage Studios Engine Plugins
  *
@@ -281,7 +281,7 @@ MageStudios.WUL.version = 1.05;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_WeaponUnleash');
+MageStudios.Parameters = PluginManager.parameters('MSEP_WeaponUnleash');
 MageStudios.Param = MageStudios.Param || {};
 
 //=============================================================================

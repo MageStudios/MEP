@@ -8,11 +8,11 @@ Imported.MSEP_X_AttachAugments = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Augment = MageStudios.Augment || {};
-MageStudios.Augment.version = 1.11;
+MageStudios.Augment.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.11 (Requires MSEP_ItemCore.js) Players can attach and
+ * @plugindesc (Requires MSEP_ItemCore.js) Players can attach and
  * detach augments to independent equipment.
  * @author Mage Studios Engine Plugins
  *
@@ -429,55 +429,6 @@ MageStudios.Augment.version = 1.11;
  *   - This will hide the augments in the item info window when looking at
  *   item details.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.11:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.10:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.09:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.08a:
- * - Fixed a typo within the code. Please update Item Core, Item Disassemble,
- * Attachable Augments, and More Currencies if you are using those plugins.
- * - Optimization update.
- *
- * Version 1.07:
- * - Fixed a bug that caused adding attack state augments without a rate to not
- * work properly.
- *
- * Version 1.06:
- * - Fixed a bug that caused certain named augment settings to not work
- * work properly upon reloading a game.
- *
- * Version 1.05:
- * - Fixed a bug that specifically made the LUK: +x% and LUK: -x% augments not
- * work properly.
- *
- * Version 1.04:
- * - Added +y% and -y% versions of attachments for various augment effects.
- *
- * Version 1.03:
- * - Bug fixed for Add Element Rate: x, y% not working properly.
- *
- * Verison 1.02a:
- * - Fixed a bug that caused Independent Item-types to crash the game when used
- * within the menu.
- * - Fixed a bug that caused custom Lunatic Mode effects to not operate unless
- * there existed basic augment effects.
- * - Fixed a bug that caused param% changes to not function correctly.
- *
- * Version 1.01:
- * - Fixed a bug that caused a crash when equipping "empty" augments.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -487,7 +438,7 @@ if (Imported.MSEP_ItemCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_AttachAugments');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_AttachAugments');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.makeAttachableAugmentParameterSettings = function() {

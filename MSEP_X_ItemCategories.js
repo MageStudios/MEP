@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemCategories = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemCat = MageStudios.ItemCat || {};
-MageStudios.ItemCat.version = 1.01;
+MageStudios.ItemCat.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_ItemCore.js) Assign items to various
+ * @plugindesc (Requires MSEP_ItemCore.js) Assign items to various
  * categories under the item menu.
  * @author Mage Studios Engine Plugins + Sylvester Collaboration
  *
@@ -191,7 +191,7 @@ if (Imported.MSEP_ItemCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemCategories');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemCategories');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.SetupParameters = function() {
@@ -425,7 +425,7 @@ Window_ItemList.prototype.includes = function(item) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ItemCategories requires MSEP_ItemCore and to be at the latest '
+text += 'MSEP_X_ItemCategories requires MSEP_ItemCore and to be at the latest '
 text += 'version to run properly. '
 text += '\n\nPlease go to www.MageStudios.moe and update to the latest version for ';
 text += 'the MSEP_ItemCore plugin.\n';

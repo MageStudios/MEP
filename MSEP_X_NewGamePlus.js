@@ -8,11 +8,11 @@ Imported.MSEP_X_NewGamePlus = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.NGP = MageStudios.NGP || {};
-MageStudios.NGP.version = 1.02;
+MageStudios.NGP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_SaveCore.js) Allow your players to have
+ * @plugindesc (Requires MSEP_SaveCore.js) Allow your players to have
  * a New Game+ mode that allows carrying over save data.
  * @author Mage Studios Engine Plugins
  *
@@ -243,7 +243,7 @@ if (Imported.MSEP_SaveCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_NewGamePlus');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_NewGamePlus');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.NGPCmdText = String(MageStudios.Parameters['Command Text']);

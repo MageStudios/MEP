@@ -8,11 +8,11 @@ Imported.MSEP_AutoPassiveStates = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.APS = MageStudios.APS || {};
-MageStudios.APS.version = 1.17;
+MageStudios.APS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.17 This plugin allows for some states to function as
+ * @plugindesc This plugin allows for some states to function as
  * passives for actors, enemies, skills, and equips.
  * @author Mage Studios Engine Plugins
  *
@@ -143,77 +143,6 @@ MageStudios.APS.version = 1.17;
  *   * Note: If you decide to use a condition that requires the actor to have a
  *   particular state, it cannot be a passive state to prevent infinite loops.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.17:
- * - Optimization update. There should be less lag spikes if there are more
- * passive conditions present on a battler.
- *
- * Version 1.16:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.15:
- * - Bug fixed that made global passives not apply to actors.
- *
- * Version 1.14:
- * - Updated for RPG Maker MV version 1.5.0.
- * - Added parameters: Actor Passives List, Enemy Passives List, and
- *   Global Passives List
- *
- * Version 1.13:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.12:
- * - Implemented <Custom Passive Condition> to now affect passive state ID's
- * added by Equip Battle Skills.
- *
- * Version 1.11:
- * - Added 'Global Passives' that encompass both actors and enemies.
- *
- * Version 1.10:
- * - Added compatibility functionality for Equip Battle Skills to add the
- * equipped passive states during battle test.
- *
- * Version 1.09:
- * - Added 'Actor Passives' and 'Enemy Passives' plugin parameters. This will
- * cause all actors and enemies respectively to be affected by the listed
- * states as passives.
- *
- * Version 1.08:
- * - Fixed conditional checks to make sure all states are being checked
- * properly without conflict with other conditional states.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.06:
- * - Added a mass member refresh whenever $gamePlayer is refreshed.
- *
- * Version 1.05a:
- * - Added Lunatic Mode - <Custom Passive Condition> notetag for states.
- * - Fixed a bug that would cause infinite loops.
- *
- * Version 1.04:
- * - Added a lot of passive condition notetags for states.
- * --- <Passive Condition: HP/MP Above/Below x%>
- * --- <Passive Condition: Stat Above/Below x>
- * --- <Passive Condition: Switch x ON/OFF>
- * --- <Passive Condition: Variable x Above/Below y>
- *
- * Version 1.03:
- * - Added refreshing whenever a new skill is learned to update passives.
- *
- * Version 1.02:
- * - Optimized passive state calculations to reduce lag.
- *
- * Version 1.01:
- * - Fixed a bug with having multiple passive states of the same ID.
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -222,7 +151,7 @@ MageStudios.APS.version = 1.17;
 //=============================================================================
 
 MageStudios.SetupParameters = function() {
-  MageStudios.Parameters = PluginManager.parameters('MEP_AutoPassiveStates');
+  MageStudios.Parameters = PluginManager.parameters('MSEP_AutoPassiveStates');
   MageStudios.Param = MageStudios.Param || {};
   MageStudios.Param.APSActorPas = String(MageStudios.Parameters['Actor Passives']);
   MageStudios.Param.APSActorPas = MageStudios.Param.APSActorPas.split(' ');

@@ -8,11 +8,11 @@ Imported.MSEP_Taunt = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Taunt = MageStudios.Taunt || {};
-MageStudios.Taunt.version = 1.02
+MageStudios.Taunt.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Adds a Taunt mechanic to battle. Battlers with a
+ * @plugindesc Adds a Taunt mechanic to battle. Battlers with a
  * taunt property become the target of enemy focus.
  * @author Mage Studios Engine Plugins
  *

@@ -8,11 +8,11 @@ Imported.MSEP_VictoryAftermath = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.VA = MageStudios.VA || {};
-MageStudios.VA.version = 1.07
+MageStudios.VA.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.07 Display an informative window after a battle is over
+ * @plugindesc Display an informative window after a battle is over
  * instead of message box text stating what the party earned.
  * @author Mage Studios Engine Plugins
  *
@@ -264,7 +264,7 @@ MageStudios.VA.version = 1.07
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_VictoryAftermath');
+MageStudios.Parameters = PluginManager.parameters('MSEP_VictoryAftermath');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.VAOrder = String(MageStudios.Parameters['Victory Order']);

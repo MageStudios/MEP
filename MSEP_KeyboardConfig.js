@@ -8,11 +8,11 @@ Imported.MSEP_KeyboardConfig = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.KeyConfig = MageStudios.KeyConfig || {};
-MageStudios.KeyConfig.version = 1.04;
+MageStudios.KeyConfig.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Allows players to adjust their button configuration
+ * @plugindesc Allows players to adjust their button configuration
  * for keyboards.
  * @author Mage Studios Engine Plugins
  *
@@ -350,7 +350,7 @@ MageStudios.KeyConfig.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_KeyboardConfig');
+MageStudios.Parameters = PluginManager.parameters('MSEP_KeyboardConfig');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.KeyConfigName = String(MageStudios.Parameters['Command Name']);

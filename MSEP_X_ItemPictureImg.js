@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemPictureImg = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IPI = MageStudios.IPI || {};
-MageStudios.IPI.version = 1.01;
+MageStudios.IPI.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_ItemCore.js) Allows you to use images
+ * @plugindesc (Requires MSEP_ItemCore.js) Allows you to use images
  * for items inside of the item menu instead of large icons.
  * @author Mage Studios Engine Plugins
  *
@@ -92,7 +92,7 @@ if (MageStudios.Item.version && MageStudios.Item.version >= 1.26) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemPictureImg');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemPictureImg');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ItemImageMaxWidth = Number(MageStudios.Parameters['Max Image Width']);
@@ -269,7 +269,7 @@ Window_ItemStatus.prototype.drawItemPictureImage = function(bitmap) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ItemPictureImg requires MSEP_ItemCore to be at the ';
+text += 'MSEP_X_ItemPictureImg requires MSEP_ItemCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_ItemCore plugin.\n';
 text += '================================================================\n';

@@ -8,11 +8,11 @@ Imported.MSEP_PictureCommonEvents = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.PCE = MageStudios.PCE || {};
-MageStudios.PCE.version = 1.06;
+MageStudios.PCE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 Causes common events to run when certain pictures
+ * @plugindesc Causes common events to run when certain pictures
  * are clicked while on the map.
  * @author Mage Studios Engine Plugins
  *
@@ -3294,7 +3294,7 @@ MageStudios.makePictureCommonEventSettings = function(a, b) {
     }
 };
 
-MageStudios.Parameters = PluginManager.parameters('MEP_PictureCommonEvents');
+MageStudios.Parameters = PluginManager.parameters('MSEP_PictureCommonEvents');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.PCEMove = eval(String(MageStudios.Parameters['Enable Touch Move']));

@@ -8,11 +8,11 @@ Imported.MSEP_X_MoreStatusPages = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.MSMP = MageStudios.MSMP || {};
-MageStudios.MSMP.version = 1.02;
+MageStudios.MSMP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_StatusMenuCore.js) Add more pages to
+ * @plugindesc (Requires MSEP_StatusMenuCore.js) Add more pages to
  * your status menu however you want!
  * @author Mage Studios Engine Plugins
  *
@@ -120,7 +120,7 @@ if (Imported.MSEP_StatusMenuCore && MageStudios.Status.version &&
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MoreStatusPages');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreStatusPages');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.Variables = String(MageStudios.Parameters['Variables']);
@@ -289,7 +289,7 @@ Window_StatusInfo.prototype.drawMoreStatusPageContent = function(index) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_MoreStatusPages requires MSEP_StatusMenuCore to be at the ';
+text += 'MSEP_X_MoreStatusPages requires MSEP_StatusMenuCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_StatusMenuCore plugin.\n';
 text += '================================================================\n';

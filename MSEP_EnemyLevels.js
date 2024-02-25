@@ -8,11 +8,11 @@ Imported.MSEP_EnemyLevels = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ELV = MageStudios.ELV || {};
-MageStudios.ELV.version = 1.09;
+MageStudios.ELV.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 This plugin enables giving your enemies levels and
+ * @plugindesc This plugin enables giving your enemies levels and
  * parameter changes with those levels.
  * @author Mage Studios Engine Plugins
  *
@@ -608,45 +608,6 @@ MageStudios.ELV.version = 1.09;
  *
  *   EnemyLevelResetAll
  *   - This will reset all enemy levels to their original levels.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.09:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.08:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.07:
- * - Enemy Transform event now adjusts for stat changes when transforming into
- * a different enemy.
- *
- * Version 1.06:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.05:
- * - Updated the custom level formula to have the formulas 'b', 'r', and 'f' to
- * be able to use the formulas from FlyingDream's calculator.
- *
- * Version 1.04:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.03:
- * - Fixed a bug with average level calculation types for enemies.
- *
- * Version 1.02:
- * - Fixed a bug regarding a line of code that wasn't added properly.
- *
- * Version 1.01:
- * - Added <Ignore Level Bonus> notetag. This causes enemies to maintain their
- * current level but ignore any bonus stats applied by the level difference. If
- * the enemy's level is altered, its stats remain static and unchanging.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -654,7 +615,7 @@ MageStudios.ELV.version = 1.09;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EnemyLevels');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EnemyLevels');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ELVShow = eval(String(MageStudios.Parameters['Show Level']));

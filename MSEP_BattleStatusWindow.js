@@ -8,11 +8,11 @@ Imported.MSEP_BattleStatusWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BSW = MageStudios.BSW || {};
-MageStudios.BSW.version = 1.09;
+MageStudios.BSW.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 A simple battle status window that shows the
+ * @plugindesc A simple battle status window that shows the
  * faces of your party members in horizontal format.
  * @author Mage Studios Engine Plugins
  *
@@ -161,48 +161,6 @@ MageStudios.BSW.version = 1.09;
  * to be played on top of the actor's portraits (and showing any damage popups)
  * to give the player a better view of what's going on in battle.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.09:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.08:
- * - Added 'State Icons Row' plugin parameter. This plugin parameter allows you
- * to adjust what 'row' you want the state icons to appear in.
- *
- * Version 1.07:
- * - Optimization update.
- *
- * Version 1.06:
- * - Fixed a bug that prevented animations from using flashes on the actor
- * sprite if they were visible from front view.
- *
- * Version 1.05:
- * - Optimized face drawing effect to work more efficiently.
- *
- * Version 1.04:
- * - Added 'Allow Turn Skip' plugin parameter to let you decide if you can let
- * the player skip turns for tick-based battle systems.
- *
- * Version 1.03:
- * - Added a failsafe check to make frontview animations work regardless of
- * having RPG Maker MV 1.0.1 update.
- *
- * Version 1.02a:
- * - Added 'Adjust Columns' parameter.
- * - Updated functionality for 'Adjust Columns' to alter where the animations
- * are played.
- * - Added a timed refresh for the face loading to show at faster intervals.
- *
- * Version 1.01a:
- * - Added refresh modifiers to update an actor's face whenever an event to
- * change the actor's face graphic.
- * - Made an override for ATB style to automatically default on style 1.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -210,7 +168,7 @@ MageStudios.BSW.version = 1.09;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BattleStatusWindow');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BattleStatusWindow');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

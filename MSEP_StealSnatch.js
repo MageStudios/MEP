@@ -8,11 +8,11 @@ Imported.MSEP_StealSnatch = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Steal = MageStudios.Steal || {};
-MageStudios.Steal.version = 1.10;
+MageStudios.Steal.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.10 Allows your actors to be able to steal and snatch
+ * @plugindesc Allows your actors to be able to steal and snatch
  * items from enemies.
  * @author Mage Studios Engine Plugins
  *
@@ -570,7 +570,7 @@ MageStudios.Steal.version = 1.10;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_StealSnatch');
+MageStudios.Parameters = PluginManager.parameters('MSEP_StealSnatch');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.StealBonusFormula = String(MageStudios.Parameters['Bonus Formula']);

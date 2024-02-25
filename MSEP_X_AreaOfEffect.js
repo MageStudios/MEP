@@ -8,11 +8,11 @@ Imported.MSEP_X_AreaOfEffect = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AOE = MageStudios.AOE || {};
-MageStudios.AOE.version = 1.02
+MageStudios.AOE.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_BattleEngineCore & MSEP_TargetCore)
+ * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_TargetCore)
  * Adds Area of Effect scopes for targeting allies or enemies.
  * @author Mage Studios Engine Plugins
  *
@@ -227,21 +227,6 @@ MageStudios.AOE.version = 1.02
  *   This will adjust the hitbox of the battler to have an AOE hitbox width of
  *   x or an AOE hitbox height of x.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.01:
- * - Plugin update to provide checks against certain selection condition types
- * used with MSEP_X_SelectionControl. Unique conditions will disable AoE types
- * to prevent clashing which include enemy/actor switching, certain rows, and
- * toggling between single/multiple.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -251,7 +236,7 @@ if (Imported.MSEP_BattleEngineCore && Imported.MSEP_TargetCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_AreaOfEffect');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_AreaOfEffect');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AOEBufferX = Number(MageStudios.Parameters['Buffer X']);

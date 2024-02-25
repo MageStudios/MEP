@@ -8,11 +8,11 @@ Imported.MSEP_X_AftermathLevelUp = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ALU = MageStudios.ALU || {};
-MageStudios.ALU.version = 1.01
+MageStudios.ALU.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_VictoryAftermath.js) Adds a level up
+ * @plugindesc (Requires MSEP_VictoryAftermath.js) Adds a level up
  * portion to the Victory Aftermath sequences.
  * @author Mage Studios Engine Plugins
  *
@@ -104,15 +104,6 @@ MageStudios.ALU.version = 1.01
  *   This will cause the level up segment of the Victory Aftermath to not
  *   appear at all regardless of any actors leveling up in that battle.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -122,7 +113,7 @@ if (Imported.MSEP_VictoryAftermath) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_AftermathLevelUp');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_AftermathLevelUp');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ALUTitleFmt = String(MageStudios.Parameters['Level Up Title']);

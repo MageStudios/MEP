@@ -8,11 +8,11 @@ Imported.MSEP_EquipCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Equip = MageStudios.Equip || {};
-MageStudios.Equip.version = 1.18;
+MageStudios.Equip.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.18 Allows for the equipment system to be more flexible to
+ * @plugindesc Allows for the equipment system to be more flexible to
  * allow for unique equipment slots per class.
  * @author Mage Studios Engine Plugins
  *
@@ -178,77 +178,6 @@ MageStudios.Equip.version = 1.18;
  *   'agi', 'luk', and 'all'. The 'all' parameter will affect all parameters.
  *   Changes made here do not alter the base parameters, but instead, are added
  *   onto the base parameters.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.18:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.17:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.16:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.15:
- * - Optimization update.
- *
- * Version 1.14:
- * - Added an actor refresh upon listing the various equip slots to ensure that
- * all slots are updated in case any cache'd instances may have been missed.
- *
- * Version 1.13:
- * - Fixed a bug that caused a crash for those who weren't using the Item Core
- * in addition to this plugin.
- *
- * Version 1.12:
- * - Added optional functionality. Leaving 'Finish Command' empty will remove
- * it from being added to the command list.
- *
- * Version 1.11:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.10:
- * - Fixed a bug that did not clear changes made to an actor's stats after
- * having unequipped them and then switching actors.
- *
- * Version 1.09:
- * - For users using the Item Core plugin and the new Item Scene layout option,
- * the Item Info Window is now added to the Equip Scene. Pressing Left/Right
- * will toggle the stat comparison window with the info window. Pressing Tab on
- * the keyboard will also switch them as well as clicking on those windows.
- *
- * Version 1.08:
- * - Fixed a bug where changing an actor's equips would revive them if dead.
- *
- * Version 1.07:
- * - Fixed a bug with 'Optimize' and 'Remove All' not refreshing windows.
- *
- * Version 1.06:
- * - Fixed a bug with 'Change Equipment' event where it would only change the
- * slot of the marked equipment rather than the slot type.
- *
- * Version 1.05:
- * - Fixed an issue where unequipping items can kill actors.
- *
- * Version 1.04a:
- * - Fixed a bug and rewrote the initializing equipment process.
- *
- * Version 1.03:
- * - Fixed an bug that resulted in null object errors.
- *
- * Version 1.02:
- * - Fixed an issue that did not keep HP and MP rates the same when using the
- * optimize and clear commands.
- *
- * Version 1.01:
- * - Fixed a bug that did not update the stats properly when compared.
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -256,7 +185,7 @@ MageStudios.Equip.version = 1.18;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EquipCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EquipCore');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

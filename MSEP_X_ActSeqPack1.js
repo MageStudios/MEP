@@ -8,11 +8,11 @@ Imported.MSEP_X_ActSeqPack1 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP1 = MageStudios.ASP1 || {};
-MageStudios.ASP1.version = 1.13;
+MageStudios.ASP1.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.13 (Requires MSEP_BattleEngineCore.js) Basic functions are
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Basic functions are
  * added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
  *
@@ -775,7 +775,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameters
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActSeqPack1');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack1');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SoundVolume = Number(MageStudios.Parameters['Default Volume']);

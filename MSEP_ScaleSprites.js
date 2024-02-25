@@ -8,11 +8,11 @@ Imported.MSEP_ScaleSprites = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ScSpr = MageStudios.ScSpr || {};
-MageStudios.ScSpr.version = 1.01
+MageStudios.ScSpr.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 This is a plugin that lets you scale sprites of
+ * @plugindesc This is a plugin that lets you scale sprites of
  * smaller or larger sizes to certain dimensions.
  * @author Mage Studios Engine Plugins
  *
@@ -60,7 +60,7 @@ MageStudios.ScSpr.version = 1.01
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ScaleSprites');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ScaleSprites');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ScSprSmoothing = eval(String(MageStudios.Parameters['Smoothing']));

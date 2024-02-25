@@ -12,7 +12,7 @@ MageStudios.LINK.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Link back to your home page through the title screen
+ * @plugindesc Link back to your home page through the title screen
  * and also be able to link your players from within the game.
  * @author Mage Studios Engine Plugins
  *
@@ -51,15 +51,6 @@ MageStudios.LINK.version = 1.00
  *
  * Some web browsers may not differentiate these commands too much.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -67,7 +58,7 @@ MageStudios.LINK.version = 1.00
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ExternalLinks');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ExternalLinks');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.HomePageUrl = String(MageStudios.Parameters['Home Page URL']);

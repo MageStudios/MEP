@@ -8,11 +8,11 @@ Imported.MSEP_X_VisualATBGauge = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.VATB = MageStudios.VATB || {};
-MageStudios.VATB.version = 1.04
+MageStudios.VATB.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 (Requires MSEP_BattleSysATB.js) Provides a visible ATB
+ * @plugindesc (Requires MSEP_BattleSysATB.js) Provides a visible ATB
  * gauge for your enemies!
  * @author Mage Studios Engine Plugins
  *
@@ -116,7 +116,7 @@ if (Imported.MSEP_BattleEngineCore && Imported.MSEP_X_BattleSysATB) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_VisualATBGauge');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_VisualATBGauge');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.VATBShowGauge = String(MageStudios.Parameters['Show Gauges']);

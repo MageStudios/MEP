@@ -8,11 +8,11 @@ Imported.MSEP_X_ItemDiscard = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ItemDiscard = MageStudios.ItemDiscard || {};
-MageStudios.ItemDiscard.version = 1.02;
+MageStudios.ItemDiscard.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_ItemCore.js) Allow the player to discard
+ * @plugindesc (Requires MSEP_ItemCore.js) Allow the player to discard
  * items from their inventory.
  * @author Mage Studios Engine Plugins + Sylvester Collaboration
  *
@@ -124,7 +124,7 @@ if (Imported.MSEP_ItemCore &&
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ItemDiscard');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ItemDiscard');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ItemDiscardCmdFmt = String(MageStudios.Parameters['Discard Command']);
@@ -406,7 +406,7 @@ MageStudios.Util.toGroup = function(inVal) {
 } else {
 
 var text = '================================================================\n';
-text += 'MEP_X_ItemDiscard requires MSEP_ItemCore and to be at the latest '
+text += 'MSEP_X_ItemDiscard requires MSEP_ItemCore and to be at the latest '
 text += 'version to run properly. '
 text += '\n\nPlease go to www.MageStudios.moe and update to the latest version for ';
 text += 'the MSEP_ItemCore plugin.\n';

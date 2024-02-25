@@ -8,11 +8,11 @@ Imported.MSEP_EventRegionTrigger = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EvReTr = MageStudios.EvReTr || {};
-MageStudios.EvReTr.version = 1.02;
+MageStudios.EvReTr.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Allows events to trigger by being in specific regions
+ * @plugindesc Allows events to trigger by being in specific regions
  * instead of needing to exactly next to or on top of them.
  * @author Mage Studios Engine Plugins
  *
@@ -79,24 +79,6 @@ MageStudios.EvReTr.version = 1.02;
  *   - If the player moves within the matching region ID, the event will
  *   automatically activate. The player is granted a few frames of movement
  *   each time the parallel process loops.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Fixed a bug where parallels don't loop.
- *
- * Version 1.01:
- * - Fixed a bug where Autorun and Parallel triggers won't run unless they had
- * a region associated with them.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
  */
 //=============================================================================
 

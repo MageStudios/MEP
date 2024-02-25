@@ -8,11 +8,11 @@ Imported.MSEP_OptionsCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Options = MageStudios.Options || {};
-MageStudios.Options.version = 1.02;
+MageStudios.Options.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Expand the Options Menu into a more elegant looking menu
+ * @plugindesc Expand the Options Menu into a more elegant looking menu
  * with more customization potential.
  * @author Mage Studios Engine Plugins
  *
@@ -491,7 +491,7 @@ if (Utils.RPGMAKER_VERSION && Utils.RPGMAKER_VERSION >= "1.5.0") {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_OptionsCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_OptionsCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.OptionsAllCmd = String(MageStudios.Parameters['AllCommand']);
@@ -936,7 +936,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_OptionsCore while your project files are lower than version ';
+text += 'MSEP_OptionsCore while your project files are lower than version ';
 text += '1.5.0.\n\nPlease visit this thread for instructions on how to update ';
 text += 'your project files to 1.5.0 or higher: \n\n';
 text += 'https://forums.rpgmakerweb.com/index.php';

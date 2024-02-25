@@ -8,11 +8,11 @@ Imported.MSEP_IconBalloons = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.IBalloon = MageStudios.IBalloon || {};
-MageStudios.IBalloon.version = 1.02;
+MageStudios.IBalloon.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Allows you to use icons for your on-map balloons
+ * @plugindesc Allows you to use icons for your on-map balloons
  * over your characters and events!
  * @author Mage Studios Engine Plugins
  *
@@ -97,7 +97,7 @@ MageStudios.IBalloon.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_IconBalloons');
+MageStudios.Parameters = PluginManager.parameters('MSEP_IconBalloons');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.IBallonFilename = String(MageStudios.Parameters['Empty Filename']);

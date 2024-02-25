@@ -8,11 +8,11 @@ Imported.MSEP_ExtraParamFormula = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.XParam = MageStudios.XParam || {};
-MageStudios.XParam.version = 1.04;
+MageStudios.XParam.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Control the formulas of the extra parameters for
+ * @plugindesc Control the formulas of the extra parameters for
  * HIT, EVA, CRI, CEV, MEV, MRF, CNT, HRG, MRG, and TRG.
  * @author Mage Studios Engine Plugins
  *
@@ -382,7 +382,7 @@ MageStudios.XParam.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ExtraParamFormula');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ExtraParamFormula');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.XParamFormula = [];

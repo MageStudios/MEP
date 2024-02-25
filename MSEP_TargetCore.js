@@ -8,11 +8,11 @@ Imported.MSEP_TargetCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Target = MageStudios.Target || {};
-MageStudios.Target.version = 1.05;
+MageStudios.Target.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 Expand the target scope from RPG Maker's default
+ * @plugindesc Expand the target scope from RPG Maker's default
  * limitations for better target control.
  * @author Mage Studios Engine Plugins
  *
@@ -279,7 +279,7 @@ MageStudios.Target.version = 1.05;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_TargetCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_TargetCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BECHlpEverybodyTx = String(MageStudios.Parameters['Everybody Text']);

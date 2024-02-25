@@ -8,11 +8,11 @@ Imported.MSEP_BattleSelectCursor = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BattleCursor = MageStudios.BattleCursor || {};
-MageStudios.BattleCursor.version = 1.04;
+MageStudios.BattleCursor.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 Adds a cursor to battle when selecting allies and/or
+ * @plugindesc Adds a cursor to battle when selecting allies and/or
  * enemies for targeting.
  * @author Mage Studios Engine Plugins
  *
@@ -128,31 +128,13 @@ MageStudios.BattleCursor.version = 1.04;
  *   - These notetags determine where the select cursor will appear on the
  *   actor or enemy when targeting them.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.04:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.03:
- * - Updated plugin to keep the battle select cursor on top of animated enemies
- * from the MSEP_X_AnimatedSVEnemies plugin.
- *
- * Version 1.02:
- * - Optimized plugin to use less resources.
- *
- * Version 1.01a:
- * - Fixed a bug that caused the game to crash if an actor leaves mid-battle.
- * - Fixed a documentation error for the notetags.
- */
 //=============================================================================
 
 //=============================================================================
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_BattleSelectCursor');
+MageStudios.Parameters = PluginManager.parameters('MSEP_BattleSelectCursor');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BattleCursorAlly = String(MageStudios.Parameters['Ally Cursor']);

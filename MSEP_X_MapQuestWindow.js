@@ -8,11 +8,11 @@ Imported.MSEP_X_MapQuestWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AMQW = MageStudios.AMQW || {};
-MageStudios.AMQW.version = 1.01;
+MageStudios.AMQW.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_QuestJournal.js) Adds a window on the
+ * @plugindesc (Requires MSEP_QuestJournal.js) Adds a window on the
  * map scene to display an active quest.
  * @author Mage Studios Engine Plugins
  *
@@ -427,7 +427,7 @@ if (Imported.MSEP_QuestJournal) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MapQuestWindow');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MapQuestWindow');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MQWSettings =
@@ -981,7 +981,7 @@ Scene_Quest.prototype.onListClearActive = function() {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_MapQuestWindow without MSEP_QuestJournal. Please visit MageStudios.moe ';
+text += 'MSEP_X_MapQuestWindow without MSEP_QuestJournal. Please visit MageStudios.moe ';
 text += 'and install MSEP_QuestJournal in your game project before you can use ';
 text += 'this plugin.';
 console.log(text);

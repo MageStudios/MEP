@@ -12,7 +12,7 @@ MageStudios.MoreQuests8.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Requires MSEP_QuestJournal.js)
+ * @plugindesc (Requires MSEP_QuestJournal.js)
  * Add quests 7001 to 8000 to your game!
  * @author Mage Studios Engine Plugins
  *
@@ -7506,7 +7506,7 @@ if (Imported.MSEP_QuestJournal) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MoreQuests8');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreQuests8');
 MageStudios.Param = MageStudios.Param || {};
 
 DataManager.questDatabaseCreate = function() {
@@ -7548,7 +7548,7 @@ DataManager.questDatabaseCreate();
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_MoreQuests8 without MSEP_QuestJournal. Please visit MageStudios.moe ';
+text += 'MSEP_X_MoreQuests8 without MSEP_QuestJournal. Please visit MageStudios.moe ';
 text += 'and install MSEP_QuestJournal in your game project before you can use ';
 text += 'this plugin.';
 console.log(text);

@@ -8,11 +8,11 @@ Imported.MSEP_ShopMenuCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Shop = MageStudios.Shop || {};
-MageStudios.Shop.version = 1.05
+MageStudios.Shop.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 Revamps the shop menu appearance and provides the
+ * @plugindesc Revamps the shop menu appearance and provides the
  * framework for many new shop options.
  * @author Mage Studios Engine Plugins
  *
@@ -233,7 +233,7 @@ MageStudios.Shop.version = 1.05
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_ShopMenuCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_ShopMenuCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ShopCommandOrder = String(MageStudios.Parameters['Command Order']);

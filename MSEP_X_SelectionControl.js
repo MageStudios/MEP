@@ -8,11 +8,11 @@ Imported.MSEP_X_SelectionControl = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Sel = MageStudios.Sel || {};
-MageStudios.Sel.version = 1.15;
+MageStudios.Sel.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.15 (Requires MSEP_BattleEngineCore & MSEP_TargetCore.js)
+ * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_TargetCore.js)
  * Control what targets can and can't be selected for actions.
  * @author Mage Studios Engine Plugins
  *
@@ -445,9 +445,9 @@ MageStudios.Sel.version = 1.15;
  *
  * Version 1.08:
  * - New Feature: Clicking upon the Party Status Window to select actors works.
- * This requires Battle Engine Core v1.38 or else it will not work.
+ * This requires Battle Engine Core  or else it will not work.
  * - New Feature: Visual Enemy and Visual Ally select for touch input.
- * This requires Battle Engine Core v1.38 or else it will not work.
+ * This requires Battle Engine Core  or else it will not work.
  *
  * Verison 1.07a:
  * - Fixed a bug that caused the all dead check to not check the actors that
@@ -497,7 +497,7 @@ if (Imported.MSEP_BattleEngineCore && Imported.MSEP_TargetCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_SelectionControl');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_SelectionControl');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SelectSoleMulti = String(MageStudios.Parameters['Single Multiple']);

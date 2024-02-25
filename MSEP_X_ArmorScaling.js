@@ -8,11 +8,11 @@ Imported.MSEP_X_ArmorScaling = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ARS = MageStudios.ARS || {};
-MageStudios.ARS.version = 1.05;
+MageStudios.ARS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_DamageCore.js) Scale defensive
+ * @plugindesc (Requires MSEP_DamageCore.js) Scale defensive
  * stats relative to a universal scale.
  * @author Mage Studios Engine Plugins
  * 
@@ -347,31 +347,6 @@ MageStudios.ARS.version = 1.05;
  *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Usage Example: reset armor reduction
  *=============================================================================
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.05:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.04:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.03:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.1.0.
- *
- * Version 1.01:
- * - Fixed the notetag <Armor Reduction: x%> from not working with the intended
- * effect.
- * - Negative armor damage calculations are reworked to function as intended.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -381,7 +356,7 @@ if (Imported.MSEP_DamageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ArmorScaling');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ArmorScaling');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ARSPPhysRate = String(MageStudios.Parameters['Positive Physical Rate']);

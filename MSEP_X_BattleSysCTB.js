@@ -8,11 +8,11 @@ Imported.MSEP_X_BattleSysCTB = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CTB = MageStudios.CTB || {};
-MageStudios.CTB.version = 1.17;
+MageStudios.CTB.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.17 (Requires MSEP_BattleEngineCore.js) Add CTB (Charge
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Add CTB (Charge
  * Turn Battle) into your game using this plugin!
  * @author Mage Studios Engine Plugins
  *
@@ -545,7 +545,7 @@ if (MageStudios.BEC.version && MageStudios.BEC.version >= 1.42) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_BattleSysCTB');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_BattleSysCTB');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CTBPerTick = String(MageStudios.Parameters['Per Tick']);
@@ -2687,7 +2687,7 @@ MageStudios.Util.displayError = function(e, code, message) {
 } else { // MageStudios.BEC.version
 
 var text = '================================================================\n';
-text += 'MEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
+text += 'MSEP_X_AnimatedSVEnemies requires MSEP_BattleEngineCore to be at the ';
 text += 'latest version to run properly.\n\nPlease go to www.MageStudios.moe and ';
 text += 'update to the latest version for the MSEP_BattleEngineCore plugin.\n';
 text += '================================================================\n';

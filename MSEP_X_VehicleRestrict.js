@@ -8,11 +8,11 @@ Imported.MSEP_X_VehicleRestrict = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.VR = MageStudios.VR || {};
-MageStudios.VR.version = 1.01;
+MageStudios.VR.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Req MSEP_RegionRestrictions.js) This plugin allows you
+ * @plugindesc (Req MSEP_RegionRestrictions.js) This plugin allows you
  * to control where vehicles can move and can land.
  * @author Mage Studios Engine Plugins
  *
@@ -163,7 +163,7 @@ if (Imported.MSEP_RegionRestrictions) {
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.SetupParameters = function() {
-  var parameters = PluginManager.parameters('MEP_X_VehicleRestrict');
+  var parameters = PluginManager.parameters('MSEP_X_VehicleRestrict');
   MageStudios.Param.VRBoatRestrict = String(parameters['Boat Restrict']);
   MageStudios.Param.VRBoatRestrict = MageStudios.Param.VRBoatRestrict.split(' ');
   for (var i = 0; i < MageStudios.Param.VRBoatRestrict.length; ++i) {

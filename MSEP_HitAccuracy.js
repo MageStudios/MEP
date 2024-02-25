@@ -8,11 +8,11 @@ Imported.MSEP_HitAccuracy = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.HA = MageStudios.HA || {};
-MageStudios.HA.version = 1.04;
+MageStudios.HA.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.04 This plugin alters the nature of hit accuracy for
+ * @plugindesc This plugin alters the nature of hit accuracy for
  * RPG Maker MV by giving control to its formula.
  * @author Mage Studios Engine Plugins
  *
@@ -133,7 +133,7 @@ MageStudios.HA.version = 1.04;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_HitAccuracy');
+MageStudios.Parameters = PluginManager.parameters('MSEP_HitAccuracy');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.HAHitFormula = String(MageStudios.Parameters['Accuracy Formula']);

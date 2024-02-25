@@ -8,11 +8,11 @@ Imported.MSEP_FootstepSounds = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Footsteps = MageStudios.Footsteps || {};
-MageStudios.Footsteps.version = 1.01;
+MageStudios.Footsteps.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Set footstep sounds to play when the player and/or
+ * @plugindesc Set footstep sounds to play when the player and/or
  * events walk over specific tiles.
  * @author Mage Studios Engine Plugins + Chickie Collaboration
  *
@@ -225,7 +225,7 @@ MageStudios.Footsteps.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_FootstepSounds');
+MageStudios.Parameters = PluginManager.parameters('MSEP_FootstepSounds');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.Footsteps = {

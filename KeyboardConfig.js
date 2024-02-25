@@ -12,7 +12,7 @@ MageStudios.KeyConfig = MageStudios.KeyboardConfig || {};
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Allows players to adjust their button configuration
+ * @plugindesc Allows players to adjust their button configuration
  * for keyboards.
  * @author Mage Studios Engine Plugins
  *
@@ -227,15 +227,6 @@ MageStudios.KeyConfig = MageStudios.KeyboardConfig || {};
  * Load Config Code:
  * // Empty. Provided by this plugin.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Compatibility update with MSEP_OptionsCore.js.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 

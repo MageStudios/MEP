@@ -8,11 +8,11 @@ Imported.MSEP_LoadCustomFonts = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LCF = MageStudios.LCF || {};
-MageStudios.LCF.version = 1.01;
+MageStudios.LCF.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Load custom fonts from the /fonts/ folder. This will
+ * @plugindesc Load custom fonts from the /fonts/ folder. This will
  * allow you to use custom fonts without installing them.
  * @author Mage Studios Engine Plugins
  *
@@ -67,7 +67,7 @@ MageStudios.LCF.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_LoadCustomFonts');
+MageStudios.Parameters = PluginManager.parameters('MSEP_LoadCustomFonts');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LCFFontFilenames = String(MageStudios.Parameters['Font Filenames']);

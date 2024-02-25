@@ -8,11 +8,11 @@ Imported.MSEP_Z_SkillRewards = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.LunSkRew = MageStudios.LunSkRew || {};
-MageStudios.LunSkRew.version = 1.01;
+MageStudios.LunSkRew.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Lunatic Pack) Add a variety of effects to your items and
+ * @plugindesc (Lunatic Pack) Add a variety of effects to your items and
  * skills to reward the player for good (or bad) gameplay.
  * @author Mage Studios Engine Plugins
  *
@@ -441,7 +441,7 @@ if (MageStudios.PluginRequirements()) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_Z_SkillRewards');
+MageStudios.Parameters = PluginManager.parameters('MSEP_Z_SkillRewards');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.LunSkRewEffect = JSON.parse(MageStudios.Parameters['Effect Code']);
@@ -932,7 +932,7 @@ if (data.match(/([\+\-]\d+)[ ]HP/i)) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_Z_SkillRewards without the required plugins. Please visit ';
+text += 'MSEP_Z_SkillRewards without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

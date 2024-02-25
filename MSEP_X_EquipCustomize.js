@@ -8,11 +8,11 @@ Imported.MSEP_X_EquipCustomize = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ECC = MageStudios.ECC || {};
-MageStudios.ECC.version = 1.02;
+MageStudios.ECC.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_ItemCore && MSEP_EquipCore.js)
+ * @plugindesc (Requires MSEP_ItemCore && MSEP_EquipCore.js)
  * Adds a 'Customize' command to the Equip menu.
  * @author Mage Studios Engine Plugins
  *
@@ -77,7 +77,7 @@ if (Imported.MSEP_ItemCore && Imported.MSEP_EquipCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_EquipCustomize');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_EquipCustomize');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ItemSceneItem = 'true';

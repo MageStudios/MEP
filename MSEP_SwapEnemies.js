@@ -8,11 +8,11 @@ Imported.MSEP_SwapEnemies = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SwE = MageStudios.SwE || {};
-MageStudios.SwE.version = 1.03
+MageStudios.SwE.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.03 This is utility plugin made to help randomize sets of
+ * @plugindesc This is utility plugin made to help randomize sets of
  * enemies for battle.
  * @author Mage Studios Engine Plugins
  *
@@ -79,7 +79,7 @@ MageStudios.SwE.version = 1.03
  */
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SwapEnemies');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SwapEnemies');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SwEFilter = eval(MageStudios.Parameters['Filter Unnamed Enemies']);

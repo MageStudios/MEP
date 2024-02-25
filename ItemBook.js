@@ -3,7 +3,7 @@
 //=============================================================================
 
 /*:
- * @plugindesc v1.01 Displays detailed statuses of items.
+ * @plugindesc Displays detailed statuses of items.
  * @author Yoji Ojima (Compatibility with YEP)
  *
  * @param Unknown Data

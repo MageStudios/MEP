@@ -8,11 +8,11 @@ Imported.MSEP_GabWindow = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Gab = MageStudios.Gab || {};
-MageStudios.Gab.version = 1.06
+MageStudios.Gab.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.06 The Gab Window functions as a window for random
+ * @plugindesc The Gab Window functions as a window for random
  * jibber jabber that does not require a message window.
  * @author Mage Studios Engine Plugins
  *
@@ -253,7 +253,7 @@ MageStudios.Gab.version = 1.06
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_GabWindow');
+MageStudios.Parameters = PluginManager.parameters('MSEP_GabWindow');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.GabFontName = String(MageStudios.Parameters['Gab Font Name']);

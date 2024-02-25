@@ -8,11 +8,11 @@ Imported.MSEP_X_BattleStatistics = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.BStats = MageStudios.BStats || {};
-MageStudios.BStats.version = 1.02;
+MageStudios.BStats.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 (Requires MSEP_StatusMenuCore.js) Logs the battle
+ * @plugindesc (Requires MSEP_StatusMenuCore.js) Logs the battle
  * statistics of actors for your players to view.
  * @author Mage Studios Engine Plugins
  *
@@ -137,21 +137,6 @@ MageStudios.BStats.version = 1.02;
  * Healing Taken
  * Total amount of healing taken by the actor over the course of the game.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.01:
- * - Calculations for recorded HP damage dealt are now calculated based on the
- * actual HP damage taken as per the results rather than based off of the raw
- * incoming value (in the event that raw value gets modified as per the effects
- * of other plugins).
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -161,7 +146,7 @@ if (Imported.MSEP_StatusMenuCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_BattleStatistics');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_BattleStatistics');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.BStatsCmdName = String(MageStudios.Parameters['Command Name']);

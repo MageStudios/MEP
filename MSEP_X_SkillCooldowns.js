@@ -8,11 +8,11 @@ Imported.MSEP_X_SkillCooldowns = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.SCD = MageStudios.SCD || {};
-MageStudios.SCD.version = 1.12;
+MageStudios.SCD.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.12 (Requires MSEP_SkillCore.js) Cooldowns can be applied
+ * @plugindesc (Requires MSEP_SkillCore.js) Cooldowns can be applied
  * to skills to prevent them from being used continuously.
  * @author Mage Studios Engine Plugins
  *
@@ -443,7 +443,7 @@ MageStudios.SCD.version = 1.12;
  * - Fixed a bug that didn't alter cooldowns correctly.
  *
  * Version 1.03:
- * - Optimized for Battle Engine Core v1.08.
+ * - Optimized for Battle Engine Core .
  *
  * Version 1.02a:
  * - Added return for drawSkillCost to assist others scripters when making
@@ -464,7 +464,7 @@ if (Imported.MSEP_SkillCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_SkillCooldowns');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_SkillCooldowns');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

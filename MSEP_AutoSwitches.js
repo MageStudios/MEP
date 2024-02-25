@@ -8,11 +8,11 @@ Imported.MSEP_AutoSwitches = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AutoSwitch = MageStudios.AutoSwitch || {};
-MageStudios.AutoSwitch.version = 1.01;
+MageStudios.AutoSwitch.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 When playtesting, this will cause a particular
+ * @plugindesc When playtesting, this will cause a particular
  * switch to always be ON for testing purposes.
  * @author Mage Studios Engine Plugins
  *
@@ -73,15 +73,6 @@ MageStudios.AutoSwitch.version = 1.01;
  * set by the game such as determining if the game is running via debug mode or
  * on a certain type of browser.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -89,7 +80,7 @@ MageStudios.AutoSwitch.version = 1.01;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_AutoSwitches');
+MageStudios.Parameters = PluginManager.parameters('MSEP_AutoSwitches');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.AutoSwitches = {

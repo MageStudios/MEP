@@ -8,11 +8,11 @@ Imported.MSEP_X_ClassBaseParam = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CBP = MageStudios.CBP || {};
-MageStudios.CBP.version = 1.05;
+MageStudios.CBP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_BaseParamControl) Allow you to use
+ * @plugindesc (Requires MSEP_BaseParamControl) Allow you to use
  * formulas for class parameter growth.
  * @author Mage Studios Engine Plugins
  *

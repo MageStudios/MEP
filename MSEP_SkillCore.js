@@ -8,11 +8,11 @@ Imported.MSEP_SkillCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Skill = MageStudios.Skill || {};
-MageStudios.Skill.version = 1.13;
+MageStudios.Skill.version = 1.00;
 
 //=============================================================================
 /*:
- * @plugindesc v1.13 Skills are now given more functions and the ability
+ * @plugindesc Skills are now given more functions and the ability
  * to require different types of costs.
  * @author Mage Studios Engine Plugins
  *
@@ -449,7 +449,7 @@ MageStudios.Skill.version = 1.13;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SkillCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SkillCore');
 MageStudios.Param = MageStudios.Param || {};
 MageStudios.Icon = MageStudios.Icon || {};
 

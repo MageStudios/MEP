@@ -8,11 +8,11 @@ Imported.MSEP_MessageCore = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Message = MageStudios.Message || {};
-MageStudios.Message.version = 1.19;
+MageStudios.Message.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.19 Adds more features to the Message Window to customized
+ * @plugindesc Adds more features to the Message Window to customized
  * the way your messages appear and functions.
  * @author Mage Studios Engine Plugins
  *
@@ -476,7 +476,7 @@ MageStudios.Message.version = 1.19;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_MessageCore');
+MageStudios.Parameters = PluginManager.parameters('MSEP_MessageCore');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MSGDefaultRows = String(MageStudios.Parameters['Default Rows']);

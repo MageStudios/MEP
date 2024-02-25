@@ -8,11 +8,11 @@ Imported.MSEP_SlipperyTiles = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.Slip = MageStudios.Slip || {};
-MageStudios.Slip.version = 1.05
+MageStudios.Slip.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 You can create slippery tiles by marking them with
+ * @plugindesc You can create slippery tiles by marking them with
  * either a terrain tag or a region number.
  * @author Mage Studios Engine Plugins
  *
@@ -86,7 +86,7 @@ MageStudios.Slip.version = 1.05
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_SlipperyTiles');
+MageStudios.Parameters = PluginManager.parameters('MSEP_SlipperyTiles');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.SlipRegion = Number(MageStudios.Parameters['Slippery Region']);

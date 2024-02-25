@@ -8,11 +8,11 @@ Imported.MSEP_X_ChangeBattleEquip = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.CBE = MageStudios.CBE || {};
-MageStudios.CBE.version = 1.04;
+MageStudios.CBE.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.05 (Requires MSEP_BattleEngineCore & MSEP_EquipCore)
+ * @plugindesc (Requires MSEP_BattleEngineCore & MSEP_EquipCore)
  * Allow your actors to change equipment mid-battle.
  * @author Mage Studios Engine Plugins
  *
@@ -87,7 +87,7 @@ if (Imported.MSEP_BattleEngineCore && Imported.MSEP_EquipCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ChangeBattleEquip');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ChangeBattleEquip');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.CBECmd = String(MageStudios.Parameters['Command Name']);

@@ -8,11 +8,11 @@ Imported.MSEP_X_MoreTPModes3 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ETP = MageStudios.ETP || {};
-MageStudios.ETP.version = 1.01
+MageStudios.ETP.version = 1.00
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 (Requires MSEP_EnhancedTP.js) Adds TP Modes 61 to 80
+ * @plugindesc (Requires MSEP_EnhancedTP.js) Adds TP Modes 61 to 80
  * to your game!
  * @author Mage Studios Engine Plugins
  *
@@ -2887,7 +2887,7 @@ if (Imported.MSEP_EnhancedTP) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MoreTPModes3');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MoreTPModes3');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ETPMax = 80;

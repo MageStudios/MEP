@@ -12,7 +12,7 @@ MageStudios.MsgSpdOpt.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.00 (Requires MSEP_MessageCore.js) Let your places adjust the
+ * @plugindesc (Requires MSEP_MessageCore.js) Let your places adjust the
  * speed the message window displays text.
  * @author Mage Studios Engine Plugins
  *
@@ -159,7 +159,7 @@ if (Imported.MSEP_MessageCore) {
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_MessageSpeedOpt');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_MessageSpeedOpt');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.MsgSpeedOptCmd = String(MageStudios.Parameters['OptionsCommand']);
@@ -358,7 +358,7 @@ Window_Options.prototype.cursorLeft = function(wrap) {
 
 var text = '';
 text += 'You are getting this error because you are trying to run ';
-text += 'MEP_X_MessageSpeedOpt without the required plugins. Please visit ';
+text += 'MSEP_X_MessageSpeedOpt without the required plugins. Please visit ';
 text += 'MageStudios.moe and install the required plugins neede for this plugin ';
 text += 'found in this plugin\'s help file before you can use it.';
 console.log(text);

@@ -8,11 +8,11 @@ Imported.MSEP_AdvSwVar = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.AdvSwVar = MageStudios.AdvSwVar || {};
-MageStudios.AdvSwVar.version = 1.02;
+MageStudios.AdvSwVar.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Make advanced switches and variables that are
+ * @plugindesc Make advanced switches and variables that are
  * able to utilize JavaScript for enhanced usage.
  * @author Mage Studios Engine Plugins
  *
@@ -174,24 +174,6 @@ MageStudios.AdvSwVar.version = 1.02;
  * - This will return the actual number of items as the condition instead of
  * whether or not the party has that item. For weapons and armors, this will
  * not include those that are equipped.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.02:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.01:
- * - Bug fixed to prevent compatibility problems with the Debugger.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
  *
  */
 //=============================================================================

@@ -8,11 +8,11 @@ Imported.MSEP_EnhancedTP = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ETP = MageStudios.ETP || {};
-MageStudios.ETP.version = 1.09;
+MageStudios.ETP.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.09 Gives you more control over how TP is handled in
+ * @plugindesc Gives you more control over how TP is handled in
  * your game in addition to letting players switch TP modes.
  * @author Mage Studios Engine Plugins
  *
@@ -3168,49 +3168,6 @@ MageStudios.ETP.version = 1.09;
  *   battler.removeAllTpModes()
  *   This will remove all TP Modes for the battler except for the TP Mode that
  *   the battler is currently using.
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.09:
- * - Bypass the isDevToolsOpen() error when bad code is inserted into a script
- * call or custom Lunatic Mode code segment due to updating to MV 1.6.1.
- *
- * Version 1.08:
- * - Updated for RPG Maker MV version 1.6.1.
- *
- * Version 1.07:
- * - Updated for RPG Maker MV version 1.5.0.
- *
- * Version 1.06:
- * - Lunatic Mode fail safes added.
- *
- * Version 1.05:
- * - Added 'Dead TP Gain' plugin parameter. Enabling this will allow dead
- * actors to gain TP from TP modes while in battle. Disabling this will prevent
- * dead actors from doing so.
- *
- * Version 1.04:
- * - Calculations for TP Gauge increasing for HP and MP values are now
- * calculated based on the actual HP and MP damage taken as per the results
- * rather than based off of the raw incoming value (in the event that raw value
- * gets modified as per the effects of other plugins).
- *
- * Version 1.03:
- * - Fixed the plugin commands that pertain to party members to prevent them
- * from crashing the game.
- *
- * Version 1.02a:
- * - Updated for RPG Maker MV version 1.1.0.
- * - Fixed a documentation issue. <TP Mode: x> can work with enemies.
- *
- * Version 1.01a:
- * - Fixed a bug with some notetags not working properly.
- * - Fixed a bug with 'EnableTpMode' plugin command not working properly.
- *
- * Version 1.00:
- * - Finished Plugin!
  */
 //=============================================================================
 
@@ -3218,7 +3175,7 @@ MageStudios.ETP.version = 1.09;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EnhancedTP');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EnhancedTP');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.ETPCmdName = String(MageStudios.Parameters['Command Name']);

@@ -8,11 +8,11 @@ Imported.MSEP_X_ActSeqPack2 = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.ASP2 = MageStudios.ASP2 || {};
-MageStudios.ASP2.version = 1.12;
+MageStudios.ASP2.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.12 (Requires MSEP_BattleEngineCore.js) Visual functions
+ * @plugindesc (Requires MSEP_BattleEngineCore.js) Visual functions
  * are added to the Battle Engine Core's action sequences.
  * @author Mage Studios Engine Plugins
  *
@@ -446,61 +446,6 @@ MageStudios.ASP2.version = 1.12;
  *- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
  * Usage Example: wait for opacity
  *=============================================================================
- *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.12:
- * - Updated for RPG Maker MV version 1.5.0.
- * - Added new Offset X, Offset Y, arguments for the Move action sequence.
- *   Check the helpfile for more information.
- *
- * Version 1.11:
- * - Fixed a bug that caused enemies to not mirror the attack animation.
- *
- * Version 1.10a:
- * - Fixed a bug that caused scaled enemies to have their state icons and
- * overlays appear in odd places.
- * - Documentation update for Move, Float, and Jump related action sequences as
- * they only work in Sideview.
- *
- * Version 1.09:
- * - Animations played on a floating or jumping battlers 'Feet' location will
- * now be played at the base of the battler regardless of how high the battler
- * is floating. This is to provide a more consistent animation iMageStudios.
- *
- * Version 1.08a:
- * - State Icon and State Overlays will now synch together for floating and
- * jumping battlers.
- *
- * Version 1.07c:
- * - Synchronized battle animations to floating and jumping battlers.
- * 
- * Version 1.06:
- * - Updated weapon motions for MSEP_X_AnimatedSVEnemies to work with sideview
- * enemies.
- *
- * Version 1.05:
- * - Creating compatibility for a future plugin.
- *
- * Version 1.04a:
- * - Rewrote and updated movement formulas.
- *
- * Version 1.03:
- * - Made a change to Motion action sequence. 'Wait' is now substituted for
- * 'Standby' as to not confuse it with the actual Motion Wait action sequence.
- * - Added a 'no weapon' option to Motion action sequences. This new tag will
- * only affect the 'Thrust', 'Swing', and 'Missile' motions.
- *
- * Version 1.02:
- * - Added a check for motion attack to differentiate between actor and enemy.
- *
- * Version 1.01:
- * - Updated help file to include Character X for target typing.
- *
- * Version 1.00:
- * - Finished plugin!
  */
 //=============================================================================
 
@@ -510,7 +455,7 @@ if (Imported.MSEP_BattleEngineCore) {
 // Parameters
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_X_ActSeqPack2');
+MageStudios.Parameters = PluginManager.parameters('MSEP_X_ActSeqPack2');
 MageStudios.Param = MageStudios.Param || {};
 
 //=============================================================================

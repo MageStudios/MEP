@@ -8,11 +8,11 @@ Imported.MSEP_HitDamageSounds = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.HDS = MageStudios.HDS || {};
-MageStudios.HDS.version = 1.01;
+MageStudios.HDS.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.01 Play specific damage sounds based on the target's
+ * @plugindesc Play specific damage sounds based on the target's
  * armor and/or specific enemy types.
  * @author Mage Studios Engine Plugins + Chickie Collaboration
  *
@@ -709,7 +709,7 @@ MageStudios.HDS.version = 1.01;
 //=============================================================================
 
 MageStudios.HDS.setupParameters = function() {
-  MageStudios.Parameters = PluginManager.parameters('MEP_HitDamageSounds');
+  MageStudios.Parameters = PluginManager.parameters('MSEP_HitDamageSounds');
   MageStudios.Param = MageStudios.Param || {};
   MageStudios.Param.HitDamageSoundsOnly = String(MageStudios.Parameters['Only Sound']);
   MageStudios.Param.HitDamageSoundsOnly = eval(MageStudios.Param.HitDamageSoundsOnly);

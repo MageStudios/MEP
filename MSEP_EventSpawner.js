@@ -8,13 +8,43 @@ Imported.MSEP_EventSpawner = true;
 
 var MageStudios = MageStudios || {};
 MageStudios.EventSpawn = MageStudios.EventSpawn || {};
-MageStudios.EventSpawn.version = 1.02;
+MageStudios.EventSpawn.version = 1.00;
 
 //=============================================================================
  /*:
- * @plugindesc v1.02 Spawn premade events at specific locations or random
+ * @plugindesc Spawn premade events at specific locations or random
  * points marked by regions.
  * @author Mage Studios Engine Plugins
+ *
+ *  * @param ---General---
+ * @default
+ *
+ * @param TemplateMaps
+ * @text Template Maps
+ * @parent ---General---
+ * @type number[]
+ * @min 1
+ * @max 999
+ * @desc A list of all the ID's of the maps that will be preloaded to
+ * serve as template maps for this plugin.
+ * @default ["1"]
+ *
+ * @param TemplateNames
+ * @text Template Names
+ * @parent ---General---
+ * @type struct<Template>[]
+ * @desc A list of templates made by name so you can use names
+ * instead of mapID and eventID combinations with script calls.
+ * @default []
+ *
+ * @param IdStartRange
+ * @text ID Starting Range
+ * @parent ---General---
+ * @type number[]
+ * @min 1000
+ * @desc The starting range for the ID's of the events spawned.
+ * Do not input a number under 1000. Recommended: 1000
+ * @default 1000
  *
  * @help
  * ============================================================================
@@ -265,50 +295,6 @@ MageStudios.EventSpawn.version = 1.02;
  * * Note: When a spawned event is despawned, any preserved data will also be
  * removed in addition to the removed spawned event.
  *
- * ============================================================================
- * Changelog
- * ============================================================================
- *
- * Version 1.01:
- * - Bugfixed for irregular spawn ID's.
- *
- * Version 1.00:
- * - Finished Plugin!
- *
- * ============================================================================
- * End of Helpfile
- * ============================================================================
- *
- * @param ---General---
- * @default
- *
- * @param TemplateMaps
- * @text Template Maps
- * @parent ---General---
- * @type number[]
- * @min 1
- * @max 999
- * @desc A list of all the ID's of the maps that will be preloaded to
- * serve as template maps for this plugin.
- * @default ["1"]
- *
- * @param TemplateNames
- * @text Template Names
- * @parent ---General---
- * @type struct<Template>[]
- * @desc A list of templates made by name so you can use names
- * instead of mapID and eventID combinations with script calls.
- * @default []
- *
- * @param IdStartRange
- * @text ID Starting Range
- * @parent ---General---
- * @type number[]
- * @min 1000
- * @desc The starting range for the ID's of the events spawned.
- * Do not input a number under 1000. Recommended: 1000
- * @default 1000
- *
  */
 /* ----------------------------------------------------------------------------
  * Template Parameter Structure
@@ -343,7 +329,7 @@ MageStudios.EventSpawn.version = 1.02;
 // Parameter Variables
 //=============================================================================
 
-MageStudios.Parameters = PluginManager.parameters('MEP_EventSpawner');
+MageStudios.Parameters = PluginManager.parameters('MSEP_EventSpawner');
 MageStudios.Param = MageStudios.Param || {};
 
 MageStudios.Param.EventSpawnerData = eval(MageStudios.Parameters['TemplateMaps']);
