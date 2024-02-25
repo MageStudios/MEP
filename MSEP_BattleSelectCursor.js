@@ -127,7 +127,7 @@ MageStudios.BattleCursor.version = 1.00;
  *   <Battle Select Cursor Position Y: Bottom>
  *   - These notetags determine where the select cursor will appear on the
  *   actor or enemy when targeting them.
- *
+ */
 //=============================================================================
 
 //=============================================================================

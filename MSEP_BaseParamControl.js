@@ -503,7 +503,7 @@ MageStudios.BPC.version = 1.00;
  *   This value is calculated against any <stat Min: x> notetags that the
  *   battler may have. If there are multiple min values, the larges value is
  *   used as the parameter minimum.
- *
+ */
 //=============================================================================
 
 //=============================================================================

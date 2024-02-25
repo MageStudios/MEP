@@ -422,7 +422,7 @@ MageStudios.ABR.version = 1.00;
  *
  *   battler.updateBarrierTurns()
  *   - Makes the battler's Barrier Points update their turns.
- *
+ */
 //=============================================================================
 
 //=============================================================================
